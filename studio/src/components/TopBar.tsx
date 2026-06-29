@@ -50,7 +50,6 @@ export default function TopBar() {
   const brandName = brandRef?.name ?? brand ?? '—';
   const batchName = batchRef?.name ?? batch ?? '—';
 
-  const densityNext = ui.density === 'comfortable' ? 'compact' : 'comfortable';
 
   // Run state machine.
   const state: RunState = run?.state ?? 'idle';
@@ -156,17 +155,6 @@ export default function TopBar() {
             <span>Stop</span>
           </button>
         ) : null}
-
-        {/* Density toggle */}
-        <button
-          type="button"
-          className={s.iconBtn}
-          onClick={() => setUI({ density: densityNext })}
-          title={`Density: ${ui.density}. Switch to ${densityNext}.`}
-          aria-label={`Density: ${ui.density}. Switch to ${densityNext}.`}
-        >
-          <Icon name="sliders" size={16} />
-        </button>
 
         {/* Primary — label + action change with run state */}
         {state === 'running' ? (
