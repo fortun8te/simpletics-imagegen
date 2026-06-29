@@ -11,9 +11,11 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
-  /* Clean flat blue→black backdrop: muted blue up top settling to near-black. The sidebar paints a
-     solid panel over column 1; the topbar + main stay transparent so this shows behind the content. */
-  background: linear-gradient(178deg, #1a2742 0%, #11182a 22%, #0c0e15 48%, #0a0b0e 72%);
+  /* Blue-bloom backdrop (MagUSD/CloudSquare energy): a soft blue light source glowing from the top of
+     the content area, falling off to near-black. Sidebar paints a solid panel over column 1; the
+     topbar + main stay transparent so the bloom shows behind the content. */
+  background:
+    radial-gradient(78% 44% at 50% -20%, #1f3d72 0%, #0e1521 32%, #0a0b0e 58%);
   color: var(--ink);
 }
 

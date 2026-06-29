@@ -58,7 +58,8 @@
 
   /* Type — Geist (UI grotesk) + Fraunces (editorial serif display). Loaded in index.html. */
   --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  /* Display = the same grotesk (no serif — clean, bold headings). */
+  --font-display: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Monaco, monospace;
 
   /* Type scale */
