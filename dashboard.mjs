@@ -35,10 +35,10 @@ function sendJson(res, status, obj) {
   send(res, status, JSON.stringify(obj), { 'Content-Type': 'application/json; charset=utf-8' });
 }
 
-// Resolve a bool for whether a codex-runner.mjs process is alive.
+// Resolve a bool for whether any codex generation is alive (the resume-runner OR a bare codexbatch).
 function runnerAlive() {
   return new Promise((resolve) => {
-    exec('pgrep -f codex-runner.mjs', (err, stdout) => {
+    exec("pgrep -f 'codex-runner.mjs|codexbatch.mjs'", (err, stdout) => {
       resolve(!err && String(stdout).trim().length > 0);
     });
   });
@@ -260,22 +260,20 @@ const server = http.createServer(async (req, res) => {
       }
       let body = {};
       try { body = JSON.parse(await readBody(req) || '{}'); } catch { body = {}; }
+      const brand = body.brand || 'nanox';
       const batch = body.batch;
-      const variants = body.variants;
-      const child = spawn('node', ['codex-runner.mjs'], {
+      const variants = Math.max(1, Math.min(6, Number(body.variants) || 2));
+      // "Run in Codex" = generate <variants> fresh variations of this batch NOW (never-overwrite adds
+      // new versions). codexbatch does one pass; the runner-alive guard above (which now also matches a
+      // bare codexbatch) prevents a second overlapping run.
+      const child = spawn('node', ['codexbatch.mjs', 'edu', '--brand=' + brand, '--batch=' + batch], {
         cwd: REPO,
-        env: {
-          ...process.env,
-          BATCHES: batch,
-          VARIANTS: String(variants),
-          COOLDOWN_MIN: '60',
-          MAX_CYCLES: '12',
-        },
+        env: { ...process.env, VARIANTS: String(variants) },
         stdio: 'ignore',
         detached: true,
       });
       child.unref();
-      return sendJson(res, 200, { ok: true });
+      return sendJson(res, 200, { ok: true, brand, batch, variants });
     }
 
     // POST /api/codex/stop

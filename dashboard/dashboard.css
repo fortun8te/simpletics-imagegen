@@ -173,8 +173,8 @@ header select:hover,
 /* Tiles: the generated images. */
 .tiles,
 .run-slots {
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr));
-  gap:8px; margin-top:4px;
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+  gap:12px; margin-top:6px;
 }
 .tile {
   position:relative; display:block; padding:0; overflow:hidden;
