@@ -18,15 +18,39 @@
 // Results are cached for ~30s so /api/state and /api/health don't re-read auth.json on every poll.
 // Zero external deps: node:* only.
 
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const CACHE_MS = 30_000;
 const AUTH_PATH = join(process.env.HOME || '', '.codex', 'auth.json');
+// Settings (the usage limit) persist next to the job state, in studio/.state/settings.json.
+const STATE_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '.state');
+const SETTINGS_PATH = join(STATE_DIR, 'settings.json');
 
 // --- mutable session signals (set by the server/worker, read by getCodexUsage) -------------------
 let sessionGenerated = 0;        // count of jobs this process has completed
 let lastRateLimit = null;        // { at:number, resumeAt:number|null } — most recent RATE_LIMIT hit
+
+// Usage limit: max images to generate this session before auto-pausing. null = unlimited (the default
+// — "go through the entire usage"). Persisted so it survives restarts.
+let usageLimit = (() => {
+  try {
+    const v = JSON.parse(readFileSync(SETTINGS_PATH, 'utf8')).usageLimit;
+    return typeof v === 'number' && v > 0 ? v : null;
+  } catch { return null; }
+})();
+
+/** Set the session usage cap. n>0 caps generation; null/0 = unlimited. Persisted. */
+export function setUsageLimit(n) {
+  usageLimit = typeof n === 'number' && n > 0 ? Math.floor(n) : null;
+  try { mkdirSync(STATE_DIR, { recursive: true }); writeFileSync(SETTINGS_PATH, JSON.stringify({ usageLimit }), 'utf8'); } catch { /* ignore */ }
+  cache = null;
+  return usageLimit;
+}
+export function getUsageLimit() { return usageLimit; }
+/** True when a cap is set and this session has already generated at least that many. */
+export function isLimitReached() { return usageLimit != null && sessionGenerated >= usageLimit; }
 
 // --- cache ---------------------------------------------------------------------------------------
 let cache = null;                // { value:CodexUsage, at:number }
@@ -100,6 +124,7 @@ export function getCodexUsage() {
     known: false,
     label,
     sessionGenerated,
+    limit: usageLimit,
     resetAt: cooling && rl.resumeAt != null ? rl.resumeAt : null,
   };
 

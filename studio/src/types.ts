@@ -47,6 +47,7 @@ export interface CodexUsage {
   percent?: number | null;       // 0-100 remaining
   label?: string;                // e.g. "62% left", "unknown"
   sessionGenerated?: number;     // fallback signal: images generated this session
+  limit?: number | null;         // session usage cap (Settings); null = unlimited
   resetAt?: number | null;       // epoch ms when the quota window resets, if known
 }
 

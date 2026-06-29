@@ -25,6 +25,8 @@
 //
 // Zero external deps: node:* only (gen.mjs is dynamically imported by spec).
 
+import { isLimitReached } from './usage.mjs';
+
 /**
  * Create the generation worker.
  *
@@ -54,7 +56,7 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
 
   // The worker is "blocked" from pulling new jobs while either the user paused it or a rate-limit
   // cooldown is active. In-flight jobs always finish regardless.
-  const blocked = () => userPaused || cooling;
+  const blocked = () => userPaused || cooling || isLimitReached();
 
   // Pull and run as many queued jobs as capacity allows. Each finished job re-ticks so the freed
   // slot is immediately refilled. Guarded so it never runs while stopped or blocked.
