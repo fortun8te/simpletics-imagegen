@@ -1,16 +1,12 @@
-// Batch view (container). The main scroll area's content. Reads `state`, `ui.view`, and `loading`.
-// Three states before the views: first load (skeleton), no batch / empty batch (empty state), and
-// then it dispatches to the active view (grid / board / table). Views read the store themselves.
+// Batch view (container). The main scroll area's content. Three states: first load (skeleton),
+// no batch / empty batch (empty state), then the grid gallery. (Board/Table views were removed.)
 import { useStore } from '../store';
 import GridView from './views/GridView';
-import BoardView from './views/BoardView';
-import TableView from './views/TableView';
 import { Skeleton } from './Skeleton';
 import { EmptyState } from './EmptyState';
 
 export default function BatchView() {
   const state = useStore((s) => s.state);
-  const view = useStore((s) => s.ui.view);
   const loading = useStore((s) => s.loading);
 
   // First load (no state yet) → shimmer placeholders, not a spinner.
@@ -27,13 +23,5 @@ export default function BatchView() {
     );
   }
 
-  switch (view) {
-    case 'board':
-      return <BoardView />;
-    case 'table':
-      return <TableView />;
-    case 'grid':
-    default:
-      return <GridView />;
-  }
+  return <GridView />;
 }

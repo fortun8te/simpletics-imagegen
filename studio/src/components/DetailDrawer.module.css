@@ -18,7 +18,7 @@
   flex-direction: column;
   background: var(--surface-3);
   border-left: 1px solid var(--line);
-  box-shadow: -16px 0 40px rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-lg);
   animation: slide var(--dur) var(--ease);
   outline: none;
 }
@@ -147,6 +147,97 @@
   text-transform: uppercase;
   color: var(--muted);
   margin: 0;
+}
+
+/* Prompt text — readable, scrollable block */
+.promptBox {
+  font-family: var(--font-serif);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  max-height: 240px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.promptEmpty {
+  font-family: inherit;
+  font-style: italic;
+  color: var(--faint);
+}
+
+/* Loading skeleton (shimmer lines) */
+.promptLoading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  overflow: hidden;
+}
+
+.skelLine {
+  display: block;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    var(--surface-3) 0%,
+    var(--line) 50%,
+    var(--surface-3) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+.skelShort {
+  width: 62%;
+}
+
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skelLine { animation: none; }
+}
+
+/* Reference image(s) */
+.refRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.refThumb {
+  width: 72px;
+  height: 72px;
+  flex: none;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.refThumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.refName {
+  font-size: 12.5px;
+  color: var(--muted);
+  word-break: break-word;
+  min-width: 0;
 }
 
 /* Versions strip */

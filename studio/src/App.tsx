@@ -9,9 +9,14 @@ import AppShell from './components/AppShell';
 export default function App() {
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
+  const theme = useStore((s) => s.ui.theme);
   const setConfig = useStore((s) => s.setConfig);
   const select = useStore((s) => s.select);
   const setState = useStore((s) => s.setState);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   useEffect(() => {
     api.getConfig().then((cfg) => {

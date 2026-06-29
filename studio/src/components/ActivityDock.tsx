@@ -1,7 +1,12 @@
 // ActivityDock — floating bottom-right panel showing live job activity (CONTAINER).
 // Reads `state` from the store, derives in-flight / queued / failed jobs from every
 // slot whose `job` is set, and offers cancel (queued/running) + retry (failed).
-// Hidden entirely when there is nothing active, queued, or failed. Collapsible.
+//
+// Discoverable + pinnable: the dock shows whenever there are active/queued/failed
+// jobs OR when `ui.activityOpen` is true (so the TopBar pill / Sidebar "Activity" row
+// can reveal it even when idle). A close control sets `activityOpen:false` (and the
+// dock then hides if there are also no jobs). A header chevron collapses the list
+// (local state). When opened via `activityOpen` but idle, a calm empty line shows.
 import { useEffect, useState } from 'react';
 import type { BatchState, Slot } from '../types';
 import { useStore } from '../store';
@@ -130,43 +135,61 @@ function JobRow({ job }: { job: DockJob }) {
 
 export default function ActivityDock() {
   const state = useStore((s) => s.state);
+  const activityOpen = useStore((s) => s.ui.activityOpen);
+  const setUI = useStore((s) => s.setUI);
   const [collapsed, setCollapsed] = useState(false);
 
   const jobs = deriveJobs(state);
 
-  // Idle → render nothing at all.
-  if (jobs.length === 0) return null;
+  // Discoverable: render when there are jobs OR when pinned open via the store.
+  // Idle and not pinned → nothing.
+  if (jobs.length === 0 && !activityOpen) return null;
 
   const queue = state?.queue ?? { running: 0, queued: 0, done: 0, failed: 0 };
 
   return (
     <section className={`${styles.dock} ${collapsed ? styles.collapsed : ''}`} aria-label="Activity">
-      <button
-        className={styles.header}
-        aria-expanded={!collapsed}
-        onClick={() => setCollapsed((c) => !c)}
-      >
-        <Icon name="activity" size={16} className={styles.headIcon} />
-        <span className={styles.titleWrap}>
-          <span className={styles.title}>Activity</span>
-          <span className={styles.counts}>
-            {queue.running} running · {queue.queued} queued
+      <div className={styles.header}>
+        <button
+          className={styles.headerToggle}
+          aria-expanded={!collapsed}
+          onClick={() => setCollapsed((c) => !c)}
+        >
+          <Icon
+            name={collapsed ? 'chevron-right' : 'chevron-down'}
+            size={16}
+            className={styles.chevron}
+          />
+          <Icon name="activity" size={16} className={styles.headIcon} />
+          <span className={styles.titleWrap}>
+            <span className={styles.title}>Activity</span>
+            <span className={styles.counts}>
+              {queue.running} running · {queue.queued} queued
+            </span>
           </span>
-        </span>
-        <Icon
-          name={collapsed ? 'chevron-right' : 'chevron-down'}
-          size={16}
-          className={styles.chevron}
-        />
-      </button>
+        </button>
 
-      {!collapsed && (
-        <ul className={styles.list} aria-live="polite">
-          {jobs.map((job) => (
-            <JobRow key={job.key} job={job} />
-          ))}
-        </ul>
-      )}
+        <button
+          className={styles.close}
+          aria-label="Dismiss activity"
+          onClick={() => setUI({ activityOpen: false })}
+        >
+          <Icon name="x" size={15} />
+        </button>
+      </div>
+
+      {!collapsed &&
+        (jobs.length > 0 ? (
+          <ul className={styles.list} aria-live="polite">
+            {jobs.map((job) => (
+              <JobRow key={job.key} job={job} />
+            ))}
+          </ul>
+        ) : (
+          <p className={styles.empty} aria-live="polite">
+            No active generations
+          </p>
+        ))}
     </section>
   );
 }

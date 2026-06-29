@@ -1,6 +1,6 @@
 // Typed fetch client for the studio-server (§3). Same-origin in prod; Vite proxies in dev.
 // Every call resolves to a safe fallback on network/parse error rather than throwing.
-import type { Config, BatchState, Health, GenerateScope } from './types';
+import type { Config, BatchState, Health, GenerateScope, BatchMeta, PromptInfo } from './types';
 
 async function jget<T>(url: string, fallback: T): Promise<T> {
   try {
@@ -34,6 +34,13 @@ const emptyState = (brand: string, batch: string): BatchState => ({
 
 export const api = {
   getConfig: () => jget<Config>('/api/config', { brands: [] }),
+  getBatches: (brand: string) =>
+    jget<BatchMeta[]>(`/api/batches?brand=${encodeURIComponent(brand)}`, []),
+  getPrompt: (brand: string, batch: string, ad: string, variation: string, prompt: string) =>
+    jget<PromptInfo>(
+      `/api/prompt?brand=${encodeURIComponent(brand)}&batch=${encodeURIComponent(batch)}&ad=${encodeURIComponent(ad)}&variation=${encodeURIComponent(variation)}&prompt=${encodeURIComponent(prompt)}`,
+      { ok: false, text: '' },
+    ),
   getState: (brand: string, batch: string) =>
     jget<BatchState>(`/api/state?brand=${encodeURIComponent(brand)}&batch=${encodeURIComponent(batch)}`, emptyState(brand, batch)),
   getHealth: () =>

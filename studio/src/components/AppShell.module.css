@@ -1,3 +1,5 @@
+/* AppShell grid. Wrapped in a Radix <Tooltip.Provider> (a context-only provider that renders no DOM
+   node), so this grid layout and the aside placement below are unaffected. */
 .shell {
   display: grid;
   grid-template-columns: 248px 1fr;

@@ -8,7 +8,7 @@
 // modules (jobstore / worker / state, which themselves only use node:* + logic.js).
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname, normalize, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -128,6 +128,27 @@ function tubeRefPath() {
 }
 
 const part = (v) => String(v || '').trim().replace(/[^a-zA-Z0-9_-]+/g, '-');
+
+// Shallow recursive walk of a batch's render dir, collecting every `run-*.png`. Returns { count,
+// modifiedAt } where modifiedAt is the newest mtime (ms) seen, 0 if none. Tolerates missing dirs.
+function scanBatchRenders(brandId, batchCode) {
+  const root = join(RENDERS, part(brandId), part(batchCode));
+  let count = 0;
+  let modifiedAt = 0;
+  const walk = (dir) => {
+    let entries;
+    try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      const full = join(dir, e.name);
+      if (e.isDirectory()) { walk(full); continue; }
+      if (!/^run-.*\.png$/i.test(e.name)) continue;
+      count++;
+      try { const m = statSync(full).mtimeMs; if (m > modifiedAt) modifiedAt = m; } catch {}
+    }
+  };
+  walk(root);
+  return { count, modifiedAt };
+}
 
 // How many done render files already exist for a prompt (any run/version), by scanning the prompt
 // dir. Used to compute the next free run index for /api/generate.
@@ -289,6 +310,25 @@ async function serveImg(req, res, query) {
   }
 }
 
+// ── /asset — serve a named PNG from REPO/assets (path-traversal-guarded) ──────────────────────────
+async function serveAsset(req, res, query) {
+  const name = query.get('name');
+  if (!name) { res.writeHead(400, { 'Content-Type': 'text/plain' }); res.end('missing name'); return; }
+  const ASSETS = join(REPO, 'assets');
+  // Reject traversal: normalize and require the resolved file to live under REPO/assets.
+  const filePath = normalize(join(ASSETS, `${name.replace(/^\/+/, '')}.png`));
+  if (!filePath.startsWith(ASSETS + sep)) {
+    res.writeHead(403, { 'Content-Type': 'text/plain' }); res.end('forbidden'); return;
+  }
+  try {
+    const data = await readFile(filePath);
+    res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=300' });
+    res.end(data);
+  } catch {
+    res.writeHead(404, { 'Content-Type': 'text/plain' }); res.end('not found');
+  }
+}
+
 // ── Request router ───────────────────────────────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, `http://localhost:${PORT}`);
@@ -321,9 +361,53 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
+    // ── /asset ─────────────────────────────────────────────────────────────────────────────────
+    if (pathname === '/asset' && method === 'GET') {
+      await serveAsset(req, res, q);
+      return;
+    }
+
     // ── API ──────────────────────────────────────────────────────────────────────────────────────
     if (pathname === '/api/config' && method === 'GET') {
       sendJson(res, 200, readConfig());
+      return;
+    }
+
+    if (pathname === '/api/batches' && method === 'GET') {
+      const config = readConfig();
+      const brand = findBrand(config, q.get('brand'));
+      if (!brand) { sendJson(res, 200, []); return; }
+      const out = (brand.batches || []).map((ba) => {
+        const label = ba.name || ba.code;
+        const { count, modifiedAt } = scanBatchRenders(brand.id, ba.code);
+        return {
+          code: ba.code,
+          name: ba.name || ba.code,
+          kind: /listicle/i.test(label) ? 'listicle' : 'ads',
+          modifiedAt,
+          count,
+        };
+      });
+      sendJson(res, 200, out);
+      return;
+    }
+
+    if (pathname === '/api/prompt' && method === 'GET') {
+      const config = readConfig();
+      const brand = findBrand(config, q.get('brand'));
+      const batch = brand && findBatch(brand, q.get('batch'));
+      const ad = batch && findAd(batch, q.get('ad'));
+      const v = ad && findVariation(ad, q.get('variation'));
+      const p = v && findPrompt(v, q.get('prompt'));
+      const text = p ? p.prompt : (v ? v.prompt : null);
+      if (!text) { sendJson(res, 200, { ok: false, text: '' }); return; }
+      const tube = isTubeShot(text);
+      sendJson(res, 200, {
+        ok: true,
+        text,
+        refName: tube ? 'nanox' : null,
+        refUrl: tube ? '/asset?name=nanox' : null,
+      });
       return;
     }
 

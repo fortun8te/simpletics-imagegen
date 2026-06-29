@@ -2,14 +2,14 @@
 // Reads ui.drawerRel + state from the store; finds the slot's ad/variation/prompt
 // coords; renders the full image, a versions strip (all slots under that prompt),
 // and an actions row (regenerate / make variations / archive / download / copy path).
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from './Icon';
 import { Thumb } from './Thumb';
 import { StatusPill } from './StatusPill';
 import { useStore } from '../store';
 import { api } from '../api';
-import type { AdNode, VariationNode, PromptNode, Slot } from '../types';
+import type { AdNode, VariationNode, PromptNode, Slot, PromptInfo } from '../types';
 import s from './DetailDrawer.module.css';
 
 interface Located {
@@ -40,6 +40,8 @@ export default function DetailDrawer() {
   const setUI = useStore((st) => st.setUI);
 
   const [copied, setCopied] = useState(false);
+  const [promptInfo, setPromptInfo] = useState<PromptInfo | null>(null);
+  const [promptLoading, setPromptLoading] = useState(false);
 
   const found = useMemo(
     () => (drawerRel && state ? locate(state.ads, drawerRel) : null),
@@ -54,6 +56,40 @@ export default function DetailDrawer() {
     () => (found ? found.prompt.slots.filter((sl) => sl.relPath) : []),
     [found]
   );
+
+  // Resolve the slot's ad/variation/prompt coords from state, then fetch the prompt
+  // text + reference image(s) for the drawer. Keyed on the coords (+ brand/batch) so it
+  // refetches when you switch to a slot under a different prompt, but not when you flip
+  // between versions of the same prompt.
+  const adId = found?.ad.id ?? null;
+  const variationId = found?.variation.id ?? null;
+  const promptId = found?.prompt.id ?? null;
+
+  useEffect(() => {
+    if (!open || !brand || !batch || !adId || !variationId || !promptId) {
+      setPromptInfo(null);
+      setPromptLoading(false);
+      return;
+    }
+    let alive = true;
+    setPromptLoading(true);
+    setPromptInfo(null);
+    api
+      .getPrompt(brand, batch, adId, variationId, promptId)
+      .then((info) => {
+        if (alive) setPromptInfo(info);
+      })
+      .finally(() => {
+        if (alive) setPromptLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [open, brand, batch, adId, variationId, promptId]);
+
+  const refUrl = promptInfo?.refUrl || null;
+  const refName = promptInfo?.refName || null;
+  const promptText = promptInfo?.text?.trim() || '';
 
   if (!open) return null;
 
@@ -157,6 +193,41 @@ export default function DetailDrawer() {
                       </button>
                     );
                   })}
+                </div>
+              </div>
+            ) : null}
+
+            {/* Prompt text */}
+            <div className={s.section}>
+              <p className={s.label}>Prompt</p>
+              {promptLoading ? (
+                <div className={`${s.promptBox} ${s.promptLoading}`} aria-busy="true">
+                  <span className={s.skelLine} />
+                  <span className={s.skelLine} />
+                  <span className={`${s.skelLine} ${s.skelShort}`} />
+                </div>
+              ) : promptText ? (
+                <div className={s.promptBox}>{promptText}</div>
+              ) : (
+                <div className={`${s.promptBox} ${s.promptEmpty}`}>
+                  No prompt text available for this slot.
+                </div>
+              )}
+            </div>
+
+            {/* Reference image(s) */}
+            {refUrl ? (
+              <div className={s.section}>
+                <p className={s.label}>Reference</p>
+                <div className={s.refRow}>
+                  <div className={s.refThumb}>
+                    <img
+                      src={refUrl}
+                      alt={refName || 'Reference image'}
+                      decoding="async"
+                    />
+                  </div>
+                  {refName ? <span className={s.refName}>{refName}</span> : null}
                 </div>
               </div>
             ) : null}

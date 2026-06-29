@@ -7,11 +7,15 @@ import SlotCard from '../SlotCard';
 import AdSection from '../AdSection';
 import VariationRow from '../VariationRow';
 import { EmptyState } from '../EmptyState';
+import { Icon } from '../Icon';
+import { api } from '../../api';
 import type { Slot } from '../../types';
 import styles from './GridView.module.css';
 
 export default function GridView() {
   const state = useStore((s) => s.state);
+  const brand = useStore((s) => s.brand);
+  const batch = useStore((s) => s.batch);
   const density = useStore((s) => s.ui.density);
   const showArchived = useStore((s) => s.ui.showArchived);
   const filterStatus = useStore((s) => s.ui.filterStatus);
@@ -25,10 +29,15 @@ export default function GridView() {
     return true;
   };
 
-  const minPx = density === 'compact' ? 132 : 188;
+  // Compact (default) packs tiles tighter; comfortable gives them room.
+  const minPx = density === 'compact' ? 150 : 208;
   const gridStyle = {
     gridTemplateColumns: `repeat(auto-fill, minmax(${minPx}px, 1fr))`,
   };
+
+  // Enqueue one more variant for a whole variation (the obvious "generate more" affordance).
+  const genMore = (ad: string, variation: string) =>
+    brand && batch && api.generate(brand, batch, { variation: { ad, variation } }, 1);
 
   return (
     <div className={styles.grid}>
@@ -38,9 +47,12 @@ export default function GridView() {
             const multiPrompt = variation.prompts.length > 1;
             return (
               <VariationRow key={variation.id} id={variation.id} label={variation.label}>
-                {variation.prompts.map((prompt) => {
+                {variation.prompts.map((prompt, i) => {
                   const slots = prompt.slots.filter(visible);
-                  if (!slots.length) return null;
+                  // Append the "Generate more" tile to the last prompt group so it lands at the
+                  // very end of the variation's row of images.
+                  const isLastPrompt = i === variation.prompts.length - 1;
+                  if (!slots.length && !isLastPrompt) return null;
                   return (
                     <div key={prompt.id} className={styles.promptGroup}>
                       {multiPrompt ? <div className={styles.promptLabel}>{prompt.id}</div> : null}
@@ -55,6 +67,20 @@ export default function GridView() {
                             density={density}
                           />
                         ))}
+                        {isLastPrompt ? (
+                          <button
+                            type="button"
+                            className={styles.genMore}
+                            data-density={density}
+                            onClick={() => genMore(ad.id, variation.id)}
+                            aria-label="Generate more images for this variation"
+                          >
+                            <span className={styles.genMoreInner}>
+                              <Icon name="plus" size={density === 'compact' ? 18 : 22} />
+                              <span className={styles.genMoreLabel}>Generate more</span>
+                            </span>
+                          </button>
+                        ) : null}
                       </div>
                     </div>
                   );

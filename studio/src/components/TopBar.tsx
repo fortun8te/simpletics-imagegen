@@ -1,17 +1,11 @@
-// TopBar (container) — breadcrumb + view switch + filter + density + stop + generate.
-// Reads brand/batch/ui/config via store selectors; calls store actions + api.
+// TopBar (container) — breadcrumb + activity pill + filter + density + theme + stop + generate.
+// Reads brand/batch/state/ui/config via store selectors; calls store actions + api.
+// View switch removed (Grid is the only gallery); Stop is contextual on live queue.
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { Icon } from './Icon';
 import { useStore } from '../store';
-import type { View } from '../store';
 import { api } from '../api';
 import s from './TopBar.module.css';
-
-const VIEWS: { id: View; label: string; icon: string }[] = [
-  { id: 'grid', label: 'Grid', icon: 'layout-grid' },
-  { id: 'board', label: 'Board', icon: 'columns' },
-  { id: 'table', label: 'Table', icon: 'table' },
-];
 
 // Filter options. `value` null == "All".
 const FILTERS: { value: string | null; label: string }[] = [
@@ -26,6 +20,7 @@ export default function TopBar() {
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
   const config = useStore((s) => s.config);
+  const queue = useStore((s) => s.state?.queue);
   const ui = useStore((s) => s.ui);
   const setUI = useStore((s) => s.setUI);
 
@@ -40,6 +35,14 @@ export default function TopBar() {
 
   const densityNext = ui.density === 'comfortable' ? 'compact' : 'comfortable';
 
+  // Live work — drives the activity pill (when busy) and the contextual Stop button.
+  const running = queue?.running ?? 0;
+  const queued = queue?.queued ?? 0;
+  const busy = running > 0 || queued > 0;
+
+  const theme = ui.theme;
+  const themeNext = theme === 'dark' ? 'light' : 'dark';
+
   return (
     <header className={s.bar}>
       <nav className={s.crumb} aria-label="Location">
@@ -49,26 +52,20 @@ export default function TopBar() {
       </nav>
 
       <div className={s.right}>
-        {/* View switch — segmented control */}
-        <div className={s.segment} role="tablist" aria-label="View">
-          {VIEWS.map((v) => {
-            const active = ui.view === v.id;
-            return (
-              <button
-                key={v.id}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                className={`${s.seg} ${active ? s.segActive : ''}`}
-                onClick={() => setUI({ view: v.id })}
-                title={v.label}
-              >
-                <Icon name={v.icon} size={15} />
-                <span>{v.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        {/* Activity pill — only while there is live work */}
+        {busy ? (
+          <button
+            type="button"
+            className={s.pill}
+            onClick={() => setUI({ activityOpen: true })}
+            title="Show activity"
+          >
+            <span className={s.pillDot} aria-hidden />
+            <span>
+              {running} running · {queued} queued
+            </span>
+          </button>
+        ) : null}
 
         {/* Filter dropdown */}
         <DropdownMenu.Root>
@@ -107,25 +104,37 @@ export default function TopBar() {
         {/* Density toggle */}
         <button
           type="button"
-          className={s.ghost}
+          className={s.iconBtn}
           onClick={() => setUI({ density: densityNext })}
-          title={`Switch to ${densityNext}`}
+          title={`Density: ${ui.density}. Switch to ${densityNext}.`}
           aria-label={`Density: ${ui.density}. Switch to ${densityNext}.`}
         >
-          <Icon name="sliders" size={15} />
-          <span>{ui.density === 'comfortable' ? 'Comfortable' : 'Compact'}</span>
+          <Icon name="sliders" size={16} />
         </button>
 
-        {/* Stop — cancel everything */}
+        {/* Theme toggle */}
         <button
           type="button"
-          className={s.ghost}
-          onClick={() => api.cancel({ all: true })}
-          title="Stop all generation"
+          className={s.iconBtn}
+          onClick={() => setUI({ theme: themeNext })}
+          title="Switch theme"
+          aria-label={`Theme: ${theme}. Switch to ${themeNext}.`}
         >
-          <Icon name="stop" size={15} />
-          <span>Stop</span>
+          <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
         </button>
+
+        {/* Stop — contextual; cancels everything, only while busy */}
+        {busy ? (
+          <button
+            type="button"
+            className={s.ghost}
+            onClick={() => api.cancel({ all: true })}
+            title="Stop all generation"
+          >
+            <Icon name="stop" size={15} />
+            <span>Stop</span>
+          </button>
+        ) : null}
 
         {/* Generate — primary */}
         <button
@@ -135,7 +144,6 @@ export default function TopBar() {
         >
           <Icon name="sparkles" size={15} />
           <span>Generate</span>
-          <Icon name="chevron-down" size={14} className={s.caret} />
         </button>
       </div>
     </header>

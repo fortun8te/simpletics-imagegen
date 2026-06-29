@@ -40,6 +40,12 @@ export interface BatchRef { code: string; name?: string; aspect?: string; }
 export interface BrandRef { id: string; name?: string; batches: BatchRef[]; }
 export interface Config { brands: BrandRef[]; }
 
+export type BatchKind = 'ads' | 'listicle';
+export interface BatchMeta { code: string; name: string; kind: BatchKind; modifiedAt: number; count: number; }
+
+// Prompt + reference for the detail drawer.
+export interface PromptInfo { ok: boolean; text: string; refName?: string | null; refUrl?: string | null; }
+
 export interface Health { ok: boolean; bridge: boolean; codex: { alive: boolean }; queue: QueueInfo; }
 
 export interface ActivityJob {

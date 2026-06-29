@@ -1,7 +1,8 @@
 // SlotCard — the per-image card that renders its own generation state (LEAF; props in).
 // Takes coords as props; reads only store actions (setUI) + brand/batch for generate calls,
 // and calls `api` directly. Every slot.status has a designed state. Fixed square box.
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import * as Tooltip from '@radix-ui/react-tooltip';
 import type { Slot } from '../types';
 import { useStore, type Density } from '../store';
 import { api } from '../api';
@@ -32,6 +33,34 @@ function useElapsed(startedAt?: number | null): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+// Wrap a hover icon-button in a themed Radix tooltip. A single Tooltip.Provider is mounted
+// app-wide in AppShell, so we use Root/Trigger/Portal/Content only (no nested provider).
+function HoverAction({
+  label,
+  onClick,
+  children,
+}: {
+  label: string;
+  onClick: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <Tooltip.Root delayDuration={500}>
+      <Tooltip.Trigger asChild>
+        <button className={styles.iconBtn} aria-label={label} onClick={onClick}>
+          {children}
+        </button>
+      </Tooltip.Trigger>
+      <Tooltip.Portal>
+        <Tooltip.Content className={styles.tip} side="top" sideOffset={6}>
+          {label}
+          <Tooltip.Arrow className={styles.tipArrow} width={9} height={5} />
+        </Tooltip.Content>
+      </Tooltip.Portal>
+    </Tooltip.Root>
+  );
+}
+
 export default function SlotCard({ slot, ad, variation, prompt, density }: SlotCardProps) {
   const setUI = useStore((s) => s.setUI);
   const brand = useStore((s) => s.brand);
@@ -60,30 +89,27 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
         {slot.version != null && <span className={styles.badge}>v{slot.version}</span>}
 
         <div className={styles.actions} role="toolbar" aria-label="Image actions">
-          <button
-            className={styles.iconBtn}
-            aria-label="Regenerate"
+          <HoverAction
+            label="Regenerate"
             onClick={() => slot.relPath && api.regenerate(slot.relPath)}
           >
             <Icon name="refresh" size={15} />
-          </button>
-          <button
-            className={styles.iconBtn}
-            aria-label="Make variations"
+          </HoverAction>
+          <HoverAction
+            label="Make variations"
             onClick={() => brand && batch && api.generate(brand, batch, promptScope, 2)}
           >
             <Icon name="sparkles" size={15} />
-          </button>
-          <button
-            className={styles.iconBtn}
-            aria-label={archived ? 'Restore' : 'Archive'}
+          </HoverAction>
+          <HoverAction
+            label={archived ? 'Restore' : 'Archive'}
             onClick={() => slot.relPath && api.archive(slot.relPath, !archived)}
           >
             <Icon name={archived ? 'restore' : 'archive'} size={15} />
-          </button>
-          <button className={styles.iconBtn} aria-label="Expand" onClick={open}>
+          </HoverAction>
+          <HoverAction label="Open" onClick={open}>
             <Icon name="expand" size={15} />
-          </button>
+          </HoverAction>
         </div>
       </div>
     );
