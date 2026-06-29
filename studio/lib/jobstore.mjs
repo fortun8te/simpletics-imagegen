@@ -61,6 +61,11 @@ export function createJobStore({ stateDir }) {
     const loadedJobs = readJSON(jobsFile);
     if (Array.isArray(loadedJobs)) {
       jobs = loadedJobs.filter((j) => j && typeof j === 'object' && typeof j.id === 'string');
+      // Reconcile orphans: a job left 'running' means the process died mid-generation — no worker
+      // owns it now, so mark it 'failed' (never leave a perpetual fake "running" run after restart).
+      for (const j of jobs) {
+        if (j.status === 'running') { j.status = 'failed'; j.error = j.error || 'interrupted (server restarted)'; }
+      }
       // Recover the counter so new ids never collide with persisted ones.
       for (const j of jobs) {
         const m = /_(\d+)$/.exec(j.id || '');
