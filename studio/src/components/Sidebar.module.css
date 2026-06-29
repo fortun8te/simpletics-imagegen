@@ -223,48 +223,159 @@
   color: var(--faint);
 }
 
-/* Account footer */
+/* Account / workspace footer — pinned to the bottom, its own bordered band */
 .footer {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding-top: var(--space-3);
+  gap: var(--space-1);
+  padding-top: var(--space-2);
   border-top: 1px solid var(--line);
   margin-top: auto;
 }
-.footer .eyebrow {
-  padding-top: var(--space-1);
-}
-.footRow {
+
+/* Account button — avatar mark + name/sub stack + chevron */
+.account {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   width: 100%;
-  height: 32px;
-  padding: 0 var(--space-3);
+  padding: var(--space-2);
+  border: 1px solid transparent;
   border-radius: var(--r-md);
-  color: var(--muted);
-  text-align: left;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
-}
-.footRow:hover {
-  background: var(--surface-2);
+  background: transparent;
   color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
-.footIcon {
+.account:hover,
+.account[data-state='open'] {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+.accountMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.accountText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.accountName {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.accountSub {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.accountChevron {
   color: var(--faint);
   flex: none;
 }
-.footRow:hover .footIcon {
+
+/* Account dropdown — sectioned, soft-shadowed, ~260px */
+.accountMenu {
+  width: 260px;
+  padding: var(--space-1);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+}
+.menuLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: var(--space-2) var(--space-2) var(--space-1);
+}
+.accountItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 34px;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-md);
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  transition: background var(--dur) var(--ease);
+}
+.accountItem[data-highlighted] {
+  background: var(--surface-2);
+}
+.accountItemIcon {
   color: var(--muted);
+  flex: none;
+}
+.accountItem[data-active] .accountItemIcon {
+  color: var(--accent);
+}
+.accountItemLabel {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.accountItem[data-active] .accountItemLabel {
+  font-weight: 500;
+  color: var(--accent-ink);
+}
+.accountItemCheck {
+  color: var(--accent);
+  flex: none;
+}
+/* Accent pill — the active workspace's current-state value */
+.accountItemValue {
+  flex: none;
+  padding: 2px var(--space-2);
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.menuSeparator {
+  height: 1px;
+  margin: var(--space-1) var(--space-2);
+  background: var(--line);
+}
+.menuAbout {
+  padding: var(--space-1) var(--space-2) var(--space-2);
+  font-size: 11px;
+  color: var(--faint);
 }
 
-/* Health line */
+/* Health line — sits just above the account button */
 .health {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3) var(--space-1);
+  padding: var(--space-1) var(--space-2);
 }
 .healthDot {
   width: 7px;

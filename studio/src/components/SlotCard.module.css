@@ -157,6 +157,33 @@
 .generating .label {
   color: var(--accent-ink);
 }
+
+/* dark-mode: in-progress cards bloom with a soft blue aurora so they
+   visibly stand out while rendering. Light mode stays flat. */
+[data-theme='dark'] .generating {
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
+    0 0 28px -4px color-mix(in srgb, var(--accent) 40%, transparent),
+    inset 0 0 30px -10px color-mix(in srgb, var(--accent) 35%, transparent);
+  animation: auroraPulse 2.6s var(--ease) infinite;
+}
+@keyframes auroraPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 38%, transparent),
+      0 0 22px -6px color-mix(in srgb, var(--accent) 30%, transparent),
+      inset 0 0 26px -10px color-mix(in srgb, var(--accent) 28%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
+      0 0 34px -2px color-mix(in srgb, var(--accent) 50%, transparent),
+      inset 0 0 34px -8px color-mix(in srgb, var(--accent) 42%, transparent);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-theme='dark'] .generating { animation: none; }
+}
 .elapsed {
   font-size: 11px;
   font-variant-numeric: tabular-nums;

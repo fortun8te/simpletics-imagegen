@@ -1,6 +1,8 @@
 // Sidebar (container). NEUEGEN wordmark, a brand switcher (Radix dropdown over config.brands),
 // a live batch list fetched from api.getBatches(brand) with client-side search + recency sort,
-// and a footer with Activity / Settings rows + a health line polled from /api/health every 5s.
+// and a footer: a single account/workspace button (avatar + name + chevron) that opens a
+// sectioned Radix dropdown (workspaces · theme/activity/settings · about), plus a health line
+// polled from /api/health every 5s.
 import { useEffect, useMemo, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useStore } from '../store';
@@ -37,6 +39,7 @@ export default function Sidebar() {
   const batch = useStore((s) => s.batch);
   const select = useStore((s) => s.select);
   const setUI = useStore((s) => s.setUI);
+  const theme = useStore((s) => s.ui.theme);
 
   const brands = config.brands ?? [];
   const currentBrand = brands.find((b) => b.id === brand);
@@ -160,33 +163,89 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Account */}
+      {/* Account / workspace */}
       <div className={styles.footer}>
-        <div className={styles.eyebrow}>Account</div>
-
-        <button
-          type="button"
-          className={styles.footRow}
-          onClick={() => setUI({ activityOpen: true })}
-        >
-          <Icon name="activity" size={16} className={styles.footIcon} />
-          <span>Activity</span>
-        </button>
-        <button
-          type="button"
-          className={styles.footRow}
-          onClick={() => setUI({ settingsOpen: true })}
-        >
-          <Icon name="settings" size={16} className={styles.footIcon} />
-          <span>Settings</span>
-        </button>
-
         <div className={styles.health} role="status" aria-live="polite">
           <span className={styles.healthDot} data-state={healthOk ? 'ok' : 'err'} />
           <span className={styles.healthText}>
             {codexBusy ? 'Codex running' : 'Codex ready'} · bridge {bridgeUp ? 'up' : 'down'}
           </span>
         </div>
+
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild>
+            <button className={styles.account} type="button" aria-label="Workspace menu">
+              <span className={styles.accountMark}>
+                <Icon name="sparkles" size={15} />
+              </span>
+              <span className={styles.accountText}>
+                <span className={styles.accountName}>NEUEGEN</span>
+                <span className={styles.accountSub}>Local workspace</span>
+              </span>
+              <Icon name="chevron-down" size={14} className={styles.accountChevron} />
+            </button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              className={styles.accountMenu}
+              align="end"
+              side="top"
+              sideOffset={8}
+            >
+              <div className={styles.menuLabel}>Workspace</div>
+              {brands.map((b) => (
+                <DropdownMenu.Item
+                  key={b.id}
+                  className={styles.accountItem}
+                  data-active={b.id === brand || undefined}
+                  onSelect={() => select(b.id, firstBatchCode(b))}
+                >
+                  <Icon name="layout-grid" size={15} className={styles.accountItemIcon} />
+                  <span className={styles.accountItemLabel}>{b.name ?? b.id}</span>
+                  {b.id === brand && (
+                    <Icon name="check" size={15} className={styles.accountItemCheck} />
+                  )}
+                </DropdownMenu.Item>
+              ))}
+              {brands.length === 0 && <div className={styles.menuEmpty}>No brands</div>}
+
+              <DropdownMenu.Separator className={styles.menuSeparator} />
+
+              <DropdownMenu.Item
+                className={styles.accountItem}
+                onSelect={() => setUI({ theme: theme === 'dark' ? 'light' : 'dark' })}
+              >
+                <Icon
+                  name={theme === 'dark' ? 'moon' : 'sun'}
+                  size={15}
+                  className={styles.accountItemIcon}
+                />
+                <span className={styles.accountItemLabel}>Theme</span>
+                <span className={styles.accountItemValue}>
+                  {theme === 'dark' ? 'Dark' : 'Light'}
+                </span>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                className={styles.accountItem}
+                onSelect={() => setUI({ activityOpen: true })}
+              >
+                <Icon name="activity" size={15} className={styles.accountItemIcon} />
+                <span className={styles.accountItemLabel}>Activity</span>
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                className={styles.accountItem}
+                onSelect={() => setUI({ settingsOpen: true })}
+              >
+                <Icon name="settings" size={15} className={styles.accountItemIcon} />
+                <span className={styles.accountItemLabel}>Settings</span>
+              </DropdownMenu.Item>
+
+              <DropdownMenu.Separator className={styles.menuSeparator} />
+
+              <div className={styles.menuAbout}>NEUEGEN · local</div>
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
       </div>
     </aside>
   );

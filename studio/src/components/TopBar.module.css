@@ -133,6 +133,25 @@
   filter: brightness(1.08);
 }
 
+/* ---- dark-mode glow: soft blue aurora on the primary action ---- */
+[data-theme='dark'] .generate {
+  background:
+    radial-gradient(120% 140% at 50% -20%, color-mix(in srgb, #fff 16%, transparent), transparent 60%),
+    var(--accent);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.45),
+    0 6px 22px -6px color-mix(in srgb, var(--accent) 60%, transparent),
+    var(--inset-hi);
+  transition: filter var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+[data-theme='dark'] .generate:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.45),
+    0 8px 30px -6px color-mix(in srgb, var(--accent) 72%, transparent),
+    var(--inset-hi);
+}
+
 /* ---- dropdown menu ---- */
 .menu {
   min-width: 168px;
