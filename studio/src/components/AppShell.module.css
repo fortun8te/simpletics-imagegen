@@ -11,7 +11,9 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
-  background: var(--bg);
+  /* Clean flat blue→black backdrop: muted blue up top settling to near-black. The sidebar paints a
+     solid panel over column 1; the topbar + main stay transparent so this shows behind the content. */
+  background: linear-gradient(178deg, #1a2742 0%, #11182a 22%, #0c0e15 48%, #0a0b0e 72%);
   color: var(--ink);
 }
 
