@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ImageGen Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header class="bar">
+    <div class="bar-title">ImageGen Dashboard</div>
+    <div class="bar-controls">
+      <label class="ctl">
+        <span>Brand</span>
+        <select id="brandSel"></select>
+      </label>
+      <label class="ctl">
+        <span>Batch</span>
+        <select id="batchSel"></select>
+      </label>
+      <label class="ctl">
+        <span>Variants</span>
+        <input id="variantCount" type="number" value="2" min="1" max="6">
+      </label>
+      <button id="runBtn" class="btn btn-primary">Run in Codex</button>
+      <button id="stopBtn" class="btn">Stop</button>
+      <span id="runnerState" class="runner-state"></span>
+    </div>
+  </header>
+
+  <main class="content">
+    <section id="activity"></section>
+    <section id="grid"></section>
+
+    <details id="logWrap">
+      <summary>Codex log</summary>
+      <pre id="log"></pre>
+    </details>
+  </main>
+
+  <div id="lightbox" hidden></div>
+
+  <footer class="status">
+    <span id="bridgeState"></span>
+  </footer>
+
+  <script src="api.js"></script>
+  <script src="ui.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
