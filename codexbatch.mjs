@@ -127,12 +127,15 @@ function generate(job) {
     // Codex on MINIMAL reasoning: just execute the prompt, don't think (faster, less metered spend).
     // Overridable via CHATGPT_IMAGEGEN_EFFORT (e.g. 'low') if 'minimal' is ever rejected.
     const env = { ...process.env, CHATGPT_IMAGEGEN_EFFORT: process.env.CHATGPT_IMAGEGEN_EFFORT || 'low', CHATGPT_IMAGEGEN_VERBOSITY: process.env.CHATGPT_IMAGEGEN_VERBOSITY || 'low', ...(CA_BUNDLE ? { SSL_CERT_FILE: CA_BUNDLE, REQUESTS_CA_BUNDLE: CA_BUNDLE } : {}) };
-    const child = spawn('python3', args, { stdio: ['ignore', 'ignore', 'pipe'], env });
-    let err = '';
+    const child = spawn('python3', args, { stdio: ['ignore', 'pipe', 'pipe'], env });
+    let err = '', sout = '';
+    child.stdout.on('data', (d) => { sout += d.toString(); });
     child.stderr.on('data', (d) => { err += d.toString(); });
     child.on('close', (code) => {
       const ok = code === 0 && existsSync(out);
-      resolve({ ok, out, error: ok ? null : (err.trim().split('\n').slice(-4).join(' | ') || `exit ${code}`) });
+      // Capture BOTH streams: the codex usage-limit / HTTP 429 notice can surface on stdout, and
+      // codex-runner's limit detection greps this error text to decide whether to wait + retry.
+      resolve({ ok, out, error: ok ? null : ((err + '\n' + sout).trim().split('\n').slice(-4).join(' | ') || `exit ${code}`) });
     });
     child.on('error', (e) => resolve({ ok: false, out, error: String(e.message || e) }));
   });
