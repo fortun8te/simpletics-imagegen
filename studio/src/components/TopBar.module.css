@@ -1,0 +1,156 @@
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: 100%;
+  padding: 0 var(--space-4);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---- breadcrumb ---- */
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-size: 13px;
+}
+.brand {
+  color: var(--muted);
+  white-space: nowrap;
+}
+.slash {
+  color: var(--faint);
+}
+.batch {
+  color: var(--ink);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- right cluster ---- */
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ---- segmented view switch ---- */
+.segment {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+.seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-sm);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.seg:hover {
+  color: var(--ink);
+}
+.segActive {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+/* ---- ghost buttons (filter / density / stop) ---- */
+.ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-md);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.ghost:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.ghostOn {
+  color: var(--ink);
+}
+.caret {
+  color: inherit;
+  opacity: 0.7;
+}
+
+/* ---- generate (primary) ---- */
+.generate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: filter var(--dur) var(--ease);
+}
+.generate:hover {
+  filter: brightness(1.08);
+}
+.generate .caret {
+  color: #fff;
+}
+
+/* ---- dropdown menu ---- */
+.menu {
+  min-width: 168px;
+  padding: var(--space-1);
+  background: var(--surface-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+  animation: menuIn var(--dur) var(--ease);
+}
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-sm);
+  color: var(--ink);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+}
+.menuItem[data-highlighted] {
+  background: var(--surface-2);
+}
+.menuCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  color: var(--accent-ink);
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,42 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.block {
+  aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  position: relative;
+  overflow: hidden;
+}
+
+.block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--surface-3) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Subtle, and still under reduced motion — drop the sweep, keep the surface. */
+@media (prefers-reduced-motion: reduce) {
+  .block::after {
+    animation: none;
+    transform: translateX(0);
+    background: none;
+  }
+}

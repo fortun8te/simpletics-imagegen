@@ -1,0 +1,203 @@
+// GenerateDialog (container) — batch/ads-level entry point for generation.
+// Reads ui.genOpen + state/brand/batch from the store; calls api.generate.
+// Per-prompt/variation generation is triggered from cards/rows, not here.
+import { useEffect, useMemo, useState } from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
+import { Icon } from './Icon';
+import { useStore } from '../store';
+import { api } from '../api';
+import type { AdNode, GenerateScope } from '../types';
+import s from './GenerateDialog.module.css';
+
+type Scope = 'batch' | 'ads';
+
+// Count the slots a set of ads represents (used for the estimate).
+function slotsOf(ads: AdNode[]): number {
+  let n = 0;
+  for (const ad of ads) for (const v of ad.variations) for (const p of v.prompts) n += p.slots.length;
+  return n;
+}
+
+export default function GenerateDialog() {
+  const genOpen = useStore((st) => st.ui.genOpen);
+  const state = useStore((st) => st.state);
+  const brand = useStore((st) => st.brand);
+  const batch = useStore((st) => st.batch);
+  const setUI = useStore((st) => st.setUI);
+
+  const ads = state?.ads ?? [];
+
+  const [scope, setScope] = useState<Scope>('batch');
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [variants, setVariants] = useState(2);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Reset to defaults each time the dialog opens.
+  useEffect(() => {
+    if (genOpen) {
+      setScope('batch');
+      setSelected(new Set());
+      setVariants(2);
+      setSubmitting(false);
+    }
+  }, [genOpen]);
+
+  const close = () => setUI({ genOpen: false });
+
+  const toggleAd = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  // Targeted slots: whole batch = all slots; selected ads = slots of chosen ads.
+  const targetedSlots = useMemo(() => {
+    if (scope === 'batch') return slotsOf(ads);
+    return slotsOf(ads.filter((a) => selected.has(a.id)));
+  }, [scope, ads, selected]);
+
+  const estimate = targetedSlots * variants;
+
+  const clampVariants = (n: number) => Math.max(1, Math.min(6, n));
+
+  const canSubmit =
+    !submitting &&
+    !!brand &&
+    !!batch &&
+    (scope === 'batch' || selected.size > 0);
+
+  const submit = async () => {
+    if (!canSubmit || !brand || !batch) return;
+    setSubmitting(true);
+    const payload: GenerateScope =
+      scope === 'ads' ? { ads: Array.from(selected) } : {};
+    await api.generate(brand, batch, payload, variants);
+    close();
+  };
+
+  return (
+    <Dialog.Root open={genOpen} onOpenChange={(o) => !o && close()}>
+      <Dialog.Portal>
+        <Dialog.Overlay className={s.overlay} />
+        <Dialog.Content className={s.content} aria-describedby={undefined}>
+          <div className={s.head}>
+            <div>
+              <Dialog.Title className={s.title}>Generate images</Dialog.Title>
+              <p className={s.subtitle}>Queue a run for this batch.</p>
+            </div>
+            <Dialog.Close className={s.close} aria-label="Close">
+              <Icon name="x" size={16} />
+            </Dialog.Close>
+          </div>
+
+          <div className={s.body}>
+            {/* Scope */}
+            <div className={s.field}>
+              <p className={s.label} id="gen-scope-label">Scope</p>
+              <div className={s.radios} role="radiogroup" aria-labelledby="gen-scope-label">
+                <label className={`${s.radio} ${scope === 'batch' ? s.radioOn : ''}`}>
+                  <input
+                    type="radio"
+                    name="gen-scope"
+                    value="batch"
+                    checked={scope === 'batch'}
+                    onChange={() => setScope('batch')}
+                  />
+                  <span className={s.radioLabel}>Whole batch</span>
+                </label>
+                <label className={`${s.radio} ${scope === 'ads' ? s.radioOn : ''}`}>
+                  <input
+                    type="radio"
+                    name="gen-scope"
+                    value="ads"
+                    checked={scope === 'ads'}
+                    onChange={() => setScope('ads')}
+                  />
+                  <span className={s.radioLabel}>Selected ads</span>
+                </label>
+              </div>
+
+              {scope === 'ads' ? (
+                <div className={s.adList}>
+                  {ads.length === 0 ? (
+                    <p className={s.empty}>No ads in this batch yet.</p>
+                  ) : (
+                    ads.map((ad) => (
+                      <label key={ad.id} className={s.adRow}>
+                        <input
+                          type="checkbox"
+                          checked={selected.has(ad.id)}
+                          onChange={() => toggleAd(ad.id)}
+                        />
+                        <span className={s.adName}>{ad.title || ad.id}</span>
+                        {ad.type ? <span className={s.adType}>{ad.type}</span> : null}
+                      </label>
+                    ))
+                  )}
+                </div>
+              ) : null}
+            </div>
+
+            {/* Variants */}
+            <div className={s.field}>
+              <label className={s.label} htmlFor="gen-variants">Variants per slot</label>
+              <div className={s.variants}>
+                <button
+                  type="button"
+                  className={s.step}
+                  onClick={() => setVariants((v) => clampVariants(v - 1))}
+                  disabled={variants <= 1}
+                  aria-label="Fewer variants"
+                >
+                  <span aria-hidden>−</span>
+                </button>
+                <input
+                  id="gen-variants"
+                  className={s.number}
+                  type="number"
+                  min={1}
+                  max={6}
+                  value={variants}
+                  onChange={(e) => setVariants(clampVariants(Number(e.target.value) || 1))}
+                />
+                <button
+                  type="button"
+                  className={s.step}
+                  onClick={() => setVariants((v) => clampVariants(v + 1))}
+                  disabled={variants >= 6}
+                  aria-label="More variants"
+                >
+                  <Icon name="plus" size={15} />
+                </button>
+              </div>
+            </div>
+
+            {/* Estimate */}
+            <p className={s.estimate} aria-live="polite">
+              ~<b>{estimate}</b> {estimate === 1 ? 'image' : 'images'}
+              {targetedSlots > 0 ? <> ({targetedSlots} {targetedSlots === 1 ? 'slot' : 'slots'} × {variants})</> : null}
+            </p>
+          </div>
+
+          <div className={s.foot}>
+            <button type="button" className={`${s.btn} ${s.secondary}`} onClick={close}>
+              Cancel
+            </button>
+            <button
+              type="button"
+              className={`${s.btn} ${s.primary}`}
+              onClick={submit}
+              disabled={!canSubmit}
+            >
+              <Icon name="sparkles" size={15} />
+              <span>Generate</span>
+            </button>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}

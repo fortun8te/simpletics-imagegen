@@ -1,0 +1,93 @@
+/* Dense slot table. Hairline row borders, hover highlight, no zebra. */
+.wrap {
+  padding: var(--space-4);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--bg);
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* No zebra — just a hover highlight on the whole row. */
+.table tbody tr {
+  transition: background var(--dur) var(--ease);
+}
+.table tbody tr:hover {
+  background: var(--surface);
+}
+
+.ink {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.center {
+  text-align: center;
+}
+
+.rowArchived {
+  opacity: 0.5;
+}
+
+.actionsHead {
+  text-align: right;
+}
+
+.emptyCell {
+  padding: var(--space-6) var(--space-3) !important;
+  text-align: center;
+  color: var(--faint);
+}
+
+/* --- Action buttons --- */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-1);
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-md);
+  color: var(--muted);
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.iconBtn:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.iconBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

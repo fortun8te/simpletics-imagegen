@@ -1,0 +1,18 @@
+.spin {
+  animation: spin 0.9s linear infinite;
+  display: inline-flex;
+  color: var(--accent);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* No spin under reduced motion — the icon just sits still. */
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+}

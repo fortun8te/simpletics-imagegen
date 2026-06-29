@@ -1,0 +1,27 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--muted);
+}
+
+.id {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.sep {
+  color: var(--faint);
+}
+
+.text {
+  color: var(--muted);
+}

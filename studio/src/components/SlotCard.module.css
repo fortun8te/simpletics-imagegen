@@ -1,0 +1,219 @@
+/* SlotCard — fixed square, all states designed. Clean Linear/ClickUp restraint. */
+
+.card {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+/* ── done / archived ───────────────────────────────────────────── */
+.img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+.card:hover .img {
+  transform: scale(1.02);
+}
+
+.badge {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 2;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  background: rgba(12, 13, 17, 0.66);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+}
+
+/* hover action bar — slides up + fades in */
+.actions {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: linear-gradient(to top, rgba(12, 13, 17, 0.82), rgba(12, 13, 17, 0));
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  pointer-events: none;
+}
+.card:hover .actions,
+.card:focus-within .actions {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: var(--ink);
+  background: rgba(33, 35, 45, 0.72);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  backdrop-filter: blur(6px);
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.iconBtn:hover {
+  background: var(--surface-3);
+  color: var(--accent-ink);
+}
+
+/* ── shared centered content (generating / queued / empty / failed) ── */
+.center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  text-align: center;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.mutedIcon {
+  color: var(--muted);
+}
+
+/* compact density trims the gap so tiny cards stay legible */
+.card[data-density='compact'] .center {
+  gap: var(--space-1);
+  padding: var(--space-2);
+}
+
+/* ── generating ─────────────────────────────────────────────────── */
+.generating {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.generating .label {
+  color: var(--accent-ink);
+}
+.elapsed {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.progress {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: rgba(31, 123, 255, 0.18);
+  overflow: hidden;
+}
+.progressBar {
+  display: block;
+  height: 100%;
+  width: 38%;
+  background: var(--accent);
+  border-radius: 999px;
+  animation: indeterminate 1.25s var(--ease) infinite;
+}
+@keyframes indeterminate {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(360%); }
+}
+
+/* ── queued ─────────────────────────────────────────────────────── */
+.queued {
+  background: var(--surface);
+  border: 1px dashed var(--line-strong);
+}
+.queued .label {
+  color: var(--muted);
+}
+
+/* ── empty ──────────────────────────────────────────────────────── */
+.empty {
+  background: var(--surface);
+  border: 1px dashed var(--line);
+}
+.emptyBtn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.empty:hover {
+  border-color: var(--line-strong);
+}
+.empty:hover .emptyBtn {
+  color: var(--accent-ink);
+  background: var(--surface-2);
+}
+.card[data-density='compact'] .emptyBtn {
+  gap: var(--space-1);
+}
+
+/* ── failed ─────────────────────────────────────────────────────── */
+.failed {
+  background: var(--err-soft);
+  border-color: var(--err);
+}
+.errIcon {
+  color: var(--err);
+}
+.errText {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--err);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-1);
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.retry:hover {
+  background: var(--surface-2);
+  border-color: var(--err);
+  color: var(--err);
+}
