@@ -51,7 +51,7 @@
   background: var(--accent);
   color: #fff;
   font-weight: 500;
-  transition: filter var(--dur) var(--ease);
+  transition: filter var(--dur-2) var(--ease);
 }
 
 .action:hover {

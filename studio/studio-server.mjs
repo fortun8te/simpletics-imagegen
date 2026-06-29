@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { createJobStore } from './lib/jobstore.mjs';
 import { createWorker } from './lib/worker.mjs';
 import { buildState } from './lib/state.mjs';
+import { getCodexUsage, noteGenerated, noteRateLimit } from './lib/usage.mjs';
 
 // ── Paths (injected into the lib modules) ────────────────────────────────────────────────────────
 const STUDIO = dirname(fileURLToPath(import.meta.url));            // .../simpletics-imagegen/studio
@@ -35,6 +36,10 @@ const worker = createWorker({
   concurrency: Number(process.env.CONCURRENCY) || 3,
   cooldownMin: Number(process.env.COOLDOWN_MIN) || 30,
   onChange: broadcast,
+  // Feed the best-effort codex-usage probe with the two real signals the worker has: a completed
+  // job (an honest "generated this session" tick) and the start of a rate-limit cooldown.
+  onComplete: () => { noteGenerated(1); },
+  onRateLimit: ({ resumeAt }) => { noteRateLimit({ resumeAt }); },
 });
 worker.start();
 
@@ -249,6 +254,21 @@ async function fetchBridgeProgress() {
   }
 }
 
+// Assemble the RunInfo (src/types.ts) for the active batch: `state`/`resumeAt` come from the worker
+// (the single source of truth for the run lifecycle); the counts come from the store, scoped to the
+// jobs belonging to this brand/batch so the progress reflects THIS run, not unrelated batches.
+function buildRunInfo(brand, batch) {
+  const { state, resumeAt } = worker.runState();
+  let running = 0, queued = 0, done = 0, failed = 0;
+  for (const j of store.forBatch(brand, batch)) {
+    if (j.status === 'running') running++;
+    else if (j.status === 'queued') queued++;
+    else if (j.status === 'done') done++;
+    else if (j.status === 'failed') failed++;
+  }
+  return { state, running, queued, done, failed, total: running + queued + done + failed, resumeAt: resumeAt ?? null };
+}
+
 // ── Static file serving (SPA) ────────────────────────────────────────────────────────────────────
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -426,6 +446,8 @@ const server = http.createServer(async (req, res) => {
         store,
         renders: RENDERS,
         codex,
+        run: buildRunInfo(brand.id, batchCode),
+        codexUsage: getCodexUsage(),
       });
       sendJson(res, 200, state);
       return;
@@ -438,6 +460,7 @@ const server = http.createServer(async (req, res) => {
         bridge,
         codex: { alive: worker.busy() },
         queue: store.counts(),
+        codexUsage: getCodexUsage(),
       });
       return;
     }
@@ -476,6 +499,28 @@ const server = http.createServer(async (req, res) => {
       const body = await readBody(req);
       store.cancel({ jobId: body.jobId, all: body.all === true });
       sendJson(res, 200, { ok: true });
+      return;
+    }
+
+    // Run state machine controls (worker-owned). pause/resume call the worker's onChange, which
+    // fires broadcast() → SSE, so run-state changes reach clients without extra plumbing.
+    if (pathname === '/api/pause' && method === 'POST') {
+      worker.pause(); // stop pulling new jobs; in-flight jobs finish
+      sendJson(res, 200, { ok: true, run: worker.runState() });
+      return;
+    }
+
+    if (pathname === '/api/resume' && method === 'POST') {
+      worker.resume(); // lift a user pause AND clear any active cooldown, then refill capacity
+      sendJson(res, 200, { ok: true, run: worker.runState() });
+      return;
+    }
+
+    if (pathname === '/api/reset' && method === 'POST') {
+      // Clear the whole queue, drop any rate-limit cooldown, and resume so a fresh Generate works.
+      store.cancel({ all: true });
+      worker.resume();
+      sendJson(res, 200, { ok: true, run: worker.runState() });
       return;
     }
 

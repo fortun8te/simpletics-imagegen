@@ -1,20 +1,26 @@
 // SettingsDialog (container) — workspace preferences modal.
 // Radix dialog, open when ui.settingsOpen; closes via Esc / backdrop / X → setUI({settingsOpen:false}).
-// Holds: theme (light/dark), density (comfortable/compact), show-archived toggle, and an "About" footer.
+// Single committed dark theme, so there is NO theme control. Holds: density (comfortable/compact),
+// a show-archived toggle, and an "About NEUEGEN" section. Blurred backdrop stays.
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from './Icon';
 import { useStore } from '../store';
-import type { Theme, Density } from '../store';
+import type { Density } from '../store';
 import s from './SettingsDialog.module.css';
 
 export default function SettingsDialog() {
   const settingsOpen = useStore((st) => st.ui.settingsOpen);
-  const theme = useStore((st) => st.ui.theme);
   const density = useStore((st) => st.ui.density);
   const showArchived = useStore((st) => st.ui.showArchived);
   const setUI = useStore((st) => st.setUI);
+  const codexUsage = useStore((st) => st.state?.codexUsage);
 
   const close = () => setUI({ settingsOpen: false });
+
+  const usageLine =
+    codexUsage?.known && codexUsage.label
+      ? `Codex usage · ${codexUsage.label}`
+      : 'Codex usage · unknown';
 
   return (
     <Dialog.Root open={settingsOpen} onOpenChange={(o) => !o && close()}>
@@ -32,26 +38,6 @@ export default function SettingsDialog() {
           </div>
 
           <div className={s.body}>
-            {/* Theme */}
-            <div className={s.field}>
-              <p className={s.label} id="settings-theme-label">Theme</p>
-              <div className={s.segmented} role="radiogroup" aria-labelledby="settings-theme-label">
-                {(['light', 'dark'] as Theme[]).map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    role="radio"
-                    aria-checked={theme === t}
-                    className={`${s.segment} ${theme === t ? s.segmentOn : ''}`}
-                    onClick={() => setUI({ theme: t })}
-                  >
-                    <Icon name={t === 'dark' ? 'moon' : 'sun'} size={15} />
-                    <span>{t === 'dark' ? 'Dark' : 'Light'}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Density */}
             <div className={s.field}>
               <p className={s.label} id="settings-density-label">Density</p>
@@ -90,10 +76,28 @@ export default function SettingsDialog() {
                 </button>
               </label>
             </div>
+
+            {/* About NEUEGEN */}
+            <div className={s.field}>
+              <p className={s.label}>About NEUEGEN</p>
+              <div className={s.aboutCard}>
+                <span className={s.aboutMark}>
+                  <Icon name="sparkles" size={16} />
+                </span>
+                <div className={s.aboutText}>
+                  <span className={s.aboutName}>NEUEGEN</span>
+                  <span className={s.aboutDesc}>
+                    A premium local image studio — generate, regenerate and curate
+                    ad batches through your own Codex bridge.
+                  </span>
+                  <span className={s.aboutMeta}>Local workspace · {usageLine}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className={s.foot}>
-            <span className={s.about}>About NEUEGEN — premium image studio.</span>
+            <span className={s.about}>NEUEGEN · runs entirely on your machine.</span>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

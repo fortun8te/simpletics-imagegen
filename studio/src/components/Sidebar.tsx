@@ -1,13 +1,13 @@
 // Sidebar (container). NEUEGEN wordmark, a brand switcher (Radix dropdown over config.brands),
-// a live batch list fetched from api.getBatches(brand) with client-side search + recency sort,
-// and a footer: a single account/workspace button (avatar + name + chevron) that opens a
-// sectioned Radix dropdown (workspaces · theme/activity/settings · about), plus a health line
-// polled from /api/health every 5s.
+// a live batch list fetched from api.getBatches(brand) with client-side search + recency sort, and a
+// redesigned footer: a status chip (Codex + bridge health from /api/health), a Codex usage meter
+// (from state.codexUsage), and a clean workspace/account row whose menu offers workspace switching,
+// Settings and About — no theme item (the app is a single committed dark theme).
 import { useEffect, useMemo, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useStore } from '../store';
 import { api } from '../api';
-import type { Health, BrandRef, BatchMeta } from '../types';
+import type { Health, BrandRef, BatchMeta, CodexUsage } from '../types';
 import { Icon } from './Icon';
 import styles from './Sidebar.module.css';
 
@@ -33,13 +33,25 @@ function relTime(ts: number): string {
   return `${Math.floor(d / 30)}mo ago`;
 }
 
+// Remaining-quota percent for the usage meter (clamped 0-100), derived from whichever
+// signal codexUsage carries. Returns null when nothing usable is present.
+function usagePercent(u: CodexUsage | undefined): number | null {
+  if (!u || !u.known) return null;
+  if (typeof u.percent === 'number') return Math.max(0, Math.min(100, u.percent));
+  if (typeof u.remaining === 'number' && typeof u.total === 'number' && u.total > 0) {
+    return Math.max(0, Math.min(100, Math.round((u.remaining / u.total) * 100)));
+  }
+  return null;
+}
+
 export default function Sidebar() {
   const config = useStore((s) => s.config);
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
   const select = useStore((s) => s.select);
   const setUI = useStore((s) => s.setUI);
-  const theme = useStore((s) => s.ui.theme);
+  // Codex usage rides on the batch state (server-derived); read it straight from the store.
+  const codexUsage = useStore((s) => s.state?.codexUsage);
 
   const brands = config.brands ?? [];
   const currentBrand = brands.find((b) => b.id === brand);
@@ -79,7 +91,11 @@ export default function Sidebar() {
 
   const bridgeUp = !!health?.bridge;
   const codexBusy = !!health?.codex?.alive;
-  const healthOk = !!health?.ok; // backend reachable = healthy; codex idle is not an error
+
+  const pct = usagePercent(codexUsage);
+  const usageLabel =
+    pct != null ? `Codex · ${pct}% left` : (codexUsage?.label ?? 'unknown');
+  const sessionCount = codexUsage?.sessionGenerated ?? 0;
 
   return (
     <aside className={styles.sidebar}>
@@ -163,15 +179,51 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Account / workspace */}
+      {/* Footer — status chip + usage meter + account row */}
       <div className={styles.footer}>
-        <div className={styles.health} role="status" aria-live="polite">
-          <span className={styles.healthDot} data-state={healthOk ? 'ok' : 'err'} />
-          <span className={styles.healthText}>
-            {codexBusy ? 'Codex running' : 'Codex ready'} · bridge {bridgeUp ? 'up' : 'down'}
+        {/* Status chip: codex state dot + bridge dot */}
+        <div className={styles.statusChip} role="status" aria-live="polite">
+          <span className={styles.statusSeg}>
+            <span
+              className={styles.statusDot}
+              data-state={codexBusy ? 'busy' : 'ok'}
+            />
+            <span className={styles.statusText}>
+              {codexBusy ? 'Codex running' : 'Codex ready'}
+            </span>
+          </span>
+          <span className={styles.statusDivider} aria-hidden />
+          <span className={styles.statusSeg}>
+            <span
+              className={styles.statusDot}
+              data-state={bridgeUp ? 'ok' : 'err'}
+            />
+            <span className={styles.statusText}>
+              {bridgeUp ? 'Bridge up' : 'Bridge down'}
+            </span>
           </span>
         </div>
 
+        {/* Codex usage meter */}
+        <div className={styles.usage} aria-live="polite">
+          {pct != null ? (
+            <>
+              <div className={styles.usageBarTrack}>
+                <div className={styles.usageBarFill} style={{ width: `${pct}%` }} />
+              </div>
+              <span className={styles.usageLabel}>{usageLabel}</span>
+            </>
+          ) : (
+            <span className={styles.usageUnknown}>
+              Usage · unknown
+              {sessionCount > 0 && (
+                <span className={styles.usageSession}> · {sessionCount} this session</span>
+              )}
+            </span>
+          )}
+        </div>
+
+        {/* Account / workspace row */}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
             <button className={styles.account} type="button" aria-label="Workspace menu">
@@ -180,7 +232,7 @@ export default function Sidebar() {
               </span>
               <span className={styles.accountText}>
                 <span className={styles.accountName}>NEUEGEN</span>
-                <span className={styles.accountSub}>Local workspace</span>
+                <span className={styles.accountSub}>Local</span>
               </span>
               <Icon name="chevron-down" size={14} className={styles.accountChevron} />
             </button>
@@ -213,36 +265,22 @@ export default function Sidebar() {
 
               <DropdownMenu.Item
                 className={styles.accountItem}
-                onSelect={() => setUI({ theme: theme === 'dark' ? 'light' : 'dark' })}
-              >
-                <Icon
-                  name={theme === 'dark' ? 'moon' : 'sun'}
-                  size={15}
-                  className={styles.accountItemIcon}
-                />
-                <span className={styles.accountItemLabel}>Theme</span>
-                <span className={styles.accountItemValue}>
-                  {theme === 'dark' ? 'Dark' : 'Light'}
-                </span>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item
-                className={styles.accountItem}
-                onSelect={() => setUI({ activityOpen: true })}
-              >
-                <Icon name="activity" size={15} className={styles.accountItemIcon} />
-                <span className={styles.accountItemLabel}>Activity</span>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item
-                className={styles.accountItem}
                 onSelect={() => setUI({ settingsOpen: true })}
               >
                 <Icon name="settings" size={15} className={styles.accountItemIcon} />
                 <span className={styles.accountItemLabel}>Settings</span>
               </DropdownMenu.Item>
+              <DropdownMenu.Item
+                className={styles.accountItem}
+                onSelect={() => setUI({ settingsOpen: true })}
+              >
+                <Icon name="sparkles" size={15} className={styles.accountItemIcon} />
+                <span className={styles.accountItemLabel}>About NEUEGEN</span>
+              </DropdownMenu.Item>
 
               <DropdownMenu.Separator className={styles.menuSeparator} />
 
-              <div className={styles.menuAbout}>NEUEGEN · local</div>
+              <div className={styles.menuAbout}>NEUEGEN · local · single workspace</div>
             </DropdownMenu.Content>
           </DropdownMenu.Portal>
         </DropdownMenu.Root>

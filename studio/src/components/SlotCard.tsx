@@ -78,15 +78,25 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
   if ((slot.status === 'done' || slot.status === 'archived') && slot.relPath) {
     const archived = slot.status === 'archived';
     return (
-      <div className={styles.card} data-density={density}>
+      <div
+        className={`${styles.card} ${styles.filled} ${archived ? styles.archived : ''}`}
+        data-density={density}
+      >
         <img
           className={styles.img}
-          style={archived ? { opacity: 0.4 } : undefined}
           src={api.imgUrl(slot.relPath)}
           alt={`${ad} / ${variation} · run ${slot.run}`}
           onClick={open}
         />
-        {slot.version != null && <span className={styles.badge}>v{slot.version}</span>}
+        <div className={styles.sheen} aria-hidden="true" />
+        {slot.version != null && (
+          <span
+            className={`${styles.badge} ${archived ? styles.badgeMuted : styles.badgeAccent}`}
+          >
+            v{slot.version}
+          </span>
+        )}
+        {archived && <span className={styles.archivedTag}>Archived</span>}
 
         <div className={styles.actions} role="toolbar" aria-label="Image actions">
           <HoverAction
@@ -128,6 +138,7 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
           className={styles.progress}
           role="progressbar"
           aria-label="Generating image"
+          aria-valuetext={`Generating · ${elapsed} elapsed`}
         >
           <span className={styles.progressBar} />
         </div>

@@ -12,6 +12,17 @@
 // attempts, then the job is marked failed. After every state transition `onChange()` is called so the
 // server can broadcast the change over SSE.
 //
+// Run state machine (NEUEGEN v3): the worker is the single source of truth for the run's lifecycle.
+// `runState()` reports one of idle | running | paused | cooling | done plus `resumeAt`:
+//   - running : at least one job is in flight.
+//   - paused  : the user pressed Pause (pause()); the worker stops pulling NEW jobs but in-flight
+//               jobs finish. resume() lifts it.
+//   - cooling : a codex RATE_LIMIT triggered the auto-cooldown; resumeAt is when it auto-resumes.
+//   - done    : nothing in flight, queue empty, and at least one job completed this run.
+//   - idle    : nothing in flight, queue empty, nothing done yet.
+// User-pause and rate-limit-cooling are tracked independently (a user can pause during a cooldown,
+// and vice-versa); tick() refuses to pull while EITHER is active.
+//
 // Zero external deps: node:* only (gen.mjs is dynamically imported by spec).
 
 /**
@@ -24,22 +35,31 @@
  * @param {number}   [opts.concurrency=3]
  * @param {number}   [opts.cooldownMin=30]
  * @param {Function} [opts.onChange]   called after every transition (drives SSE broadcast)
- * @returns {{ start:Function, stop:Function, status:Function, busy:Function }}
+ * @param {Function} [opts.onRateLimit] called when a RATE_LIMIT cooldown begins, with { resumeAt }
+ * @param {Function} [opts.onComplete]  called when a job completes successfully (drives usage count)
+ * @returns {{ start:Function, stop:Function, status:Function, busy:Function,
+ *            pause:Function, resume:Function, runState:Function }}
  */
-export function createWorker({ store, renders, repoDir, concurrency = 3, cooldownMin = 30, onChange } = {}) {
+export function createWorker({ store, renders, repoDir, concurrency = 3, cooldownMin = 30, onChange, onRateLimit, onComplete } = {}) {
   let running = 0;          // count of in-flight generateSlot calls
-  let paused = false;       // true while cooling down after a rate limit
-  let resumeAt = null;      // epoch ms the cooldown ends (null when not paused)
+  let cooling = false;      // true while cooling down after a rate limit (auto-resumes)
+  let userPaused = false;   // true while paused by the user (pause(); cleared by resume())
+  let resumeAt = null;      // epoch ms the cooldown ends (null when not cooling)
+  let didComplete = false;  // a job has completed since this run started (distinguishes done vs idle)
   let runningWorker = false; // true between start() and stop()
   let interval = null;      // the 1s safety-tick interval handle
   let cooldownTimer = null; // the setTimeout that ends a cooldown
 
   const notify = () => { try { onChange && onChange(); } catch {} };
 
+  // The worker is "blocked" from pulling new jobs while either the user paused it or a rate-limit
+  // cooldown is active. In-flight jobs always finish regardless.
+  const blocked = () => userPaused || cooling;
+
   // Pull and run as many queued jobs as capacity allows. Each finished job re-ticks so the freed
-  // slot is immediately refilled. Guarded so it never runs while stopped or paused.
+  // slot is immediately refilled. Guarded so it never runs while stopped or blocked.
   function tick() {
-    if (!runningWorker || paused) return;
+    if (!runningWorker || blocked()) return;
     while (running < concurrency) {
       const job = store.nextQueued(); // atomically flips the job to 'running'
       if (!job) break;
@@ -62,6 +82,8 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
 
     if (res && res.ok) {
       store.complete(job.id, { relPath: res.relPath });
+      didComplete = true;
+      try { onComplete && onComplete(job); } catch {}
       notify();
     } else {
       const error = (res && res.error) || 'unknown error';
@@ -86,18 +108,42 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
   }
 
   function beginCooldown() {
-    if (paused) return; // already cooling down; a concurrent rate limit just piles onto the same wait
-    paused = true;
+    if (cooling) return; // already cooling down; a concurrent rate limit just piles onto the same wait
+    cooling = true;
     resumeAt = Date.now() + cooldownMin * 60 * 1000;
-    notify(); // surface paused/resumeAt to the UI
+    try { onRateLimit && onRateLimit({ resumeAt }); } catch {} // let the usage probe note the hit
+    notify(); // surface cooling/resumeAt to the UI
     clearTimeout(cooldownTimer);
     cooldownTimer = setTimeout(() => {
-      paused = false;
+      cooling = false;
       resumeAt = null;
       cooldownTimer = null;
       notify();
-      tick(); // resume pulling jobs
+      tick(); // resume pulling jobs (unless the user has also paused)
     }, cooldownMin * 60 * 1000);
+  }
+
+  // User Pause: stop pulling NEW jobs; in-flight jobs finish on their own. Idempotent.
+  function pause() {
+    if (userPaused) return;
+    userPaused = true;
+    notify();
+  }
+
+  // User Resume: lift a user pause AND clear any active rate-limit cooldown (so a "Continue" or
+  // "Reset" press resumes immediately rather than waiting out the cooldown), then refill capacity.
+  function resume() {
+    let changed = false;
+    if (userPaused) { userPaused = false; changed = true; }
+    if (cooling) {
+      cooling = false;
+      resumeAt = null;
+      clearTimeout(cooldownTimer);
+      cooldownTimer = null;
+      changed = true;
+    }
+    if (changed) notify();
+    tick();
   }
 
   function start() {
@@ -118,18 +164,32 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
     interval = null;
     clearTimeout(cooldownTimer);
     cooldownTimer = null;
-    // Leave `paused`/`resumeAt` as-is so status() still reports an in-progress cooldown if asked.
+    // Leave `cooling`/`resumeAt` as-is so status() still reports an in-progress cooldown if asked.
   }
 
   function status() {
-    return { running, paused, resumeAt };
+    // `paused` kept for back-compat: true while EITHER a user-pause or a rate-limit cooldown holds.
+    return { running, paused: blocked(), userPaused, cooling, resumeAt };
   }
 
-  // The worker is "busy" while any job is in flight OR while it's cooling down (a pause means work
-  // is pending and codex is effectively engaged with this batch).
+  // The worker is "busy" while any job is in flight OR while it's cooling down (a cooldown means work
+  // is pending and codex is effectively engaged with this batch). A user-pause is NOT busy.
   function busy() {
-    return running > 0 || paused;
+    return running > 0 || cooling;
   }
 
-  return { start, stop, status, busy };
+  // The run-state machine the UI drives off of. Priority: cooling (a real rate-limit) > running >
+  // paused (user) > done (work finished, queue drained) > idle.
+  function runState() {
+    const { queued } = store.counts();
+    let state;
+    if (cooling) state = 'cooling';
+    else if (running > 0) state = 'running';
+    else if (userPaused) state = 'paused';
+    else if (queued === 0 && didComplete) state = 'done';
+    else state = 'idle';
+    return { state, resumeAt: cooling ? resumeAt : null };
+  }
+
+  return { start, stop, status, busy, pause, resume, runState };
 }

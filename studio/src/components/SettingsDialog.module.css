@@ -1,5 +1,5 @@
 /* SettingsDialog — centered modal with a blurred, dimmed backdrop. Card on --surface, premium shadow.
-   Token-based, so it adapts to both light and dark themes. */
+   Single committed dark theme; all token-based. */
 
 .overlay {
   position: fixed;
@@ -7,7 +7,7 @@
   background: color-mix(in srgb, #000 38%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  animation: fade var(--dur) var(--ease);
+  animation: fade var(--dur-2) var(--ease);
 }
 
 .content {
@@ -24,7 +24,7 @@
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-lg);
-  animation: pop var(--dur) var(--ease);
+  animation: pop var(--dur-2) var(--ease);
   outline: none;
 }
 
@@ -71,7 +71,7 @@
   border-radius: var(--r-md);
   color: var(--muted);
   flex: none;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 
 .close:hover {
@@ -126,7 +126,7 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--muted);
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
 
 .segment:hover {
@@ -172,7 +172,7 @@
   height: 24px;
   border-radius: 999px;
   background: var(--line-strong);
-  transition: background var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease);
 }
 
 .switchOn {
@@ -188,11 +188,56 @@
   border-radius: 50%;
   background: #fff;
   box-shadow: var(--shadow-sm);
-  transition: transform var(--dur) var(--ease);
+  transition: transform var(--dur-2) var(--ease);
 }
 
 .switchOn .knob {
   transform: translateX(16px);
+}
+
+/* About NEUEGEN — a small nested tray card */
+.aboutCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--tray);
+  border: 1px solid var(--line);
+  box-shadow: var(--inset-hi);
+}
+.aboutMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.aboutText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.aboutName {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.aboutDesc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.aboutMeta {
+  font-size: 11px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Footer — About line */

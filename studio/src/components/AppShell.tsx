@@ -1,5 +1,8 @@
-// App shell (container). Pure layout: a CSS grid with the sidebar spanning both rows in column 1,
-// the top bar in row 1 / col 2, and a scrollable <main> in row 2 / col 2 that renders the batch view.
+// App shell (container). Pure layout: a CSS grid with the sidebar as a fixed-width column (its own
+// overflow) in column 1, the top bar in row 1 / col 2, and an INDEPENDENT scroll container <main> in
+// row 2 / col 2 (overflow:auto; min-width:0) holding a max-width content rail. Because <main> owns its
+// own scroll + min-width:0, the batch grid wraps inside it and can never underflow the sidebar, and
+// titles never clip.
 // The overlays (activity dock, detail drawer, generate dialog, settings) mount once at the end.
 // A single Tooltip.Provider wraps the whole tree so card/icon tooltips work app-wide.
 import * as Tooltip from '@radix-ui/react-tooltip';
@@ -19,7 +22,9 @@ export default function AppShell() {
         <Sidebar />
         <TopBar />
         <main className={styles.main}>
-          <BatchView />
+          <div className={styles.rail}>
+            <BatchView />
+          </div>
         </main>
 
         <ActivityDock />

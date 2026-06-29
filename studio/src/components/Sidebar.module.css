@@ -1,11 +1,13 @@
-/* Sidebar — a distinct panel that must read as its own surface, never melting
-   into the main var(--bg) area: surface bg + hairline right border + a soft lift
-   on the right edge. Theme vars only, so it adapts to light + dark automatically. */
+/* Sidebar — a distinct panel that reads as its own surface, never melting into the main
+   var(--bg) area: surface bg + hairline right border + a soft lift on the right edge.
+   Fixed-width column (set in AppShell); it owns its own overflow so the batch list scrolls
+   independently of <main>. Single committed dark theme, all token-driven. */
 .sidebar {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  overflow: hidden;
   background: var(--surface);
   border-right: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
@@ -66,7 +68,7 @@
   border-radius: var(--r-md);
   background: var(--surface-2);
   color: var(--ink);
-  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
 }
 .brandSwitch:hover {
   border-color: var(--line-strong);
@@ -104,7 +106,7 @@
   cursor: pointer;
   outline: none;
   user-select: none;
-  transition: background var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease);
 }
 .menuItem[data-highlighted] {
   background: var(--surface-2);
@@ -150,7 +152,7 @@
   color: var(--ink);
   font-size: 13px;
   outline: none;
-  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
 }
 .search::placeholder {
   color: var(--faint);
@@ -181,7 +183,7 @@
   border-radius: var(--r-md);
   color: var(--muted);
   text-align: left;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 .batchRow:hover {
   background: var(--surface-2);
@@ -227,8 +229,8 @@
 .footer {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  padding-top: var(--space-2);
+  gap: var(--space-2);
+  padding-top: var(--space-3);
   border-top: 1px solid var(--line);
   margin-top: auto;
 }
@@ -246,7 +248,7 @@
   color: var(--ink);
   text-align: left;
   cursor: pointer;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
 .account:hover,
 .account[data-state='open'] {
@@ -322,7 +324,7 @@
   cursor: pointer;
   outline: none;
   user-select: none;
-  transition: background var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease);
 }
 .accountItem[data-highlighted] {
   background: var(--surface-2);
@@ -370,31 +372,89 @@
   color: var(--faint);
 }
 
-/* Health line — sits just above the account button */
-.health {
+/* Status chip — a quiet pill: codex state + bridge state, each with a dot. */
+.statusChip {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  box-shadow: var(--inset-hi);
 }
-.healthDot {
-  width: 7px;
-  height: 7px;
+.statusSeg {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.statusDivider {
+  width: 1px;
+  height: 12px;
+  flex: none;
+  background: var(--line-strong);
+}
+.statusDot {
+  width: 6px;
+  height: 6px;
   border-radius: 999px;
   flex: none;
   background: var(--faint);
-  transition: background var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
-.healthDot[data-state='ok'] {
+.statusDot[data-state='ok'] {
   background: var(--ok);
 }
-.healthDot[data-state='err'] {
+.statusDot[data-state='busy'] {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.statusDot[data-state='err'] {
   background: var(--err);
 }
-.healthText {
+.statusText {
   font-size: 11px;
+  font-weight: 500;
   color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Codex usage meter — a thin bar + label when known; a muted line when not. */
+.usage {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-1);
+}
+.usageBarTrack {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.usageBarFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  box-shadow: 0 0 8px -1px color-mix(in srgb, var(--accent) 50%, transparent);
+  transition: width var(--dur-3) var(--ease);
+}
+.usageLabel {
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.usageUnknown {
+  font-size: 11px;
+  color: var(--faint);
+}
+.usageSession {
+  color: var(--faint);
 }

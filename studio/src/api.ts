@@ -29,6 +29,8 @@ const emptyState = (brand: string, batch: string): BatchState => ({
   brand, batch, ads: [],
   codex: { alive: false, progress: null },
   queue: { running: 0, queued: 0, done: 0, failed: 0 },
+  run: { state: 'idle', running: 0, queued: 0, done: 0, failed: 0, total: 0, resumeAt: null },
+  codexUsage: { known: false, label: 'unknown' },
   archivedCount: 0,
 });
 
@@ -53,6 +55,9 @@ export const api = {
     jpost<{ ok: boolean }>('/api/regenerate', { relPath }, { ok: false }),
   cancel: (arg: { jobId?: string; all?: boolean }) =>
     jpost<{ ok: boolean }>('/api/cancel', arg, { ok: false }),
+  pause: () => jpost<{ ok: boolean }>('/api/pause', {}, { ok: false }),
+  resume: () => jpost<{ ok: boolean }>('/api/resume', {}, { ok: false }),
+  reset: () => jpost<{ ok: boolean }>('/api/reset', {}, { ok: false }),
   archive: (relPath: string, archived: boolean) =>
     jpost<{ ok: boolean }>('/api/archive', { relPath, archived }, { ok: false }),
 };

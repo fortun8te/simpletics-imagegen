@@ -1,26 +1,46 @@
-// TopBar (container) — breadcrumb + activity pill + filter + density + theme + stop + generate.
-// Reads brand/batch/state/ui/config via store selectors; calls store actions + api.
-// View switch removed (Grid is the only gallery); Stop is contextual on live queue.
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+// TopBar (container) — breadcrumb + the run state-machine control center + density.
+// Reads brand/batch/run/ui/config via store selectors; calls setUI + api.
+// The primary action's label + handler are derived from `state.run.state`:
+//   idle → Generate · running → Pause+Stop · paused → Continue+Stop · cooling → countdown+Stop.
+// Filter dropdown and theme toggle were removed (single dark theme, no filter).
+import { useEffect, useState } from 'react';
 import { Icon } from './Icon';
 import { useStore } from '../store';
 import { api } from '../api';
+import type { RunInfo, RunState } from '../types';
 import s from './TopBar.module.css';
 
-// Filter options. `value` null == "All".
-const FILTERS: { value: string | null; label: string }[] = [
-  { value: null, label: 'All' },
-  { value: 'done', label: 'Done' },
-  { value: 'generating', label: 'Generating' },
-  { value: 'queued', label: 'Queued' },
-  { value: 'failed', label: 'Failed' },
-];
+// Small inline pause glyph (no entry in the shared Icon set).
+function PauseGlyph({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden focusable="false">
+      <rect x="7" y="6" width="3.2" height="12" rx="1" />
+      <rect x="13.8" y="6" width="3.2" height="12" rx="1" />
+    </svg>
+  );
+}
+
+// Format a millisecond gap as m:ss for the cooling countdown.
+function fmtCountdown(ms: number): string {
+  const t = Math.max(0, Math.round(ms / 1000));
+  const m = Math.floor(t / 60);
+  const ss = String(t % 60).padStart(2, '0');
+  return `${m}:${ss}`;
+}
+
+// Format a seconds ETA as a terse "~Nm" / "~Ns".
+function fmtEta(seconds: number): string {
+  if (!isFinite(seconds) || seconds <= 0) return '';
+  if (seconds < 60) return `~${Math.round(seconds)}s`;
+  return `~${Math.round(seconds / 60)}m`;
+}
 
 export default function TopBar() {
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
   const config = useStore((s) => s.config);
-  const queue = useStore((s) => s.state?.queue);
+  const run = useStore((s) => s.state?.run) as RunInfo | undefined;
   const ui = useStore((s) => s.ui);
   const setUI = useStore((s) => s.setUI);
 
@@ -30,18 +50,53 @@ export default function TopBar() {
   const brandName = brandRef?.name ?? brand ?? '—';
   const batchName = batchRef?.name ?? batch ?? '—';
 
-  const activeFilter = FILTERS.find((f) => f.value === ui.filterStatus) ?? FILTERS[0];
-  const filterActive = ui.filterStatus != null;
-
   const densityNext = ui.density === 'comfortable' ? 'compact' : 'comfortable';
 
-  // Live work — drives the activity pill (when busy) and the contextual Stop button.
-  const running = queue?.running ?? 0;
-  const queued = queue?.queued ?? 0;
-  const busy = running > 0 || queued > 0;
+  // Run state machine.
+  const state: RunState = run?.state ?? 'idle';
+  const done = run?.done ?? 0;
+  const total = run?.total ?? 0;
+  const queued = run?.queued ?? 0;
+  const resumeAt = run?.resumeAt ?? null;
 
-  const theme = ui.theme;
-  const themeNext = theme === 'dark' ? 'light' : 'dark';
+  // Ticking clock — drives the cooling countdown and the rate-based ETA.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (state !== 'cooling' && state !== 'running') return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [state]);
+
+  // Track when the current run started running, to derive a rough done-rate ETA.
+  const [runStart, setRunStart] = useState<number | null>(null);
+  useEffect(() => {
+    if (state === 'running') setRunStart((p) => p ?? Date.now());
+    else setRunStart(null);
+  }, [state]);
+
+  // Rough ETA: extrapolate remaining work from the rate of completed jobs so far.
+  let eta = '';
+  if (state === 'running' && runStart && done > 0 && total > done) {
+    const elapsed = (now - runStart) / 1000;
+    const rate = done / elapsed; // jobs/sec
+    if (rate > 0) eta = fmtEta((total - done) / rate);
+  }
+
+  // Inline reset confirm (two-step, no native dialog by default).
+  const [confirmReset, setConfirmReset] = useState(false);
+  useEffect(() => {
+    if (!confirmReset) return;
+    const id = setTimeout(() => setConfirmReset(false), 4000);
+    return () => clearTimeout(id);
+  }, [confirmReset]);
+
+  const showReset = queued > 0 || state === 'cooling';
+
+  const doReset = () => {
+    if (!confirmReset) { setConfirmReset(true); return; }
+    setConfirmReset(false);
+    api.reset();
+  };
 
   return (
     <header className={s.bar}>
@@ -52,54 +107,55 @@ export default function TopBar() {
       </nav>
 
       <div className={s.right}>
-        {/* Activity pill — only while there is live work */}
-        {busy ? (
+        {/* Inline progress + ETA while a run is live */}
+        {(state === 'running' || state === 'paused') && total > 0 ? (
           <button
             type="button"
-            className={s.pill}
+            className={s.progress}
             onClick={() => setUI({ activityOpen: true })}
             title="Show activity"
           >
-            <span className={s.pillDot} aria-hidden />
-            <span>
-              {running} running · {queued} queued
-            </span>
+            <span className={`${s.runDot} ${state === 'paused' ? s.runDotPaused : ''}`} aria-hidden />
+            <span className={s.progressNums}>{done}/{total}</span>
+            {eta ? <span className={s.eta}>{eta}</span> : null}
           </button>
         ) : null}
 
-        {/* Filter dropdown */}
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger asChild>
-            <button
-              type="button"
-              className={`${s.ghost} ${filterActive ? s.ghostOn : ''}`}
-              aria-label="Filter by status"
-            >
-              <Icon name="filter" size={15} />
-              <span>{activeFilter.label}</span>
-              <Icon name="chevron-down" size={14} className={s.caret} />
-            </button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content className={s.menu} align="end" sideOffset={6}>
-              {FILTERS.map((f) => {
-                const selected = f.value === ui.filterStatus;
-                return (
-                  <DropdownMenu.Item
-                    key={f.label}
-                    className={s.menuItem}
-                    onSelect={() => setUI({ filterStatus: f.value })}
-                  >
-                    <span className={s.menuCheck}>
-                      {selected ? <Icon name="check" size={14} /> : null}
-                    </span>
-                    {f.label}
-                  </DropdownMenu.Item>
-                );
-              })}
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+        {/* Cooling countdown — auto-resumes, so no Continue button */}
+        {state === 'cooling' ? (
+          <span className={s.cooling} role="status">
+            <Icon name="clock" size={14} />
+            <span>
+              Resuming in {resumeAt ? fmtCountdown(resumeAt - now) : '—'}
+            </span>
+          </span>
+        ) : null}
+
+        {/* Reset — clears the queue / cooldown; inline two-step confirm */}
+        {showReset ? (
+          <button
+            type="button"
+            className={`${s.ghost} ${confirmReset ? s.ghostWarn : ''}`}
+            onClick={doReset}
+            title="Clear the queue and reset the run"
+          >
+            <Icon name="refresh" size={15} />
+            <span>{confirmReset ? 'Confirm reset?' : 'Reset'}</span>
+          </button>
+        ) : null}
+
+        {/* Stop — present in any active state */}
+        {(state === 'running' || state === 'paused' || state === 'cooling') ? (
+          <button
+            type="button"
+            className={s.ghost}
+            onClick={() => api.cancel({ all: true })}
+            title="Stop all generation"
+          >
+            <Icon name="stop" size={15} />
+            <span>Stop</span>
+          </button>
+        ) : null}
 
         {/* Density toggle */}
         <button
@@ -112,39 +168,37 @@ export default function TopBar() {
           <Icon name="sliders" size={16} />
         </button>
 
-        {/* Theme toggle */}
-        <button
-          type="button"
-          className={s.iconBtn}
-          onClick={() => setUI({ theme: themeNext })}
-          title="Switch theme"
-          aria-label={`Theme: ${theme}. Switch to ${themeNext}.`}
-        >
-          <Icon name={theme === 'dark' ? 'sun' : 'moon'} size={16} />
-        </button>
-
-        {/* Stop — contextual; cancels everything, only while busy */}
-        {busy ? (
+        {/* Primary — label + action change with run state */}
+        {state === 'running' ? (
           <button
             type="button"
-            className={s.ghost}
-            onClick={() => api.cancel({ all: true })}
-            title="Stop all generation"
+            className={s.primary}
+            onClick={() => api.pause()}
+            title="Pause — finish in-flight jobs, stop pulling new ones"
           >
-            <Icon name="stop" size={15} />
-            <span>Stop</span>
+            <PauseGlyph size={15} />
+            <span>Pause</span>
           </button>
-        ) : null}
-
-        {/* Generate — primary */}
-        <button
-          type="button"
-          className={s.generate}
-          onClick={() => setUI({ genOpen: true })}
-        >
-          <Icon name="sparkles" size={15} />
-          <span>Generate</span>
-        </button>
+        ) : state === 'paused' ? (
+          <button
+            type="button"
+            className={s.primary}
+            onClick={() => api.resume()}
+            title="Continue the run"
+          >
+            <Icon name="chevron-right" size={15} />
+            <span>Continue</span>
+          </button>
+        ) : state === 'cooling' ? null : (
+          <button
+            type="button"
+            className={s.primary}
+            onClick={() => setUI({ genOpen: true })}
+          >
+            <Icon name="sparkles" size={15} />
+            <span>Generate</span>
+          </button>
+        )}
       </div>
     </header>
   );

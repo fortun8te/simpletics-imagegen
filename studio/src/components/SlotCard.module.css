@@ -1,59 +1,118 @@
-/* SlotCard — fixed square, all states designed. Clean Linear/ClickUp restraint. */
+/* SlotCard — premium dark tile (Antimetal-grade). Fixed square, every state crafted.
+   Nested-tray feel: a soft tray shell holding the image/state, concentric radii, diffused
+   shadows + glassy inset, gentle hover lift. Theme tokens only — no hardcoded colors. */
 
 .card {
   position: relative;
   aspect-ratio: 1;
   border-radius: var(--r-lg);
   overflow: hidden;
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  background: var(--tray);
+  box-shadow: var(--shadow-md);
+  transition:
+    transform var(--dur-2) var(--ease),
+    box-shadow var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease),
+    background var(--dur-2) var(--ease);
 }
 
-/* ── done / archived ───────────────────────────────────────────── */
+/* ── done / archived — the filled tray ─────────────────────────── */
+.filled {
+  border: 1px solid var(--line);
+}
+.filled:hover,
+.filled:focus-within {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--line-strong);
+}
+
 .img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   cursor: pointer;
-  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  transition: transform var(--dur-3) var(--ease), opacity var(--dur-2) var(--ease);
 }
-.card:hover .img {
-  transform: scale(1.02);
+.filled:hover .img {
+  transform: scale(1.035);
 }
 
+/* a faint diagonal sheen across the image edge — reads crafted, not flat */
+.sheen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: var(--inset-hi), inset 0 -40px 60px -40px rgba(0, 0, 0, 0.6);
+}
+
+.archived .img {
+  opacity: 0.34;
+  filter: saturate(0.7);
+}
+.archived .archivedTag {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 2;
+  padding: 2px 8px;
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+}
+
+/* ── version pill — small, refined; lime or neutral ─────────────── */
 .badge {
   position: absolute;
   top: var(--space-2);
   left: var(--space-2);
   z-index: 2;
-  padding: 2px 7px;
-  font-size: 11px;
-  font-weight: 500;
+  padding: 3px 8px;
+  font-size: var(--t-label);
+  font-weight: 600;
   line-height: 1;
   letter-spacing: 0.02em;
-  color: var(--ink);
-  background: rgba(12, 13, 17, 0.66);
-  backdrop-filter: blur(6px);
+  border-radius: var(--r-pill);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+}
+.badgeAccent {
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent-soft) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.badgeMuted {
+  color: var(--muted);
+  background: color-mix(in srgb, var(--bg) 66%, transparent);
   border: 1px solid var(--line-strong);
-  border-radius: 999px;
 }
 
-/* hover action bar — slides up + fades in */
+/* ── hover action bar — refined icon buttons ────────────────────── */
 .actions {
   position: absolute;
   inset: auto 0 0 0;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-1);
-  padding: var(--space-2);
-  background: linear-gradient(to top, rgba(12, 13, 17, 0.82), rgba(12, 13, 17, 0));
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-2) var(--space-2);
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--bg) 88%, transparent),
+    transparent
+  );
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  transform: translateY(8px);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
   pointer-events: none;
 }
 .card:hover .actions,
@@ -70,21 +129,31 @@
   width: 30px;
   height: 30px;
   color: var(--ink);
-  background: rgba(33, 35, 45, 0.72);
+  background: color-mix(in srgb, var(--surface-3) 82%, transparent);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
-  backdrop-filter: blur(6px);
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+  transition:
+    background var(--dur-1) var(--ease),
+    color var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease);
 }
 .iconBtn:hover {
-  background: var(--surface-3);
   color: var(--accent-ink);
+  background: var(--surface-3);
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  transform: translateY(-1px);
+}
+.iconBtn:active {
+  transform: translateY(0);
 }
 
 /* compact density shaves the action bar so tiny tiles don't feel crowded */
 .card[data-density='compact'] .actions {
-  gap: 5px;
-  padding: 7px;
+  gap: var(--space-1);
+  padding: var(--space-2) 7px 7px;
 }
 .card[data-density='compact'] .iconBtn {
   width: 26px;
@@ -104,7 +173,7 @@
   border-radius: var(--r-md);
   box-shadow: var(--shadow-md);
   user-select: none;
-  animation: tipIn var(--dur) var(--ease);
+  animation: tipIn var(--dur-2) var(--ease);
 }
 .tipArrow {
   fill: var(--surface-3);
@@ -130,13 +199,13 @@
 .label {
   font-size: 12px;
   font-weight: 500;
+  letter-spacing: 0.01em;
   color: var(--ink);
 }
 .mutedIcon {
   color: var(--muted);
 }
 
-/* compact density trims the gap so tiny cards stay legible */
 .card[data-density='compact'] .center {
   gap: var(--space-1);
   padding: var(--space-2);
@@ -145,45 +214,44 @@
   font-size: 11px;
 }
 .card[data-density='compact'] .badge {
-  padding: 1px 6px;
+  padding: 2px 6px;
   font-size: 10px;
 }
 
-/* ── generating ─────────────────────────────────────────────────── */
+/* ── generating — lime aura + soft pulse ────────────────────────── */
 .generating {
-  background: var(--accent-soft);
-  border-color: var(--accent);
+  background:
+    radial-gradient(
+      120% 120% at 50% 0%,
+      color-mix(in srgb, var(--accent) 10%, transparent),
+      transparent 60%
+    ),
+    var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: var(--glow-accent);
+  animation: auroraPulse 2.6s var(--ease) infinite;
 }
 .generating .label {
   color: var(--accent-ink);
 }
-
-/* dark-mode: in-progress cards bloom with a soft blue aurora so they
-   visibly stand out while rendering. Light mode stays flat. */
-[data-theme='dark'] .generating {
-  box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent),
-    0 0 28px -4px color-mix(in srgb, var(--accent) 40%, transparent),
-    inset 0 0 30px -10px color-mix(in srgb, var(--accent) 35%, transparent);
-  animation: auroraPulse 2.6s var(--ease) infinite;
-}
 @keyframes auroraPulse {
   0%, 100% {
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--accent) 38%, transparent),
-      0 0 22px -6px color-mix(in srgb, var(--accent) 30%, transparent),
-      inset 0 0 26px -10px color-mix(in srgb, var(--accent) 28%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent),
+      0 8px 36px -12px color-mix(in srgb, var(--accent) 30%, transparent),
+      inset 0 0 28px -12px color-mix(in srgb, var(--accent) 26%, transparent);
   }
   50% {
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent),
-      0 0 34px -2px color-mix(in srgb, var(--accent) 50%, transparent),
-      inset 0 0 34px -8px color-mix(in srgb, var(--accent) 42%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--accent) 52%, transparent),
+      0 12px 48px -10px color-mix(in srgb, var(--accent) 48%, transparent),
+      inset 0 0 36px -10px color-mix(in srgb, var(--accent) 40%, transparent);
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  [data-theme='dark'] .generating { animation: none; }
+  .generating { animation: none; box-shadow: var(--glow-accent); }
 }
+
 .elapsed {
   font-size: 11px;
   font-variant-numeric: tabular-nums;
@@ -194,35 +262,46 @@
   position: absolute;
   inset: auto 0 0 0;
   height: 3px;
-  background: rgba(31, 123, 255, 0.18);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
   overflow: hidden;
 }
 .progressBar {
   display: block;
   height: 100%;
   width: 38%;
-  background: var(--accent);
-  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  border-radius: var(--r-pill);
+  box-shadow: 0 0 8px -1px color-mix(in srgb, var(--accent) 55%, transparent);
   animation: indeterminate 1.25s var(--ease) infinite;
 }
 @keyframes indeterminate {
   0% { transform: translateX(-110%); }
   100% { transform: translateX(360%); }
 }
+@media (prefers-reduced-motion: reduce) {
+  .progressBar { animation: none; width: 100%; }
+}
 
-/* ── queued ─────────────────────────────────────────────────────── */
+/* ── queued — quiet dashed ──────────────────────────────────────── */
 .queued {
   background: var(--surface);
   border: 1px dashed var(--line-strong);
+  box-shadow: var(--shadow-sm);
 }
 .queued .label {
   color: var(--muted);
 }
 
-/* ── empty ──────────────────────────────────────────────────────── */
+/* ── empty — dashed, lime hover ─────────────────────────────────── */
 .empty {
   background: var(--surface);
   border: 1px dashed var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.empty:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  box-shadow: var(--shadow-md);
 }
 .emptyBtn {
   position: absolute;
@@ -233,23 +312,25 @@
   justify-content: center;
   gap: var(--space-2);
   color: var(--muted);
-  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
-}
-.empty:hover {
-  border-color: var(--line-strong);
+  transition: color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
 }
 .empty:hover .emptyBtn {
   color: var(--accent-ink);
-  background: var(--surface-2);
+  background: radial-gradient(
+    120% 120% at 50% 100%,
+    color-mix(in srgb, var(--accent) 9%, transparent),
+    transparent 65%
+  );
 }
 .card[data-density='compact'] .emptyBtn {
   gap: var(--space-1);
 }
 
-/* ── failed ─────────────────────────────────────────────────────── */
+/* ── failed — err-soft + reason + retry ─────────────────────────── */
 .failed {
   background: var(--err-soft);
-  border-color: var(--err);
+  border: 1px solid color-mix(in srgb, var(--err) 55%, transparent);
+  box-shadow: var(--shadow-sm);
 }
 .errIcon {
   color: var(--err);
@@ -274,13 +355,16 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--ink);
-  background: transparent;
+  background: color-mix(in srgb, var(--bg) 40%, transparent);
   border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  border-radius: var(--r-pill);
+  transition:
+    background var(--dur-1) var(--ease),
+    border-color var(--dur-1) var(--ease),
+    color var(--dur-1) var(--ease);
 }
 .retry:hover {
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--err) 14%, transparent);
   border-color: var(--err);
   color: var(--err);
 }

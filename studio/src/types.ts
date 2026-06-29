@@ -27,12 +27,37 @@ export interface CodexProgress { done: number; total: number; failed: number; sk
 export interface CodexInfo { alive: boolean; progress?: CodexProgress | null; }
 export interface QueueInfo { running: number; queued: number; done: number; failed: number; }
 
+// Run state machine (worker-owned). `cooling` = paused by a codex rate-limit; auto-resumes at resumeAt.
+export type RunState = 'idle' | 'running' | 'paused' | 'cooling' | 'done';
+export interface RunInfo {
+  state: RunState;
+  running: number;
+  queued: number;
+  done: number;
+  failed: number;
+  total: number;            // running + queued + done + failed for the current run
+  resumeAt?: number | null; // epoch ms when a cooling run auto-resumes
+}
+
+// Best-effort codex usage/quota. `known:false` → show an honest "unknown", never a fake number.
+export interface CodexUsage {
+  known: boolean;
+  remaining?: number | null;
+  total?: number | null;
+  percent?: number | null;       // 0-100 remaining
+  label?: string;                // e.g. "62% left", "unknown"
+  sessionGenerated?: number;     // fallback signal: images generated this session
+  resetAt?: number | null;       // epoch ms when the quota window resets, if known
+}
+
 export interface BatchState {
   brand: string;
   batch: string;
   ads: AdNode[];
   codex: CodexInfo;
   queue: QueueInfo;
+  run: RunInfo;
+  codexUsage?: CodexUsage;
   archivedCount: number;
 }
 

@@ -1,7 +1,14 @@
 .grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
+  gap: var(--space-10);
+}
+
+/* Ad sections get generous breathing room between them. */
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
 }
 
 .promptGroup {
@@ -22,35 +29,57 @@
   gap: 12px;
 }
 
-/* "Generate more" tile — same square footprint as a slot, obviously inviting. */
+/* "Generate more" tile — a premium tray: a subtle shell with a dashed inner core that lights
+   lime on hover, with a gentle lift. Same square footprint as a slot. */
 .genMore {
   position: relative;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 5px;
   border-radius: var(--r-lg);
-  background: var(--surface);
-  border: 1.5px dashed var(--line-strong);
+  background: var(--tray);
+  box-shadow: var(--shadow-sm);
   color: var(--muted);
   cursor: pointer;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
-    color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  transition:
+    transform var(--dur-2) var(--ease),
+    color var(--dur-2) var(--ease),
+    box-shadow var(--dur-2) var(--ease);
+}
+/* Dashed inner core via a pseudo-element so the tray shell can keep a soft shadow. */
+.genMore::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: calc(var(--r-lg) - 5px);
+  border: 1.5px dashed var(--line-strong);
+  background: var(--surface);
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
 }
 .genMore:hover {
-  background: var(--accent-soft);
-  border-color: var(--accent);
+  transform: translateY(-2px);
   color: var(--accent-ink);
   box-shadow: var(--shadow-md);
+}
+.genMore:hover::before {
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 .genMore:focus-visible {
   outline: none;
-  border-color: var(--accent);
   color: var(--accent-ink);
   box-shadow: var(--shadow-md);
 }
+.genMore:focus-visible::before {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
 
 .genMoreInner {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;

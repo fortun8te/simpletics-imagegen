@@ -4,7 +4,7 @@
   position: fixed;
   inset: 0;
   background: rgba(6, 7, 10, 0.55);
-  animation: fade var(--dur) var(--ease);
+  animation: fade var(--dur-2) var(--ease);
 }
 
 .content {
@@ -19,7 +19,7 @@
   background: var(--surface-3);
   border-left: 1px solid var(--line);
   box-shadow: var(--shadow-lg);
-  animation: slide var(--dur) var(--ease);
+  animation: slide var(--dur-2) var(--ease);
   outline: none;
 }
 
@@ -86,7 +86,7 @@
   border-radius: var(--r-md);
   color: var(--muted);
   flex: none;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 
 .close:hover {
@@ -255,7 +255,7 @@
   border-radius: var(--r-md);
   border: 1px solid var(--line);
   overflow: hidden;
-  transition: border-color var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  transition: border-color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
   cursor: pointer;
 }
 
@@ -303,7 +303,7 @@
   border-radius: var(--r-md);
   font-size: 13px;
   font-weight: 500;
-  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 
 .btn:disabled {
