@@ -94,6 +94,25 @@ function laneErrState(err) {
 }
 try { chrome.storage.session.set({ laneStatus: {} }); } catch {}
 
+// Downscale a full-resolution image dataURL to a small WebP thumbnail (longest edge <=320px,
+// quality ~0.7, target <50KB). SHARED CONTRACT: anything written to a preview:<relPath>
+// chrome.storage.local key OR carried in a chrome.runtime message MUST be a thumbnail, never the
+// full-res dataURL (full-res lives only on disk). Runs in the service worker via createImageBitmap
+// + OffscreenCanvas. Best-effort: returns null on any failure so the caller skips that image rather
+// than storing/sending full-res (which is what was OOM-killing the worker).
+async function downscaleToThumb(dataUrl) {
+  if (!dataUrl) return null;
+  try {
+    const bmp = await createImageBitmap(await (await fetch(dataUrl)).blob());
+    const scale = Math.min(1, 320 / Math.max(bmp.width, bmp.height));
+    const c = new OffscreenCanvas(Math.round(bmp.width * scale), Math.round(bmp.height * scale));
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await c.convertToBlob({ type: 'image/webp', quality: 0.7 });
+    const thumb = await new Promise((r) => { const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(blob); });
+    return thumb;
+  } catch { return null; } // downscale failed: skip this image rather than storing full-res
+}
+
 // Persist a generated preview INDEPENDENTLY of whether the side panel is open, keyed by its stable
 // relative path ('preview:<brand>/<batch>/ads/<ad>/<var>/<prompt>/run-N.png'). The panel only gets
 // live progress messages WHILE it is open, so during a long auto-resumed run (panel closed for
@@ -122,38 +141,64 @@ function persistPreview(relPath, dataUrl) {
 // Best-effort and non-fatal: every step is wrapped, a parse miss is skipped, and
 // a missing bridge / bad response simply returns. Never blocks a sweep, never
 // throws. parseRelPath lives in logic.js (imported via importScripts).
+//
+// MEMORY SAFETY (OOM fix): codex can relay ~50 images of 2-3MB base64 each. Draining them all in
+// one pass while storing + messaging the FULL dataURL per image piled ~150MB resident plus ~49 huge
+// runtime messages into a tight loop, killing the worker. Two guards now:
+//   - Re-entrancy guard (`ingesting`): only ONE drain runs at a time. pollBridge fires every 3s and
+//     on every alarm wake; without this, overlapping drains multiply the resident image load.
+//   - BATCH-DRAIN PROTOCOL: GET /codex-results returns { results:[<=8], remaining:<int> }. We drain
+//     <=8 per fetch, downscale each to a small WebP thumb (storing/sending ONLY the thumb, never the
+//     full-res dataURL), then yield a microtask and loop while remaining > 0.
+let ingesting = false;
 async function ingestCodexResults() {
-  let payload;
+  if (ingesting) return; // a drain is already in flight: never overlap (would multiply resident MB)
+  ingesting = true;
   try {
-    payload = await (await fetch(`${BRIDGE}/codex-results`)).json();
-  } catch { return; } // bridge unreachable or bad JSON: nothing to ingest this tick
-  const results = payload && Array.isArray(payload.results) ? payload.results : [];
-  for (const result of results) {
-    try {
-      if (!result || !result.relPath || !result.dataUrl) continue;
-      // 1. Persist exactly like a web image so it survives reload/restart.
-      persistPreview(result.relPath, result.dataUrl);
-      // 2. Parse the stable path into its run slot coordinates. A null parse (unexpected
-      //    path shape) is skipped rather than fed into the panel with a bad index.
-      const parsed = ImageGenLogic.parseRelPath(result.relPath);
-      if (!parsed) continue;
-      send({
-        type: 'bridge',
-        status: 'done',
-        variantIndex: (parsed.run - 1),
-        path: result.relPath,
-        thumb: result.dataUrl,
-        job: {
-          name: result.name,
-          adId: parsed.ad,
-          variationId: parsed.variation,
-          promptId: parsed.prompt,
-          kind: 'final',
-          variants: parsed.run,
-          variantPaths: [],
-        },
-      });
-    } catch { /* one bad result never blocks the rest */ }
+    for (;;) {
+      let payload;
+      try {
+        payload = await (await fetch(`${BRIDGE}/codex-results`)).json();
+      } catch { return; } // bridge unreachable or bad JSON: nothing to ingest this tick
+      const results = payload && Array.isArray(payload.results) ? payload.results : [];
+      for (const result of results) {
+        try {
+          if (!result || !result.relPath || !result.dataUrl) continue;
+          // Downscale to a thumbnail BEFORE storing or messaging. A null thumb (downscale failed)
+          // skips this image rather than falling back to the full-res dataURL.
+          const thumb = await downscaleToThumb(result.dataUrl);
+          if (!thumb) continue;
+          // 1. Persist the THUMBNAIL so the preview survives reload/restart without bloating storage.
+          persistPreview(result.relPath, thumb);
+          // 2. Parse the stable path into its run slot coordinates. A null parse (unexpected
+          //    path shape) is skipped rather than fed into the panel with a bad index.
+          const parsed = ImageGenLogic.parseRelPath(result.relPath);
+          if (!parsed) continue;
+          send({
+            type: 'bridge',
+            status: 'done',
+            variantIndex: (parsed.run - 1),
+            path: result.relPath,
+            thumb,
+            job: {
+              name: result.name,
+              adId: parsed.ad,
+              variationId: parsed.variation,
+              promptId: parsed.prompt,
+              kind: 'final',
+              variants: parsed.run,
+              variantPaths: [],
+            },
+          });
+        } catch { /* one bad result never blocks the rest */ }
+      }
+      // Keep draining only while the bridge still has buffered results; yield a microtask between
+      // fetches so we never hog the event loop in a tight loop.
+      if (!(payload && payload.remaining > 0)) break;
+      await new Promise((r) => setTimeout(r, 0));
+    }
+  } finally {
+    ingesting = false;
   }
 }
 
@@ -823,10 +868,13 @@ async function runQueue(jobs, folder) {
         for (let i = 0; i < images.length; i++) {
           const path = variantPath(job, folder, i);
           try {
+            // Full-res image goes to DISK unchanged; the panel preview + message carry a thumbnail
+            // only (SHARED CONTRACT: never store/send full-res, it OOMs the worker).
             await downloadDataUrl(images[i], path);
             any = true;
-            persistPreview((job.variantPaths && job.variantPaths[i]) || job.relativePath, images[i]);
-            send({ type: 'progress', job, status: 'done', variantIndex: i, path, thumb: images[i], renamed: result.renamed, moved: result.moved });
+            const thumb = await downscaleToThumb(images[i]);
+            persistPreview((job.variantPaths && job.variantPaths[i]) || job.relativePath, thumb);
+            send({ type: 'progress', job, status: 'done', variantIndex: i, path, thumb, renamed: result.renamed, moved: result.moved });
             reportToTelegram({ job, status: 'done', dataUrl: images[i] });
           } catch (error) {
             send({ type: 'progress', job, status: 'error', variantIndex: i, error: `download: ${error.message}` });
@@ -919,8 +967,11 @@ async function runBridgeJob(entry, rawJob, projectUrls) {
     // would misroute variants when OUT is elsewhere). Back-compat: a length-1 array == the old dataUrl.
     await postResult(job.id, { ok: true, images, captured: images.length, expected, partial: images.length < expected, renamed: result.renamed, moved: result.moved, chatUrl });
     for (let i = 0; i < images.length; i++) {
-      persistPreview((job.variantPaths && job.variantPaths[i]) || job.relativePath, images[i]);
-      send({ type: 'bridge', job, status: 'done', variantIndex: i, path: job.variantPaths && job.variantPaths[i], thumb: images[i], chatUrl });
+      // postResult above already shipped full-res to the bridge for the on-disk write. The panel
+      // preview + message carry a thumbnail only (SHARED CONTRACT: never store/send full-res).
+      const thumb = await downscaleToThumb(images[i]);
+      persistPreview((job.variantPaths && job.variantPaths[i]) || job.relativePath, thumb);
+      send({ type: 'bridge', job, status: 'done', variantIndex: i, path: job.variantPaths && job.variantPaths[i], thumb, chatUrl });
       reportToTelegram({ job, status: 'done', dataUrl: images[i] });
     }
     laneStatus(entry.id, laneRec('done', job, { detail: images.length < expected ? ('saved ' + images.length + ' of ' + expected) : 'done' }));

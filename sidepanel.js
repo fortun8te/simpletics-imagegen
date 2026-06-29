@@ -146,7 +146,23 @@ async function loadState() {
 async function mergePersistedPreviews() {
   if (!brand || !batch) return;
   try {
-    const all = await chrome.storage.local.get(null);
+    // Never load the ENTIRE store (get(null)) — with ~150MB of previews that OOMs the renderer.
+    // Enumerate keys cheaply, filter to THIS brand/batch's preview prefix, and load only those values.
+    const prefix = `preview:${brand.id}/${batch.code}/`;
+    let all;
+    if (typeof chrome.storage.local.getKeys === 'function') {
+      const keys = await chrome.storage.local.getKeys();
+      const wanted = keys.filter((key) => key.startsWith(prefix));
+      all = wanted.length ? await chrome.storage.local.get(wanted) : {};
+    } else {
+      // Older Chrome without getKeys(): a background-maintained index lists the preview keys, so we
+      // still avoid get(null). The index value is an array of full 'preview:<relPath>' keys.
+      const indexKey = `preview-index:${brand.id}/${batch.code}`;
+      const indexWrap = await chrome.storage.local.get(indexKey);
+      const index = Array.isArray(indexWrap[indexKey]) ? indexWrap[indexKey] : [];
+      const wanted = index.filter((key) => typeof key === 'string' && key.startsWith(prefix));
+      all = wanted.length ? await chrome.storage.local.get(wanted) : {};
+    }
     for (const [key, dataUrl] of Object.entries(all)) {
       if (!key.startsWith('preview:') || !dataUrl) continue;
       const rel = key.slice('preview:'.length);
@@ -341,7 +357,7 @@ function modelCard(ad, model) {
       ? ` data-rerun-model="${escape(ad.id)}" data-model="${escape(model.id)}" role="button" tabindex="0" title="Re-run this model"`
       : '';
     const inner = candidate?.dataUrl
-      ? `<img data-pick-model="${escape(ad.id)}" data-model="${escape(model.id)}" data-run="${run}" src="${candidate.dataUrl}" alt="${escape(label)} candidate ${run}">`
+      ? `<img loading="lazy" decoding="async" data-pick-model="${escape(ad.id)}" data-model="${escape(model.id)}" data-run="${run}" src="${candidate.dataUrl}" alt="${escape(label)} candidate ${run}">`
       : `<div class="run-empty"${rerun}><span class="rn">${run}</span></div>`;
     // No per-thumb index caption: the number already lives inside an empty slot, and a done
     // candidate needs no label. Picked is shown by the accent ring/check.
@@ -389,7 +405,7 @@ function promptBlock(ad, variation, promptId, promptLabel, configPrompt) {
       ? ` data-rerun-prompt="${escape(ad.id)}" data-variation="${escape(variation.id)}" data-prompt="${escape(promptId)}" role="button" tabindex="0" title="Re-run this prompt"`
       : '';
     const thumbnail = item?.dataUrl
-      ? `<img data-preview="${item.dataUrl}" src="${item.dataUrl}" alt="${escape(variation.id)} ${escape(promptId)} run ${run.run}">`
+      ? `<img loading="lazy" decoding="async" data-preview="${item.dataUrl}" src="${item.dataUrl}" alt="${escape(variation.id)} ${escape(promptId)} run ${run.run}">`
       : `<div class="run-empty"${rerun}><span class="rn">${run.run}</span></div>`;
     // No per-thumb r# caption: the slot number lives inside an empty slot, and finished thumbs
     // read on their own. Drops a line of repeated noise under every run row.
@@ -828,18 +844,85 @@ function updateCodexActivity(cp) {
 // even if the SW is asleep. Drains /codex-results, persists each (so it survives reload), then reuses
 // mergePersistedPreviews + render — the same path a reload uses, with the same version handling.
 const CODEX_RESULTS_URL = 'http://localhost:8787/codex-results';
+// In-flight guard so the 4s interval can't stack overlapping drains, and a seen-set so a relPath
+// that's already been handled is never re-downscaled or re-written (the endpoint may re-serve until
+// the SW acks). Both are module-level so they persist across interval ticks.
+let codexPollInFlight = false;
+const codexSeenRelPaths = new Set();
+
+// Downscale a full-res dataURL to a small WebP thumbnail (longest edge <= 320px). Full-res images
+// must NEVER reach chrome.storage.local — only thumbnails. Returns null on any failure so the caller
+// skips the image rather than ever storing full-res.
+async function downscaleToThumb(dataUrl) {
+  try {
+    const bmp = await createImageBitmap(await (await fetch(dataUrl)).blob());
+    const s = Math.min(1, 320 / Math.max(bmp.width, bmp.height));
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(bmp.width * s);
+    cv.height = Math.round(bmp.height * s);
+    cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+    return cv.toDataURL('image/webp', 0.7);
+  } catch (err) {
+    console.error('[ImageGen] downscaleToThumb failed; skipping image:', err);
+    return null;
+  }
+}
+
 async function pollCodexResults() {
   if (!brand || !batch) return;
-  let payload;
-  try { payload = await (await fetch(CODEX_RESULTS_URL, { cache: 'no-store' })).json(); } catch { return; }
-  const results = (payload && Array.isArray(payload.results)) ? payload.results : [];
-  if (!results.length) return;
-  const sets = {};
-  for (const r of results) { if (r && r.relPath && r.dataUrl) sets['preview:' + r.relPath] = r.dataUrl; }
-  if (!Object.keys(sets).length) return;
-  try { await chrome.storage.local.set(sets); } catch {}
-  await mergePersistedPreviews();
-  render();
+  if (codexPollInFlight) return; // in-flight guard: don't let polls stack
+  codexPollInFlight = true;
+  try {
+    // Batch-drain protocol: each GET returns <=8 results plus a `remaining` count; loop while >0.
+    let remaining = Infinity;
+    let changed = false;
+    while (remaining > 0) {
+      let payload;
+      try {
+        payload = await (await fetch(CODEX_RESULTS_URL, { cache: 'no-store' })).json();
+      } catch (err) {
+        console.error('[ImageGen] pollCodexResults fetch failed:', err);
+        break;
+      }
+      const results = (payload && Array.isArray(payload.results)) ? payload.results : [];
+      remaining = (payload && Number.isFinite(payload.remaining)) ? payload.remaining : 0;
+      if (!results.length) break;
+
+      const sets = {};
+      for (const r of results) {
+        if (!r || !r.relPath || !r.dataUrl) continue;
+        if (codexSeenRelPaths.has(r.relPath)) continue; // already handled this relPath
+        const thumb = await downscaleToThumb(r.dataUrl);
+        codexSeenRelPaths.add(r.relPath); // mark seen even on skip, so a bad image isn't retried forever
+        if (!thumb) continue; // never store full-res; skip on downscale failure
+        sets['preview:' + r.relPath] = thumb;
+      }
+
+      if (Object.keys(sets).length) {
+        try {
+          await new Promise((resolve, reject) => {
+            chrome.storage.local.set(sets, () => {
+              if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+              else resolve();
+            });
+          });
+          changed = true;
+        } catch (err) {
+          console.error('[ImageGen] pollCodexResults storage set failed:', err);
+        }
+      }
+    }
+
+    // Only touch the panel if a slot actually changed.
+    if (changed) {
+      await mergePersistedPreviews();
+      render();
+    }
+  } catch (err) {
+    console.error('[ImageGen] pollCodexResults failed:', err);
+  } finally {
+    codexPollInFlight = false;
+  }
 }
 
 function startHealthPolling() {

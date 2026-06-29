@@ -265,17 +265,22 @@ const server = http.createServer(async (req, res) => {
 
   // codexbatch.mjs relays each finished image's dataURL here (the file is already on disk). The
   // bridge buffers it for the extension panel's live preview only — it writes nothing. Cap at the
-  // most recent ~500 so a long batch can't grow this array without bound.
+  // most recent ~80 so a stalled drain can't balloon the Node heap (each item is a 2-3MB base64
+  // dataURL, so an unbounded buffer OOMs the consumer).
   if (url.pathname === '/codex-result' && req.method === 'POST') {
     const d = JSON.parse((await body(req)) || '{}');
     codexResults.push({ name: d.name, relPath: d.relPath, dataUrl: d.dataUrl, at: Date.now() });
-    if (codexResults.length > 500) codexResults.splice(0, codexResults.length - 500);
+    if (codexResults.length > 80) codexResults.splice(0, codexResults.length - 80);
     return json(res, 200, { ok: true });
   }
 
-  // The background drains all pending codex results here (splice -> each delivered exactly once).
+  // The background drains pending codex results here in batches of at most 8 (splice -> each
+  // delivered exactly once). Draining the whole buffer at once produced a single ~200MB JSON
+  // response that OOMed the consumer, so callers must poll repeatedly: `remaining` reports how
+  // many items are still buffered after this splice, signalling whether to fetch again.
   if (url.pathname === '/codex-results' && req.method === 'GET') {
-    return json(res, 200, { results: codexResults.splice(0) });
+    const results = codexResults.splice(0, 8);
+    return json(res, 200, { results, remaining: codexResults.length });
   }
   if (url.pathname === '/command' && req.method === 'POST') return json(res, 200, { ok: true, ...command(JSON.parse((await body(req)) || '{}')) });
 

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ImageGen",
-  "version": "1.8.1",
-  "description": "Batch-generate images through your own logged-in ChatGPT, on your normal quota. Real session, images render, auto-named downloads. (1.8.1: Activity now shows a live Codex lane — what it's generating on the separate quota and how far. 1.8.0: codex images sync into the panel as previews; never overwrite — every regenerate writes a new version (run-N-v2, v3...), panel shows the latest.)",
+  "version": "1.8.3",
+  "description": "Batch-generate images through your own logged-in ChatGPT, on your normal quota. Real session, images render, auto-named downloads. (1.8.3: crash-hardened — previews are downscaled thumbnails (full-res stays on disk), codex results drain in small batches, no whole-store loads; fixes the 1.8.1 OOM. Activity shows a live Codex lane with how-far progress. Never overwrite — every regenerate writes a new version.)",
   "permissions": [
     "downloads",
     "sidePanel",
