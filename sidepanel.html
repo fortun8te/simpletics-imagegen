@@ -1,0 +1,421 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>ImageGen</title>
+<style>
+  :root {
+    --bg:#0c0d11; --surface:#15161c; --surface-2:#1c1e26; --ink:#eef0f5; --muted:#9498a4;
+    --faint:#5f636e; --line:#23252d; --line-soft:#1b1d24; --accent:#1f7bff; --accent-soft:#16243d;
+    --ok:#6fcf9b; --err:#ff8071;
+    /* One radius scale: large cards, medium controls, small chips. */
+    --r-lg:10px; --r-md:7px; --r-sm:5px; --radius:7px;
+  }
+  * { box-sizing:border-box; }
+  html,body { overflow-x:hidden; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:13px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif; }
+  button,select,input { font:inherit; color:inherit; }
+  button { border:0; cursor:pointer; background:none; }
+  button:focus-visible,select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .mono { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+  /* Header */
+  header { position:sticky; top:0; z-index:3; padding:16px 16px 14px; background:var(--bg); border-bottom:1px solid var(--line); }
+  .topline { display:flex; justify-content:space-between; align-items:center; }
+  h1 { margin:0; font-size:18px; font-weight:680; letter-spacing:-.02em; }
+  .conn { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:11px; }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--faint); }
+  .dot.on { background:var(--ok); } .dot.off { background:var(--err); }
+
+  .switchers { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px; }
+  label { display:block; color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px; }
+  select { width:100%; appearance:none; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); padding:8px 9px; }
+  select:hover { border-color:#30333d; }
+
+  /* Calm destination: one quiet line, where files land. The build number rides along at the
+     far end so it is present but unobtrusive. */
+  .destination { margin-top:11px; display:flex; align-items:baseline; gap:8px; color:var(--faint); font-size:11px; line-height:1.5; }
+  .destination code { min-width:0; color:var(--muted); font-size:10.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .destination .build { margin-left:auto; flex:0 0 auto; color:var(--faint); font-size:10px; letter-spacing:.02em; }
+
+  /* Idle: Generate + Reset only. The Stop button is revealed (and Generate hidden)
+     only while a run is active, so the calm resting state is two quiet actions, not three. */
+  .actions { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+  .actions .primary { flex:1 1 100%; }
+  .actions .quiet,.actions .danger { flex:1 1 0; }
+  /* Live activity: one row per active ChatGPT tab, what it's doing right now. Hidden when idle. */
+  .activity { margin-top:13px; padding-top:12px; border-top:1px solid var(--line-soft); }
+  .activity-head { display:flex; align-items:baseline; gap:8px; margin-bottom:9px; }
+  .activity-title { color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; }
+  .activity-count { color:var(--faint); font-size:10px; }
+  .lanes { display:flex; flex-direction:column; gap:7px; }
+  .lane { display:flex; align-items:center; gap:9px; padding:8px 9px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); }
+  .lane.is-finishing { opacity:.5; }
+  .lane-dot { width:8px; height:8px; flex:0 0 auto; border-radius:50%; background:var(--faint); }
+  .lane-dot.is-active { background:var(--accent); animation:lane-pulse 1.3s ease-in-out infinite; }
+  .lane-dot.is-done { background:var(--ok); }
+  .lane-dot.is-error { background:var(--err); }
+  .lane-dot.is-warn { background:#e6b566; }
+  @keyframes lane-pulse { 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  @media (prefers-reduced-motion:reduce){ .lane-dot.is-active{ animation:none; } }
+  .lane-body { flex:1; min-width:0; }
+  .lane-name { display:block; font-size:11.5px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3; }
+  .lane-state { font-size:11px; color:var(--muted); line-height:1.3; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .lane-state.is-error{ color:var(--err); } .lane-state.is-done{ color:var(--ok); } .lane-state.is-warn{ color:#e6b566; }
+  .lane-elapsed { flex:0 0 auto; color:var(--faint); font-size:10.5px; font-variant-numeric:tabular-nums; font-family:ui-monospace,Menlo,monospace; }
+  .actions.running { grid-template-columns:1fr auto; }
+  .actions #stop { display:none; }
+  .actions.running #runAll { display:none; }
+  .actions.running #stop { display:block; }
+  .primary,.quiet,.danger { white-space:nowrap; border-radius:var(--r-md); padding:9px 11px; font-size:12px; font-weight:600; transition:background .15s,border-color .15s; }
+  .primary { background:var(--accent); color:#fff; }
+  .primary:hover { background:#3a8cff; }
+  .quiet { background:var(--surface); color:var(--ink); border:1px solid var(--line); }
+  .quiet:hover { background:var(--surface-2); }
+  .danger { background:transparent; color:#ffa99f; border:1px solid rgba(255,128,113,.32); }
+  .danger:hover { background:rgba(255,128,113,.08); }
+  .primary:active,.quiet:active,.danger:active,.mini:active { transform:translateY(1px); }
+
+  /* Live batch progress: thin bar in the accent + a quiet legend, derived from all run slots. */
+  .progress { margin-top:12px; }
+  .bar { position:relative; height:4px; border-radius:999px; background:var(--surface-2); overflow:hidden; }
+  .bar > span { position:absolute; top:0; bottom:0; }
+  .bar .b-done { left:0; background:var(--accent); transition:width .25s ease; }
+  .bar .b-gen { background:var(--accent); opacity:.4; transition:left .25s ease,width .25s ease; }
+  .bar .b-err { background:var(--err); transition:left .25s ease,width .25s ease; }
+  @media (prefers-reduced-motion:reduce) { .bar > span { transition:none; } }
+  /* One calm legend line. The bar already shows the split visually, so the numbers read as a
+     quiet summary: "11 done / 4 generating / 45 left", failures only when there are any. */
+  .legend { display:flex; align-items:center; gap:6px; margin-top:7px; color:var(--muted); font-size:11px; }
+  .legend b { color:var(--ink); font-weight:600; }
+  .legend .l-err { color:var(--err); }
+  /* No failures: drop the chip entirely rather than show a quiet "0 failed". */
+  .legend .l-err.zero { display:none; }
+  .legend .sep { color:var(--line); }
+  .legend .spacer { flex:1; }
+  .legend .l-idle { color:var(--faint); }
+
+  /* One status line, not three. The flow message is the live narration; the error sits beside it
+     only when present. The old separate counter line was a third voice repeating the legend. */
+  .status { display:flex; align-items:baseline; gap:8px; margin-top:9px; min-height:15px; }
+  #flowState { flex:1; min-width:0; color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #counter { display:none; }
+  #error { flex:0 0 auto; color:var(--err); font-size:11px; }
+  .codexline { margin-top:6px; color:var(--accent); font-size:11px; font-weight:600; }
+
+  /* Ad list: each ad is a distinct collapsible card */
+  #list { padding:12px; display:flex; flex-direction:column; gap:12px; }
+  .ad { border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface); overflow:hidden; }
+
+  /* Ad header is the toggle for the whole ad */
+  .ad-head { display:flex; align-items:center; gap:11px; width:100%; text-align:left; padding:12px; background:none; cursor:pointer; }
+  .ad-head:hover { background:var(--surface-2); }
+  .ad-head:focus-visible,.section-head:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+  .ref-button { display:block; width:40px; height:40px; flex:0 0 auto; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:var(--r-md); background:var(--bg); cursor:zoom-in; }
+  .ref-button img { width:100%; height:100%; object-fit:contain; }
+  .ad-meta { min-width:0; flex:1; display:block; }
+  .ad-name { display:block; font-size:11.5px; font-weight:600; letter-spacing:-.01em; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3; }
+  .ad-sub { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:11px; margin-top:3px; min-width:0; }
+  .ad-sub > .ad-type { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ad-dot { color:var(--faint); flex:0 0 auto; }
+
+  /* Chevron indicator for any collapsible toggle */
+  .chev { flex:0 0 auto; width:8px; height:8px; border-right:1.5px solid var(--muted); border-bottom:1.5px solid var(--muted); transform:rotate(45deg); transition:transform .18s ease; margin-right:1px; }
+  .collapsed > .chev,
+  .collapsed .chev { transform:rotate(-45deg); }
+  .ad-head .chev { width:9px; height:9px; }
+
+  /* Ad body holds the subsections; padding lives here so the header stays full-bleed */
+  .ad-body { padding:2px 12px 14px; }
+  .ad.collapsed .ad-body { display:none; }
+
+  /* Foldable subsection (Model pool / Variations) */
+  .section { margin-top:12px; border-top:1px solid var(--line-soft); padding-top:12px; }
+  .section:first-child { margin-top:4px; border-top:0; padding-top:4px; }
+  .section-head { display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:none; padding:2px 0; margin-bottom:10px; cursor:pointer; }
+  .section-head:hover .section-title { color:var(--ink); }
+  .section.collapsed .section-head { margin-bottom:0; }
+  .section-title { color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; flex:1; }
+  .section-note { color:var(--faint); font-size:10px; font-weight:500; }
+  .section-head .chev { width:7px; height:7px; }
+  .section-body { }
+  .section.collapsed .section-body { display:none; }
+  .section-head .mini { flex:0 0 auto; }
+  .mini { border:1px solid var(--line); border-radius:var(--r-sm); color:var(--muted); padding:4px 8px; font-size:11px; font-weight:550; transition:background .15s,color .15s,border-color .15s; }
+  .mini:hover { background:var(--surface-2); color:var(--ink); }
+  /* "accent" minis are the generate actions. Kept neutral (no blue text); the single
+     blue pop is the progress bar, the primary button, and the picked-candidate ring. */
+  .mini.accent { color:var(--ink); border-color:var(--line); }
+  .mini.accent:hover { background:var(--surface-2); border-color:#30333d; }
+
+  /* Model pool: one compact row per person, candidate thumbnails beneath */
+  .models { display:flex; flex-direction:column; gap:10px; }
+  .model { display:flex; flex-direction:column; gap:7px; }
+  .model + .model { border-top:1px solid var(--line-soft); padding-top:10px; }
+  /* The label and its actions wrap to a second line when narrow instead of overflowing,
+     so Generate / Reset / Upload stay legible at ~360px. */
+  .model-tools { display:flex; align-items:center; gap:7px 8px; flex-wrap:wrap; }
+  .slot-label { flex:1 1 auto; min-width:80px; display:flex; align-items:baseline; gap:5px; color:var(--ink); font-size:11.5px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .slot-hint { color:var(--faint); font-weight:500; font-size:10px; }
+  .model-acts { display:flex; align-items:center; gap:5px; flex:0 0 auto; margin-left:auto; }
+  .model-acts .run-count { width:auto; padding:3px 5px; border-radius:var(--r-sm); border:1px solid var(--line); background:var(--surface-2); font-size:11px; }
+  /* Upload your own model: a label styled as a quiet micro button wrapping a hidden file input,
+     so the user can drop in their own photo as this slot's picked candidate. */
+  .model-upload { position:relative; overflow:hidden; }
+  .model-upload input[type=file] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+  .model-cands { display:grid; grid-template-columns:repeat(auto-fill,minmax(44px,1fr)); gap:6px; }
+  .micro { border:0; border-radius:var(--r-sm); padding:3px 6px; font-size:10px; font-weight:550; color:var(--muted); background:var(--surface-2); transition:background .15s,color .15s; }
+  .micro:hover { background:#2a2d37; color:var(--ink); }
+  .micro.accent { color:var(--ink); }
+
+  /* Variations: separated by dividers, not cards */
+  .variation { padding-top:14px; margin-top:14px; border-top:1px solid var(--line-soft); }
+  .variation:first-child { padding-top:0; margin-top:0; border-top:0; }
+  /* Product ads (NanoX, educational) have no model pool and no steps, so their variations
+     render straight into the body with no "Variations" section header wrapping them. */
+  .vars-bare { margin-top:4px; }
+  .vars-bare > .variation:first-child { padding-top:0; margin-top:0; border-top:0; }
+  .variation-head { display:flex; align-items:center; gap:8px; }
+  .letter { display:grid; place-items:center; width:20px; height:20px; flex:0 0 auto; border-radius:var(--r-sm); background:var(--surface-2); color:#c9cdd7; font-size:11px; font-weight:600; }
+  .variation-name { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12.5px; font-weight:600; }
+  .model-select { width:auto; flex:0 0 auto; padding:4px 6px; border:1px solid var(--line); border-radius:var(--r-sm); background:var(--surface-2); font-size:11px; }
+  .variation-acts { display:flex; align-items:center; gap:5px; flex:0 0 auto; }
+
+  /* Brief: the ad's message, quiet and read-only, sits under the variation name. The copy
+     speaks for itself, so no "BRIEF" label competes with it. A thin left rule marks it as a
+     quote without adding a word. */
+  .brief { margin-top:7px; padding-left:9px; border-left:2px solid var(--line); color:var(--muted); font-size:11px; line-height:1.5; }
+  .brief .brief-copy { color:var(--muted); }
+
+  /* Prompt rows */
+  .prompt { margin-top:11px; }
+  .prompt-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .prompt-name { color:var(--muted); font-size:11px; }
+  .prompt-actions { display:flex; align-items:center; gap:6px; flex:0 0 auto; }
+
+  /* Prompt disclosure: a quiet toggle that opens the exact text sent to ChatGPT, editable.
+     The toggle reuses the chevron. "edited" gets a small accent dot so a tweaked prompt reads
+     at a glance without shouting. */
+  .prompt-edit-toggle { display:inline-flex; align-items:center; gap:5px; padding:2px 0; color:var(--faint); font-size:10px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; cursor:pointer; }
+  .prompt-edit-toggle:hover { color:var(--muted); }
+  .prompt-edit-toggle .chev { width:6px; height:6px; border-color:var(--faint); }
+  .prompt-edit-toggle:hover .chev { border-color:var(--muted); }
+  .prompt-edit-toggle .edited-dot { width:5px; height:5px; border-radius:50%; background:var(--accent); flex:0 0 auto; }
+  .prompt-disc { margin-top:7px; }
+  .prompt-disc.collapsed { display:none; }
+  .prompt-text { display:block; width:100%; resize:vertical; min-height:96px; border:1px solid var(--line); border-radius:var(--r-sm); background:var(--surface-2); color:var(--ink); padding:8px 9px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; line-height:1.5; }
+  .prompt-text:focus-visible { outline:none; border-color:var(--accent); }
+  .prompt-disc-foot { display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .prompt-disc-note { flex:1; min-width:0; color:var(--faint); font-size:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .prompt-disc-note.is-edited { color:var(--muted); }
+  .run-count { width:auto; padding:4px 6px; border-radius:var(--r-sm); border:1px solid var(--line); background:var(--surface-2); font-size:11px; }
+  .run-slots { display:grid; grid-template-columns:repeat(auto-fill,minmax(40px,1fr)); gap:6px; margin-top:8px; }
+  .run { display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--faint); font-size:9px; }
+  /* Only meaningful captions render (e.g. "yours" on an uploaded photo). The generic
+     r1/c1 index under every thumb was noise, so it is no longer emitted. */
+  .run .run-tag { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:8.5px; color:var(--faint); }
+  .run img,.run-empty { width:100%; aspect-ratio:1; border-radius:var(--r-sm); border:1px solid var(--line); object-fit:cover; }
+  .run img { cursor:zoom-in; }
+  .run-empty { position:relative; display:grid; place-items:center; background:var(--surface-2); color:var(--faint); }
+
+  /* Done: a clear, slightly brighter frame so finished thumbs read as "complete". */
+  .run.done img { border-color:#3a3f4b; }
+
+  /* Generating: a calm shimmer sweep (no glow, single accent), reduced-motion safe. */
+  .run.generating .run-empty {
+    border-color:var(--line); color:transparent;
+    background:linear-gradient(100deg, var(--surface-2) 30%, #21242e 50%, var(--surface-2) 70%);
+    background-size:220% 100%; animation:shimmer 1.25s linear infinite;
+  }
+  @keyframes shimmer { from { background-position:180% 0; } to { background-position:-80% 0; } }
+  @media (prefers-reduced-motion:reduce) {
+    .run.generating .run-empty { animation:none; background:var(--surface-2); color:var(--faint); }
+    .run.generating .run-empty::after { content:""; position:absolute; width:9px; height:9px; border-radius:50%; border:1.5px solid var(--line); border-top-color:var(--muted); }
+  }
+
+  /* Error: quiet red hairline plus a retry glyph; the whole slot is clickable to re-run. */
+  .run.error .run-empty { border-color:rgba(255,128,113,.55); color:var(--err); background:var(--surface-2); cursor:pointer; }
+  .run.error .run-empty::after { content:"\21BB"; font-size:13px; line-height:1; }
+
+  /* Missing: muted "no image" dashed placeholder, clearly re-runnable. */
+  .run.missing .run-empty { border-style:dashed; border-color:#2c2f39; color:var(--faint); cursor:pointer; }
+  .run.missing .run-empty::after { content:"\21BB"; font-size:12px; line-height:1; opacity:.7; }
+
+  /* Model-pool candidates: tighter caption, smaller thumb radius */
+  .model-cands .run { gap:2px; font-size:8.5px; }
+  .model-cands .run img,.model-cands .run-empty { border-radius:var(--r-sm); }
+  /* The run number inside an empty slot. Hidden once the slot is busy/failed/missing
+     so the state glyph reads cleanly instead of fighting the digit. */
+  .run-empty .rn { transition:opacity .15s; }
+  .run.generating .run-empty .rn,
+  .run.error .run-empty .rn,
+  .run.missing .run-empty .rn { opacity:0; }
+
+  /* Picked candidate in the model pool: accent ring + check, the rest dim slightly */
+  .model-cands .run img { cursor:pointer; }
+  .model-cands .run.picked { position:relative; color:var(--accent); }
+  .model-cands .run.picked img { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+  .model-cands .run.picked::after { content:""; position:absolute; top:5px; right:5px; width:14px; height:14px; border-radius:50%; background:var(--accent); background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-size:10px; background-repeat:no-repeat; background-position:center; }
+
+  .foot { padding:16px; color:var(--muted); font-size:11px; line-height:1.5; }
+
+  /* View switching: home dashboard vs brand workflow. Only one is visible at a time. */
+  [hidden] { display:none !important; }
+  #homeView { display:flex; flex-direction:column; min-height:100vh; }
+  #workflowView { display:block; }
+
+  /* Home dashboard: calm, spacious, one accent. */
+  .home-head { padding:22px 18px 4px; }
+  .home-brand { display:flex; align-items:center; gap:10px; }
+  .home-mark { width:26px; height:26px; flex:0 0 auto; border-radius:8px; background:linear-gradient(135deg,#0752d6,#2892ff); box-shadow:0 4px 14px rgba(7,82,214,.35); }
+  .home-title { margin:0; font-size:19px; font-weight:680; letter-spacing:-.02em; }
+  .home-tag { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.55; max-width:34ch; }
+
+  .home-body { flex:1; padding:18px; display:flex; flex-direction:column; gap:16px; }
+
+  /* Card shell shared by status + entry points. */
+  .card { border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface); padding:15px 15px 13px; }
+  .card-label { color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; margin-bottom:12px; }
+
+  /* Status rows: a dot, a name, and a state value pushed to the right. */
+  .stat-row { display:flex; align-items:center; gap:9px; padding:7px 0; }
+  .stat-row + .stat-row { border-top:1px solid var(--line-soft); }
+  .stat-row .dot { width:8px; height:8px; }
+  .stat-row .dot.pending { background:var(--faint); }
+  .stat-name { flex:1; color:var(--ink); font-size:12px; font-weight:550; }
+  .stat-value { color:var(--muted); font-size:11.5px; text-align:right; }
+  .stat-value.good { color:var(--ok); }
+  .stat-value.bad { color:var(--err); }
+
+  .queue-row { display:flex; align-items:baseline; gap:8px; margin-top:12px; padding-top:11px; border-top:1px solid var(--line-soft); }
+  .queue-label { color:var(--muted); font-size:10px; font-weight:600; letter-spacing:.07em; text-transform:uppercase; }
+  .queue-value { flex:1; color:var(--ink); font-size:11.5px; }
+
+  /* Entry points: one primary action plus a quiet helper line. */
+  .entry { display:flex; flex-direction:column; gap:11px; }
+  .entry .lead { color:var(--muted); font-size:11.5px; line-height:1.5; }
+  .home-cta { width:100%; background:linear-gradient(135deg,#0752d6,#2892ff); color:#fff; border-radius:var(--r-md); padding:12px 14px; font-size:13px; font-weight:600; box-shadow:0 6px 18px rgba(7,82,214,.28); transition:filter .15s,transform .05s; }
+  .home-cta:hover { filter:brightness(1.06); }
+  .home-cta:active { transform:translateY(1px); }
+
+  .home-foot { padding:14px 18px 18px; display:flex; align-items:center; justify-content:space-between; color:var(--faint); font-size:10.5px; }
+  .home-foot .build { letter-spacing:.02em; }
+
+  /* A quiet "back to home" control at the top of the workflow header. */
+  .home-link { display:inline-flex; align-items:center; gap:5px; padding:5px 9px 5px 7px; border:1px solid var(--line); border-radius:var(--r-md); background:var(--surface); color:var(--muted); font-size:11px; font-weight:550; transition:background .15s,color .15s; }
+  .home-link:hover { background:var(--surface-2); color:var(--ink); }
+  .home-link .arrow { width:6px; height:6px; border-left:1.5px solid currentColor; border-bottom:1.5px solid currentColor; transform:rotate(45deg); }
+  .wf-topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .wf-topbar .build { color:var(--faint); font-size:10px; letter-spacing:.02em; }
+
+  /* Fullscreen preview */
+  .preview { position:fixed; inset:0; z-index:10; display:none; place-items:center; padding:20px; background:rgba(6,7,10,.85); }
+  .preview.open { display:grid; }
+  .preview img { max-width:100%; max-height:84vh; border-radius:var(--r-lg); box-shadow:0 20px 70px rgba(0,0,0,.55); }
+  .preview button { position:absolute; top:15px; right:16px; background:var(--surface); border:1px solid var(--line); padding:7px 11px; border-radius:var(--r-md); }
+</style>
+</head>
+<body>
+  <!-- Home dashboard: the default screen. A general agentic image frontend that drives
+       generation through your own ChatGPT tab. Status polls the local bridge. -->
+  <section id="homeView">
+    <div class="home-head">
+      <div class="home-brand">
+        <span class="home-mark"></span>
+        <h1 class="home-title">ImageGen</h1>
+      </div>
+      <p class="home-tag">A general image generation frontend. It runs batches through your own logged in ChatGPT tab, on your normal quota. Brand agnostic by design.</p>
+    </div>
+    <div class="home-body">
+      <div class="card">
+        <div class="card-label">Status</div>
+        <div class="stat-row">
+          <span class="dot pending" id="stBridgeDot"></span>
+          <span class="stat-name">Bridge</span>
+          <span class="stat-value" id="stBridgeVal">checking</span>
+        </div>
+        <div class="stat-row">
+          <span class="dot pending" id="stExtDot"></span>
+          <span class="stat-name">Extension</span>
+          <span class="stat-value" id="stExtVal">checking</span>
+        </div>
+        <div class="stat-row">
+          <span class="dot pending" id="stChatDot"></span>
+          <span class="stat-name">ChatGPT</span>
+          <span class="stat-value" id="stChatVal">checking</span>
+        </div>
+        <div class="queue-row">
+          <span class="queue-label">Queue</span>
+          <span class="queue-value" id="stQueueVal">idle</span>
+        </div>
+      </div>
+      <div class="card entry">
+        <div class="lead">Pick a brand and batch to open the generation workspace. Everything stays on this machine.</div>
+        <button class="home-cta" id="goWorkflow">Load a brand</button>
+      </div>
+    </div>
+    <div class="home-foot">
+      <span>Local. Your session, your quota.</span>
+      <span class="build" id="homeBuild">v1.8.0</span>
+    </div>
+  </section>
+
+  <!-- Brand workflow: the existing generation flow, now a view navigated into from home. -->
+  <div id="workflowView" hidden>
+  <header>
+    <div class="wf-topbar">
+      <button class="home-link" id="backHome"><span class="arrow"></span>Home</button>
+      <span class="build">v1.8.0</span>
+    </div>
+    <div class="topline">
+      <h1>ImageGen</h1>
+      <div class="conn"><span id="tabDot" class="dot"></span><span id="tabState">checking ChatGPT</span></div>
+    </div>
+    <div class="switchers">
+      <div><label for="brandSel">Brand</label><select id="brandSel"></select></div>
+      <div><label for="batchSel">Batch</label><select id="batchSel"></select></div>
+      <div><label for="aspectSel">Aspect</label><select id="aspectSel">
+        <option value="auto" selected>Auto</option>
+        <option value="1:1">1:1 square</option>
+        <option value="4:5">4:5 portrait</option>
+        <option value="5:4">5:4 landscape</option>
+        <option value="4:3">4:3 landscape</option>
+        <option value="3:4">3:4 portrait</option>
+        <option value="16:9">16:9 wide</option>
+        <option value="9:16">9:16 tall</option>
+      </select></div>
+    </div>
+    <div class="destination" id="destination"></div>
+    <div class="actions">
+      <button class="primary" id="runAll">Generate</button>
+      <button class="quiet" id="pauseToggle">Pause</button>
+      <button class="danger" id="stop">Stop</button>
+      <button class="quiet" id="restartBtn">Restart</button>
+      <button class="quiet" id="resetBatch">Reset</button>
+    </div>
+    <div class="progress" id="progress" hidden>
+      <div class="bar"><span class="b-done" id="barDone"></span><span class="b-gen" id="barGen"></span><span class="b-err" id="barErr"></span></div>
+      <div class="legend">
+        <span class="l-done"><b id="pgDone">0</b> done</span>
+        <span class="sep">/</span>
+        <span class="l-gen"><b id="pgGen">0</b> generating</span>
+        <span class="sep">/</span>
+        <span class="l-idle"><span id="pgIdle">0</span> left</span>
+        <span class="spacer"></span>
+        <span class="l-err zero" id="pgErrWrap"><b id="pgErr">0</b> failed</span>
+      </div>
+    </div>
+    <div class="status"><div id="flowState">Ready when you are.</div><div id="counter"></div><div id="error"></div></div>
+    <div class="codexline" id="codexLine" hidden></div>
+  </header>
+  <section class="activity" id="activity" hidden>
+    <div class="activity-head"><span class="activity-title">Activity</span><span class="activity-count" id="activityCount"></span></div>
+    <div class="lanes" id="lanes"></div>
+  </section>
+  <main id="list"></main>
+  <div class="foot">Reset clears this panel's saved previews and statuses. It never deletes files or ChatGPT chats.</div>
+  </div>
+  <div class="preview" id="preview"><button id="closePreview">Close</button><img id="previewImage" alt="Expanded image preview"></div>
+  <script src="logic.js"></script><script src="sidepanel.js"></script>
+</body>
+</html>

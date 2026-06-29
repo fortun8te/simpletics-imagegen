@@ -1,0 +1,41 @@
+{
+  "products": [
+    {
+      "key": "sea-salt-spray",
+      "name": "Sea Salt Spray",
+      "line": "Vanilla Voyage",
+      "volume": "237 ml / 8 oz",
+      "heightCm": 27,
+      "form": "tall white pump-spray bottle",
+      "colorNote": "white bottle with a brown wordmark",
+      "sizeAnchor": "a tall bottle, about 10 cm taller than a 500 ml soda can, roughly the length of his forearm, clearly present and not tiny"
+    },
+    {
+      "key": "matte-clay",
+      "name": "Matte Hair Clay",
+      "volume": "roughly 60 to 100 ml (approximate)",
+      "heightCm": 5,
+      "form": "wide short tub",
+      "colorNote": "palm-sized tub",
+      "sizeAnchor": "a small wide tub, about palm-sized, the height of a stacked few hockey pucks"
+    },
+    {
+      "key": "curl-mousse",
+      "name": "Curl Mousse",
+      "volume": "roughly soda-can volume (approximate)",
+      "heightCm": 15,
+      "form": "pump bottle",
+      "colorNote": "taller than the clay tub, roughly can-height",
+      "sizeAnchor": "a pump bottle about the size of a soda can"
+    },
+    {
+      "key": "texturizing-powder",
+      "name": "Texturizing Powder",
+      "volume": "very small (approximate)",
+      "heightCm": 8,
+      "form": "slim small shaker tube",
+      "colorNote": "very small, finger-length tube",
+      "sizeAnchor": "a slim small tube, about finger-length, smaller than a soda can"
+    }
+  ]
+}

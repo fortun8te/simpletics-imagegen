@@ -1,0 +1,100 @@
+{
+  "batch": "Batch 1",
+  "code": "b1",
+  "project": "Simpletics · Batch 1",
+  "aspect": "1024x1024",
+  "ads": [
+    {
+      "id": "IMG01", "type": "Testimonial", "product": "mousse", "kind": "face", "title": "Mousse",
+      "models": [
+        { "id": "m1", "prompt": "Candid phone headshot of Theo, 26, Northern European, long narrow face, delicate jaw, fine straight nose, wide-set blue eyes, fair skin with light freckles, soft light-brown hair with body. Plain wall, daylight. Neutral relaxed look. Real unretouched skin, slight phone-camera softness, not airbrushed." },
+        { "id": "m2", "prompt": "Candid phone headshot of Marco, 29, Mediterranean, square-but-refined face, clean jaw, short dark wavy hair, olive skin with visible pores and light stubble. Plain wall, daylight. Neutral easy look. Real skin texture, natural phone softness, not airbrushed." },
+        { "id": "m3", "prompt": "Candid phone headshot of Sam, 24, Anglo, oval face, soft boyish features, light stubble, dirty-blond hair with movement, fair skin with faint redness. Plain wall, daylight. Calm look. Real texture, soft phone focus, not airbrushed." }
+      ],
+      "variations": [
+        { "id": "A", "label": "Bathroom selfie", "prompt": "Candid iPhone front-camera selfie of the man in the attached reference image, same face, in an ordinary bathroom, soft morning daylight, plain wall behind. Hair with real body and lift from mousse. Relaxed faint smile, looking at the phone. Slightly soft phone focus, real unretouched skin, handheld, a little imperfect framing." },
+        { "id": "B", "label": "Bedroom mirror", "prompt": "Candid iPhone mirror selfie of the man in the attached reference image, same face, bedroom mirror, warm lamp and window light, plain. Hair full and textured. Neutral easy expression, phone half covering one cheek. Natural phone softness, real skin, unposed." },
+        { "id": "C", "label": "By the window", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, standing by a window in daylight, plain room. Hair with natural movement and lift. Looking slightly off-camera, calm. Soft phone focus, real texture, handheld and a little crooked." }
+      ]
+    },
+    {
+      "id": "IMG02", "type": "Educational", "product": "mousse", "kind": "product",
+      "title": "Mousse",
+      "variations": [
+        { "id": "A", "label": "Hands at the counter", "prompt": "A close product-in-hand shot on an iPhone looking down at a bathroom counter. An ordinary man's two hands in frame, one holding the Simpletics mousse can from the attached reference upright with the label to the camera, the other cupping a small dollop of white mousse. Soft daylight, plain counter with a little everyday clutter. Real skin with pores, natural phone softness, unposed." },
+        { "id": "B", "label": "Holding it up", "prompt": "First-person iPhone shot looking down: one hand holds the Simpletics mousse can from the attached reference at chest height, label to camera, a tiled shower wall softly blurred behind, a few water droplets on the can. Daylight. Real hand with knuckle creases, natural phone focus, candid." },
+        { "id": "C", "label": "Counter flat-lay", "prompt": "Overhead iPhone flat-lay on a bathroom counter: the Simpletics mousse can from the attached reference next to a comb and a folded towel, one hand reaching in to pick it up. Soft window light, plain stone counter. Real materials, slight motion, phone softness, unstyled." }
+      ]
+    },
+    {
+      "id": "IMG04", "type": "Testimonial", "product": "saltspray", "kind": "face", "title": "Sea salt spray",
+      "models": [
+        { "id": "m1", "prompt": "Candid phone headshot of Mateo, 28, Mediterranean, oval face, clean medium jaw, fine straight nose, deep-set brown eyes, thick brows, olive skin with pores and light stubble, short dark hair with sea-salt grit. Plain wall, daylight. Relaxed look. Real unretouched skin, natural phone softness." },
+        { "id": "m2", "prompt": "Candid phone headshot of Henrik, 27, Scandinavian, heart-shaped face with wide cheekbones and a narrow chin, straight high-bridge nose, slightly hooded eyes, fair skin with freckles, sandy hair with a matte tousled finish. Plain wall, daylight. Neutral steady look. Real texture, natural phone softness." },
+        { "id": "m3", "prompt": "Candid phone headshot of Dev, 25, light South-Asian, round-soft face, full cheeks, warm brown skin with real pores, dark hair with a gritty textured push-back. Plain wall, daylight. Easy half-smile. Soft focus, unposed, real skin." }
+      ],
+      "variations": [
+        { "id": "A", "label": "Bathroom selfie", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, ordinary bathroom, soft daylight, plain tiled wall. Hair with sea-salt grit and separation. Relaxed faint smile, looking at the phone. Soft phone focus, real unretouched skin, handheld." },
+        { "id": "B", "label": "Bedroom mirror", "prompt": "Candid iPhone mirror selfie of the man in the attached reference image, same face, plain bedroom, window daylight. Hair with a matte tousled sea-salt finish. Neutral steady look. Real texture, natural phone softness." },
+        { "id": "C", "label": "By the window", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, by a sunny window, plain wall. Hair with gritty texture and push-back. Easy half-smile, phone slightly low. Soft focus, unposed, a little imperfect framing." }
+      ]
+    },
+    {
+      "id": "IMG05", "type": "Testimonial", "product": "saltspray", "kind": "face", "title": "Sea salt spray, 2nd voice",
+      "models": [
+        { "id": "m1", "prompt": "Candid phone headshot of Luca, 30, Italian, long face with high cheekbones, fine straight nose, calm dark eyes, olive skin with shine and stubble, dark hair with loose salt-textured wave. Plain wall, warm daylight. Relaxed neutral look. Real skin, natural phone softness." },
+        { "id": "m2", "prompt": "Candid phone headshot of Ari, 26, Middle-Eastern, diamond face (narrow brow and jaw, wide cheekbones), straight brows, deep olive skin with pores, near-black hair with a matte gritty finish. Plain wall, daylight. Slight smile. Real texture, soft phone focus." },
+        { "id": "m3", "prompt": "Candid phone headshot of Finn, 23, Anglo, narrow face, soft jaw, light stubble, pale skin with faint redness and freckles, light-brown hair with airy sea-salt separation. Plain wall, daylight. Looking just off lens, calm. Soft focus, real skin." }
+      ],
+      "variations": [
+        { "id": "A", "label": "Bathroom selfie", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, bathroom, warm window light, plain. Hair with loose salt-textured wave. Relaxed neutral expression. Real skin, natural phone softness, handheld." },
+        { "id": "B", "label": "Bedroom mirror", "prompt": "Candid iPhone mirror selfie of the man in the attached reference image, same face, plain bedroom, daylight. Hair with a matte gritty finish. Slight smile, phone at an angle. Real texture, soft phone focus, unposed." },
+        { "id": "C", "label": "By the window", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, by a window in daylight, plain. Hair with airy sea-salt separation. Looking just off lens, calm. Soft focus, real skin, handheld and slightly crooked." }
+      ]
+    },
+    {
+      "id": "IMG07", "type": "Educational", "product": "texturepowder", "kind": "product",
+      "title": "Texture powder",
+      "variations": [
+        { "id": "A", "label": "Tipping into palm", "prompt": "A close product-in-hand shot on an iPhone looking down at a bathroom counter. An ordinary man's hand holds the Simpletics texture powder bottle from the attached reference upright, label to camera, the other hand tipping a little powder into his palm. Soft daylight, plain counter, real skin texture, natural phone softness, candid." },
+        { "id": "B", "label": "Shaking it out", "prompt": "First-person iPhone shot: one hand shakes the Simpletics texture powder bottle from the attached reference over the other open palm, a faint dusting of powder mid-air, plain bathroom counter softly blurred behind. Daylight, real hands with creases, natural phone focus, slight motion blur on the powder." },
+        { "id": "C", "label": "Counter flat-lay", "prompt": "Overhead iPhone shot on a stone counter: the Simpletics texture powder bottle from the attached reference next to a comb, cap off, one hand reaching in. Soft daylight, plain surface, a little clutter. Real materials, phone softness, unstyled." }
+      ]
+    },
+    {
+      "id": "IMG08", "type": "Testimonial", "product": "texturepowder", "kind": "face", "title": "Texture powder",
+      "models": [
+        { "id": "m1", "prompt": "Candid phone headshot of Noah, 27, Anglo, clean refined oval face, defined-but-not-heavy jaw, straight nose, light stubble, fair skin with pores, mid-brown hair with strong matte texture and volume. Plain wall, daylight. Relaxed faint smile. Real skin, natural phone softness." },
+        { "id": "m2", "prompt": "Candid phone headshot of Elias, 29, Mediterranean, angular defined jaw with a flat cheek plane, straight brows, olive skin with stubble and shine, dark hair with a dense matte textured crop. Plain wall, lamp and window light. Neutral steady look. Real texture, soft phone focus." },
+        { "id": "m3", "prompt": "Candid phone headshot of Toby, 24, Anglo, round-soft boyish face, full cheeks, fair freckled skin, light-brown hair with a tousled matte finish. Plain wall, daylight. Easy half-smile. Soft phone focus, unposed." }
+      ],
+      "variations": [
+        { "id": "A", "label": "Bathroom selfie", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, bathroom, soft daylight, plain wall. Hair with strong matte texture and volume from powder. Relaxed faint smile, looking at the phone. Real skin, natural phone softness, handheld." },
+        { "id": "B", "label": "Bedroom mirror", "prompt": "Candid iPhone mirror selfie of the man in the attached reference image, same face, plain bedroom, lamp and window light. Hair a dense matte textured crop. Neutral steady look. Real texture, soft phone focus." },
+        { "id": "C", "label": "By the window", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, by a sunny window, plain room. Hair tousled matte with visible separation. Easy half-smile. Soft phone focus, unposed, slightly imperfect framing." }
+      ]
+    },
+    {
+      "id": "IMG09", "type": "Testimonial", "product": "clay", "kind": "face", "title": "Clay",
+      "models": [
+        { "id": "m1", "prompt": "Candid phone headshot of Adam, 28, Mediterranean, square-but-refined face, clean jaw, fine straight nose, olive skin with pores and stubble, dark hair styled back with a strong matte clay hold. Plain wall, daylight. Relaxed neutral look. Real skin, natural phone softness." },
+        { "id": "m2", "prompt": "Candid phone headshot of Jonas, 26, Northern European, long narrow face, delicate jaw, fair skin with faint redness, dirty-blond hair in a firm matte side part. Plain wall, window daylight. Slight smile. Real texture, soft phone focus." },
+        { "id": "m3", "prompt": "Candid phone headshot of Kai, 25, East-Asian (Korean-leaning), oval face, clean medium jaw, smooth skin with real pores and a little shine, black hair in a textured matte crop. Plain wall, daylight. Calm half-smile. Soft phone focus, handheld." }
+      ],
+      "variations": [
+        { "id": "A", "label": "Bathroom selfie", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, bathroom, soft daylight, plain wall. Hair styled back with a strong matte clay hold and visible comb separation. Relaxed neutral expression, looking at the phone. Real skin, natural phone softness." },
+        { "id": "B", "label": "Bedroom mirror", "prompt": "Candid iPhone mirror selfie of the man in the attached reference image, same face, plain bedroom, window daylight. Hair in a firm matte side part with clay. Slight smile, phone at an angle. Real texture, soft phone focus, unposed." },
+        { "id": "C", "label": "By the window", "prompt": "Candid iPhone selfie of the man in the attached reference image, same face, by a window in daylight, plain. Hair a textured matte crop with clay definition. Calm half-smile. Soft phone focus, handheld, a little crooked." }
+      ]
+    },
+    {
+      "id": "IMG10", "type": "Educational", "product": "clay", "kind": "product",
+      "title": "Clay",
+      "variations": [
+        { "id": "A", "label": "Scooping from jar", "prompt": "A close product-in-hand shot on an iPhone looking down at a bathroom counter. An ordinary man's hand holds the Simpletics clay jar from the attached reference upright, label to camera, the other hand scooping a fingertip of matte clay from the open jar. Soft daylight, plain counter, real skin with pores, natural phone softness, candid." },
+        { "id": "B", "label": "Working it in", "prompt": "First-person iPhone shot: two hands working a small amount of matte clay between the fingertips, the open Simpletics clay jar from the attached reference on the plain counter in front, label to camera. Daylight, real hands, natural phone focus, unposed." },
+        { "id": "C", "label": "Counter flat-lay", "prompt": "Overhead iPhone flat-lay: the Simpletics clay jar from the attached reference open on a stone counter next to a comb and a folded towel, one hand reaching in to scoop. Soft daylight, plain surface. Real materials, phone softness, unstyled." }
+      ]
+    }
+  ]
+}

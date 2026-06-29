@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "ImageGen",
+  "version": "1.8.1",
+  "description": "Batch-generate images through your own logged-in ChatGPT, on your normal quota. Real session, images render, auto-named downloads. (1.8.1: Activity now shows a live Codex lane — what it's generating on the separate quota and how far. 1.8.0: codex images sync into the panel as previews; never overwrite — every regenerate writes a new version (run-N-v2, v3...), panel shows the latest.)",
+  "permissions": [
+    "downloads",
+    "sidePanel",
+    "storage",
+    "unlimitedStorage",
+    "scripting",
+    "tabs",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://*.chatgpt.com/*",
+    "http://localhost:8787/*",
+    "http://127.0.0.1:8787/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "action": {
+    "default_title": "ImageGen"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://*.chatgpt.com/*"
+      ],
+      "js": [
+        "logic.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "128": "icons/icon128.png"
+  }
+}
