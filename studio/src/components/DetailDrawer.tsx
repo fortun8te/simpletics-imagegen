@@ -1,7 +1,8 @@
-// DetailDrawer (container) — right slide-over for a single slot.
-// Reads ui.drawerRel + state from the store; finds the slot's ad/variation/prompt
-// coords; renders the full image, a versions strip (all slots under that prompt),
-// and an actions row (regenerate / make variations / archive / download / copy path).
+// DetailDrawer (container) — CENTERED MODAL for a single slot.
+// (Kept the filename so AppShell's `import DetailDrawer from './DetailDrawer'` still resolves.)
+// Reads ui.drawerRel + state from the store; finds the slot's ad/variation/prompt coords;
+// renders the full image large + centered, coords + status, the prompt text (scrollable),
+// the reference image (via api.getPrompt), and a primary Revise flow + quiet secondary actions.
 import { useEffect, useMemo, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from './Icon';
@@ -39,9 +40,13 @@ export default function DetailDrawer() {
   const batch = useStore((st) => st.batch);
   const setUI = useStore((st) => st.setUI);
 
-  const [copied, setCopied] = useState(false);
   const [promptInfo, setPromptInfo] = useState<PromptInfo | null>(null);
   const [promptLoading, setPromptLoading] = useState(false);
+
+  // Revise flow
+  const [instruction, setInstruction] = useState('');
+  const [revising, setRevising] = useState(false);
+  const [revisedOk, setRevisedOk] = useState(false);
 
   const found = useMemo(
     () => (drawerRel && state ? locate(state.ads, drawerRel) : null),
@@ -58,9 +63,8 @@ export default function DetailDrawer() {
   );
 
   // Resolve the slot's ad/variation/prompt coords from state, then fetch the prompt
-  // text + reference image(s) for the drawer. Keyed on the coords (+ brand/batch) so it
-  // refetches when you switch to a slot under a different prompt, but not when you flip
-  // between versions of the same prompt.
+  // text + reference image(s). Keyed on the coords (+ brand/batch) so it refetches when you
+  // switch to a slot under a different prompt, but not when you flip between versions.
   const adId = found?.ad.id ?? null;
   const variationId = found?.variation.id ?? null;
   const promptId = found?.prompt.id ?? null;
@@ -87,6 +91,13 @@ export default function DetailDrawer() {
     };
   }, [open, brand, batch, adId, variationId, promptId]);
 
+  // Reset the revise field + confirmation whenever the modal closes or the shown slot changes.
+  useEffect(() => {
+    setInstruction('');
+    setRevising(false);
+    setRevisedOk(false);
+  }, [drawerRel]);
+
   const refUrl = promptInfo?.refUrl || null;
   const refName = promptInfo?.refName || null;
   const promptText = promptInfo?.text?.trim() || '';
@@ -106,33 +117,36 @@ export default function DetailDrawer() {
     : '';
 
   const switchTo = (relPath: string) => {
-    setCopied(false);
     setUI({ drawerRel: relPath });
+  };
+
+  const doRevise = async () => {
+    const text = instruction.trim();
+    if (!drawerRel || !text || revising) return;
+    setRevising(true);
+    setRevisedOk(false);
+    const r = await api.revise(drawerRel, text);
+    setRevising(false);
+    if (r.ok) {
+      setRevisedOk(true);
+      setInstruction('');
+      window.setTimeout(() => setRevisedOk(false), 4000);
+    }
+  };
+
+  const onReviseKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      doRevise();
+    }
   };
 
   const regenerate = () => {
     if (drawerRel) api.regenerate(drawerRel);
   };
 
-  const makeVariations = () => {
-    if (brand && batch && ad && variation && prompt) {
-      api.generate(brand, batch, { prompt: { ad: ad.id, variation: variation.id, prompt: prompt.id } }, 2);
-    }
-  };
-
   const toggleArchive = () => {
     if (drawerRel && slot) api.archive(drawerRel, !isArchived);
-  };
-
-  const copyPath = async () => {
-    if (!drawerRel) return;
-    try {
-      await navigator.clipboard.writeText(drawerRel);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1600);
-    } catch {
-      setCopied(false);
-    }
   };
 
   return (
@@ -140,22 +154,12 @@ export default function DetailDrawer() {
       <Dialog.Portal>
         <Dialog.Overlay className={s.overlay} />
         <Dialog.Content className={s.content} aria-describedby={undefined}>
-          <div className={s.head}>
-            <div className={s.crumb}>
-              <p className={s.eyebrow}>Image detail</p>
-              <Dialog.Title className={s.title}>{adLabel}</Dialog.Title>
-              <div className={s.coords}>
-                <span className={s.coordText}>{coords || drawerRel}</span>
-                {slot ? <StatusPill status={slot.status} /> : null}
-              </div>
-            </div>
-            <Dialog.Close className={s.close} aria-label="Close">
-              <Icon name="x" size={16} />
-            </Dialog.Close>
-          </div>
+          <Dialog.Close className={s.close} aria-label="Close">
+            <Icon name="x" size={16} />
+          </Dialog.Close>
 
           <div className={s.body}>
-            {/* Full image, contained */}
+            {/* Full image — large + centered at top */}
             <div className={s.hero}>
               {drawerRel ? (
                 <img
@@ -170,6 +174,16 @@ export default function DetailDrawer() {
                   <span>No image found for this path.</span>
                 </div>
               )}
+            </div>
+
+            {/* Coords + status */}
+            <div className={s.meta}>
+              <p className={s.eyebrow}>Image detail</p>
+              <Dialog.Title className={s.title}>{adLabel}</Dialog.Title>
+              <div className={s.coords}>
+                <span className={s.coordText}>{coords || drawerRel}</span>
+                {slot ? <StatusPill status={slot.status} /> : null}
+              </div>
             </div>
 
             {/* Versions strip */}
@@ -196,6 +210,40 @@ export default function DetailDrawer() {
                 </div>
               </div>
             ) : null}
+
+            {/* PRIMARY ACTION — Revise */}
+            <div className={s.revise}>
+              <label className={s.reviseLabel} htmlFor="revise-input">
+                Revise this image
+              </label>
+              <div className={s.reviseRow}>
+                <input
+                  id="revise-input"
+                  className={s.reviseInput}
+                  type="text"
+                  value={instruction}
+                  onChange={(e) => setInstruction(e.target.value)}
+                  onKeyDown={onReviseKey}
+                  placeholder="What should change? (e.g. brighter, show the tube label, less wrinkly)"
+                  disabled={!drawerRel || revising}
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  className={s.reviseBtn}
+                  onClick={doRevise}
+                  disabled={!drawerRel || revising || !instruction.trim()}
+                >
+                  <Icon name="sparkles" size={15} />
+                  <span>{revising ? 'Queuing…' : 'Revise'}</span>
+                </button>
+              </div>
+              <div className={s.reviseHint} aria-live="polite">
+                {revisedOk
+                  ? 'Queued — a new version is on the way.'
+                  : 'Queues a new version with your change applied.'}
+              </div>
+            </div>
 
             {/* Prompt text */}
             <div className={s.section}>
@@ -232,64 +280,48 @@ export default function DetailDrawer() {
               </div>
             ) : null}
 
-            {/* Actions */}
-            <div className={s.section}>
-              <p className={s.label}>Actions</p>
-              <div className={s.actions}>
-                <button
-                  type="button"
-                  className={`${s.btn} ${s.primary}`}
-                  onClick={regenerate}
-                  disabled={!drawerRel}
-                >
-                  <Icon name="refresh" size={15} />
-                  <span>Regenerate</span>
-                </button>
+            {/* Secondary actions — quiet */}
+            <div className={s.secondaryRow}>
+              <button
+                type="button"
+                className={s.quiet}
+                onClick={regenerate}
+                disabled={!drawerRel}
+              >
+                <Icon name="refresh" size={14} />
+                <span>Regenerate</span>
+              </button>
 
-                <button
-                  type="button"
-                  className={`${s.btn} ${s.secondary}`}
-                  onClick={makeVariations}
-                  disabled={!found || !brand || !batch}
-                >
-                  <Icon name="sparkles" size={15} />
-                  <span>Make 2 variations</span>
-                </button>
+              <a
+                className={s.quiet}
+                href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+                download
+                aria-disabled={!drawerRel}
+              >
+                <Icon name="download" size={14} />
+                <span>Download</span>
+              </a>
 
-                <button
-                  type="button"
-                  className={`${s.btn} ${s.secondary} ${s.danger}`}
-                  onClick={toggleArchive}
-                  disabled={!slot}
-                >
-                  <Icon name={isArchived ? 'restore' : 'archive'} size={15} />
-                  <span>{isArchived ? 'Restore' : 'Archive'}</span>
-                </button>
+              <a
+                className={s.quiet}
+                href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+                target="_blank"
+                rel="noreferrer"
+                aria-disabled={!drawerRel}
+              >
+                <Icon name="photo" size={14} />
+                <span>Open original</span>
+              </a>
 
-                <a
-                  className={`${s.btn} ${s.secondary}`}
-                  href={drawerRel ? api.imgUrl(drawerRel) : undefined}
-                  download
-                  aria-disabled={!drawerRel}
-                >
-                  <Icon name="download" size={15} />
-                  <span>Download</span>
-                </a>
-
-                <button
-                  type="button"
-                  className={`${s.btn} ${s.secondary}`}
-                  onClick={copyPath}
-                  disabled={!drawerRel}
-                  style={{ gridColumn: '1 / -1' }}
-                >
-                  <Icon name={copied ? 'check' : 'photo'} size={15} />
-                  <span>{copied ? 'Copied path' : 'Copy path'}</span>
-                </button>
-              </div>
-              <div className={s.ok} aria-live="polite">
-                {copied ? 'Path copied to clipboard.' : ''}
-              </div>
+              <button
+                type="button"
+                className={s.archiveTiny}
+                onClick={toggleArchive}
+                disabled={!slot}
+              >
+                <Icon name={isArchived ? 'restore' : 'archive'} size={13} />
+                <span>{isArchived ? 'Restore' : 'Archive'}</span>
+              </button>
             </div>
           </div>
         </Dialog.Content>

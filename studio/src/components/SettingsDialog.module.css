@@ -1,12 +1,13 @@
-/* SettingsDialog — centered modal with a blurred, dimmed backdrop. Card on --surface, premium shadow.
+/* SettingsDialog — centered, wide premium modal with a blurred, dimmed backdrop.
+   Card on --surface, --r-lg, --shadow-lg, generous padding, sectioned with .eyebrow labels.
    Single committed dark theme; all token-based. */
 
 .overlay {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, #000 38%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: color-mix(in srgb, #000 46%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   animation: fade var(--dur-2) var(--ease);
 }
 
@@ -15,7 +16,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 420px;
+  width: 560px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 64px);
   display: flex;
@@ -44,30 +45,31 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-4) var(--space-4) var(--space-3);
+  padding: var(--space-6) var(--space-6) var(--space-4);
   border-bottom: 1px solid var(--line);
   flex: none;
 }
 
 .title {
-  font-size: 15px;
-  font-weight: 500;
+  font-size: var(--t-title);
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--ink);
   margin: 0;
 }
 
 .subtitle {
-  font-size: 12px;
+  font-size: var(--t-body);
   color: var(--muted);
-  margin: 2px 0 0;
+  margin: 4px 0 0;
 }
 
 .close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: var(--r-md);
   color: var(--muted);
   flex: none;
@@ -79,31 +81,49 @@
   color: var(--ink);
 }
 
-/* Body */
+/* Body — scrolls if it overflows; generous padding + breathing room between sections */
 .body {
   flex: 1 1 auto;
   overflow-y: auto;
-  padding: var(--space-4);
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-8);
+}
+
+/* Section — an eyebrow label over its content */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.eyebrow {
+  margin: 0;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
-.label {
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+/* Row head + shared label/hint typography */
+.rowHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rowLabel {
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--ink);
+}
+.rowHint {
+  font-size: 12px;
   color: var(--muted);
-  margin: 0;
 }
 
-/* Segmented control (theme + density) */
+/* Segmented control (density) */
 .segmented {
   display: inline-flex;
   align-items: stretch;
@@ -120,10 +140,10 @@
   justify-content: center;
   gap: 6px;
   flex: 1 1 0;
-  height: 32px;
-  padding: 0 12px;
+  height: 34px;
+  padding: 0 14px;
   border-radius: var(--r-sm);
-  font-size: 13px;
+  font-size: var(--t-body);
   font-weight: 500;
   color: var(--muted);
   transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
@@ -152,16 +172,6 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-.toggleLabel {
-  font-size: 13px;
-  color: var(--ink);
-}
-
-.toggleHint {
-  font-size: 12px;
-  color: var(--muted);
 }
 
 /* Switch */
@@ -195,12 +205,95 @@
   transform: translateX(16px);
 }
 
+/* System — a tray card with a status row + a usage row, divided by a hairline */
+.systemCard {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  border-radius: var(--r-md);
+  background: var(--tray);
+  border: 1px solid var(--line);
+  box-shadow: var(--inset-hi);
+}
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.statusSeg {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.statusDivider {
+  width: 1px;
+  height: 12px;
+  flex: none;
+  background: var(--line-strong);
+}
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  flex: none;
+  background: var(--faint);
+  transition: background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.statusDot[data-state='ok'] {
+  background: var(--ok);
+}
+.statusDot[data-state='busy'] {
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.statusDot[data-state='err'] {
+  background: var(--err);
+}
+.statusText {
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.systemDivider {
+  height: 1px;
+  margin: var(--space-3) 0;
+  background: var(--line);
+}
+.usageRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.usageLabel {
+  font-size: var(--t-body);
+  color: var(--muted);
+}
+.usageValue {
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+.usageValue[data-known] {
+  color: var(--ink);
+}
+.usageSession {
+  color: var(--faint);
+  font-weight: 400;
+}
+
 /* About NEUEGEN — a small nested tray card */
 .aboutCard {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  padding: var(--space-3);
+  padding: var(--space-4);
   border-radius: var(--r-md);
   background: var(--tray);
   border: 1px solid var(--line);
@@ -210,8 +303,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   flex: none;
   border-radius: var(--r-md);
   background: var(--accent-soft);
@@ -224,7 +317,7 @@
   min-width: 0;
 }
 .aboutName {
-  font-size: 13px;
+  font-size: var(--t-body);
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--ink);
@@ -238,18 +331,4 @@
   font-size: 11px;
   color: var(--faint);
   font-variant-numeric: tabular-nums;
-}
-
-/* Footer — About line */
-.foot {
-  display: flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-4) var(--space-4);
-  border-top: 1px solid var(--line);
-  flex: none;
-}
-
-.about {
-  font-size: 12px;
-  color: var(--faint);
 }

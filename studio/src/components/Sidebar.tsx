@@ -1,13 +1,14 @@
 // Sidebar (container). NEUEGEN wordmark, a brand switcher (Radix dropdown over config.brands),
 // a live batch list fetched from api.getBatches(brand) with client-side search + recency sort, and a
-// redesigned footer: a status chip (Codex + bridge health from /api/health), a Codex usage meter
-// (from state.codexUsage), and a clean workspace/account row whose menu offers workspace switching,
+// clean footer that is now JUST the workspace/account row whose menu offers workspace switching,
 // Settings and About — no theme item (the app is a single committed dark theme).
+// System status (Codex + bridge health) and Codex usage have MOVED to the Settings dialog,
+// so the sidebar no longer polls /api/health.
 import { useEffect, useMemo, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useStore } from '../store';
 import { api } from '../api';
-import type { Health, BrandRef, BatchMeta, CodexUsage } from '../types';
+import type { BrandRef, BatchMeta } from '../types';
 import { Icon } from './Icon';
 import styles from './Sidebar.module.css';
 
@@ -33,25 +34,12 @@ function relTime(ts: number): string {
   return `${Math.floor(d / 30)}mo ago`;
 }
 
-// Remaining-quota percent for the usage meter (clamped 0-100), derived from whichever
-// signal codexUsage carries. Returns null when nothing usable is present.
-function usagePercent(u: CodexUsage | undefined): number | null {
-  if (!u || !u.known) return null;
-  if (typeof u.percent === 'number') return Math.max(0, Math.min(100, u.percent));
-  if (typeof u.remaining === 'number' && typeof u.total === 'number' && u.total > 0) {
-    return Math.max(0, Math.min(100, Math.round((u.remaining / u.total) * 100)));
-  }
-  return null;
-}
-
 export default function Sidebar() {
   const config = useStore((s) => s.config);
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
   const select = useStore((s) => s.select);
   const setUI = useStore((s) => s.setUI);
-  // Codex usage rides on the batch state (server-derived); read it straight from the store.
-  const codexUsage = useStore((s) => s.state?.codexUsage);
 
   const brands = config.brands ?? [];
   const currentBrand = brands.find((b) => b.id === brand);
@@ -78,24 +66,6 @@ export default function Sidebar() {
       : batches.slice();
     return filtered.sort((a, b) => (b.modifiedAt || 0) - (a.modifiedAt || 0));
   }, [batches, query]);
-
-  // Health polling — every 5s. Null until the first probe resolves.
-  const [health, setHealth] = useState<Health | null>(null);
-  useEffect(() => {
-    let alive = true;
-    const probe = () => api.getHealth().then((h) => { if (alive) setHealth(h); });
-    probe();
-    const t = window.setInterval(probe, 5000);
-    return () => { alive = false; window.clearInterval(t); };
-  }, []);
-
-  const bridgeUp = !!health?.bridge;
-  const codexBusy = !!health?.codex?.alive;
-
-  const pct = usagePercent(codexUsage);
-  const usageLabel =
-    pct != null ? `Codex · ${pct}% left` : (codexUsage?.label ?? 'unknown');
-  const sessionCount = codexUsage?.sessionGenerated ?? 0;
 
   return (
     <aside className={styles.sidebar}>
@@ -179,50 +149,8 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer — status chip + usage meter + account row */}
+      {/* Footer — just the account / workspace row now (status + usage moved to Settings) */}
       <div className={styles.footer}>
-        {/* Status chip: codex state dot + bridge dot */}
-        <div className={styles.statusChip} role="status" aria-live="polite">
-          <span className={styles.statusSeg}>
-            <span
-              className={styles.statusDot}
-              data-state={codexBusy ? 'busy' : 'ok'}
-            />
-            <span className={styles.statusText}>
-              {codexBusy ? 'Codex running' : 'Codex ready'}
-            </span>
-          </span>
-          <span className={styles.statusDivider} aria-hidden />
-          <span className={styles.statusSeg}>
-            <span
-              className={styles.statusDot}
-              data-state={bridgeUp ? 'ok' : 'err'}
-            />
-            <span className={styles.statusText}>
-              {bridgeUp ? 'Bridge up' : 'Bridge down'}
-            </span>
-          </span>
-        </div>
-
-        {/* Codex usage meter */}
-        <div className={styles.usage} aria-live="polite">
-          {pct != null ? (
-            <>
-              <div className={styles.usageBarTrack}>
-                <div className={styles.usageBarFill} style={{ width: `${pct}%` }} />
-              </div>
-              <span className={styles.usageLabel}>{usageLabel}</span>
-            </>
-          ) : (
-            <span className={styles.usageUnknown}>
-              Usage · unknown
-              {sessionCount > 0 && (
-                <span className={styles.usageSession}> · {sessionCount} this session</span>
-              )}
-            </span>
-          )}
-        </div>
-
         {/* Account / workspace row */}
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>

@@ -1,18 +1,18 @@
-/* ActivityPanel — floating bottom-right premium card. Live run + job activity.
-   Opens on ui.activityOpen or when jobs exist. Theme tokens only; custom-bezier
-   motion (var(--ease)); soft --shadow-lg; concentric radii; lime used sparingly. */
+/* ActivityPanel — quiet, minimal bottom-right card. Live run + job activity.
+   Opens on ui.activityOpen or when jobs exist. Theme tokens only.
+   Restraint: one accent (blue) used only on the progress fill + spinner.
+   No section cards, no gradients, minimal borders. Calm and legible. */
 
 .panel {
   position: fixed;
   right: var(--space-6);
   bottom: var(--space-6);
   z-index: 50;
-  width: 296px;
-  max-height: min(62vh, 560px);
+  width: 300px;
+  max-height: min(60vh, 540px);
   display: flex;
   flex-direction: column;
   background: var(--surface);
-  border: 1px solid var(--line);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -31,54 +31,30 @@
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-4) var(--space-3);
-  border-bottom: 1px solid var(--line-soft);
-  background: linear-gradient(180deg, var(--surface-2), var(--surface));
 }
 
 .headTop {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  align-items: baseline;
+  gap: var(--space-3);
 }
 
-/* Run-state chip: a tone dot + label. Tone set per-state below. */
-.statusChip {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-  flex: 1 1 auto;
-}
-
-.dot {
-  flex: 0 0 auto;
-  width: 8px;
-  height: 8px;
-  border-radius: var(--r-pill);
-  background: var(--faint);
-}
-
+/* Small run-state label — quiet by default, no dots/chips. */
 .runLabel {
+  flex: 1 1 auto;
+  min-width: 0;
   font-size: var(--t-body);
   font-weight: 500;
-  color: var(--ink);
+  color: var(--muted);
   letter-spacing: -0.01em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* State tones — accent for live work, neutral/quiet otherwise. */
-.s_running .dot { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); animation: pulse 1.6s var(--ease) infinite; }
-.s_paused  .dot { background: var(--warn); }
-.s_cooling .dot { background: var(--warn); animation: pulse 1.6s var(--ease) infinite; }
-.s_done    .dot { background: var(--ok); }
-.s_idle    .dot { background: var(--faint); }
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: .45; }
-}
+.s_running { color: var(--ink); }
+.s_done    { color: var(--ink); }
+/* idle / paused stay quiet (muted). */
 
 .tally {
   flex: 0 0 auto;
@@ -86,52 +62,44 @@
   font-size: var(--t-label);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.tallySlash {
+  color: var(--faint);
+  margin: 0 1px;
 }
 
 .controls {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 2px;
+  margin-left: auto;
 }
 
-.ctl,
-.close {
+/* Quiet icon controls — faint until hover. */
+.ctl {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--r-sm);
-  color: var(--muted);
-  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+  color: var(--faint);
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 
-.ctl:hover,
-.close:hover {
-  background: var(--surface-3);
+.ctl:hover {
+  background: var(--surface-2);
   color: var(--ink);
 }
 
-.ctlAccent {
-  color: var(--accent-ink);
-}
-
-.ctlAccent:hover {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-}
-
-/* Visually separate Close from the run controls. */
-.close {
-  margin-left: var(--space-1);
-}
-
-/* ── Progress track ───────────────────────────────────────────────── */
+/* ── Progress track — the one place blue shows ────────────────────── */
 .track {
-  height: 4px;
+  height: 3px;
   border-radius: var(--r-pill);
-  background: var(--surface-3);
+  background: var(--surface-2);
   overflow: hidden;
 }
 
@@ -139,7 +107,7 @@
   display: block;
   height: 100%;
   border-radius: var(--r-pill);
-  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  background: var(--accent);
   transition: width var(--dur-3) var(--ease);
 }
 
@@ -148,7 +116,7 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--space-2);
+  padding: 0 var(--space-3) var(--space-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -160,17 +128,19 @@
   gap: var(--space-1);
 }
 
+/* Light mono eyebrow — "RUNNING 3". No section card. */
 .groupLabel {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
   margin: 0;
-  padding: var(--space-1) var(--space-2);
+  padding: 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--faint);
+  font-weight: 500;
 }
 
 .groupCount {
-  font-size: var(--t-label);
-  letter-spacing: 0;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
@@ -181,16 +151,16 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
 /* ── Row ──────────────────────────────────────────────────────────── */
 .row {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2);
-  border-radius: var(--r-md);
+  gap: var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-sm);
   transition: background var(--dur-2) var(--ease);
 }
 
@@ -198,41 +168,23 @@
   background: var(--surface-2);
 }
 
-/* Thumb-sized media well holding the spinner / status glyph. */
-.media {
+/* Small status glyph well — no fill, no border. */
+.glyph {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--r-sm);
-  background: var(--surface-3);
-  color: var(--muted);
+  width: 16px;
+  height: 16px;
+  color: var(--accent);
 }
 
-.mediaActive {
-  color: var(--accent-ink);
-  background: var(--accent-soft);
-  box-shadow: var(--glow-accent);
-}
+.glyphQueued { color: var(--faint); }
+.glyphFailed { color: var(--err); }
 
-.mediaFailed {
-  background: var(--err-soft);
-}
-
-.iconQueued { color: var(--muted); }
-.iconFailed { color: var(--err); }
-
-.rowBody {
+.label {
   flex: 1 1 auto;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.coords {
   font-size: var(--t-body);
   color: var(--ink);
   white-space: nowrap;
@@ -245,30 +197,28 @@
   margin: 0 1px;
 }
 
-.meta {
+.elapsed {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
   font-size: var(--t-label);
   color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
 }
 
-.metaFailed { color: var(--err); }
-
+/* Quiet hover action — hidden until the row is hovered/focused. */
 .action {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border-radius: var(--r-sm);
-  color: var(--muted);
+  color: var(--faint);
   opacity: 0;
   transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
 }
 
-/* Reveal the action on row hover/focus; always show on touch (no hover). */
 .row:hover .action,
 .action:focus-visible {
   opacity: 1;
@@ -279,11 +229,6 @@
   color: var(--ink);
 }
 
-.action.retry:hover {
-  color: var(--accent-ink);
-  background: var(--accent-soft);
-}
-
 @media (hover: none) {
   .action { opacity: 1; }
 }
@@ -291,8 +236,8 @@
 /* ── Empty (pinned open, idle) ────────────────────────────────────── */
 .empty {
   margin: 0;
-  padding: var(--space-4) var(--space-3);
+  padding: var(--space-3) var(--space-2) var(--space-4);
   text-align: center;
   font-size: var(--t-body);
-  color: var(--muted);
+  color: var(--faint);
 }

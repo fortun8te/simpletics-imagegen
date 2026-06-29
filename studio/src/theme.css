@@ -20,12 +20,14 @@
   --line-strong: #2a313b;
   --hairline-hi: rgba(255, 255, 255, 0.05); /* glassy top edge */
 
-  /* Accent — electric lime/chartreuse. Light color, so text on the FILL is dark. */
-  --accent: #c6f24c;
-  --accent-2: #aee63a;
-  --accent-soft: #1a2410;   /* dark lime-tinted surface for active/selected */
-  --accent-ink: #c9f25a;    /* lime text/icons on dark */
-  --on-accent: #0c1206;     /* near-black text on a lime fill */
+  /* Accent — clean blue. */
+  --accent: #4f8dff;
+  --accent-2: #6aa3ff;
+  --accent-soft: #15233f;   /* dark blue-tinted surface for active/selected */
+  --accent-ink: #a8c8ff;    /* blue text/icons on dark */
+  --on-accent: #ffffff;     /* white text on a blue fill */
+  /* Clean flat blue gradient: white → light blue → deep blue → near-black (for hero/feature moments). */
+  --grad-blue: linear-gradient(157deg, #eef4ff 0%, #9cc0ff 20%, #3b7df0 50%, #16233f 80%, #0b0c10 100%);
 
   /* Status */
   --ok: #5fd39b; --ok-soft: #11271d;
@@ -51,8 +53,8 @@
 
   /* Lime aura — used sparingly on the primary action / in-progress states */
   --glow-accent:
-    0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
-    0 10px 44px -10px color-mix(in srgb, var(--accent) 38%, transparent);
+    0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent),
+    0 6px 20px -8px color-mix(in srgb, var(--accent) 22%, transparent);
 
   /* Type — Geist (UI grotesk) + Fraunces (editorial serif display). Loaded in index.html. */
   --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;

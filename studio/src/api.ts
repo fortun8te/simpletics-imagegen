@@ -53,6 +53,9 @@ export const api = {
     jpost<{ ok: boolean; enqueued: number }>('/api/generate', { brand, batch, scope, variants }, { ok: false, enqueued: 0 }),
   regenerate: (relPath: string) =>
     jpost<{ ok: boolean }>('/api/regenerate', { relPath }, { ok: false }),
+  // Revise = re-generate this slot with the original prompt PLUS a change instruction; queues a new version.
+  revise: (relPath: string, instruction: string) =>
+    jpost<{ ok: boolean }>('/api/revise', { relPath, instruction }, { ok: false }),
   cancel: (arg: { jobId?: string; all?: boolean }) =>
     jpost<{ ok: boolean }>('/api/cancel', arg, { ok: false }),
   pause: () => jpost<{ ok: boolean }>('/api/pause', {}, { ok: false }),

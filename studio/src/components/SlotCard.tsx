@@ -106,12 +106,6 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
             <Icon name="refresh" size={15} />
           </HoverAction>
           <HoverAction
-            label="Make variations"
-            onClick={() => brand && batch && api.generate(brand, batch, promptScope, 2)}
-          >
-            <Icon name="sparkles" size={15} />
-          </HoverAction>
-          <HoverAction
             label={archived ? 'Restore' : 'Archive'}
             onClick={() => slot.relPath && api.archive(slot.relPath, !archived)}
           >

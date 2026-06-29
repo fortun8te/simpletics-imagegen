@@ -1,16 +1,20 @@
 // ActivityPanel (file kept as ActivityDock so AppShell's import is unchanged) —
-// a calm, premium bottom-right card surfacing the live run. CONTAINER component.
+// a quiet, minimal bottom-right card surfacing the live run. CONTAINER component.
 //
 // Opens when `ui.activityOpen` is true OR when any job exists; the close control
 // sets `ui.activityOpen:false` (and the card then hides if there are also no jobs).
 //
-// Header  → the run-state label + a progress bar (run.done/total) + an echo of the
-//           run controls (Pause / Continue / Stop via api.pause/resume/cancel).
-// Body    → job rows derived from every slot whose `job` is set, GROUPED by status
-//           (Running / Queued / Failed). Each row carries an in-progress spinner or a
-//           status icon, the `ad / variation` label, elapsed, and a cancel (running/
-//           queued) or retry (failed) action.
+// Header  → a small run-state label (idle/running/paused/done) + done/total (mono,
+//           tabular) + a thin blue progress bar. Pause/Continue/Stop echo + close
+//           live as quiet hover icons.
+// Body    → minimal job rows derived from every slot whose `job` is set, lightly
+//           grouped by a mono "RUNNING N" / "QUEUED N" / "FAILED N" eyebrow. Each
+//           row: a small status glyph, an ad / variation label, elapsed in mono,
+//           and a quiet hover cancel (running/queued) or retry (failed) action.
 // When pinned-open and idle, a quiet "No active generations" line shows instead.
+//
+// NOTE: there is no "cooling" countdown anymore — a paused run reads plainly as
+// "Paused" with no timer.
 import { useEffect, useState } from 'react';
 import type { BatchState, RunState, Slot } from '../types';
 import { useStore } from '../store';
@@ -33,16 +37,16 @@ interface DockJob {
 
 type GroupKey = 'generating' | 'queued' | 'failed';
 
-// Human label per run state, plus the dot tone class it maps to.
+// Plain run-state label. Paused reads plainly — no timer.
 const RUN_LABEL: Record<RunState, string> = {
   idle: 'Idle',
   running: 'Running',
   paused: 'Paused',
-  cooling: 'Cooling down',
+  cooling: 'Paused', // legacy state — surface plainly, never a scary countdown
   done: 'Done',
 };
 
-// Group ordering + labels (most relevant first).
+// Group ordering + mono eyebrow labels (most relevant first).
 const GROUPS: { key: GroupKey; label: string }[] = [
   { key: 'generating', label: 'Running' },
   { key: 'queued', label: 'Queued' },
@@ -93,73 +97,37 @@ function useElapsed(startedAt?: number | null): string | null {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
-// "m:ss" countdown until a cooling run auto-resumes; null once elapsed.
-function useCountdown(resumeAt?: number | null): string | null {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    if (!resumeAt) return;
-    const id = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(id);
-  }, [resumeAt]);
-  if (!resumeAt) return null;
-  const total = Math.max(0, Math.floor((resumeAt - now) / 1000));
-  const m = Math.floor(total / 60);
-  const s = total % 60;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
-
 function JobRow({ job }: { job: DockJob }) {
   const elapsed = useElapsed(job.status === 'generating' ? job.startedAt : undefined);
 
-  let media: JSX.Element;
-  let meta: string;
+  let glyph: JSX.Element;
   if (job.status === 'generating') {
-    media = (
-      <span className={`${styles.media} ${styles.mediaActive}`}>
-        <Spinner size={15} />
-      </span>
-    );
-    meta = elapsed ? `Generating · ${elapsed}` : 'Generating';
+    glyph = <Spinner size={13} />;
   } else if (job.status === 'queued') {
-    media = (
-      <span className={styles.media}>
-        <Icon name="clock" size={15} className={styles.iconQueued} />
-      </span>
-    );
-    meta = 'Waiting in queue';
+    glyph = <Icon name="clock" size={13} className={styles.glyphQueued} />;
   } else {
-    media = (
-      <span className={`${styles.media} ${styles.mediaFailed}`}>
-        <Icon name="alert" size={15} className={styles.iconFailed} />
-      </span>
-    );
-    meta = job.error || 'Generation failed';
+    glyph = <Icon name="alert" size={13} className={styles.glyphFailed} />;
   }
 
   return (
     <li className={styles.row}>
-      {media}
-      <span className={styles.rowBody}>
-        <span className={styles.coords} title={`${job.ad} / ${job.variation}`}>
-          {job.ad} <span className={styles.sep}>/</span> {job.variation}
-        </span>
-        <span
-          className={`${styles.meta} ${job.status === 'failed' ? styles.metaFailed : ''}`}
-          title={meta}
-        >
-          {meta}
-        </span>
+      <span className={styles.glyph}>{glyph}</span>
+
+      <span className={styles.label} title={`${job.ad} / ${job.variation}`}>
+        {job.ad} <span className={styles.sep}>/</span> {job.variation}
       </span>
+
+      {job.status === 'generating' && elapsed && <span className={styles.elapsed}>{elapsed}</span>}
 
       {job.status === 'failed'
         ? job.relPath && (
             <button
-              className={`${styles.action} ${styles.retry}`}
+              className={styles.action}
               aria-label="Retry generation"
               title="Retry"
               onClick={() => job.relPath && api.regenerate(job.relPath)}
             >
-              <Icon name="refresh" size={15} />
+              <Icon name="refresh" size={13} />
             </button>
           )
         : job.jobId && (
@@ -169,7 +137,7 @@ function JobRow({ job }: { job: DockJob }) {
               title="Cancel"
               onClick={() => job.jobId && api.cancel({ jobId: job.jobId })}
             >
-              <Icon name="x" size={15} />
+              <Icon name="x" size={13} />
             </button>
           )}
     </li>
@@ -192,7 +160,6 @@ export default function ActivityDock() {
     total: 0,
     resumeAt: null,
   };
-  const countdown = useCountdown(run.state === 'cooling' ? run.resumeAt : undefined);
 
   // Discoverable: render when there are jobs OR when pinned open via the store.
   // Idle and not pinned → nothing.
@@ -201,9 +168,10 @@ export default function ActivityDock() {
   const pct = run.total > 0 ? Math.round((run.done / run.total) * 100) : 0;
 
   // Run controls echo — only the action(s) that make sense for the current state.
+  const isPaused = run.state === 'paused' || run.state === 'cooling';
   const showPause = run.state === 'running';
-  const showContinue = run.state === 'paused';
-  const showStop = run.state === 'running' || run.state === 'paused' || run.state === 'cooling';
+  const showContinue = isPaused;
+  const showStop = run.state === 'running' || isPaused;
 
   const groups = GROUPS.map((g) => ({
     ...g,
@@ -214,53 +182,39 @@ export default function ActivityDock() {
     <section className={styles.panel} aria-label="Activity">
       <header className={styles.header}>
         <div className={styles.headTop}>
-          <span className={`${styles.statusChip} ${styles[`s_${run.state}`]}`}>
-            <span className={styles.dot} aria-hidden="true" />
-            <span className={styles.runLabel}>
-              {RUN_LABEL[run.state]}
-              {run.state === 'cooling' && countdown ? ` · ${countdown}` : ''}
-            </span>
+          <span className={`${styles.runLabel} ${styles[`s_${run.state}`]}`}>
+            {RUN_LABEL[run.state]}
           </span>
 
           {run.total > 0 && (
             <span className={styles.tally}>
-              {run.done}/{run.total}
+              {run.done}<span className={styles.tallySlash}>/</span>{run.total}
             </span>
           )}
 
           <div className={styles.controls}>
             {showPause && (
               <button className={styles.ctl} aria-label="Pause run" title="Pause" onClick={() => api.pause()}>
-                <Icon name="columns" size={15} />
+                <Icon name="columns" size={13} />
               </button>
             )}
             {showContinue && (
-              <button
-                className={`${styles.ctl} ${styles.ctlAccent}`}
-                aria-label="Continue run"
-                title="Continue"
-                onClick={() => api.resume()}
-              >
-                <Icon name="chevron-right" size={15} />
+              <button className={styles.ctl} aria-label="Continue run" title="Continue" onClick={() => api.resume()}>
+                <Icon name="chevron-right" size={13} />
               </button>
             )}
             {showStop && (
-              <button
-                className={styles.ctl}
-                aria-label="Stop run"
-                title="Stop"
-                onClick={() => api.cancel({ all: true })}
-              >
-                <Icon name="stop" size={15} />
+              <button className={styles.ctl} aria-label="Stop run" title="Stop" onClick={() => api.cancel({ all: true })}>
+                <Icon name="stop" size={13} />
               </button>
             )}
             <button
-              className={styles.close}
+              className={styles.ctl}
               aria-label="Dismiss activity"
               title="Close"
               onClick={() => setUI({ activityOpen: false })}
             >
-              <Icon name="x" size={15} />
+              <Icon name="x" size={13} />
             </button>
           </div>
         </div>
@@ -274,9 +228,8 @@ export default function ActivityDock() {
         {groups.length > 0 ? (
           groups.map((g) => (
             <section key={g.key} className={styles.group}>
-              <p className={`eyebrow ${styles.groupLabel}`}>
-                {g.label}
-                <span className={styles.groupCount}>{g.rows.length}</span>
+              <p className={styles.groupLabel}>
+                {g.label} <span className={styles.groupCount}>{g.rows.length}</span>
               </p>
               <ul className={styles.list}>
                 {g.rows.map((job) => (

@@ -1,7 +1,8 @@
 // BatchHero — the editorial header rendered at the top of GridView. The one "designed moment":
-// an eyebrow (kind · image count · variation count), the batch NAME in the Fraunces display face,
-// a one-line descriptor, and compact done/total + variation stats. Reads the store directly
-// (state, config, brand, batch) and derives everything from the live batch state — never fabricates.
+// a small eyebrow (BRAND · KIND), the batch NAME in the Fraunces display face, a single quiet
+// line of meta (variations · images · % generated), a thin blue progress bar, and a calm row of
+// flat metric chips. Reads the store directly and derives everything from the live batch state —
+// never fabricates. Flat: no card glow, no radial; only theme tokens.
 import { useStore } from '../store';
 import styles from './BatchHero.module.css';
 
@@ -12,10 +13,8 @@ function summarize(state: NonNullable<ReturnType<typeof useStore.getState>['stat
   let done = 0;
   let total = 0;
   let variations = 0;
-  const adTypes = new Set<string>();
 
   for (const ad of state.ads) {
-    if (ad.type) adTypes.add(ad.type);
     for (const variation of ad.variations) {
       variations++;
       for (const prompt of variation.prompts) {
@@ -30,7 +29,7 @@ function summarize(state: NonNullable<ReturnType<typeof useStore.getState>['stat
       }
     }
   }
-  return { images, done, total, variations, ads: state.ads.length, adTypes: [...adTypes] };
+  return { images, done, total, variations, ads: state.ads.length };
 }
 
 // A quiet kind label. We have no explicit `kind` in the store, so infer: a single ad whose
@@ -53,65 +52,52 @@ export default function BatchHero() {
   const name = batchRef?.name ?? batch ?? 'Untitled batch';
   const brandName = brandRef?.name ?? brand ?? '';
 
-  const { images, done, total, variations, ads, adTypes } = summarize(state);
+  const { images, done, total, variations, ads } = summarize(state);
   const kind = kindLabel(ads, variations);
-
-  // Eyebrow segments — only honest, derivable facts. No "updated" timestamp is in the store.
-  const eyebrow = [
-    kind,
-    `${images} ${images === 1 ? 'image' : 'images'}`,
-    `${variations} ${variations === 1 ? 'variation' : 'variations'}`,
-  ];
-
-  // A one-line descriptor of what's in the batch.
-  const typeBit = adTypes.length ? ` · ${adTypes.slice(0, 3).join(', ')}` : '';
-  const descriptor = `${ads} ${ads === 1 ? 'ad' : 'ads'} across ${variations} ${
-    variations === 1 ? 'variation' : 'variations'
-  }${typeBit}`;
-
   const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+  const inProgress = Math.max(total - done, 0);
+
+  // Eyebrow — BRAND · KIND, both honest and derivable. Uppercased in CSS.
+  const eyebrow = [brandName, kind].filter(Boolean).join(' · ');
+
+  // One quiet line of meta — the only summary sentence. No type-name dump.
+  const meta = [
+    `${variations} ${variations === 1 ? 'variation' : 'variations'}`,
+    `${images} ${images === 1 ? 'image' : 'images'}`,
+    `${pct}% generated`,
+  ].join(' · ');
 
   return (
     <header className={styles.hero}>
-      <div className={styles.glow} aria-hidden="true" />
-      <div className={styles.rule} aria-hidden="true" />
-
-      <div className={styles.eyebrow}>
-        {eyebrow.map((seg, i) => (
-          <span key={seg} className={styles.eyebrowSeg}>
-            {i > 0 ? <span className={styles.dot} aria-hidden="true" /> : null}
-            {seg}
-          </span>
-        ))}
-      </div>
+      {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
 
       <h1 className={styles.name}>{name}</h1>
 
-      <p className={styles.descriptor}>
-        {brandName ? <span className={styles.brand}>{brandName}</span> : null}
-        {brandName ? <span className={styles.descSep} aria-hidden="true">·</span> : null}
-        {descriptor}
-      </p>
+      <p className={styles.meta}>{meta}</p>
 
-      <div className={styles.stats}>
-        <div className={styles.stat}>
-          <span className={styles.statValue}>
-            {done}
-            <span className={styles.statTotal}>/{total}</span>
-          </span>
-          <span className={styles.statLabel}>generated</span>
+      <div
+        className={styles.progressTrack}
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Batch generated"
+      >
+        <div className={styles.progressFill} style={{ width: `${pct}%` }} />
+      </div>
+
+      <div className={styles.chips}>
+        <div className={styles.chip}>
+          <span className={styles.chipValue}>{done}</span>
+          <span className={styles.chipLabel}>Generated</span>
         </div>
-        <div className={styles.statDivider} aria-hidden="true" />
-        <div className={styles.stat}>
-          <span className={styles.statValue}>{variations}</span>
-          <span className={styles.statLabel}>variations</span>
+        <div className={styles.chip}>
+          <span className={styles.chipValue}>{variations}</span>
+          <span className={styles.chipLabel}>Variations</span>
         </div>
-        <div className={styles.statDivider} aria-hidden="true" />
-        <div className={styles.progressStat}>
-          <div className={styles.progressTrack}>
-            <div className={styles.progressFill} style={{ width: `${pct}%` }} />
-          </div>
-          <span className={styles.statLabel}>{pct}% complete</span>
+        <div className={styles.chip}>
+          <span className={styles.chipValue}>{inProgress}</span>
+          <span className={styles.chipLabel}>In progress</span>
         </div>
       </div>
     </header>

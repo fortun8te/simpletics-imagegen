@@ -1,6 +1,6 @@
-/* SlotCard — premium dark tile (Antimetal-grade). Fixed square, every state crafted.
-   Nested-tray feel: a soft tray shell holding the image/state, concentric radii, diffused
-   shadows + glassy inset, gentle hover lift. Theme tokens only — no hardcoded colors. */
+/* SlotCard — premium dark tile (single blue-accent theme). Fixed square, every state crafted.
+   Flatter/cleaner: soft tray shell, gentle hover lift, frosted hover action bar.
+   Theme tokens only — no hardcoded colors. */
 
 .card {
   position: relative;
@@ -22,8 +22,8 @@
 }
 .filled:hover,
 .filled:focus-within {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
   border-color: var(--line-strong);
 }
 
@@ -36,17 +36,17 @@
   transition: transform var(--dur-3) var(--ease), opacity var(--dur-2) var(--ease);
 }
 .filled:hover .img {
-  transform: scale(1.035);
+  transform: scale(1.02);
 }
 
-/* a faint diagonal sheen across the image edge — reads crafted, not flat */
+/* a faint inset edge + soft bottom vignette — keeps the tile crafted, not flat */
 .sheen {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   border-radius: inherit;
-  box-shadow: var(--inset-hi), inset 0 -40px 60px -40px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--inset-hi), inset 0 -30px 44px -36px rgba(0, 0, 0, 0.5);
 }
 
 .archived .img {
@@ -69,7 +69,7 @@
   border-radius: var(--r-pill);
 }
 
-/* ── version pill — small, refined; lime or neutral ─────────────── */
+/* ── version pill — small, refined; blue or neutral ─────────────── */
 .badge {
   position: absolute;
   top: var(--space-2);
@@ -105,13 +105,14 @@
   justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-2) var(--space-2);
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--bg) 88%, transparent),
-    transparent
-  );
+  /* Frosted blur backdrop: a translucent dark scrim is required for backdrop-filter
+     to composite, so the action buttons stay legible over any image — not raw pixels. */
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-top: 1px solid var(--line);
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(6px);
   transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
   pointer-events: none;
 }
@@ -129,25 +130,18 @@
   width: 30px;
   height: 30px;
   color: var(--ink);
-  background: color-mix(in srgb, var(--surface-3) 82%, transparent);
+  background: color-mix(in srgb, var(--surface-3) 70%, transparent);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-md);
-  backdrop-filter: blur(8px);
-  box-shadow: var(--shadow-sm);
   transition:
     background var(--dur-1) var(--ease),
     color var(--dur-1) var(--ease),
-    border-color var(--dur-1) var(--ease),
-    transform var(--dur-1) var(--ease);
+    border-color var(--dur-1) var(--ease);
 }
 .iconBtn:hover {
   color: var(--accent-ink);
   background: var(--surface-3);
-  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
-  transform: translateY(-1px);
-}
-.iconBtn:active {
-  transform: translateY(0);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 /* compact density shaves the action bar so tiny tiles don't feel crowded */
@@ -218,16 +212,10 @@
   font-size: 10px;
 }
 
-/* ── generating — lime aura + soft pulse ────────────────────────── */
+/* ── generating — calm blue aura (via --glow-accent), gentle pulse ── */
 .generating {
-  background:
-    radial-gradient(
-      120% 120% at 50% 0%,
-      color-mix(in srgb, var(--accent) 10%, transparent),
-      transparent 60%
-    ),
-    var(--accent-soft);
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--accent-soft);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   box-shadow: var(--glow-accent);
   animation: auroraPulse 2.6s var(--ease) infinite;
 }
@@ -235,17 +223,12 @@
   color: var(--accent-ink);
 }
 @keyframes auroraPulse {
-  0%, 100% {
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent),
-      0 8px 36px -12px color-mix(in srgb, var(--accent) 30%, transparent),
-      inset 0 0 28px -12px color-mix(in srgb, var(--accent) 26%, transparent);
-  }
+  0%, 100% { box-shadow: var(--glow-accent); opacity: 1; }
   50% {
     box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--accent) 52%, transparent),
-      0 12px 48px -10px color-mix(in srgb, var(--accent) 48%, transparent),
-      inset 0 0 36px -10px color-mix(in srgb, var(--accent) 40%, transparent);
+      0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent),
+      0 8px 28px -10px color-mix(in srgb, var(--accent) 34%, transparent);
+    opacity: 0.92;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -292,7 +275,7 @@
   color: var(--muted);
 }
 
-/* ── empty — dashed, lime hover ─────────────────────────────────── */
+/* ── empty — dashed, blue hover ─────────────────────────────────── */
 .empty {
   background: var(--surface);
   border: 1px dashed var(--line);
