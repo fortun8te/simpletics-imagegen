@@ -7,6 +7,7 @@ import type { Slot } from '../types';
 import { useStore, type Density } from '../store';
 import { api } from '../api';
 import { Icon } from './Icon';
+import { GenerateTile } from './GenerateTile';
 import { Spinner } from './Spinner';
 import styles from './SlotCard.module.css';
 
@@ -167,13 +168,11 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
 
   // ── empty (default) ───────────────────────────────────────────────
   return (
-    <div className={`${styles.card} ${styles.empty}`} data-density={density}>
-      <button className={styles.emptyBtn} onClick={() => genHere(1)} aria-label="Generate image">
-        <span className={styles.plusBadge}>
-          <Icon name="plus" size={18} />
-        </span>
-        <span className={styles.label}>Generate</span>
-      </button>
-    </div>
+    <GenerateTile
+      label="Generate"
+      ariaLabel="Generate image"
+      density={density}
+      onClick={() => genHere(1)}
+    />
   );
 }

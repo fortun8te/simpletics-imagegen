@@ -229,59 +229,6 @@
   color: var(--faint);
 }
 
-/* ── empty — dashed tile, inviting Generate affordance ──────────── */
-.empty {
-  border: 1px dashed var(--line);
-  box-shadow: var(--shadow-sm);
-}
-.empty:hover {
-  transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-  box-shadow: var(--shadow-md);
-}
-.emptyBtn {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  color: var(--faint);
-  transition: color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
-}
-.empty:hover .emptyBtn {
-  color: var(--accent-ink);
-  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
-}
-.plusBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r-pill);
-  border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface-3) 50%, transparent);
-  color: var(--muted);
-  transition:
-    background var(--dur-2) var(--ease),
-    border-color var(--dur-2) var(--ease),
-    color var(--dur-2) var(--ease);
-}
-.empty:hover .plusBadge {
-  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  color: var(--accent-ink);
-}
-.card[data-density='compact'] .emptyBtn {
-  gap: var(--space-1);
-}
-.card[data-density='compact'] .plusBadge {
-  width: 26px;
-  height: 26px;
-}
-
 /* ── failed — clean error, --err used sparingly (icon + retry hover) ── */
 .failed {
   border: 1px solid var(--line);

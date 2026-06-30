@@ -9,7 +9,7 @@ import SlotCard from '../SlotCard';
 import AdSection from '../AdSection';
 import VariationRow from '../VariationRow';
 import { EmptyState } from '../EmptyState';
-import { Icon } from '../Icon';
+import { GenerateTile } from '../GenerateTile';
 import { api } from '../../api';
 import type { AdNode, Slot, SlotStatus } from '../../types';
 import { variationRelDir } from '../../paths';
@@ -140,19 +140,12 @@ export default function GridView() {
                             />
                           ))}
                           {isLastPrompt ? (
-                            <button
-                              type="button"
-                              className={styles.genMore}
-                              data-density={density}
+                            <GenerateTile
+                              label="Add variant"
+                              ariaLabel="Add one new variant to this variation — existing images are kept"
+                              density={density}
                               onClick={() => genMore(ad.id, variation.id)}
-                              title="Add one new variant to this variation — existing images are kept"
-                              aria-label="Add one new variant to this variation — existing images are kept"
-                            >
-                              <span className={styles.genMoreInner}>
-                                <Icon name="plus" size={density === 'compact' ? 18 : 22} />
-                                <span className={styles.genMoreLabel}>Add variant</span>
-                              </span>
-                            </button>
+                            />
                           ) : null}
                         </div>
                       </div>

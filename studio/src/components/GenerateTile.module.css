@@ -1,0 +1,78 @@
+/* GenerateTile — shared dashed “add / generate” affordance used by empty SlotCards
+   and the per-variation “Add variant” tray. One visual language everywhere. */
+
+.tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background:
+    linear-gradient(var(--glass-bg), var(--glass-bg)),
+    var(--tray);
+  border: 1px dashed var(--line);
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform var(--dur-2) var(--ease),
+    box-shadow var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+.tile:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  box-shadow: var(--shadow-md);
+}
+
+.btn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  transition: color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.tile:hover .btn {
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+}
+
+.plusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-3) 50%, transparent);
+  color: var(--muted);
+  transition:
+    background var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease),
+    color var(--dur-2) var(--ease);
+}
+.tile:hover .plusBadge {
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent-ink);
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: inherit;
+}
+
+.tile[data-density='compact'] .btn {
+  gap: var(--space-1);
+}
+.tile[data-density='compact'] .plusBadge {
+  width: 26px;
+  height: 26px;
+}
+.tile[data-density='compact'] .label {
+  font-size: 11px;
+}
