@@ -1,0 +1,66 @@
+/* NEUEGEN studio — Aura gradient candidate A
+   ───────────────────────────────────────────────────────────────────────────
+   A self-contained sidebar aura: an intense, slowly-breathing electric-blue
+   mesh glow pooled in the BOTTOM 2/3 of the sidebar, with the TOP 1/3 left
+   untouched (dark). Import this file after Sidebar.module.css to preview —
+   it only defines `.sidebar::before` + its keyframes + a reduced-motion rule.
+
+   GEOMETRY CHOICE — why `inset: 33% -10% 0 -10%` (NOT a negative bottom):
+   `.sidebar` is `overflow: hidden` and `clip-path: inset(0 -16px 0 0)`, so
+   anything drawn BELOW the sidebar's bottom edge is clipped to nothing. A
+   prior attempt used a negative `bottom` inset to push the bright core past
+   the bottom — that core was clipped away and the aura vanished. Here the
+   layer's bottom edge sits exactly at the sidebar bottom (`bottom: 0`), and
+   every radial hotspot is anchored `at … 100%` (the layer's bottom edge),
+   so the brightest point lands INSIDE the visible sidebar, right at the
+   bottom edge, and blooms upward into the dark surface. The top 1/3 is left
+   empty (`top: 33%`) so it stays dark. The small horizontal overscan
+   (`-10%` L/R) only lets the side blobs bleed past the side edges for a
+   wider mesh; the centered core stays visible and the blur softens the seam.
+   `transform-origin: 50% 100%` anchors the bottom edge during the scale
+   animation so the core never drops below the clip line mid-breath.
+*/
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+
+  /* top 1/3 left dark, bottom 2/3 is the layer; bottom edge flush with the
+     sidebar bottom so the at-50%-100% hotspots stay inside the visible area. */
+  inset: 33% -10% 0 -10%;
+  z-index: -1;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+
+  background:
+    /* near-cyan hot core — the brightest, most saturated point, centered */
+    radial-gradient(56% 72% at 50% 100%,
+      color-mix(in srgb, #7db4ff 82%, transparent) 0%,
+      transparent 56%),
+    /* deeper accent blob, lower-left — mesh depth on the left side */
+    radial-gradient(60% 66% at 20% 100%,
+      color-mix(in srgb, var(--accent) 74%, transparent) 0%,
+      transparent 60%),
+    /* deeper accent blob, lower-right — mirror mesh depth on the right */
+    radial-gradient(60% 66% at 80% 100%,
+      color-mix(in srgb, var(--accent) 74%, transparent) 0%,
+      transparent 60%),
+    /* wide soft wash of the brighter accent — the long upper fade to black */
+    radial-gradient(82% 52% at 50% 100%,
+      color-mix(in srgb, var(--accent-2) 58%, transparent) 0%,
+      transparent 72%);
+
+  filter: blur(24px);
+  opacity: 1;
+  animation: auraBreathe 16s var(--ease) infinite alternate;
+  will-change: transform;
+}
+
+@keyframes auraBreathe {
+  0%   { transform: translate3d(-2%, 1%, 0) scale(1); }
+  100% { transform: translate3d(2%, -2%, 0) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar::before { animation: none; }
+}
