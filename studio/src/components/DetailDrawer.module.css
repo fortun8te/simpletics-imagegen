@@ -2,13 +2,14 @@
    Strong glass backdrop, tall floating glass panel with header bar + breadcrumb,
    two-column body (image stage + rail), full-width footer action bar.
    Overlay z 100 / content z 101 + isolation keeps grid/TopBar text from bleeding
-   through. Single committed dark theme; all token-based; no app-blue glow. */
+   through. Single committed dark theme; all token-based; blue is reserved for the
+   single Download primary CTA only — every other control stays neutral. */
 
 .overlay {
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.82);
+  background: color-mix(in srgb, #05060a 72%, transparent);
   backdrop-filter: var(--glass-blur-strong);
   -webkit-backdrop-filter: var(--glass-blur-strong);
   animation: fade var(--dur-2) var(--ease);
@@ -65,7 +66,7 @@
   letter-spacing: -0.005em;
   overflow: hidden;
 }
-.crumbRow { display: inline-flex; align-items: center; gap: var(--space-2); min-width: 0; }
+.crumbRow { display: inline-flex; align-items: center; gap: var(--space-1); min-width: 0; }
 .crumbItem {
   color: var(--muted);
   white-space: nowrap;
@@ -94,6 +95,7 @@
   transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 .close:hover { background: var(--surface-2); color: var(--ink); }
+.close:active { background: var(--surface-3); }
 
 /* Body — two columns */
 .body {
@@ -131,7 +133,7 @@
 
 /* RIGHT — scrollable rail */
 .rail {
-  flex: 0 0 380px;
+  flex: 0 0 400px;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -142,173 +144,134 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--space-5) var(--space-5) var(--space-6);
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-/* Sections — small-caps label row, thin dividers between */
+/* Sections — small-caps label, thin dividers between */
 .section {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding-bottom: var(--space-5);
+  padding-bottom: var(--space-4);
 }
 .section:last-child { padding-bottom: 0; }
 .section + .section {
-  padding-top: var(--space-5);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--line-soft);
-}
-.sectionHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-.sectionHint {
-  font-size: 10.5px;
-  color: var(--faint);
-  letter-spacing: 0.02em;
-  text-transform: none;
 }
 .label {
   margin: 0;
   font-size: var(--t-label);
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--faint);
   font-weight: 500;
 }
 
-/* REFERENCE — a clean card: thumb + name + sub */
-.refCard {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-}
+/* REFERENCE */
+.refRow { display: flex; align-items: center; gap: var(--space-3); }
 .refThumb {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   flex: 0 0 auto;
   border-radius: var(--r-sm);
   overflow: hidden;
   border: 1px solid var(--line);
-  background: var(--surface-3);
+  background: var(--surface-2);
+  box-shadow: var(--inset-hi);
 }
 .refThumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.refMeta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.refName {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.refSub { font-size: 11px; color: var(--faint); }
+.refName { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* PROMPT — clean mono box, generous padding, scrollable */
+/* PROMPT */
 .promptBox {
-  font: 400 12px/1.65 var(--font-mono);
+  font: 400 12px/1.6 var(--font-mono);
   color: var(--muted);
   background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  padding: var(--space-3) var(--space-4);
-  max-height: 200px;
+  padding: var(--space-3);
+  max-height: 168px;
   overflow-y: auto;
   white-space: pre-wrap;
 }
 .promptEmpty { font-family: var(--font-sans); font-style: italic; color: var(--faint); }
-.promptLoading { display: flex; flex-direction: column; gap: 8px; padding: var(--space-3) var(--space-4); }
+.promptLoading { display: flex; flex-direction: column; gap: var(--space-2); }
 .skel { height: 9px; border-radius: 4px; background: linear-gradient(90deg, var(--surface-3), var(--line), var(--surface-3)); background-size: 200% 100%; animation: sh 1.2s linear infinite; }
 .skelShort { width: 55%; }
 @keyframes sh { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
 
-/* REVISE — textarea + full-width blue primary button */
+/* REVISE — neutral ghost CTA (blue stays on Download only) */
 .reviseInput {
   width: 100%;
-  min-height: 76px;
-  resize: vertical;
-  padding: var(--space-3);
+  height: 36px;
+  padding: 0 var(--space-3);
   border-radius: var(--r-md);
   background: var(--surface-2);
   border: 1px solid var(--line-strong);
   color: var(--ink);
-  font: 400 13px/1.5 var(--font-sans);
-  transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
+  transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
 .reviseInput::placeholder { color: var(--faint); }
 .reviseInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
 .reviseInput:disabled { opacity: 0.55; }
 .reviseBtn {
-  margin-top: var(--space-3);
-  height: 38px;
+  margin-top: var(--space-2);
+  height: 36px;
   width: 100%;
-  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
   border-radius: var(--r-md);
-  background: var(--accent);
-  color: var(--on-accent);
-  font-weight: 600;
-  font-size: 13px;
-  transition: background var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 500;
+  font-size: var(--t-body);
+  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
 }
-.reviseBtn:hover:not(:disabled) { background: var(--accent-2); }
-.reviseBtn:active:not(:disabled) { transform: scale(0.985); }
+.reviseBtn:hover:not(:disabled) { background: var(--surface-3); border-color: var(--line-strong); }
+.reviseBtn:active:not(:disabled) { background: var(--surface-2); }
 .reviseBtn:disabled { opacity: 0.45; cursor: not-allowed; }
-.hint { margin: var(--space-2) 0 0; font-size: 11.5px; color: var(--accent-ink); min-height: 14px; }
-.hint:empty { min-height: 0; }
+.hint { margin: var(--space-2) 0 0; font-size: var(--t-label); color: var(--faint); }
 
-/* Vertical action toolbar — slim rail between image and info */
-.toolbar {
-  flex: 0 0 56px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* ACTIONS — proper section under Revise, a 2x2 grid of labeled buttons */
+.actionRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-2);
-  border-left: 1px solid var(--line);
-  background: color-mix(in srgb, var(--surface) 60%, transparent);
 }
-.toolBtn {
+.actBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  flex: none;
+  gap: 7px;
+  height: 36px;
+  padding: 0 var(--space-3);
   border-radius: var(--r-md);
   background: transparent;
-  border: 1px solid transparent;
-  color: var(--muted);
-  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
-}
-.toolBtn:hover {
-  background: var(--surface-2);
-  border-color: var(--line);
+  border: 1px solid var(--line);
   color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
 }
-.toolBtn:disabled { opacity: 0.4; cursor: not-allowed; }
-.toolDivider {
-  width: 24px;
-  height: 1px;
-  background: var(--line);
-  flex: none;
-}
-/* Download — primary blue accent */
-.toolPrimary {
+/* pinned so the global a:hover (accent-ink) can't bleed blue into the Open link */
+.actBtn:hover:not(:disabled) { background: var(--surface-2); border-color: var(--line-strong); color: var(--ink); }
+.actBtn:active:not(:disabled) { background: var(--surface-3); }
+.actBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Download — the single blue primary CTA */
+.actPrimary {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--on-accent);
 }
-.toolPrimary:hover {
+.actPrimary:hover {
   background: var(--accent-2);
   border-color: var(--accent-2);
   color: var(--on-accent);
 }
+.actPrimary:active { transform: scale(0.985); }

@@ -1,6 +1,7 @@
 /* ActivityDock — Linear/Raycast-style floating glass panel + collapsed pill.
-   Bottom-right. Theme tokens only. One accent (blue) on the running dot alone.
-   No app blue glow: neutral expansive shadow, thin glass border, backdrop blur. */
+   Bottom-right. Theme tokens only. Blue is reserved for the running status dot
+   alone; queued is muted, failed is red. Neutral expansive shadow, thin crisp
+   glass border, backdrop blur. */
 
 /* ── Panel ─────────────────────────────────────────────────────────── */
 .panel {
@@ -15,7 +16,7 @@
   background: var(--glass-bg-2);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--glass-border-strong);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -33,7 +34,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
+  padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid var(--line);
 }
 
@@ -49,12 +50,13 @@
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  padding: 1px var(--space-2);
+  height: 20px;
+  padding: 0 var(--space-2);
   border-radius: var(--r-pill);
   background: var(--surface-2);
   border: 1px solid var(--line-soft);
   font-size: var(--t-label);
-  line-height: 1.7;
+  line-height: 1;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
@@ -71,11 +73,8 @@
   color: var(--faint);
   transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
-
-.close:hover {
-  background: var(--surface-2);
-  color: var(--ink);
-}
+.close:hover { background: var(--surface-2); color: var(--ink); }
+.close:active { background: var(--surface-3); }
 
 /* ── Body ──────────────────────────────────────────────────────────── */
 .body {
@@ -110,7 +109,7 @@
 .groupName {
   font-family: var(--font-mono);
   font-size: var(--t-label);
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--faint);
   font-weight: 500;
@@ -153,6 +152,7 @@
   background: var(--surface-2);
   color: var(--ink);
 }
+.groupAct:active { background: var(--surface-3); }
 
 .list {
   list-style: none;
@@ -167,7 +167,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  height: 32px;
+  height: 30px;
   padding: 0 var(--space-2);
   border-radius: var(--r-sm);
   transition: background var(--dur-2) var(--ease);
@@ -219,7 +219,7 @@
   min-width: 0;
   display: inline-flex;
   align-items: baseline;
-  gap: 4px;
+  gap: var(--space-1);
   font-size: var(--t-body);
   color: var(--ink);
   white-space: nowrap;
@@ -231,10 +231,7 @@
 .segMute  { color: var(--muted); }
 .segFaint { color: var(--faint); }
 
-.sep {
-  color: var(--faint);
-  opacity: .7;
-}
+.sep { color: var(--faint); }
 
 /* ── Elapsed ───────────────────────────────────────────────────────── */
 .elapsed {
@@ -264,8 +261,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: var(--r-sm);
   color: var(--faint);
   transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
@@ -275,6 +272,7 @@
   background: var(--surface-2);
   color: var(--ink);
 }
+.act:active { background: var(--surface-3); }
 
 @media (hover: none) {
   .actions,
@@ -303,20 +301,20 @@
   background: var(--glass-bg-2);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--glass-border-strong);
   border-radius: var(--r-pill);
   box-shadow: var(--shadow-md);
   color: var(--ink);
   font-size: var(--t-body);
-  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+  transition: background var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
   animation: rise var(--dur-3) var(--ease) both;
 }
 
 .pill:hover {
   background: var(--glass-bg-3);
-  border-color: var(--glass-border-strong);
   transform: translateY(-1px);
 }
+.pill:active { transform: translateY(0); }
 
 .pillText {
   font-variant-numeric: tabular-nums;

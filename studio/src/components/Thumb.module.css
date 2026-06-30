@@ -1,7 +1,9 @@
-/* Fixed 1:1 image tile. Subtle surface while loading, clean inset border,
-   soft fade-in on load (reduced-motion makes the fade instant via theme). */
+/* Fixed 1:1 image tile. Subtle surface + a quiet diagonal shimmer while the
+   image streams in, a clean inset hairline border, and a soft fade-in on load
+   (reduced-motion makes the fade instant via the theme rule). */
 
 .box {
+  position: relative;
   aspect-ratio: 1;
   width: 100%;
   border-radius: var(--r-md);
@@ -11,7 +13,28 @@
   box-shadow: var(--inset-hi);
 }
 
+/* Faint diagonal sweep while loading — painted under the image, so it is
+   hidden automatically once the opaque image covers the box. */
+.box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, var(--glass-bg-3) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: thumbShimmer 1.6s var(--ease) infinite;
+  pointer-events: none;
+}
+@keyframes thumbShimmer {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .box::before { animation: none; }
+}
+
 .img {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
   object-fit: cover;

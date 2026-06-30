@@ -1,7 +1,7 @@
 // DetailDrawer — premium floating image modal (Linear/Raycast + Claritas feel).
 // Tall glass panel: a header bar with an "ad / variation / prompt" breadcrumb + close,
-// a three-part body — large image stage (left), a slim vertical action toolbar (middle),
-// and a scrollable REFERENCE/PROMPT/REVISE rail (right). No footer; actions live on the side.
+// a two-column body — large image stage (left) + a scrollable rail (right) holding
+// REFERENCE / PROMPT / REVISE / ACTIONS sections. Actions live as a proper row under Revise.
 // Keeps all functionality, Radix Dialog primitives, and the z 100/101 + isolation fix.
 import { useEffect, useMemo, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -125,7 +125,7 @@ export default function DetailDrawer() {
             </Dialog.Close>
           </header>
 
-          {/* Body — image stage + vertical action toolbar + info rail */}
+          {/* Body — image stage + info rail */}
           <div className={s.body}>
             <div className={s.stage}>
               {drawerRel ? (
@@ -142,49 +142,6 @@ export default function DetailDrawer() {
                 </div>
               )}
             </div>
-
-            {/* Vertical action toolbar — sits between the image and the info rail */}
-            <nav className={s.toolbar} aria-label="Image actions">
-              <a
-                className={`${s.toolBtn} ${s.toolPrimary}`}
-                href={drawerRel ? api.imgUrl(drawerRel) : undefined}
-                download
-                title="Download image"
-                aria-label="Download image"
-              >
-                <Icon name="download" size={18} />
-              </a>
-              <a
-                className={s.toolBtn}
-                href={drawerRel ? api.imgUrl(drawerRel) : undefined}
-                target="_blank"
-                rel="noreferrer"
-                title="Open original in a new tab"
-                aria-label="Open original"
-              >
-                <Icon name="expand" size={18} />
-              </a>
-              <button
-                type="button"
-                className={s.toolBtn}
-                onClick={() => drawerRel && api.regenerate(drawerRel)}
-                title="Regenerate this image"
-                aria-label="Regenerate"
-              >
-                <Icon name="refresh" size={18} />
-              </button>
-              <span className={s.toolDivider} aria-hidden="true" />
-              <button
-                type="button"
-                className={s.toolBtn}
-                onClick={() => drawerRel && slot && api.archive(drawerRel, !isArchived)}
-                disabled={!slot}
-                title={isArchived ? 'Restore from archive' : 'Archive this image'}
-                aria-label={isArchived ? 'Restore' : 'Archive'}
-              >
-                <Icon name={isArchived ? 'restore' : 'archive'} size={18} />
-              </button>
-            </nav>
 
             <aside className={s.rail}>
               <div className={s.railScroll}>
@@ -247,6 +204,53 @@ export default function DetailDrawer() {
                   <p className={s.hint} aria-live="polite">
                     {revisedOk ? 'Queued — a new version is on the way.' : ''}
                   </p>
+                </section>
+
+                {/* Actions — proper section under Revise */}
+                <section className={s.section}>
+                  <div className={s.sectionHead}>
+                    <span className={s.label}>Actions</span>
+                  </div>
+                  <div className={s.actionRow}>
+                    <a
+                      className={`${s.actBtn} ${s.actPrimary}`}
+                      href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+                      download
+                      title="Download image"
+                    >
+                      <Icon name="download" size={15} />
+                      <span>Download</span>
+                    </a>
+                    <a
+                      className={s.actBtn}
+                      href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+                      target="_blank"
+                      rel="noreferrer"
+                      title="Open original in a new tab"
+                    >
+                      <Icon name="expand" size={15} />
+                      <span>Open</span>
+                    </a>
+                    <button
+                      type="button"
+                      className={s.actBtn}
+                      onClick={() => drawerRel && api.regenerate(drawerRel)}
+                      title="Regenerate this image"
+                    >
+                      <Icon name="refresh" size={15} />
+                      <span>Regenerate</span>
+                    </button>
+                    <button
+                      type="button"
+                      className={s.actBtn}
+                      onClick={() => drawerRel && slot && api.archive(drawerRel, !isArchived)}
+                      disabled={!slot}
+                      title={isArchived ? 'Restore from archive' : 'Archive this image'}
+                    >
+                      <Icon name={isArchived ? 'restore' : 'archive'} size={15} />
+                      <span>{isArchived ? 'Restore' : 'Archive'}</span>
+                    </button>
+                  </div>
                 </section>
               </div>
             </aside>
