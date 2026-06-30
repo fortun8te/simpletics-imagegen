@@ -77,6 +77,39 @@ export default function DetailDrawer() {
     setRevisedOk(false);
   }, [drawerRel]);
 
+  // Ordered list of every slot that has an image, for arrow-key navigation.
+  const order = useMemo(() => {
+    if (!state) return [];
+    const list: string[] = [];
+    for (const ad of state.ads)
+      for (const v of ad.variations)
+        for (const p of v.prompts)
+          for (const sl of p.slots)
+            if (sl.relPath) list.push(sl.relPath);
+    return list;
+  }, [state]);
+
+  const go = (dir: -1 | 1) => {
+    if (!drawerRel || order.length < 2) return;
+    const i = order.indexOf(drawerRel);
+    if (i < 0) return;
+    const next = order[(i + dir + order.length) % order.length];
+    setUI({ drawerRel: next });
+  };
+
+  // Arrow keys move between images — but not while typing in the revise field.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); go(1); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, drawerRel, order]);
+
   if (!open) return null;
 
   const slot = found?.slot;
@@ -140,6 +173,32 @@ export default function DetailDrawer() {
                   <Icon name="photo" size={24} />
                   <span>No image found.</span>
                 </div>
+              )}
+
+              {order.length > 1 && drawerRel && (
+                <>
+                  <button
+                    type="button"
+                    className={`${s.navBtn} ${s.navPrev}`}
+                    onClick={() => go(-1)}
+                    aria-label="Previous image"
+                    title="Previous (←)"
+                  >
+                    <Icon name="chevron-right" size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    className={`${s.navBtn} ${s.navNext}`}
+                    onClick={() => go(1)}
+                    aria-label="Next image"
+                    title="Next (→)"
+                  >
+                    <Icon name="chevron-right" size={20} />
+                  </button>
+                  <span className={s.position}>
+                    {Math.max(0, order.indexOf(drawerRel)) + 1} / {order.length}
+                  </span>
+                </>
               )}
             </div>
 

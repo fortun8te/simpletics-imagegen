@@ -53,7 +53,10 @@
   top: var(--space-2);
   right: var(--space-2);
   z-index: 2;
-  padding: 3px 8px;
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 var(--space-2);
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -73,7 +76,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: var(--space-1);
   padding: var(--space-2);
   background: linear-gradient(
     to top,
@@ -116,11 +119,8 @@
   border-color: transparent;
 }
 
-/* compact density shaves the action bar so tiny tiles don't feel crowded */
-.card[data-density='compact'] .actions {
-  gap: 1px;
-  padding: 7px;
-}
+/* compact density shrinks the icon buttons so tiny tiles don't feel crowded.
+   Gap + padding stay token-consistent with comfortable; only the hit target shrinks. */
 .card[data-density='compact'] .iconBtn {
   width: 24px;
   height: 24px;
@@ -129,8 +129,8 @@
 /* ── themed tooltip (Radix) ─────────────────────────────────────── */
 .tip {
   z-index: 50;
-  padding: 5px 9px;
-  font-size: 11.5px;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--t-label);
   font-weight: 500;
   line-height: 1;
   color: var(--ink);
@@ -163,7 +163,7 @@
 }
 
 .label {
-  font-size: 12px;
+  font-size: var(--t-body);
   font-weight: 500;
   letter-spacing: 0.01em;
   color: var(--ink);
@@ -177,7 +177,7 @@
   padding: var(--space-2);
 }
 .card[data-density='compact'] .label {
-  font-size: 11px;
+  font-size: var(--t-label);
 }
 
 /* ── generating — calm: thin top progress, small spinner, elapsed ── */
@@ -190,7 +190,7 @@
 }
 
 .elapsed {
-  font-size: 11px;
+  font-size: var(--t-label);
   font-variant-numeric: tabular-nums;
   color: var(--faint);
 }

@@ -106,6 +106,7 @@
 
 /* LEFT — large image stage */
 .stage {
+  position: relative;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -129,6 +130,50 @@
   gap: var(--space-2);
   color: var(--faint);
   font-size: var(--t-label);
+}
+
+/* Prev / next nav buttons + position pill on the image stage */
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--surface-3) 70%, transparent);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease), background var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+  z-index: 2;
+}
+.stage:hover .navBtn { opacity: 1; }
+.navBtn:hover { background: var(--surface-3); }
+.navPrev { left: var(--space-3); }
+.navPrev svg { transform: rotate(180deg); }
+.navNext { right: var(--space-3); }
+.position {
+  position: absolute;
+  bottom: var(--space-3);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px var(--space-2);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--surface-3) 70%, transparent);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* RIGHT — scrollable rail */
