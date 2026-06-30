@@ -24,31 +24,47 @@
   padding: var(--space-5) var(--space-3) var(--space-3);
 }
 
-/* ── Aura — an intense SVG mesh-gradient glowing in the bottom 2/3 ──
-   Inline SVG: 4 heavily-blurred cyan/blue circles over a near-black gradient
-   (top matches --surface so the seam with the empty top 1/3 vanishes). Hot
-   near-cyan core pools at the bottom, fades up into dark. Bottom anchored at
-   0 (never negative) so overflow:hidden can't clip the core; transform-origin
-   at the floor so the mesh breathes UPWARD. Reduced-motion freezes it. */
+/* ── Aura — saturated blue→black with light rays + a vertical grid overlay ──
+   Inline SVG: a deep royal-blue base fading to TRUE black at the top (no gray
+   mud), soft god-ray streaks fanning up from the bottom-center focal point, and
+   a bright cyan-white directional hotspot (elongated, not a perfect sphere).
+   Bottom 2/3 holds the glow; top 1/3 stays black. Bottom anchored at 0 so
+   overflow:hidden can't clip the core; transform-origin at the floor so the
+   mesh breathes UPWARD. A separate ::after paints the faint vertical grid. */
 .sidebar::before {
   content: '';
   position: absolute;
-  inset: 33% -8% 0 -8%;
-  z-index: -1;
+  inset: 30% -6% 0 -6%;
+  z-index: -2;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%20600'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3Cfilter%20id='b'%20x='-50%'%20y='-50%'%20width='200%'%20height='200%'%3E%3CfeGaussianBlur%20stdDeviation='60'/%3E%3C/filter%3E%3ClinearGradient%20id='f'%20x1='0'%20y1='0'%20x2='0'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%231b1b1c'/%3E%3Cstop%20offset='0.5'%20stop-color='%23161619'/%3E%3Cstop%20offset='1'%20stop-color='%230b0b0e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='400'%20height='600'%20fill='url(%23f)'/%3E%3Cg%20filter='url(%23b)'%3E%3Ccircle%20cx='200'%20cy='520'%20r='175'%20fill='%237db4ff'/%3E%3Ccircle%20cx='108'%20cy='558'%20r='150'%20fill='%233961ff'/%3E%3Ccircle%20cx='300'%20cy='558'%20r='150'%20fill='%234d7cff'/%3E%3Ccircle%20cx='202'%20cy='572'%20r='92'%20fill='%23cfe6ff'/%3E%3C/g%3E%3C/svg%3E");
+  background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20700%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22base%22%20x1%3D%220%22%20y1%3D%221%22%20x2%3D%220%22%20y2%3D%220%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232c5cff%22%2F%3E%3Cstop%20offset%3D%220.18%22%20stop-color%3D%22%231f3fbf%22%2F%3E%3Cstop%20offset%3D%220.45%22%20stop-color%3D%22%230b1a6a%22%2F%3E%3Cstop%20offset%3D%220.82%22%20stop-color%3D%22%230a0a0a%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230a0a0a%22%2F%3E%3C%2FlinearGradient%3E%3Cfilter%20id%3D%22b%22%20x%3D%22-50%25%22%20y%3D%22-50%25%22%20width%3D%22200%25%22%20height%3D%22200%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%2242%22%2F%3E%3C%2Ffilter%3E%3Cfilter%20id%3D%22r%22%20x%3D%22-50%25%22%20y%3D%22-50%25%22%20width%3D%22200%25%22%20height%3D%22200%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%227%22%2F%3E%3C%2Ffilter%3E%3C%2Fdefs%3E%3Crect%20width%3D%22400%22%20height%3D%22700%22%20fill%3D%22url(%23base)%22%2F%3E%3Cg%20filter%3D%22url(%23r)%22%20opacity%3D%220.55%22%3E%3Cpolygon%20points%3D%22200%2C700%20192%2C0%20208%2C0%22%20fill%3D%22%239fc2ff%22%2F%3E%3Cpolygon%20points%3D%22200%2C700%20150%2C0%20172%2C0%22%20fill%3D%22%237ea8ff%22%2F%3E%3Cpolygon%20points%3D%22200%2C700%20228%2C0%20250%2C0%22%20fill%3D%22%237ea8ff%22%2F%3E%3Cpolygon%20points%3D%22200%2C700%20108%2C0%20132%2C0%22%20fill%3D%22%236b9aff%22%2F%3E%3Cpolygon%20points%3D%22200%2C700%20268%2C0%20292%2C0%22%20fill%3D%22%236b9aff%22%2F%3E%3Cpolygon%20points%3D%22200%2C700%2062%2C0%2088%2C0%22%20fill%3D%22%235688ff%22%2F%3E%3Cpolygon%20points%3D%22200%2C700%20308%2C0%20336%2C0%22%20fill%3D%22%235688ff%22%2F%3E%3C%2Fg%3E%3Cg%20filter%3D%22url(%23b)%22%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%22690%22%20rx%3D%22135%22%20ry%3D%22175%22%20fill%3D%22%23cfe6ff%22%2F%3E%3Cellipse%20cx%3D%22200%22%20cy%3D%22708%22%20rx%3D%22215%22%20ry%3D%22135%22%20fill%3D%22%232c5cff%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: bottom;
   background-size: 100% 100%;
-  filter: blur(8px);
+  filter: blur(6px);
   opacity: 1;
   transform-origin: 50% 100%;
-  animation: auraBreathe 16s var(--ease) infinite alternate;
+  animation: auraBreathe 18s var(--ease) infinite alternate;
   will-change: transform;
 }
+
+/* Faint vertical grid — the structured "blueprint" overlay from the reference.
+   Thin low-opacity white lines every 24px, softened, only in the glow zone. */
+.sidebar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(90deg, transparent 0 23px, rgba(255, 255, 255, 0.045) 23px 24px);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 35%, #000 100%);
+  opacity: 0.7;
+}
+
 @keyframes auraBreathe {
-  0%   { transform: translate3d(-2%, 0, 0) scale(1); }
-  100% { transform: translate3d(2.5%, 0, 0) scale(1.15); }
+  0%   { transform: translate3d(-1.5%, 0, 0) scale(1); }
+  100% { transform: translate3d(2%, 0, 0) scale(1.12); }
 }
 @media (prefers-reduced-motion: reduce) {
   .sidebar::before { animation: none; }
