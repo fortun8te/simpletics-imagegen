@@ -244,11 +244,11 @@ export default function TopBar() {
               className={s.primary}
               onClick={doGenerate}
               title={emptyCount > 0
-                ? `Generate the ${emptyCount} missing image${emptyCount === 1 ? '' : 's'} in this batch`
-                : 'Add one more variant to every variation in this batch'}
+                ? `Generate the ${emptyCount} image${emptyCount === 1 ? '' : 's'} that haven't been created yet`
+                : 'Add one new variant to every variation — existing images are kept'}
             >
               <Icon name="sparkles" size={15} />
-              <span>{emptyCount > 0 ? `Generate ${emptyCount}` : 'Generate more'}</span>
+              <span>{emptyCount > 0 ? `Generate ${emptyCount} missing` : 'Add 1 variant'}</span>
             </button>
           )}
         </div>
@@ -276,8 +276,8 @@ export default function TopBar() {
           })}
         </div>
 
-        <div className={s.search}>
-          <Icon name="search" size={14} />
+        <div className={s.searchWrap}>
+          <Icon name="search" size={14} className={s.searchIcon} />
           <input
             ref={searchRef}
             type="search"

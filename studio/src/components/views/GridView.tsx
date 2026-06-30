@@ -85,7 +85,7 @@ export default function GridView() {
     gridTemplateColumns: `repeat(auto-fill, minmax(${minPx}px, 1fr))`,
   };
 
-  // Enqueue one more variant for a whole variation (the obvious "generate more" affordance).
+  // Enqueue one more variant for a whole variation (append — does not overwrite existing slots).
   const genMore = (ad: string, variation: string) =>
     brand && batch && api.generate(brand, batch, { variation: { ad, variation } }, 1);
 
@@ -145,11 +145,12 @@ export default function GridView() {
                               className={styles.genMore}
                               data-density={density}
                               onClick={() => genMore(ad.id, variation.id)}
-                              aria-label="Generate more images for this variation"
+                              title="Add one new variant to this variation — existing images are kept"
+                              aria-label="Add one new variant to this variation — existing images are kept"
                             >
                               <span className={styles.genMoreInner}>
                                 <Icon name="plus" size={density === 'compact' ? 18 : 22} />
-                                <span className={styles.genMoreLabel}>Generate more</span>
+                                <span className={styles.genMoreLabel}>Add variant</span>
                               </span>
                             </button>
                           ) : null}
