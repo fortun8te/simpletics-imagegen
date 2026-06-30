@@ -107,6 +107,7 @@
 
 /* LEFT — large image stage */
 .stage {
+  position: relative;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -299,3 +300,55 @@
   color: var(--on-accent);
 }
 .actPrimary:active { transform: scale(0.985); }
+
+/* Image-stage navigation — arrow-key prev/next chevrons + a position pill.
+   Quiet glass controls that live in the stage gutter and crisp up on hover. */
+.navBtn {
+  position: absolute;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-2);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  color: var(--muted);
+  transform: translateY(-50%);
+  opacity: 0.7;
+  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
+}
+.stage:hover .navBtn,
+.stage:hover .position { opacity: 1; }
+.navBtn:hover {
+  background: var(--glass-bg-3);
+  border-color: var(--glass-border-strong);
+  color: var(--ink);
+}
+.navBtn:active { background: var(--surface-3); }
+.navPrev { left: var(--space-4); }
+.navPrev > svg { transform: scaleX(-1); }
+.navNext { right: var(--space-4); }
+
+.position {
+  position: absolute;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px var(--space-2);
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-2);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+  pointer-events: none;
+}
