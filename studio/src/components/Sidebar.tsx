@@ -189,24 +189,16 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer — compact identity bar + settings */}
+      {/* Footer — a single Settings button */}
       <div className={styles.footer}>
-        <div className={styles.footerBar}>
-          <div className={styles.footerBrand}>
-            <span className={styles.footerMark}>
-              <Icon name="brand" size={12} />
-            </span>
-            <span className={styles.footerName}>NEUEGEN</span>
-          </div>
-          <button
-            className={styles.footerSettings}
-            type="button"
-            aria-label="Settings"
-            onClick={() => setUI({ settingsOpen: true })}
-          >
-            <Icon name="settings" size={15} />
-          </button>
-        </div>
+        <button
+          className={styles.settingsBtn}
+          type="button"
+          onClick={() => setUI({ settingsOpen: true })}
+        >
+          <Icon name="settings" size={16} />
+          <span>Settings</span>
+        </button>
       </div>
     </aside>
   );

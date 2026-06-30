@@ -1,9 +1,10 @@
 /* DetailDrawer — premium floating image modal (Linear/Raycast + Claritas feel).
-   Strong glass backdrop, tall floating glass panel with header bar + breadcrumb,
-   two-column body (image stage + rail), full-width footer action bar.
+   Strong glass backdrop, tall floating glass panel with a header bar + breadcrumb,
+   and a two-column body: a large image stage (left) + a scrollable rail (right)
+   holding REFERENCE / PROMPT / REVISE / ACTIONS sections.
    Overlay z 100 / content z 101 + isolation keeps grid/TopBar text from bleeding
    through. Single committed dark theme; all token-based; blue is reserved for the
-   single Download primary CTA only — every other control stays neutral. */
+   single Download primary action only — every other control stays neutral. */
 
 .overlay {
   position: fixed;
@@ -97,7 +98,7 @@
 .close:hover { background: var(--surface-2); color: var(--ink); }
 .close:active { background: var(--surface-3); }
 
-/* Body — two columns */
+/* Body — two columns: image stage + scrollable rail */
 .body {
   flex: 1 1 auto;
   min-height: 0;
@@ -106,7 +107,6 @@
 
 /* LEFT — large image stage */
 .stage {
-  position: relative;
   flex: 1 1 auto;
   min-width: 0;
   display: flex;
@@ -132,50 +132,6 @@
   font-size: var(--t-label);
 }
 
-/* Prev / next nav buttons + position pill on the image stage */
-.navBtn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--surface-3) 70%, transparent);
-  border: 1px solid var(--line);
-  color: var(--ink);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  opacity: 0;
-  transition: opacity var(--dur-2) var(--ease), background var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
-  z-index: 2;
-}
-.stage:hover .navBtn { opacity: 1; }
-.navBtn:hover { background: var(--surface-3); }
-.navPrev { left: var(--space-3); }
-.navPrev svg { transform: rotate(180deg); }
-.navNext { right: var(--space-3); }
-.position {
-  position: absolute;
-  bottom: var(--space-3);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 3px var(--space-2);
-  border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--surface-3) 70%, transparent);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  font-family: var(--font-mono);
-  font-size: var(--t-label);
-  color: var(--muted);
-  font-variant-numeric: tabular-nums;
-  z-index: 2;
-  pointer-events: none;
-}
-
 /* RIGHT — scrollable rail */
 .rail {
   flex: 0 0 400px;
@@ -195,7 +151,7 @@
   gap: 0;
 }
 
-/* Sections — small-caps label, thin dividers between */
+/* Sections — small-caps label row, thin dividers between */
 .section {
   display: flex;
   flex-direction: column;
@@ -207,29 +163,56 @@
   padding-top: var(--space-4);
   border-top: 1px solid var(--line-soft);
 }
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
 .label {
-  margin: 0;
   font-size: var(--t-label);
   letter-spacing: .14em;
   text-transform: uppercase;
   color: var(--faint);
   font-weight: 500;
 }
+.sectionHint {
+  font-size: var(--t-label);
+  color: var(--faint);
+  white-space: nowrap;
+}
 
 /* REFERENCE */
-.refRow { display: flex; align-items: center; gap: var(--space-3); }
+.refCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  box-shadow: var(--inset-hi);
+}
 .refThumb {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   flex: 0 0 auto;
   border-radius: var(--r-sm);
   overflow: hidden;
   border: 1px solid var(--line);
-  background: var(--surface-2);
-  box-shadow: var(--inset-hi);
+  background: var(--surface-3);
 }
 .refThumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.refName { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.refMeta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.refName {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.refSub { font-size: var(--t-label); color: var(--faint); }
 
 /* PROMPT */
 .promptBox {
@@ -253,19 +236,19 @@
 /* REVISE — neutral ghost CTA (blue stays on Download only) */
 .reviseInput {
   width: 100%;
-  height: 36px;
-  padding: 0 var(--space-3);
+  padding: var(--space-3);
   border-radius: var(--r-md);
   background: var(--surface-2);
   border: 1px solid var(--line-strong);
   color: var(--ink);
+  font: 400 var(--t-body)/1.5 var(--font-sans);
+  resize: vertical;
   transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
 .reviseInput::placeholder { color: var(--faint); }
 .reviseInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
 .reviseInput:disabled { opacity: 0.55; }
 .reviseBtn {
-  margin-top: var(--space-2);
   height: 36px;
   width: 100%;
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
@@ -280,35 +263,31 @@
 .reviseBtn:hover:not(:disabled) { background: var(--surface-3); border-color: var(--line-strong); }
 .reviseBtn:active:not(:disabled) { background: var(--surface-2); }
 .reviseBtn:disabled { opacity: 0.45; cursor: not-allowed; }
-.hint { margin: var(--space-2) 0 0; font-size: var(--t-label); color: var(--faint); }
+.hint { margin: 0; font-size: var(--t-label); line-height: 1.5; color: var(--faint); }
 
-/* ACTIONS — proper section under Revise, a 2x2 grid of labeled buttons */
+/* ACTIONS — 2×2 grid, Download is the single blue primary */
 .actionRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-2);
 }
 .actBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
   height: 36px;
   padding: 0 var(--space-3);
   border-radius: var(--r-md);
   background: transparent;
   border: 1px solid var(--line);
   color: var(--ink);
-  font-size: 12.5px;
+  font-size: var(--t-body);
   font-weight: 500;
-  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
-/* pinned so the global a:hover (accent-ink) can't bleed blue into the Open link */
-.actBtn:hover:not(:disabled) { background: var(--surface-2); border-color: var(--line-strong); color: var(--ink); }
+/* color is pinned so the global a:hover (accent-ink) can't bleed blue into the Open link */
+.actBtn:hover { background: var(--surface-2); border-color: var(--line-strong); color: var(--ink); }
 .actBtn:active:not(:disabled) { background: var(--surface-3); }
 .actBtn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* Download — the single blue primary CTA */
 .actPrimary {
   background: var(--accent);
   border-color: var(--accent);
