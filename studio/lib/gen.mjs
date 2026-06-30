@@ -6,6 +6,13 @@
 // overwrites — every write routes through logic.js's `versionedRelPath` (run-N.png ->
 // run-N-v2.png -> ...), so "regenerate" always adds a new version and an earlier image is never
 // replaced. Zero external deps: node:* + createRequire only.
+//
+// --status output format (for the bridge / status endpoint): when gen.mjs reports job state,
+// each entry includes `queuedAt`, `startedAt` (when pulled off "pending" by a /next call), and
+// `position` — the 1-based index in the queue at report time. A job with position=1 is about to
+// be served next; higher numbers are waiting behind it. The bridge recomputes positions from the
+// pending Map on every /status query, so queuedAt/startedAt are stable timestamps while position
+// moves as jobs get claimed by /next.
 import { existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { spawn } from 'node:child_process';

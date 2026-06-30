@@ -381,7 +381,147 @@ window.DASH = window.DASH || {};
     el.className = 'bridge-state ' + cls;
   }
 
-  // --- export ----------------------------------------------------------------
+  // ------------------------------------------------------------------- Codex Usage Panel
+  // Renders a live panel showing per-model tokens used vs limit, weekly progress bars,
+  // the active backend indicator (Codex/ChatGPT), and a fallback status banner.
+
+  function renderCodexUsage(data) {
+    var el = $('codexUsagePanel');
+    if (!el) return;
+
+    data = data || {};
+    var overall = data.overall || {};
+    var models = Array.isArray(data.models) ? data.models : [];
+    var backendInfo = data.backendIndicator || null;
+    var fallbackBanner = data.fallbackStatus || null;
+    var updatedAt = (overall && overall.updatedAt) || new Date().toISOString();
+
+    // Backend indicator.
+    var backendCls, backendText;
+    if (backendInfo === true || backendInfo === 'codex') {
+      backendCls = 'codex-active';
+      backendText = 'Using: Codex';
+    } else if (backendInfo === false || backendInfo === 'chatgpt') {
+      backendCls = 'chatgpt-active';
+      backendText = 'Using: ChatGPT';
+    } else if (backendInfo === null) {
+      backendCls = 'offline';
+      backendText = 'Backend: unknown';
+    } else {
+      backendCls = 'chatgpt-active';
+      backendText = 'Using: ChatGPT';
+    }
+
+    // Fallback banner.
+    var bannerHtml = '';
+    if (fallbackBanner && fallbackBanner.fallback) {
+      bannerHtml = '<div class="fallback-banner is-visible">' +
+        '<strong>Fallback active</strong> — Codex exhausted (' + esc(fallbackBanner.percentage || '?') + '%). ' +
+        'Switched to ChatGPT backend. Reset at: ' + (esc(fallbackBanner.resetAt) || 'unknown').replace(/T.*Z$/g, '').replace(/\..+$/, '') + '.' +
+      '</div>';
+    } else if (!fallbackBanner && !backendInfo) {
+      bannerHtml = '<div class="fallback-banner">' + esc(overall.totalUsed || 0) + ' tokens used / ' + (Number(overall.weeklyLimit) || 2_550_000).toLocaleString() + '</div>';
+    }
+
+    // Per-model rows.
+    var modelRows = '';
+    for (var i = 0; i < models.length; i++) {
+      var m = models[i] || {};
+      var pct = Number(m.percentage) || 0;
+      var cls = pct >= 85 ? ' is-high' : (pct > 30 ? ' is-low' : '');
+
+      // Format the reset date.
+      var resetAt = m.resetAt || null;
+      var resetDisplay = '';
+      if (resetAt) {
+        try {
+          resetDisplay = new Date(resetAt).toLocaleString();
+        } catch {}
+      }
+
+      modelRows += '<div class="usage-row">';
+      modelRows += '<span class="model-name-col">' + esc(m.model || '—') + '</span>';
+      modelRows += '<span class="model-info">';
+      if (m.used !== undefined && m.limit) {
+        var usedStr = Number(m.used).toLocaleString();
+        var limitStr = Number(m.limit).toLocaleString();
+        modelRows += '<div class="model-usage">' + usedStr + ' / ' + limitStr + '</div>';
+      } else if (m.backend === 'gemini') {
+        modelRows += '<div class="model-usage">Gemini · quota managed by Google</div>';
+      } else {
+        modelRows += '<div class="model-usage">' + esc(m.backend || '?') + '</div>';
+      }
+      modelRows += '<div class="model-progress"><div class="model-bar-fill' + cls + '" style="width:' + (pct >= 100 ? 100 : pct) + '%"></div></div>';
+      modelRows += '</span>';
+      modelRows += '<span class="model-reset">' + (resetDisplay || '—') + '</span>';
+      modelRows += '</div>';
+    }
+
+    var html = '';
+    html += '<section class="usage-panel">';
+    html += '<div class="usage-header">';
+    html += '<span class="usage-title"><span class="dot" id="usageDot"></span>Codex Quota</span>';
+    html += '<span class="backend-indicator ' + esc(backendCls) + '">' + esc(backendText) + '</span>';
+    html += '</div>';
+
+    // Overall bar.
+    var overallPct = Number(overall.percentage) || 0;
+    var overallCls = overallPct >= 85 ? ' is-high' : '';
+    html += '<div class="usage-overall">';
+    html += '<span class="overall-label">' + esc((Number(overall.totalUsed) || 0).toLocaleString()) + ' tokens / ' + (Number(overall.weeklyLimit) || 2_550_000).toLocaleString() + '</span>';
+    html += '<div class="overall-bar-track"><div class="overall-bar-fill' + overallCls + '" style="width:' + (overallPct >= 100 ? 100 : overallPct) + '%"></div></div>';
+    html += '<span class="pct">' + (Number(overall.percentage) || 0).toFixed(1) + '%</span>';
+    html += '</div>';
+
+    if (modelRows) {
+      for (var j = 0; j < models.length; j++) {
+        var m2 = models[j] || {};
+        var rowPct = Number(m2.percentage) || 0;
+        var rowCls = rowPct >= 85 ? ' is-high' : (rowPct > 30 ? ' is-low' : '');
+        html += '<div class="usage-row">';
+        html += '<span class="model-name-col">' + esc(m2.model || '—') + '</span>';
+        html += '<span class="model-info">';
+        if (m2.used !== undefined && m2.limit) {
+          var usedStr = Number(m2.used).toLocaleString();
+          var limitStr = Number(m2.limit).toLocaleString();
+          html += '<div class="model-usage">' + usedStr + ' / ' + limitStr + '</div>';
+        } else if (m2.backend === 'gemini') {
+          html += '<div class="model-usage">Gemini · quota managed by Google</div>';
+        } else {
+          html += '<div class="model-usage">' + esc(m2.backend || '?') + '</div>';
+        }
+        html += '<div class="model-progress"><div class="model-bar-fill' + rowCls + '" style="width:' + (rowPct >= 100 ? 100 : rowPct) + '%"></div></div>';
+        html += '</span>';
+        var resetDisplay = m2.resetAt ? new Date(m2.resetAt).toLocaleString() : '—';
+        html += '<span class="model-reset">' + esc(resetDisplay) + '</span>';
+        html += '</div>';
+      }
+    }
+
+    if (bannerHtml) {
+      html += bannerHtml;
+    } else {
+      var usageText = overall.totalUsed ? (Number(overall.totalUsed).toLocaleString() + ' tokens / ' + (Number(overall.weeklyLimit) || 2_550_000).toLocaleString()) : 'No data';
+      html += '<div class="fallback-banner">' + esc(usageText) + '</div>';
+    }
+
+    if (!backendInfo && !fallbackBanner) {
+      var now = new Date(updatedAt);
+      html += '<div style="padding:8px 15px;font-size:10px;color:var(--faint)">Updated ' + now.toLocaleTimeString() + '</div>';
+    }
+
+    // Dot indicator — reflects overall health.
+    var dotEl = $('usageDot');
+    if (dotEl) {
+      if (backendInfo === true || backendInfo === 'codex') dotEl.className = 'dot is-healthy';
+      else if (backendCls === 'chatgpt-active' && !fallbackBanner) dotEl.className = 'dot is-warning';
+      else dotEl.className = 'dot is-exhausted';
+    }
+
+    el.innerHTML = html;
+  }
+
+  // ------------------------------------------------------------------- export
 
   window.DASH.ui = {
     populateSelectors: populateSelectors,
@@ -390,6 +530,7 @@ window.DASH = window.DASH || {};
     setRunnerState: setRunnerState,
     openLightbox: openLightbox,
     closeLightbox: closeLightbox,
-    setBridgeState: setBridgeState
+    setBridgeState: setBridgeState,
+    renderCodexUsage: renderCodexUsage
   };
 })();

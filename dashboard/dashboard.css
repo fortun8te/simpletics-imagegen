@@ -237,3 +237,63 @@ header select:hover,
   .mini-bar > span { transition:none; }
   .tile,#runBtn,#stopBtn { transition:none; }
 }
+
+/* ------------------------------------------------------------------- Codex Usage Panel */
+.usage-panel {
+  border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface); overflow:hidden; margin-bottom:16px;
+}
+.usage-header {
+  display:flex; align-items:center; justify-content:space-between; padding:12px 15px;
+  border-bottom:1px solid var(--line-soft); flex-wrap:wrap; gap:8px;
+}
+.usage-title {
+  font-size:11.5px; font-weight:600; color:var(--muted); letter-spacing:.07em; text-transform:uppercase;
+  display:flex; align-items:center; gap:6px;
+}
+.usage-title .dot {
+  width:8px; height:8px; border-radius:50%; flex:0 0 auto; background:var(--faint); transition:background .2s;
+}
+.usage-title .dot.is-healthy { background:var(--ok); }
+.usage-title .dot.is-warning { background:var(--warn); animation:lane-pulse 1.3s ease-in-out infinite; }
+.usage-title .dot.is-exhausted { background:var(--err); animation:lane-pulse .8s ease-in-out infinite; }
+
+/* Backend indicator — top right of the panel. */
+.backend-indicator {
+  display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:600; letter-spacing:.02em;
+}
+.backend-indicator.codex-active { background:#0a3d1e; color:var(--ok); }
+.backend-indicator.chatgpt-active { background:#1c1e26; color:var(--ink); border:1px solid var(--line); }
+.backend-indicator.offline { background:#3d1e1e; color:var(--err); }
+
+/* Overall progress bar. */
+.usage-overall { padding:14px 15px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.overall-label { font-size:10px; color:var(--muted); white-space:nowrap; min-width:180px; }
+.overall-bar-track { flex:1; height:6px; background:var(--surface-2); border-radius:999px; overflow:hidden; position:relative; }
+.overall-bar-fill { position:absolute; top:0; left:0; bottom:0; height:100%; transition:width .3s ease; width:0%; }
+.overall-bar-fill.is-low { background:#e6b566; }
+.overall-bar-fill.is-high { background:var(--err); animation:pulse-err 2s ease-in-out infinite; }
+
+@keyframes pulse-err {
+  0%,100%{opacity:1;} 50%{opacity:.4;}
+}
+
+.overall-label .pct { font-size:13px; color:var(--ink); font-weight:600; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+/* Per-model rows. */
+.usage-row {
+  display:flex; align-items:center; gap:12px; padding:11px 15px; border-top:1px solid var(--line-soft); flex-wrap:wrap;
+}
+.model-name-col { flex:0 0 160px; font-size:11.5px; font-weight:600; color:var(--ink); min-width:140px; }
+.model-info { display:flex; flex-direction:column; gap:3px; flex:1; }
+.model-usage { font-size:10px; color:var(--muted); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+.model-progress { height:4px; background:var(--surface-2); border-radius:999px; overflow:hidden; flex:1; margin-top:6px; }
+.model-bar-fill { height:100%; width:0%; transition:width .3s ease,background-color .3s; border-radius:999px 0 0 999px; background:var(--accent); }
+.model-bar-fill.is-low { background:#e6b566; }
+.model-bar-fill.is-high { background:var(--err); }
+.model-reset { font-size:10px; color:var(--faint); white-space:nowrap; min-width:80px; text-align:right; flex-basis:80px; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+/* Fallback status banner. */
+.fallback-banner {
+  display:none; padding:10px 15px; border-top:1px solid var(--err); background:rgba(255,128,113,.06); font-size:11px; color:var(--err); line-height:1.45;
+}
+.fallback-banner.is-visible { display:block; }

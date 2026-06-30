@@ -31,6 +31,30 @@ window.DASH = window.DASH || {};
       .catch(function () { return ''; });
   }
 
+  // Fetch the latest Codex quota status from the tracker.
+  function getQuotaUsage() {
+    var url = '/api/codex/usage';
+    return fetch(url)
+      .then(function (r) { return r.json(); })
+      .catch(function () { return null; });
+  }
+
+  // Check if Codex is currently healthy enough to use. POST with optional { record: true }.
+  function checkFallback() {
+    var url = '/api/fallback/check';
+    return fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body:'' })
+      .then(function (r) { return r.json(); })
+      .catch(function () { return null; });
+  }
+
+  // Poll fallback status — the bridge updates this every ~1.5s via /status.
+  function getFallbackStatus() {
+    var url = '/api/fallback/check';
+    return fetch(url, { method:'GET', headers:{'Content-Type':'application/json'} })
+      .then(function (r) { return r.json(); })
+      .catch(function () { return null; });
+  }
+
   function runCodex(batch, variants) {
     return fetch('/api/codex/run', {
       method: 'POST',
@@ -60,6 +84,9 @@ window.DASH = window.DASH || {};
     getLog: getLog,
     runCodex: runCodex,
     stopCodex: stopCodex,
-    getHealth: getHealth
+    getHealth: getHealth,
+    getQuotaUsage: getQuotaUsage,
+    checkFallback: checkFallback,
+    getFallbackStatus: getFallbackStatus
   };
 })();

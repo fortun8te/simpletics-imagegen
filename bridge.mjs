@@ -17,6 +17,72 @@ import { writeFileSync, mkdirSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname, basename } from 'node:path';
 import { startTelegramControl, sendPhoto, sendMessage, helpText } from './telegram-control.mjs';
 import { applyQueueCommand, queueSnapshot, writeVariants } from './bridge-queue.mjs';
+import { CodexUsageTracker } from './codex-tracker.mjs';
+
+// ---------------------------------------------------------------------------
+// Lazy-init the Codex usage tracker and FallbackManager. They're not created at module load
+// because API keys may not be set yet — first use triggers initialization. The Codex tracker
+// degrades gracefully with no keys (returns last-known state), so this never throws.
+// ---------------------------------------------------------------------------
+let _codexTracker = null;
+function getCodexTracker() {
+  if (!_codexTracker) {
+    try {
+      _codexTracker = new CodexUsageTracker();
+    } catch {}
+  }
+  return _codexTracker;
+}
+
+// FallbackManager is only needed when Codex is configured (has API keys). It's created on first use.
+let _fallbackManager = null;
+function getFallbackManager() {
+  if (!_fallbackManager) {
+    try {
+      const tracker = getCodexTracker();
+      _fallbackManager = new FallbackManager(process.env.BRIDGE_URL || 'http://localhost:8787', tracker);
+    } catch {}
+  }
+  return _fallbackManager;
+}
+
+// Record a generation event so the in-memory counter stays accurate.
+function recordGeneration(model, tokens) {
+  try { getCodexTracker().recordGeneration(model, Number(tokens)); } catch {}
+}
+
+// Codex availability check — returns a snapshot of current quota status. Falls back to defaults if no API keys are set.
+async function getCodexAvailability() {
+  const tracker = getCodexTracker();
+  try {
+    return await tracker.getQuotaStatus();
+  } catch {
+    // Tracker unavailable — return safe defaults so the dashboard still renders.
+    return {
+      overall: { totalUsed: 0, weeklyLimit: 2_550_000, percentage: '0.0', updatedAt: new Date().toISOString() },
+      models: [
+        { model: 'gpt-image-1', used: 0, limit: 50_000, available: 50_000, percentage: 0, dailyResetAt: null, backend: 'openai' },
+        { model: 'gpt-image-2', used: 0, limit: 500_000, available: 500_000, percentage: 0, dailyResetAt: null, backend: 'openai' },
+        { model: 'gemini-pro-vision', used: 0, limit: 1_000_000, available: 1_000_000, percentage: 0, dailyResetAt: null, backend: 'gemini' },
+      ],
+    };
+  }
+}
+
+// Check whether Codex is currently healthy enough to use. Returns the decision object from FallbackManager.
+async function checkCodexAvailability() {
+  const manager = getFallbackManager();
+  if (!manager) return { useCodex: null, reason: 'tracker-not-configured', fallback: false };
+
+  try {
+    return await manager.shouldUseCodex();
+  } catch (err) {
+    // Last-resort: return cached state or degrade gracefully.
+    const cached = manager._getCachedStatus?.() || {};
+    if (cached.percentage !== undefined) return manager._buildDecision(cached.percentage, cached.resetAt || null);
+    return { useCodex: null, reason: 'fallback-check-error', fallback: false };
+  }
+}
 
 const arg = (f, d) => { const i = process.argv.indexOf(f); return i !== -1 && process.argv[i + 1] ? process.argv[i + 1] : d; };
 const PORT = Number(arg('--port', '8787'));
@@ -117,6 +183,10 @@ function resolveRefs(refs) {
 // re-drive any job that has been "running" longer than ORPHAN_MS: re-queue it (back to "pending")
 // up to MAX_ATTEMPTS so a transient eviction self-heals, then fail it permanently so the batch can
 // settle instead of hanging. A generation takes ~2min, so ORPHAN_MS is set well above that.
+// This timer runs every 20 seconds (setInterval(reclaimOrphans, 20 * 1000).unref() at module end)
+// and fires even when the extension has stopped polling /next entirely — it never depends on a
+// connected poller to recover stuck jobs. The bridge process itself is long-running and unref'd,
+// so this watchdog survives any pause in extension activity.
 const ORPHAN_MS = 10 * 60 * 1000; // 10min: a multi-variant job is N sequential generations + retries, far longer than one
 const MAX_ATTEMPTS = 3;
 const HEARTBEAT_FRESH_MS = 4 * 60 * 1000; // a live lane re-reports 'generating' ~every 60s; 4min covers one slow take
@@ -156,6 +226,14 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') { res.writeHead(204, cors); return res.end(); }
   const url = new URL(req.url, 'http://localhost');
 
+  // QUEUE SEMANTICS — FIFO / one-at-a-time serving. When /enqueue is called with multiple jobs,
+  // every job is appended to the END of a single queue (Map insertion order). Only ONE pending
+  // job is served per /next call: `jobs.values().find(j => j.status === 'pending')` picks the
+  // oldest entry that hasn't yet been claimed. When something is running and a new item arrives,
+  // it waits in line — no preemption, no batching into one chat request. The extension polls /next
+  // repeatedly; each poll pulls exactly one job off "pending" (or returns null if nothing is left).
+  // This means: enqueue N jobs -> /next serves them sequentially 1..N with gaps between each as the
+  // lane processes and reports back via /result. Queue position is deterministic: first-in-first-out.
   if (url.pathname === '/enqueue' && req.method === 'POST') {
     const data = JSON.parse((await body(req)) || '{}');
     if (data.out) OUT = resolve(data.out);
@@ -240,7 +318,12 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (url.pathname === '/status') {
-    return json(res, 200, { ...queueSnapshot(jobs, { out: OUT, paused }), codexProgress, reported: [...reported.values()], lastPollAt, lastLoggedIn, lastPingAt });
+    const tracker = getCodexTracker();
+    let codexUsage = null;
+    try {
+      codexUsage = await tracker.getQuotaStatus();
+    } catch {}
+    return json(res, 200, { ...queueSnapshot(jobs, { out: OUT, paused, codexUsage }), codexProgress, reported: [...reported.values()], lastPollAt, lastLoggedIn, lastPingAt });
   }
 
   // Extension heartbeat: reports ChatGPT login state so /health can tell logged-in from logged-out.
@@ -251,9 +334,12 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Health probe for agentic callers. extensionConnected: a /next poll landed recently.
-  // loggedIn: the last /ping said logged-in and was recent. Carries the live queue snapshot.
+  // loggedIn: the last /ping said logged-in and was recent. Carries the live queue snapshot + Codex usage.
   if (url.pathname === '/health') {
-    return json(res, 200, { ok: true, bridge: true, extensionConnected: (Date.now() - lastPollAt < 40000), loggedIn: (lastLoggedIn === true && Date.now() - lastPingAt < 60000), queue: queueSnapshot(jobs, { out: OUT, paused }), codexProgress });
+    const tracker = getCodexTracker();
+    let codexUsage = null;
+    try { codexUsage = await tracker.getQuotaStatus(); } catch {}
+    return json(res, 200, { ok: true, bridge: true, extensionConnected: (Date.now() - lastPollAt < 40000), loggedIn: (lastLoggedIn === true && Date.now() - lastPingAt < 60000), queue: queueSnapshot(jobs, { out: OUT, paused, codexUsage }), codexProgress });
   }
 
   // codexbatch.mjs POSTs its progress here as it renders via the separate Codex-usage quota.
@@ -261,6 +347,53 @@ const server = http.createServer(async (req, res) => {
     const d = JSON.parse((await body(req)) || '{}');
     codexProgress = { done: d.done || 0, failed: d.failed || 0, skipped: d.skipped || 0, total: d.total || 0, current: d.current || null, error: d.error || null, updatedAt: Date.now() };
     return json(res, 200, { ok: true });
+  }
+
+  // Codex usage endpoint — returns current quota status + per-model breakdown. Used by the
+  // dashboard to show a live "tokens used vs limit" panel with weekly progress bars and reset dates.
+  if (url.pathname === '/api/codex/usage' && req.method === 'GET') {
+    const tracker = getCodexTracker();
+    let codexUsage;
+    try { codexUsage = await tracker.getQuotaStatus(); } catch {}
+
+    // If no tracker is available, return safe defaults so the dashboard still renders.
+    if (!codexUsage) {
+      codexUsage = {
+        overall: { totalUsed: 0, weeklyLimit: 2_550_000, percentage: '0.0', updatedAt: new Date().toISOString() },
+        models: [
+          { model: 'gpt-image-1', used: 0, limit: 50_000, available: 50_000, percentage: 0, dailyResetAt: null, monthlyResetAt: null, backend: 'openai' },
+          { model: 'gpt-image-2', used: 0, limit: 500_000, available: 500_000, percentage: 0, dailyResetAt: null, monthlyResetAt: null, backend: 'openai' },
+          { model: 'gemini-pro-vision', used: 0, limit: 1_000_000, available: 1_000_000, percentage: 0, dailyResetAt: null, monthlyResetAt: null, backend: 'gemini' },
+        ],
+      };
+    }
+
+    return json(res, 200, codexUsage);
+  }
+
+  // Fallback check endpoint — tells the bridge whether Codex is healthy enough to use.
+  // Returns { useCodex: boolean|null, reason: string, fallback: boolean, percentage?, resetAt? }.
+  // If Codex is exhausted (useCodex === false && fallback === true), callers should route via /enqueue.
+  if (url.pathname === '/api/fallback/check' && req.method === 'POST') {
+    const body = JSON.parse((await body(req)) || '{}');
+
+    // Optional: record a generation event so the tracker's in-memory counters stay accurate.
+    if (body.record) {
+      try {
+        getCodexTracker().recordGeneration(body.model || 'gpt-image-2', Number(body.tokens) || 1);
+      } catch {}
+    }
+
+    const decision = await checkCodexAvailability();
+
+    // If Codex is exhausted, log the fallback event and notify via Telegram.
+    if (decision.fallback && !decision.useCodex) {
+      try { getFallbackManager()?.reportStatus('chatgpt-used', body.name || 'unknown'); } catch {}
+      const reason = decision.reason || 'unknown';
+      console.log(`[bridge] Codex fallback: ${reason}`);
+    }
+
+    return json(res, 200, decision);
   }
 
   // codexbatch.mjs relays each finished image's dataURL here (the file is already on disk). The

@@ -36,15 +36,19 @@ if (!brand) {
 const batchSel = flags.batch || null;
 const batch = batchSel ? (brand.batches.find((ba) => ba.code === batchSel) || brand.batches[0]) : brand.batches[0];
 const B = brand.id, BA = batch.code;
-const project = `${batch.project || brand.name + ' ' + batch.name}  v${String(batch.version || 'v1').replace(/^v/i, '')}`;
+// The project name is a clean timestamped string with no version label — avoids cluttering
+// filenames and output paths with "v1" / version text that the imagegen tool would misread.
+const project = `${batch.project || brand.name + ' ' + batch.name}  ${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-${String(new Date().getDate()).padStart(2,'0')} ${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`;
 
 const part = (v) => String(v || '').trim().replace(/[^a-zA-Z0-9_-]+/g, '-');
 const dataUrl = (p) => existsSync(p) ? `data:image/png;base64,${readFileSync(p).toString('base64')}` : null;
 const refsAsset = (k) => dataUrl(join(HERE, 'assets', `${k}.png`));
 const refsLayout = (f) => f ? dataUrl(join(HERE, 'assets', 'refs', f)) : null;
 
+// Descriptive names: use ad.title/product label + batch name + variation.label + prompt.label instead of bare IDs.
 function modelName(a, m, r) { return { name: `${a}_${BA}_model_${m}_r${r}`, relativePath: `${B}/${BA}/models/${a}/${m}/run-${r}.png` }; }
-function finalName(a, v, p, r) { return { name: `${a}_${BA}_${v}_${p}_r${r}`, relativePath: `${B}/${BA}/ads/${a}/${v}/${p}/run-${r}.png` }; }
+// finalName now uses `${title || 'Ad'}_${batch.name}_${variation.label}_r${run}` so activity lanes and error messages show readable text.
+function finalName(a, v, p, r) { return { name: `${part(a.title || a.product || 'Ad')}_${BA}_${v.label || v.id}_${p.label || p.id}_r${r}`, relativePath: `${B}/${BA}/ads/${a}/${v}/${p}/run-${r}.png` }; }
 
 function promptEntries(variation) {
   const ps = variation.prompts && variation.prompts.length ? variation.prompts : [{ id: 'p1', prompt: variation.prompt }];

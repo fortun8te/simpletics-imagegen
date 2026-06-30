@@ -81,7 +81,9 @@ export function queueSnapshot(jobs, options = {}) {
   const pending = by('pending');
   const running = by('running');
   const current = all.find((job) => job.status === 'running')?.name || null;
-  return {
+
+  // Merge optional codexUsage into the snapshot — dashboard uses this to show live backend stats.
+  const snap = {
     out: options.out,
     paused: !!options.paused,
     total: all.length,
@@ -96,6 +98,12 @@ export function queueSnapshot(jobs, options = {}) {
     current,
     jobs: all.map((job) => ({ name: job.name, status: job.status, path: job.path, error: job.error, renamed: job.renamed, moved: job.moved, diag: job.diag, chatUrl: job.chatUrl })),
   };
+
+  if (options.codexUsage !== undefined && options.codexUsage !== null) {
+    snap.codexUsage = options.codexUsage;
+  }
+
+  return snap;
 }
 
 export function formatQueueStatus(snapshot) {

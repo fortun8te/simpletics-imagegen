@@ -69,6 +69,41 @@
       .then(function () { healthInFlight = false; });
   }
 
+  // ---- Codex usage poll (every 3s) ---------------------------------------
+  var codexUsageInFlight = false;
+
+  function pollCodexUsage() {
+    if (codexUsageInFlight) { return; }
+    codexUsageInFlight = true;
+    window.DASH.api.getQuotaUsage()
+      .then(function (data) {
+        // Also try the fallback check to get backend info.
+        window.DASH.api.checkFallback()
+          .then(function (fb) {
+            var usageData = {};
+            if (data) {
+              usageData.overall = data.overall || {};
+              usageData.models = Array.isArray(data.models) ? data.models : [];
+            }
+            // Backend indicator: true=using codex, false=using chatgpt.
+            if (fb && fb.useCodex !== null) {
+              usageData.backendIndicator = fb.useCodex;
+            } else if (data && data.backendIndicator) {
+              usageData.backendIndicator = data.backendIndicator;
+            }
+            // Fallback status banner.
+            if (fb && (fb.fallback || !fb.useCodex)) {
+              usageData.fallbackStatus = fb;
+            }
+            window.DASH.ui.renderCodexUsage(usageData);
+          })
+          .catch(function () {})
+          .then(function () { codexUsageInFlight = false; });
+      })
+      .catch(function (err) { console.error('[app] quota poll failed', err); })
+      .then(function () { codexUsageInFlight = false; });
+  }
+
   // ---- Wiring -------------------------------------------------------------
   function wire() {
     var brandSel = document.getElementById('brandSel');
@@ -131,10 +166,12 @@
         pollState();
         pollLog();
         pollHealth();
+        pollCodexUsage();
 
         setInterval(pollState, 1500);
         setInterval(pollLog, 3000);
         setInterval(pollHealth, 4000);
+        setInterval(pollCodexUsage, 3000);
       });
   });
 })();

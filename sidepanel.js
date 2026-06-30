@@ -4,10 +4,89 @@ let brand = null;
 let batch = null;
 let REFS = {};
 let panelState = { ads: {} };
+// Current ad index for navigation (−1 when no valid ad is selected).
+let currentAdIndex = -1;
+// Active filter: 'all' | 'recent' | 'pending' | 'failed'.
+let activeFilter = 'all';
+
+function nextAdIndex(current) { return Math.max(0, current + 1); }
+function prevAdIndex(current) { return Math.max(-1, current - 1); }
+
+// Collapse the previous ad and expand the new one. Persists UI state for each.
+function navigateTo(index) {
+  if (index < 0 || index >= batch.ads.length) return;
+  // Collapse any previously active ad that isn't the target.
+  const prev = currentAdIndex >= 0 && currentAdIndex !== index ? currentAdIndex : -1;
+  if (prev >= 0) { const pUi = uiState(batch.ads[prev].id); delete pUi.ad; saveState(); }
+  // Expand the new ad.
+  const nextUi = uiState(batch.ads[index].id);
+  nextUi.ad = true;
+  saveState();
+  currentAdIndex = index;
+}
+
+function updateNavButtons() {
+  const prevBtn = $('prevAd'), nextBtn = $('nextAd');
+  if (batch.ads.length === 0) return;
+  const hasMultiple = batch.ads.length > 1;
+  if (!hasMultiple) {
+    if (prevBtn && !prevBtn.hidden) { prevBtn.hidden = true; }
+    if (nextBtn && !nextBtn.hidden) { nextBtn.hidden = true; }
+    return;
+  }
+  // Multiple ads: show buttons, disable at boundaries.
+  const firstVisible = $('workflowView').hidden ? false : true;
+  if (prevBtn && prevBtn.hidden) { prevBtn.hidden = false; }
+  if (nextBtn && nextBtn.hidden) { nextBtn.hidden = false; }
+  // Only enable/disable based on currentAdIndex, not position. If no ad has been set yet, buttons are disabled.
+  prevBtn.disabled = currentAdIndex === -1 || currentAdIndex === 0;
+  nextBtn.disabled = currentAdIndex === -1 || currentAdIndex === batch.ads.length - 1;
+}
+
+function focusAd(index) {
+  const adList = document.querySelectorAll('#list .ad');
+  if (index < 0 || index >= adList.length) return;
+  // Remove active from others.
+  adList.forEach((el, i) => el.classList.toggle('active', i === index));
+  adList[index].focus();
+}
+
+function handleAdNav(direction) {
+  const next = direction > 0 ? nextAdIndex(currentAdIndex) : prevAdIndex(currentAdIndex);
+  if (next >= 0 && next < batch.ads.length) { navigateTo(next); focusAd(next); }
+  else if (direction === -1 && currentAdIndex !== 0) { navigateTo(0); focusAd(0); }
+}
+
+function bindNav() {
+  const prevBtn = $('prevAd'), nextBtn = $('nextAd');
+  if (!prevBtn || !nextBtn) return;
+  // Click handlers: only fire when the button is not disabled.
+  prevBtn.onclick = () => { if (!prevBtn.disabled) handleAdNav(-1); };
+  nextBtn.onclick = () => { if (!nextBtn.disabled) handleAdNav(1); };
+  // Keyboard: when focused inside an .ad, Left/Right arrows move between them.
+  document.querySelectorAll('#list .ad').forEach((el) => {
+    el.onkeydown = (event) => {
+      if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') handleAdNav(-1);
+      else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') handleAdNav(1);
+    };
+  });
+}
+
+function render() {
 // Aspect ratio for panel-built jobs. 'auto' (the default) is a no-op: content.js leaves the
 // prompt ratio-neutral exactly as before. Any other token is passed through as job.aspect and
 // content.js appends a single aspect line to the SAME one message. UI-only, not persisted.
 let selectedAspect = 'auto';
+// Track the last prompt-textarea the user interacted with (for copy-on-click-outside).
+let lastPromptTextArea = null;
+
+function copyPromptText() {
+  if (!lastPromptTextArea) return;
+  const text = lastPromptTextArea.value.trim();
+  if (text) {
+    navigator.clipboard.writeText(text).catch(() => {}); // swallow permission errors silently
+  }
+}
 
 const folder = () => `${brand.id}/${batch.code}`;
 const storageKey = () => `imagegen-state:${brand.id}:${batch.code}`;
@@ -20,9 +99,11 @@ function runStamp(date = new Date()) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 function beginRun() {
+  // The project name is a clean timestamped string with no version label. All jobs queued in
+  // this run share it so ChatGPT groups them correctly, and the output folder path has no
+  // "v1" / version text that would clutter filenames or confuse the imagegen tool.
   const base = batch.project || `${brand.name} ${batch.name}`;
-  const version = batch.version || 'v1';
-  runProjectName = `${base}  v${String(version).replace(/^v/i, '')}  ${runStamp()}`;
+  runProjectName = `${base}  ${runStamp()}`;
   return runProjectName;
 }
 const project = () => runProjectName || beginRun();
@@ -45,8 +126,9 @@ const effectivePrompt = (ad, variation, configPrompt, promptId) => {
 const uiState = (adId) => { panelState.ui ||= {}; return (panelState.ui[adId] ||= {}); };
 const escape = (value) => String(value).replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[char]);
 const promptRunKey = (variation, promptId) => `${variation.id}:${promptId}`;
-// File-name style ad name, e.g. IMG01_b1_Testimonial_NATIVE_mousse. Matches the finalJobIdentity scheme.
-const adName = (ad) => `${ad.id}_${batch.code}_${ad.type}_NATIVE_${ad.product}`;
+// User-friendly ad name using the actual title from config, falling back to a descriptive fallback.
+// Displayed in the .mono ID slot of each ad card alongside the type/product sub-label.
+const adName = (ad) => `${escape(ad.title || 'Ad')}_${batch.code}`;
 // Friendly "Model N" label from an m1/m2/m3 id. The id stays the data value; only the text changes.
 const modelLabel = (id) => /^m(\d+)$/i.test(String(id)) ? `Model ${String(id).slice(1)}` : String(id);
 // Which variation letter this model is the face for (brief mapping A->m1, B->m2, C->m3 via variation.model).
@@ -488,8 +570,73 @@ function updateProgress() {
 }
 
 function render() {
+  // Search + filter: compute matched ads once and apply both text search and status filter.
+  const q = ($('adSearch')?.value || '').toLowerCase().trim();
+  const filteredAds = getFilteredAds(batch.ads, q, activeFilter);
+
+  function hasPendingRuns(ad) {
+    const state = panelState.ads[ad.id] || {};
+    for (const variation of ad.variations || []) {
+      for (const entry of ImageGenLogic.promptEntries(variation)) {
+        const runs = Object.values(state.runs || {})
+          .filter((r) => r && r.variationId === variation.id && r && r.promptId === entry.promptId);
+        if (!runs.length) return true; // never started → pending
+      }
+    }
+    if (ad.kind === 'face') {
+      const models = Object.values(state.models || {});
+      if (models.some((m) => !m)) return true;
+    }
+    return false;
+  }
+
+  function hasFailedRuns(ad) {
+    for (const variation of ad.variations || []) {
+      for (const entry of ImageGenLogic.promptEntries(variation)) {
+        const runs = Object.values(panelState.ads[ad.id]?.runs || {})
+          .filter((r) => r && r.variationId === variation.id && r && r.promptId === entry.promptId);
+        if (!runs.length) return false;
+        if (runs.some((r) => r.status === 'error')) return true;
+      }
+    }
+    if (ad.kind === 'face') {
+      const models = Object.values(panelState.ads[ad.id]?.models || {});
+      if (models.some((m) => !m || m.candidates && Object.values(m.candidates).some((c) => c?.status === 'error'))) return true;
+    }
+    return false;
+  }
+
+  function getFilteredAds(ads, searchQuery, filter) {
+    let result = ads.filter((ad) => {
+      switch (filter) {
+        case 'recent':
+          const mt = adState(ad).updatedAt || Date.now() - 3600000;
+          return Date.now() - mt < 3600000;
+        case 'pending':
+          return hasPendingRuns(ad);
+        case 'failed':
+          return hasFailedRuns(ad);
+        default:
+          return true;
+      }
+    });
+
+    if (searchQuery && filter !== 'all') {
+      const haystack = [searchQuery].join(' ').toLowerCase();
+      result = result.filter((ad) => {
+        const hay = [ad.id, ad.title || '', ad.product, ...(ad.variations || []).map(v => v.label)].join(' ').toLowerCase();
+        return hay.includes(searchQuery);
+      });
+    }
+
+    return result;
+  }
+
+  // No-results message when search narrows to nothing.
+  const showNoResults = (q) => q ? `<div class="no-results-msg">${escape(q)}</div>` : '';
+
   const list = $('list');
-  list.innerHTML = batch.ads.map((ad) => {
+  list.innerHTML = filteredAds.map((ad, index) => {
     const face = ad.kind === 'face';
     // The thumbnail is always the real product, since the ad is about that product.
     const productImg = `assets/${escape(ad.product)}.png`;
@@ -513,14 +660,39 @@ function render() {
     // The two foldable sections (Model pool, then Variations) already are the guided steps, so no
     // separate "1 Models . 2 Pick . 3 Variations" cue is drawn. It only restated the structure
     // below it and added a third line to every testimonial header.
-    return `<article class="ad${adCollapsed}"><div class="ad-head" role="button" tabindex="0" data-toggle-ad="${escape(ad.id)}"><span class="chev"></span><span class="ref-button" role="button" tabindex="0" data-preview="${productImg}"><img src="${productImg}" alt="${escape(ad.product)} product"></span><span class="ad-meta"><span class="ad-name mono">${escape(adName(ad))}</span><span class="ad-sub"><span class="ad-type">${escape(ad.title || ad.product)}<span class="ad-dot">·</span>${escape(ad.type)}</span></span></span></div><div class="ad-body">${modelPhase}${variationsSection}</div></article>`;
+    const adEl = `<article class="ad${adCollapsed}${currentAdIndex === index ? ' active' : ''}" data-icon-entrance><div class="ad-head" role="button" tabindex="0" data-toggle-ad="${escape(ad.id)}"><span class="chev"></span><span class="ref-button icon-lg" role="button" tabindex="0" data-preview="${productImg}"><img src="${productImg}" alt="${escape(ad.product)} product"></span><span class="ad-meta"><span class="ad-name mono">${escape(adName(ad))}</span><span class="ad-sub"><span class="ad-type">${escape(ad.title || ad.product)}<span class="ad-dot">·</span>${escape(ad.type)}</span></span></span></div><div class="ad-body">${modelPhase}${variationsSection}</div></article>`;
+    // Nav arrow between ads (omitted after the last one).
+    if (index < batch.ads.length - 1) {
+      adEl += `<button class="ad-nav-arrow" data-prev-ad="${escape(ad.id)}" aria-label="Previous ad">‹</button> `;
+    }
+    return adEl;
   }).join('');
+  // Search input: filter ads as the user types.
+  $('adSearch').oninput = (event) => { render(); };
+
+  // Filter chips: activeFilter filters ads by status.
+  document.querySelectorAll('.filter-chip').forEach((chip) => {
+    chip.onclick = () => {
+      activeFilter = chip.dataset.filter;
+      // Update visual state of all filter chips
+      document.querySelectorAll('.filter-chip').forEach((c) => c.classList.toggle('active', c === chip));
+      render();
+    };
+  });
+
+  // Wire nav arrow clicks: each arrow sits between two ads; clicking it calls handleAdNav(-1).
+  document.querySelectorAll('.ad-nav-arrow').forEach((arrow) => {
+    if (!arrow.closest('#list')) return;
+    arrow.onclick = () => handleAdNav(-1);
+  });
   batch.ads.filter((ad) => ad.kind === 'face').forEach((ad) => ad.variations.forEach((variation) => {
     const select = document.querySelector(`[data-model-select="${CSS.escape(ad.id)}"][data-variation="${CSS.escape(variation.id)}"]`);
     if (select) select.value = selectedModel(ad, variation);
   }));
   updateProgress();
-  bind();
+  updateNavButtons();
+  // Auto-expand the first ad if none is active yet.
+  if (currentAdIndex === -1 && batch.ads.length > 0) { navigateTo(0); focusAd(0); }
 }
 
 function bind() {
@@ -649,7 +821,8 @@ function bind() {
     toggle.onkeydown = (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } };
   });
   // Editing a prompt: store the override keyed like the run counts. An edit that matches the
-  // config text exactly is dropped so the prompt falls back to the brief on its own.
+  // config text exactly is dropped so the prompt falls back to the brief on its own. Also track
+  // which textarea was last interacted with, so clicking outside copies it to clipboard.
   document.querySelectorAll('[data-prompt-text]').forEach((area) => area.oninput = () => {
     const ad = batch.ads.find((item) => item.id === area.dataset.promptText);
     const variation = ad.variations.find((item) => item.id === area.dataset.variation);
@@ -660,6 +833,7 @@ function bind() {
     const value = area.value;
     if (entry && value === entry.prompt) delete state.promptEdits[key];
     else state.promptEdits[key] = value;
+    lastPromptTextArea = area; // track for copy-on-click-outside
     saveState();
     // No re-render here: re-rendering would steal focus from the textarea mid-edit. The edited
     // dot and note refresh on the next render (toggle, generate, reset).
@@ -684,6 +858,8 @@ function bind() {
     Object.assign(adState(ad), ImageGenLogic.resetVariation(adState(ad), button.dataset.variation));
     saveState(); render();
   });
+  // Clicking anywhere outside the prompt textareas copies the last-edited prompt to clipboard.
+  document.addEventListener('click', (event) => copyPromptText());
 }
 
 function handleProgress(job, status, thumb, error, variantIndex) {
@@ -714,12 +890,40 @@ function handleProgress(job, status, thumb, error, variantIndex) {
         state.runs[identity.key] = { ...(previous || {}), status: previous?.dataUrl ? 'done' : 'missing', variation: job.variationId, promptId: job.promptId, run, modelId: job.modelId, dataUrl: previous?.dataUrl || null, error: null };
         continue;
       }
-      state.runs[identity.key] = { ...(previous || {}), status, variation: job.variationId, promptId: job.promptId, run, modelId: job.modelId, dataUrl: status === 'done' ? thumb : previous?.dataUrl, error: status === 'error' ? error : null };
+      state.runs[identity.key] = { ...(previous || {}), updatedAt: Date.now(), status, variation: job.variationId, promptId: job.promptId, run, modelId: job.modelId, dataUrl: status === 'done' ? thumb : previous?.dataUrl, error: status === 'error' ? error : null };
     }
   }
   if (status === 'error') showError(`${job.name}: ${error || 'could not finish'}`);
   saveState();
   render();
+}
+
+// Download the most recently completed image from any run in this batch. Returns a dataUrl string,
+// or null when no finished images exist yet. Picks the first done entry (runs accumulate sequentially).
+function downloadLatest() {
+  if (!brand || !batch) return null;
+  // Try final jobs first (most common output), then fall back to model candidates.
+  for (const [key, item] of Object.entries(state.runs)) {
+    if (item?.status === 'done' && item.dataUrl) return item.dataUrl;
+  }
+  // No completed prompt runs yet — check model pool candidates.
+  for (const ad of batch.ads) {
+    const state = adState(ad);
+    if (ad.kind === 'face') {
+      for (const model of ad.models || []) {
+        const slot = state.models[model.id];
+        if (slot?.candidates && Object.values(slot.candidates).some((cand) => cand?.dataUrl && cand.status === 'done')) {
+          return Object.values(slot.candidates).find((cand) => cand?.dataUrl)?.dataUrl;
+        }
+      }
+    } else {
+      for (const variation of ad.variations || []) {
+        const state = adState(ad);
+        if (pickedModelImage(state, selectedModel(ad, variation))) return pickedModelImage(state, selectedModel(ad, variation));
+      }
+    }
+  }
+  return null;
 }
 
 function generateReady() {
@@ -814,9 +1018,14 @@ function updateCodexLine(cp) {
 // Mirror the Codex batch into the Activity list as a synthetic lane, so "what Codex is generating
 // and how far" shows alongside the live ChatGPT-tab lanes. Fed from /health codexProgress every poll.
 let codexLaneDoneShown = false;
+// Parse job names: old format (IMG01_b1_A_p1_r1) → descriptive, new format (Mousse_Batch 1_…) already human-readable.
 function prettyCodexJob(cur) {
   if (!cur) return '';
-  const m = /^(\S+?)_([^_]+)_([^_]+)_([^_]+)_r\d+/.exec(cur); // e.g. AD3_b1_A_p1_r1 -> "b1 AD3/A"
+  // Try the new descriptive format first: "Title_BatchName_Label_rN" — just show title + label.
+  const m2 = /(?:^|\s)([A-Z][\w\s\-]+?)\s*·?\s*([\d\w\s\-]+?)[\s_]*·?\s*([\w\s\-]+?)[\s_]*r\d+/i.exec(cur);
+  if (m2) return `${m2[1]} · ${m2[3]}`;
+  // Fall back to the legacy ID format: "AD3_b1_A_p1_r1" → "b1 AD3/A".
+  const m = /^(\S+?)_([^_]+)_([^_]+)_([^_]+)_r\d+/.exec(cur);
   return m ? `${m[2]} ${m[1]}/${m[3]}` : cur;
 }
 function updateCodexActivity(cp) {
@@ -826,14 +1035,15 @@ function updateCodexActivity(cp) {
   const accounted = (cp.done || 0) + (cp.skipped || 0) + (cp.failed || 0);
   const finished = accounted >= cp.total && !cp.current;
   if (finished) {
-    // Show a single 'done' beat (auto-clears after 6s) instead of re-adding every poll for 30s.
+    // Single 'done' beat, auto-clears after 6s.
     if (!codexLaneDoneShown) {
       applyLaneStatus({ laneId: 'codex', name: 'Codex · separate quota', state: 'done', detail: `${(cp.done || 0) + (cp.skipped || 0)}/${cp.total} done${failTxt}`, updatedAt: cp.updatedAt });
       codexLaneDoneShown = true;
     }
     return;
   }
-  codexLaneDoneShown = false;
+  // Codex is still running — clear any stale "done" beat so it can resume cleanly.
+  if (codexLaneDoneShown) { applyLaneStatus({ laneId: 'codex', _cleared: true }); codexLaneDoneShown = false; }
   const where = cp.current ? ` · ${prettyCodexJob(cp.current)}` : '';
   applyLaneStatus({ laneId: 'codex', name: 'Codex · separate quota', state: 'generating', detail: `${(cp.done || 0) + (cp.skipped || 0)}/${cp.total} done${failTxt}${where}`, updatedAt: cp.updatedAt });
 }
@@ -956,7 +1166,222 @@ async function checkTab() {
 
 function changeSelection() {
   setRunning(false);
-  loadState().then(() => { fillSelectors(); render(); });
+  loadState().then(() => { fillSelectors(); render(); populateSettingDropdowns(getSettings()); });
+}
+
+// ── Settings panel: general / generation / about. Persists to chrome.storage.local under 'imagegen-settings'.
+let settingsState = null;
+function getSettings() {
+  if (settingsState) return settingsState;
+  const stored = chrome.storage.local.get('imagegen-settings');
+  settingsState = {
+    autoResume: true,
+    showPaths: false,
+    outputDir: '',
+    brandId: 'simpletics',
+    batchCode: '',
+    aspectRatio: 'auto',
+  };
+  if (stored && stored['imagegen-settings']) {
+    const s = stored['imagegen-settings'];
+    for (const key of ['autoResume','showPaths','outputDir','brandId','batchCode','aspectRatio']) {
+      settingsState[key] = s[key] !== undefined ? s[key] : settingsState[key];
+    }
+  } else {
+    // Default to first brand/batch if available.
+    if (CONFIG && CONFIG.brands.length) {
+      const firstBrand = CONFIG.brands[0];
+      settingsState.brandId = firstBrand.id;
+      const batches = firstBrand.batches || [];
+      if (batches.length) settingsState.batchCode = batches[0].code;
+    }
+  }
+  return settingsState;
+}
+function saveSettings() {
+  try {
+    chrome.storage.local.set({ 'imagegen-settings': getSettings() }, () => {}); // ignore write errors
+  } catch (err) { console.error('[ImageGen] saveSettings failed:', err); }
+}
+
+// Settings modal: open / close. Uses the same preview-style overlay as the existing dialog.
+function showSettings() {
+  const panel = $('settingsPanel'); if (!panel) return;
+  panel.hidden = false;
+  const s = getSettings();
+  populateSettingDropdowns(s);
+}
+function hideSettings() {
+  const panel = $('settingsPanel'); if (panel) { panel.hidden = true; }
+}
+
+function populateSettingDropdowns(s) {
+  // Brand dropdown.
+  const brandSelect = $('setting-brand');
+  if (!brandSelect) return;
+  let html = '';
+  for (const b of CONFIG.brands) {
+    const sel = s.brandId === b.id ? ' selected' : '';
+    html += `<option value="${b.id}"${sel}>${CSS.escape(b.name)}</option>`;
+  }
+  brandSelect.innerHTML = html;
+
+  // Batch dropdown: filtered by currently-selected brand.
+  const batchSelect = $('setting-batch');
+  if (!batchSelect) return;
+  const brands = CONFIG.brands.filter((b) => b.id === s.brandId);
+  let html = '';
+  for (const b of brands) {
+    const sel = s.batchCode === b.batches?.[0]?.code ? ' selected' : '';
+    html += `<option value="${CSS.escape(b.batches?.[0]?.code || '')}"${sel}>${CSS.escape(b.name)}</option>`;
+  }
+  batchSelect.innerHTML = html;
+
+  // Aspect ratio: mirror the header selector values.
+  const aspectSelect = $('setting-aspect');
+  if (aspectSelect) {
+    aspectSelect.value = s.aspectRatio || 'auto';
+  }
+
+  // Toggles & text input.
+  document.getElementById('setting-autoResume')?.checked = !!s.autoResume;
+  document.getElementById('setting-showPaths')?.checked = !!s.showPaths;
+  const outputInput = $('setting-outputDir');
+  if (outputInput) { outputInput.value = s.outputDir || ''; }
+
+  // Version from manifest.
+  const versionEl = $('setting-version');
+  if (versionEl) { versionEl.textContent = chrome.runtime.getManifest?.().version || '—'; }
+}
+
+// Wire up settings form events: persistence on any change.
+function bindSettings() {
+  const apply = () => saveSettings();
+  // Dropdowns.
+  $('setting-brand').onchange = () => {
+    settingsState.brandId = $('setting-brand').value;
+    populateSettingDropdowns(settingsState);
+    apply();
+  };
+  $('setting-batch').onchange = () => {
+    settingsState.batchCode = $('setting-batch').value || '';
+    apply();
+  };
+  // Toggles.
+  document.getElementById('setting-autoResume')?.addEventListener('change', (e) => { settingsState.autoResume = !!e.target.checked; apply(); });
+  document.getElementById('setting-showPaths')?.addEventListener('change', (e) => { settingsState.showPaths = !!e.target.checked; apply(); });
+  // Output dir.
+  $('setting-outputDir').oninput = () => { settingsState.outputDir = $('setting-outputDir').value; apply(); };
+}
+
+// Generate button: context-aware text + info line below it.
+function batchProgress() { return ImageGenLogic ? ImageGenLogic.batchProgress ? {} : null : null; }
+// Tally every expected slot across the batch into done/generating/error/queued.
+function tallyProgress() {
+  if (!brand || !batch) return { done: 0, generating: 0, error: 0, queued: 0 };
+  let done = 0, generating = 0, error = 0, queued = 0;
+  // Model pool slots (face ads only).
+  for (const ad of batch.ads) {
+    const state = panelState.ads[ad.id] || {};
+    if (ad.kind === 'face') {
+      for (const model of ad.models || []) {
+        const slot = state.models[model.id];
+        if (!slot) continue;
+        const candidates = slot.candidates || {};
+        for (let run = 1; run <= selectedModelCount(ad, model.id); run++) {
+          const cand = candidates[run] || { status: '', dataUrl: null };
+          if (cand.dataUrl) done++; else if (cand.status === 'generating') generating++; else if (cand.status === 'error') error++; else queued++;
+        }
+      }
+    }
+  }
+  // Variation prompt slots — counted only when a picked model image exists, otherwise the
+  // model pool already accounts for this variation. Product ads: count every slot unconditionally.
+  for (const ad of batch.ads) {
+    const state = panelState.ads[ad.id] || {};
+    if (ad.kind === 'face') {
+      for (const variation of ad.variations || []) {
+        const modelId = selectedModel(ad, variation);
+        // Only count variation slots when this variation has a picked candidate image.
+        if (!pickedModelImage(state, modelId)) continue;
+        let runCount = PROMPT_RUN_DEFAULT;
+        for (const entry of ImageGenLogic.promptEntries(variation)) {
+          const key = promptRunKey(variation, entry.promptId);
+          runCount = Math.min(runCount, state.promptRunCounts?.[key] || runCount);
+        }
+        for (let run = 1; run <= runCount; run++) {
+          const identity = ImageGenLogic.finalJobIdentity({ brand: brand.id, batch: batch.code, ad: ad.id, variation: variation.id, prompt: 'placeholder', run });
+          const item = state.runs[identity.key];
+          if (item?.dataUrl) done++; else if (item?.status === 'generating') generating++; else if (item?.status === 'error') error++; else queued++;
+        }
+      }
+    } else {
+      for (const variation of ad.variations || []) {
+        let runCount = PROMPT_RUN_DEFAULT;
+        const state = panelState.ads[ad.id] || {};
+        for (const entry of ImageGenLogic.promptEntries(variation)) {
+          const key = promptRunKey(variation, entry.promptId);
+          runCount = Math.min(runCount, state.promptRunCounts?.[key] || runCount);
+        }
+        for (let run = 1; run <= runCount; run++) {
+          const identity = ImageGenLogic.finalJobIdentity({ brand: brand.id, batch: batch.code, ad: ad.id, variation: variation.id, prompt: 'placeholder', run });
+          const item = state.runs[identity.key];
+          if (item?.dataUrl) done++; else if (item?.status === 'generating') generating++; else if (item?.status === 'error') error++; else queued++;
+        }
+      }
+    }
+  }
+  return { done, generating, error, queued };
+}
+
+function updateGenerateButtonState() {
+  const p = tallyProgress();
+  // Only update when not actively running — Stop button takes over during runs.
+  if (document.querySelector('.actions.running')) return;
+  const runAll = $('runAll');
+  if (!runAll) return;
+  if (p.done + p.error === p.total && p.total > 0) {
+    runAll.textContent = 'All complete';
+    runAll.disabled = true;
+  } else if (p.queued > 0 || p.generating > 0) {
+    const left = p.queued + p.generating;
+    runAll.textContent = `Continue generation (${left} left)`;
+    runAll.disabled = false;
+    $('genInfo').textContent = 'Resumes from where it left off. All completed images stay safe.';
+  } else {
+    // Fresh start — no prior work for this batch.
+    runAll.textContent = 'Generate new images';
+    runAll.title = 'Start a brand new image generation run from scratch.';
+    $('genInfo').textContent = '';
+  }
+}
+
+function generateReady() {
+  updateGenerateButtonState();
+  beginRun();
+  const jobs = [];
+  for (const ad of batch.ads) {
+    if (ad.kind === 'face') {
+      const state = panelState.ads[ad.id] || {};
+      // For each variation: if its model has a picked candidate, generate its missing variation runs.
+      // Otherwise queue that model's missing candidates so a pick becomes possible.
+      const queuedModels = new Set();
+      for (const variation of ad.variations) {
+        const modelId = selectedModel(ad, variation);
+        if (pickedModelImage(state, modelId)) {
+          jobs.push(...variationJobs(ad, variation, null, { onlyMissing: true }));
+        } else if (!queuedModels.has(modelId)) {
+          queuedModels.add(modelId);
+          const model = ad.models.find((item) => item.id === modelId);
+          if (model) jobs.push(...modelJobs(ad, model, selectedModelCount(ad, modelId)));
+        }
+      }
+    } else {
+      ad.variations.forEach((variation) => jobs.push(...variationJobs(ad, variation, null, { onlyMissing: true })));
+    }
+  }
+  send(jobs, 'No ready images left to generate.');
+  if (jobs.length) setFlow(`Generating ${jobs.length} ready images…`);
 }
 
 // ── Live Activity: one row per active ChatGPT tab/lane, fed by 'lane-status' messages and the
@@ -1052,7 +1477,14 @@ async function init() {
   loadLaneStatus();
   startHealthPolling(); // poll the bridge /health (queue + codex progress) in every view
   $('runAll').onclick = generateReady;
+
+  // Settings: bind form events and populate dropdowns from initial CONFIG.
+  const s = getSettings();
+  populateSettingDropdowns(s);
+  bindSettings();
   $('resetBatch').onclick = () => { panelState = { ads: {} }; saveState(); render(); setFlow('Batch reset.'); };
+  // Download: grab the latest completed image and open it for saving.
+  $('downloadLink').onclick = () => { const url = downloadLatest(); if (url) window.open(url); };
   $('stop').onclick = () => { chrome.runtime.sendMessage({ type: 'stop' }); $('pauseToggle').dataset.paused = ''; $('pauseToggle').textContent = 'Pause'; setFlow('Stopping…'); };
   // Pause/Continue: holds the run between images (the in-flight image always finishes), resumes on click.
   $('pauseToggle').onclick = () => {
@@ -1062,9 +1494,25 @@ async function init() {
   };
   // Restart: clear this batch's saved previews/statuses, then regenerate from scratch.
   $('restartBtn').onclick = () => { panelState = { ads: {} }; saveState(); render(); setFlow('Restarting…'); generateReady(); };
+
   $('brandSel').onchange = (event) => { brand = CONFIG.brands.find((item) => item.id === event.target.value); batch = brand.batches[0]; changeSelection(); };
   $('batchSel').onchange = (event) => { batch = brand.batches.find((item) => item.code === event.target.value); changeSelection(); };
   $('aspectSel').onchange = (event) => { selectedAspect = event.target.value || 'auto'; };
+
+  // Settings gear icon.
+  $('settingsBtn').onclick = () => showSettings();
+  const settingsClose = $('settingsClose');
+  if (settingsClose) {
+    settingsClose.onclick = hideSettings;
+    settingsClose.onkeydown = (event) => { if (event.key === 'Escape') hideSettings(); };
+  }
+
+  // Settings panel: click outside to close.
+  const settingsOverlay = $('settingsPanel');
+  if (settingsOverlay) {
+    settingsOverlay.onclick = () => { hideSettings(); };
+  }
+
   $('closePreview').onclick = () => $('preview').classList.remove('open');
   $('preview').onclick = (event) => { if (event.target === $('preview')) $('preview').classList.remove('open'); };
   // Home <-> workflow navigation. Default screen is the home dashboard; the brand workflow

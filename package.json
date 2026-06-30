@@ -1,0 +1,27 @@
+{
+  "name": "simpletics-imagegen-work",
+  "version": "1.0.0",
+  "description": "Batch-generate static-ad photos through your **own logged-in ChatGPT tab**, on your **normal subscription quota**. Because it runs in your real session, ChatGPT renders the images normally (the thing browser automation could not do), and every result auto-downloads under its correct IMG name.",
+  "main": "background.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fortun8te/simpletics-imagegen.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fortun8te/simpletics-imagegen/issues"
+  },
+  "homepage": "https://github.com/fortun8te/simpletics-imagegen#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^1.1.2"
+  }
+}

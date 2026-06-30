@@ -18,6 +18,66 @@ const RENDERS = path.join(os.homedir(), 'Downloads', 'static-factory-b1', 'rende
 const BRIDGE = 'http://localhost:8787';
 const PORT = 8788;
 
+// ---------------------------------------------------------------------------
+// Codex usage tracker — loaded from codex-tracker.mjs in the same directory.
+// The tracker degrades gracefully with no API keys (returns last-known state), so it's safe to import eagerly.
+// ---------------------------------------------------------------------------
+import { CodexUsageTracker } from './codex-tracker.mjs';
+
+const _tracker = new CodexUsageTracker(); // created at module load — cheap, fast.
+
+// ---------------------------------------------------------------------------
+// checkBackendAvailability — uses the tracker + a direct OpenAI health probe for backend indicator.
+// Returns { useCodex: boolean|null, reason, fallback, percentage, resetAt }.
+// ---------------------------------------------------------------------------
+async function checkBackendAvailability() {
+  try {
+    const quota = await _tracker.getQuotaStatus();
+
+    // Direct OpenAI models endpoint check for rate-limit headers (gives us the current backend state).
+    const apiKey = process.env.OPENAI_API_KEY || '';
+    if (!apiKey) return { useCodex: null, reason: 'no-api-key', fallback: true };
+
+    try {
+      const r = await fetch('https://api.openai.com/v1/models', {
+        headers: { Authorization: `Bearer ${apiKey}`, Accept: 'application/json' },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (r.status === 429) return { useCodex: false, reason: 'rate-limited', fallback: true };
+      const data = await r.json();
+      let totalUsed = 0;
+      for (const m of Array.isArray(data.data) ? data.data : []) {
+        if (m.usage?.total_tokens || m.usage?.total_usage_tokens) {
+          totalUsed += Number(m.usage.total_tokens);
+        }
+      }
+      const pct = Math.min((totalUsed / 5_000_000) * 100, 100);
+      return { useCodex: pct < 95, reason: pct >= 85 ? 'approaching-limit' : 'healthy', percentage: Number(pct.toFixed(1)), fallback: false };
+    } catch (err) {
+      if (err.name === 'AbortError') return { useCodex: null, reason: 'timeout', fallback: false };
+      const pct = quota?.overall?.percentage || 0;
+      return { useCodex: pct < 95, reason: pct >= 85 ? 'approaching-limit' : 'healthy', percentage: Number(pct.toFixed(1)), fallback: false };
+    }
+  } catch (err) {
+    // Tracker failed — degrade gracefully.
+    return { useCodex: null, reason: 'tracker-error', fallback: false };
+  }
+}
+
+// Fetch the bridge /status; tolerate the bridge being down → null.
+async function fetchBridgeStatus() {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 1500);
+    const r = await fetch(BRIDGE + '/status', { signal: ctrl.signal });
+    clearTimeout(t);
+    if (!r.ok) return null;
+    return await r.json();
+  } catch {
+    return null;
+  }
+}
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -44,20 +104,7 @@ function runnerAlive() {
   });
 }
 
-// Fetch the bridge /status; tolerate the bridge being down → null.
-async function fetchBridgeStatus() {
-  try {
-    const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 1500);
-    const r = await fetch(BRIDGE + '/status', { signal: ctrl.signal });
-    clearTimeout(t);
-    if (!r.ok) return null;
-    return await r.json();
-  } catch {
-    return null;
-  }
-}
-
+// bridgeReachable() — reuses the existing fetchBridgeStatus() above.
 async function bridgeReachable() {
   return (await fetchBridgeStatus()) != null;
 }
@@ -129,6 +176,8 @@ async function buildAds(config, brandId, batchCode) {
     const variations = [];
     for (const v of variationsSrc) {
       const varId = v.id || v.label || v.code;
+      // Use the descriptive label when available, otherwise a numbered fallback instead of bare IDs.
+      const variationLabel = v.label || `Variation ${v.id}`;
       const promptsSrc = Array.isArray(v.prompts) ? v.prompts : [];
       const prompts = [];
       for (const p of promptsSrc) {
@@ -136,9 +185,9 @@ async function buildAds(config, brandId, batchCode) {
         const runs = await scanPromptRuns(brandId, batchCode, adId, varId, promptId);
         prompts.push({ id: promptId, runs });
       }
-      variations.push({ id: varId, label: v.label || varId, prompts });
+      variations.push({ id: varId, label: variationLabel, prompts });
     }
-    ads.push({ id: adId, title: ad.title || ad.name || adId, type: ad.type || '', variations });
+    ads.push({ id: adId, title: ad.title || ad.name || `${escape(ad.product)} ${ad.type || ''}`, type: ad.type || '', variations });
   }
   return ads;
 }
@@ -250,6 +299,54 @@ const server = http.createServer(async (req, res) => {
         text = '';
       }
       return send(res, 200, text, { 'Content-Type': 'text/plain; charset=utf-8' });
+    }
+
+    // GET /api/codex/usage — current quota status + per-model breakdown.
+    if (method === 'GET' && pathname === '/api/codex/usage') {
+      const tracker = _tracker;
+      let quotaStatus;
+      try { quotaStatus = await tracker.getQuotaStatus(); } catch {}
+
+      // Fallback availability check for the backend indicator.
+      const backendCheck = await checkBackendAvailability(tracker);
+
+      return sendJson(res, 200, {
+        overall: quotaStatus?.overall || {},
+        models: quotaStatus?.models || [],
+        historyFile: quotaStatus?.historyFile || null,
+        cacheHit: quotaStatus?.cacheHit,
+        backendIndicator: backendCheck.useCodex,
+        updatedAt: new Date().toISOString(),
+      });
+    }
+
+    // POST /api/fallback/check — checks if Codex is available; records a generation event.
+    if (method === 'POST' && pathname === '/api/fallback/check') {
+      let body = {};
+      try { body = JSON.parse(await readBody(req) || '{}'); } catch {}
+
+      const tracker = _tracker;
+      const model = body.model || 'gpt-image-2';
+      const tokens = Number(body.tokens) || 1;
+
+      // Record the generation so in-memory counters stay accurate.
+      try { tracker.recordGeneration(model, tokens); } catch {}
+
+      // Check backend availability for the decision result.
+      const checkResult = await checkBackendAvailability(tracker);
+
+      return sendJson(res, 200, checkResult);
+    }
+
+    // POST /api/fallback/status — lightweight poll for dashboard to show live fallback state.
+    if (method === 'POST' && pathname === '/api/fallback/status') {
+      const tracker = _tracker;
+      try {
+        await tracker.getQuotaStatus();
+        return sendJson(res, 200, { ok: true, timestamp: Date.now() });
+      } catch {
+        return sendJson(res, 503, { ok: false, error: 'tracker-unavailable' });
+      }
     }
 
     // POST /api/codex/run

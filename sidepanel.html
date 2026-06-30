@@ -5,9 +5,12 @@
 <title>ImageGen</title>
 <style>
   :root {
-    --bg:#0c0d11; --surface:#15161c; --surface-2:#1c1e26; --ink:#eef0f5; --muted:#9498a4;
-    --faint:#5f636e; --line:#23252d; --line-soft:#1b1d24; --accent:#1f7bff; --accent-soft:#16243d;
-    --ok:#6fcf9b; --err:#ff8071;
+    --bg:#0a0b10; --surface:#12131a; --surface-2:#1a1c28; --ink:#e8eaf0; --muted:#787b8a;
+    --faint:#4a4d5a; --line:#1e202a; --line-soft:#161820; --accent:#00d4aa; --accent-soft:#0a3a2e;
+    --ok:#00e676; --err:#ff4081;
+    --glow: 0 0 20px rgba(0,212,170,.15);
+    --gradient-start: #0a0b10;
+    --gradient-end: #161824;
     /* One radius scale: large cards, medium controls, small chips. */
     --r-lg:10px; --r-md:7px; --r-sm:5px; --radius:7px;
   }
@@ -18,6 +21,27 @@
   button { border:0; cursor:pointer; background:none; }
   button:focus-visible,select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
   .mono { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+
+  /* Icon sizing */
+  .icon { width:16px;height:16px;fill:currentColor;flex-shrink:0; }
+  .icon-lg { width:24px;height:24px;fill:currentColor;flex-shrink:0; }
+
+  /* Ad card entrance */
+  .ad { transform:translateY(6px); }
+  .ad.visible { animation:adFadeIn .3s ease forwards; }
+  @keyframes adFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Section body expansion */
+  .section:not(.collapsed)>.ad,.section:not(.collapsed)>.variation { animation:slideDown .2s ease forwards; }
+  @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Nav arrow bounce */
+  .ad-nav-arrow { animation:none; }
+  .ad-nav-controls button:hover,.nav-arrow-clicked { animation:navigateBounce .3s ease both; }
+  @keyframes navigateBounce{from{opacity:.4}25%{opacity:1;transform:translateX(2px)}to{opacity:.4;transform:translateX(0)}}
+
+  /* Button press scale feedback */
+  .primary,.quiet,.danger,.mini { transition:background .15s,border-color .15s,transform .1s; }
 
   /* Header */
   header { position:sticky; top:0; z-index:3; padding:16px 16px 14px; background:var(--bg); border-bottom:1px solid var(--line); }
@@ -69,12 +93,15 @@
   .actions.running #stop { display:block; }
   .primary,.quiet,.danger { white-space:nowrap; border-radius:var(--r-md); padding:9px 11px; font-size:12px; font-weight:600; transition:background .15s,border-color .15s; }
   .primary { background:var(--accent); color:#fff; }
-  .primary:hover { background:#3a8cff; }
+  .primary:hover { background:#00e6aa; }
   .quiet { background:var(--surface); color:var(--ink); border:1px solid var(--line); }
   .quiet:hover { background:var(--surface-2); }
   .danger { background:transparent; color:#ffa99f; border:1px solid rgba(255,128,113,.32); }
   .danger:hover { background:rgba(255,128,113,.08); }
-  .primary:active,.quiet:active,.danger:active,.mini:active { transform:translateY(1px); }
+  /* Download link: same accent styling as the primary Generate button. */
+  .actions .link-primary { display:inline-block; white-space:nowrap; border-radius:var(--r-md); padding:9px 11px; font-size:12px; font-weight:600; transition:background .15s,border-color .15s; background:var(--accent); color:#fff; text-decoration:none; }
+  .actions .link-primary:hover { background:#00e6aa; }
+  .primary:active,.quiet:active,.danger:active,.mini:active { transform:scale(0.95); }
 
   /* Live batch progress: thin bar in the accent + a quiet legend, derived from all run slots. */
   .progress { margin-top:12px; }
@@ -95,6 +122,25 @@
   .legend .spacer { flex:1; }
   .legend .l-idle { color:var(--faint); }
 
+  /* ── Search bar: glass-morphism with hover stroke animation ── */
+  .search-wrapper { position:relative; display:flex; align-items:center; gap:8px; margin-bottom:12px; }
+  .search-icon { flex-shrink:0; opacity:0.5; transition:opacity 0.2s; width:16px; height:16px; }
+  .search-bar { width:100%; padding:10px 14px 10px 32px; border-radius:var(--r-md); background:rgba(255,255,255,0.07); backdrop-filter:blur(12px) saturate(180%); -webkit-backdrop-filter:blur(12px) saturate(180%); border:1px solid rgba(255,255,255,0.1); box-shadow:inset 0 1px 0 rgba(255,255,255,0.03), var(--glow); color:inherit; font-size:14px; outline:none; transition:all 0.3s cubic-bezier(0.4,0,0.2,1); }
+  .search-bar::placeholder { color:rgba(255,255,255,0.4); }
+  .search-bar:hover, .search-bar:focus { background:rgba(255,255,255,0.12); border-color:var(--accent); box-shadow:inset 0 1px 0 rgba(255,255,255,0.06), 0 8px 32px rgba(var(--accent),0.15); }
+  .search-bar:hover::before { content:''; position:absolute; inset:0; border-radius:var(--r-md); background:linear-gradient(to right, transparent, rgba(var(--accent),0.15), transparent); animation:glassStroke 3s ease-in-out infinite; pointer-events:none; }
+  .search-bar:focus + svg, .search-bar:hover + svg { opacity:1; }
+  @keyframes glassStroke { 0%,100%{opacity:0;} 50%{opacity:1;} }
+
+  /* ── Filter chips row ── */
+  .search-filters { display:flex; gap:6px; flex-wrap:wrap; }
+  .filter-chip { border-radius:var(--r-md); padding:5px 12px; font-size:12px; font-weight:600; transition:background .15s,border-color .15s,color .15s,border-width .15s; }
+  .filter-chip.active { background:rgba(var(--accent),0.15); border-color:var(--accent); color:#fff; }
+  .filter-chip:hover:not(.active) { background:var(--surface-2); }
+
+  /* ── No results message ── */
+  .no-results-msg { text-align:center; padding:30px; color:var(--muted); font-size:12px; }
+
   /* One status line, not three. The flow message is the live narration; the error sits beside it
      only when present. The old separate counter line was a third voice repeating the legend. */
   .status { display:flex; align-items:baseline; gap:8px; margin-top:9px; min-height:15px; }
@@ -105,14 +151,19 @@
 
   /* Ad list: each ad is a distinct collapsible card */
   #list { padding:12px; display:flex; flex-direction:column; gap:12px; }
-  .ad { border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface); overflow:hidden; }
+  .ad { border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface); overflow:hidden; transition:border-left-color .18s,box-shadow .18s; }
+  .ad.active { border-left:3px solid var(--accent); box-shadow:inset -6px 0 0 rgba(0,212,170,.08),0 1px 0 rgba(0,0,0,.04); }
+
+  /* Nav arrows between ads */
+  .ad-nav-arrow { display:flex; justify-content:center; padding:0 4px 0 6px; color:var(--faint); transition:color .15s; flex-shrink:0; }
+  .ad-nav-arrow:hover { color:var(--muted); cursor:pointer; }
 
   /* Ad header is the toggle for the whole ad */
   .ad-head { display:flex; align-items:center; gap:11px; width:100%; text-align:left; padding:12px; background:none; cursor:pointer; }
   .ad-head:hover { background:var(--surface-2); }
   .ad-head:focus-visible,.section-head:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
-  .ref-button { display:block; width:40px; height:40px; flex:0 0 auto; padding:0; overflow:hidden; border:1px solid var(--line); border-radius:var(--r-md); background:var(--bg); cursor:zoom-in; }
-  .ref-button img { width:100%; height:100%; object-fit:contain; }
+  .ref-button { display:block; width:40px; height:40px; flex:0 0 auto; padding:2px; overflow:hidden; border:1px solid var(--line); border-radius:var(--r-md); background:var(--bg); cursor:zoom-in; }
+  .ref-button img { width:70%; height:70%; object-fit:contain; margin:auto; display:block; }
   .ad-meta { min-width:0; flex:1; display:block; }
   .ad-name { display:block; font-size:11.5px; font-weight:600; letter-spacing:-.01em; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.3; }
   .ad-sub { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:11px; margin-top:3px; min-width:0; }
@@ -267,7 +318,7 @@
   /* Home dashboard: calm, spacious, one accent. */
   .home-head { padding:22px 18px 4px; }
   .home-brand { display:flex; align-items:center; gap:10px; }
-  .home-mark { width:26px; height:26px; flex:0 0 auto; border-radius:8px; background:linear-gradient(135deg,#0752d6,#2892ff); box-shadow:0 4px 14px rgba(7,82,214,.35); }
+  .home-mark { width:26px; height:26px; flex:0 0 auto; border-radius:8px; background:linear-gradient(135deg,#00c9a3,#00e676); box-shadow:var(--glow); }
   .home-title { margin:0; font-size:19px; font-weight:680; letter-spacing:-.02em; }
   .home-tag { margin:12px 0 0; color:var(--muted); font-size:12px; line-height:1.55; max-width:34ch; }
 
@@ -294,7 +345,7 @@
   /* Entry points: one primary action plus a quiet helper line. */
   .entry { display:flex; flex-direction:column; gap:11px; }
   .entry .lead { color:var(--muted); font-size:11.5px; line-height:1.5; }
-  .home-cta { width:100%; background:linear-gradient(135deg,#0752d6,#2892ff); color:#fff; border-radius:var(--r-md); padding:12px 14px; font-size:13px; font-weight:600; box-shadow:0 6px 18px rgba(7,82,214,.28); transition:filter .15s,transform .05s; }
+  .home-cta { width:100%; background:linear-gradient(135deg,#00c9a3,#00e676); color:#fff; border-radius:var(--r-md); padding:12px 14px; font-size:13px; font-weight:600; box-shadow:0 6px 18px rgba(0,212,170,.28), var(--glow); transition:filter .15s,transform .05s; }
   .home-cta:hover { filter:brightness(1.06); }
   .home-cta:active { transform:translateY(1px); }
 
@@ -309,10 +360,11 @@
   .wf-topbar .build { color:var(--faint); font-size:10px; letter-spacing:.02em; }
 
   /* Fullscreen preview */
-  .preview { position:fixed; inset:0; z-index:10; display:none; place-items:center; padding:20px; background:rgba(6,7,10,.85); }
+  .preview { position:fixed; inset:0; z-index:10; display:none; place-items:center; padding:20px; background:rgba(6,7,10,.85); backdrop-filter:blur(24px) brightness(.75); }
   .preview.open { display:grid; }
-  .preview img { max-width:100%; max-height:84vh; border-radius:var(--r-lg); box-shadow:0 20px 70px rgba(0,0,0,.55); }
-  .preview button { position:absolute; top:15px; right:16px; background:var(--surface); border:1px solid var(--line); padding:7px 11px; border-radius:var(--r-md); }
+  .preview img { max-width:100%; max-height:84vh; border-radius:var(--r-lg); box-shadow:0 20px 70px rgba(0,0,0,.6), var(--glow); }
+  .preview button { position:absolute; top:15px; right:16px; background:rgba(18,19,26,.65); backdrop-filter:blur(14px); border:1px solid rgba(30,32,42,.7); padding:8px 12px; border-radius:var(--r-md); color:#dfe2ea; font-weight:600; transition:background .15s,border-color .15s,color .15s; }
+  .preview button:hover { background:rgba(26,28,40,.9); border-color:#30333d; color:#fff; }
 </style>
 </head>
 <body>
@@ -363,13 +415,35 @@
   <!-- Brand workflow: the existing generation flow, now a view navigated into from home. -->
   <div id="workflowView" hidden>
   <header>
-    <div class="wf-topbar">
+  <div class="wf-topbar">
+    <div style="display:flex;align-items:center;gap:7px;">
       <button class="home-link" id="backHome"><span class="arrow"></span>Home</button>
-      <span class="build">v1.8.0</span>
+      <button class="home-link quiet" id="settingsBtn" title="Open settings">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 .98 1.65 1.65 0 00-.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 .98v0z"/></svg>
+      </button>
     </div>
+    <span class="build">v1.8.0</span>
+    <span class="ad-nav-controls" style="display:flex;gap:4px;">
+      <button class="mini quiet" id="prevAd" hidden>‹</button>
+      <button class="mini quiet" id="nextAd" hidden>›</button>
+    </span>
+  </div>
     <div class="topline">
       <h1>ImageGen</h1>
       <div class="conn"><span id="tabDot" class="dot"></span><span id="tabState">checking ChatGPT</span></div>
+    </div>
+    <!-- Search bar with glass-morphism appearance and hover stroke effect -->
+    <div style="margin-bottom:12px;">
+      <div class="search-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="adSearch" placeholder="Search ads, batches..." autocomplete="off" />
+      </div>
+      <div class="search-filters">
+        <button class="mini filter-chip" data-filter="all">All</button>
+        <button class="mini filter-chip" data-filter="recent">Recent</button>
+        <button class="mini filter-chip" data-filter="pending">Pending</button>
+        <button class="mini filter-chip" data-filter="failed">Failed</button>
+      </div>
     </div>
     <div class="switchers">
       <div><label for="brandSel">Brand</label><select id="brandSel"></select></div>
@@ -387,12 +461,27 @@
     </div>
     <div class="destination" id="destination"></div>
     <div class="actions">
-      <button class="primary" id="runAll">Generate</button>
-      <button class="quiet" id="pauseToggle">Pause</button>
-      <button class="danger" id="stop">Stop</button>
-      <button class="quiet" id="restartBtn">Restart</button>
-      <button class="quiet" id="resetBatch">Reset</button>
+      <button class="primary" id="runAll"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button class="quiet" id="pauseToggle">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+      </button>
+      <button class="danger" id="stop">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>
+      </button>
+      <button class="quiet" id="restartBtn">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6 3v6h.01M21 21v-3a9 9 0 11-18 0v3"/><circle cx="7" cy="7" r="3"/></svg>
+      </button>
+      <button class="quiet" id="resetBatch">
+        <svg class="icon" viewBox="0 0 24 24"><path d="M6.28 10.49a4.5 4.5 0 0 0 .98 7.34M14.21 8.06c-1.5-.87-3.26-.87-4.76 0M20.28 10.49a4.5 4.5 0 0 1-.98 7.34M12.33 15.94c1.5.87 3.26.87 4.76 0"/></svg>
+      </button>
     </div>
+    <!-- Context-aware info line below Generate button -->
+    <div style="margin-top:7px;font-size:10.5px;color:var(--muted);line-height:1.45;" id="genInfo"></div>
+    <a class="link-primary" id="downloadLink">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2"/></svg>
+      Download Latest
+    </a>
+  </div>
     <div class="progress" id="progress" hidden>
       <div class="bar"><span class="b-done" id="barDone"></span><span class="b-gen" id="barGen"></span><span class="b-err" id="barErr"></span></div>
       <div class="legend">
@@ -414,8 +503,54 @@
   </section>
   <main id="list"></main>
   <div class="foot">Reset clears this panel's saved previews and statuses. It never deletes files or ChatGPT chats.</div>
+  <!-- Settings overlay: hidden by default, shown via JS on gear click -->
+  <div id="settingsPanel" class="preview" style="position:absolute;inset:0;z-index:4;display:none;place-items:center;background:var(--bg);padding:24px;">
+    <div class="card" style="width:min(380px,max(92vw,340px));">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <span class="card-label" style="margin-bottom:0;font-size:15px;">Settings</span>
+        <button id="settingsClose" class="mini quiet" title="Close settings">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <!-- General -->
+      <div><label>Brand</label><select id="setting-brand"></select></div>
+      <div style="margin-top:10px;"><label for="setting-batch">Batch</label><select id="setting-batch" style="width:100%;appearance:none;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:8px 9px;"></select></div>
+      <div style="margin-top:10px;"><label for="setting-aspect">Aspect ratio</label><select id="setting-aspect" style="width:100%;appearance:none;border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface);padding:8px 9px;">
+        <option value="auto">Auto</option>
+        <option value="1:1">1:1 square</option>
+        <option value="4:5">4:5 portrait</option>
+        <option value="5:4">5:4 landscape</option>
+        <option value="4:3">4:3 landscape</option>
+        <option value="3:4">3:4 portrait</option>
+        <option value="16:9">16:9 wide</option>
+        <option value="9:16">9:16 tall</option>
+      </select></div>
+      <!-- Generation -->
+      <div style="margin-top:20px;" class="card-label" style="margin-bottom:10px;">Generation</div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;line-height:2;"><input type="checkbox" id="setting-autoResume" checked /> Auto-resume on restart — continues an interrupted run instead of starting fresh.</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;line-height:2;margin-top:10px;"><input type="checkbox" id="setting-showPaths" /> Show file paths in status messages</label>
+      <div style="margin-top:14px;">
+        <label for="setting-outputDir" style="display:block;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;">Output directory override</label>
+        <input type="text" id="setting-outputDir" placeholder="/path/to/folder (optional)" style="width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-md);padding:8px 9px;color:var(--ink);font-size:12px;" />
+        <span style="display:block;color:var(--faint);font-size:10.5px;margin-top:4px;">Leave blank to use the default Downloads folder</span>
+      </div>
+      <!-- About -->
+      <div style="margin-top:20px;" class="card-label" style="margin-bottom:10px;">About</div>
+      <p style="color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:8px;">Batch-generate images through your own logged-in ChatGPT, on your normal quota. Real session, images render, auto-named downloads.</p>
+      <div class="mono" style="color:var(--faint);font-size:10.5px;text-align:right;margin-top:4px;">v<span id="setting-version">—</span></div>
+    </div>
   </div>
   <div class="preview" id="preview"><button id="closePreview">Close</button><img id="previewImage" alt="Expanded image preview"></div>
   <script src="logic.js"></script><script src="sidepanel.js"></script>
+  <script>
+window.addEventListener("DOMContentLoaded",()=>{
+  document.querySelectorAll("#list .ad").forEach((a)=>a.classList.add("visible"));
+});
+// Nav arrow bounce on click
+document.getElementById("prevAd")?.onmousedown=()=>{document.getElementById("prevAd").classList.add("nav-arrow-clicked");setTimeout(()=>document.getElementById("prevAd").classList.remove("nav-arrow-clicked"),300);};
+document.getElementById("nextAd")?.onmousedown=()=>{document.getElementById("nextAd").classList.add("nav-arrow-clicked");setTimeout(()=>document.getElementById("nextAd").classList.remove("nav-arrow-clicked"),300);};
+</script>
+</body>
+</html>
 </body>
 </html>
