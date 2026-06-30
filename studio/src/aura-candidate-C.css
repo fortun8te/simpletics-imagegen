@@ -1,0 +1,72 @@
+/* ════════════════════════════════════════════════════════════════════════
+   AURA CANDIDATE C — inline SVG mesh-gradient, electric-blue glow at bottom
+   ────────────────────────────────────────────────────────────────────────
+   Drop-in replacement for .sidebar::before in Sidebar.module.css. Isolated
+   here as a candidate so it can be A/B'd against the current radial-gradient
+   aura without touching the shipped file.
+
+   APPROACH
+   Instead of stacking CSS radial-gradients, paint a real mesh by embedding an
+   inline SVG (400×600 viewBox) as a background-image data URI. The SVG holds
+   4 heavily Gaussian-blurred circles (stdDeviation=60) over a near-black
+   vertical gradient whose top stop (#1b1b1c) matches --surface (oklch(0.165 0 0))
+   so the seam with the empty top 1/3 vanishes:
+     • #7db4ff  — big cyan bloom, bottom-centre      (cx 200, cy 520, r 175)
+     • #3961ff  — deeper electric-blue pool, left     (cx 108, cy 558, r 150)
+     • #4d7cff  — electric-blue pool, right           (cx 300, cy 558, r 150)
+     • #cfe6ff  — hot near-cyan core, dead-centre     (cx 202, cy 572, r 92)
+   A light CSS filter:blur(8px) on top softens any residual Gaussian banding.
+
+   WHY THE BRIGHT CORE STAYS VISIBLE (the previous attempt's failure mode)
+   The prior aura used `inset: 22% -20% -30% -20%` — the negative -30% bottom
+   pushed the bright core past the sidebar's bottom edge, where overflow:hidden +
+   clip-path ate it. Here:
+     1. inset: 33% -8% 0 -8%  → bottom anchored at 0 (NOT negative). The whole
+        glow lives inside the visible bottom 2/3; nothing extends below the
+        sidebar floor, so it can never be clipped off.
+     2. The hot core sits at cy≈572/600 ≈ 95% of the aura layer — near the
+        bottom edge but still INSIDE it, not past it.
+     3. transform-origin: 50% 100% pins the bright core to the bottom edge
+        while the layer scales 1→1.15, so the mesh breathes UPWARD into the
+        dark third instead of shoving the core down off-screen. No vertical
+        translate ⇒ no dark sliver ever opens at the floor.
+     4. The -8% horizontal bleed lets the mesh meet the side edges without a
+        hard frame; the clipped sliver is soft blur, never the core.
+   ════════════════════════════════════════════════════════════════════════ */
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  /* top 1/3 left dark/empty, bottom 2/3 holds the glow. Bottom = 0 (never
+     negative) so the bright core cannot be clipped by overflow:hidden. */
+  inset: 33% -8% 0 -8%;
+  z-index: -1;
+  pointer-events: none;
+
+  /* Inline SVG mesh: 4 blurred cyan/blue circles over a near-black gradient
+     whose top matches --surface. preserveAspectRatio="none" + 100% 100% maps
+     the 400×600 viewBox exactly onto the aura layer so circles land where
+     designed regardless of sidebar height. */
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20400%20600'%20preserveAspectRatio='none'%3E%3Cdefs%3E%3Cfilter%20id='b'%20x='-50%'%20y='-50%'%20width='200%'%20height='200%'%3E%3CfeGaussianBlur%20stdDeviation='60'/%3E%3C/filter%3E%3ClinearGradient%20id='f'%20x1='0'%20y1='0'%20x2='0'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%231b1b1c'/%3E%3Cstop%20offset='0.5'%20stop-color='%23161619'/%3E%3Cstop%20offset='1'%20stop-color='%230b0b0e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width='400'%20height='600'%20fill='url(%23f)'/%3E%3Cg%20filter='url(%23b)'%3E%3Ccircle%20cx='200'%20cy='520'%20r='175'%20fill='%237db4ff'/%3E%3Ccircle%20cx='108'%20cy='558'%20r='150'%20fill='%233961ff'/%3E%3Ccircle%20cx='300'%20cy='558'%20r='150'%20fill='%234d7cff'/%3E%3Ccircle%20cx='202'%20cy='572'%20r='92'%20fill='%23cfe6ff'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100% 100%;
+
+  /* Extra softness on top of the SVG's own Gaussian blur. */
+  filter: blur(8px);
+  opacity: 1;
+
+  /* Pin the bright core to the floor; the mesh breathes upward + drifts. */
+  transform-origin: 50% 100%;
+  animation: aura-c 16s var(--ease) infinite alternate;
+  will-change: transform;
+}
+
+@keyframes aura-c {
+  0%   { transform: translate3d(-2%, 0, 0) scale(1); }
+  100% { transform: translate3d(2.5%, 0, 0) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar::before { animation: none; }
+}
