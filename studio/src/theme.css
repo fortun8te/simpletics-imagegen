@@ -2,8 +2,8 @@
    Synthesis of three references:
    • Ref1 (Linear/Raycast) — deep charcoal glass, 10–12px radii, thin low-opacity white borders,
      soft expansive shadows, generous padding, muted section headers, full-width subtle hover.
-   • Ref2 (glassmorphism + electric blue) — near-black canvas, large soft electric-blue radial
-     glow, fine white dot-grid overlay, rgba(255,255,255,~0.05) surfaces + backdrop blur + 1px
+   • Ref2 (glassmorphism) — near-black flat canvas, fine white dot-grid overlay,
+     rgba(255,255,255,~0.05) surfaces + backdrop blur + 1px
      rgba(255,255,255,~0.1) borders, faint edge reflection, white=primary / muted=metadata.
    • Ref3 (Claritas SaaS) — charcoal sidebar vs slightly different main bg, vibrant slightly-
      purplish blue primary action, muted status colors, small-caps grouped menus, gray active
@@ -14,14 +14,14 @@
    sheen for button fills only, never a canvas glow. */
 
 :root {
-  /* Surfaces — near-black with a whisper of blue, quiet elevation steps (no flat tint). */
-  --bg: oklch(0.135 0.012 255);          /* app canvas */
-  --surface: oklch(0.165 0.012 255);     /* sidebar / base cards (solid fallback behind glass) */
-  --surface-2: oklch(0.205 0.013 255);   /* insets, hover */
-  --surface-3: oklch(0.248 0.015 255);   /* popovers, drawer, menus (ride higher) */
-  --tray: oklch(0.112 0.012 255);        /* "tray" shell behind a nested card */
+  /* Surfaces — neutral near-black, zero chroma (no blue canvas tint). */
+  --bg: oklch(0.135 0 0);          /* app canvas */
+  --surface: oklch(0.165 0 0);     /* sidebar / base cards (solid fallback behind glass) */
+  --surface-2: oklch(0.205 0 0);   /* insets, hover */
+  --surface-3: oklch(0.248 0 0);   /* popovers, drawer, menus (ride higher) */
+  --tray: oklch(0.112 0 0);        /* "tray" shell behind a nested card */
 
-  /* Glass panels — rgba white tints layered over the glow + dot-grid (Ref2). */
+  /* Glass panels — rgba white tints only (no accent color-mix on large areas). */
   --glass-bg: rgba(255, 255, 255, 0.045);
   --glass-bg-2: rgba(255, 255, 255, 0.07);
   --glass-bg-3: rgba(255, 255, 255, 0.10);
@@ -47,8 +47,8 @@
   --accent-soft: oklch(0.30 0.07 258);        /* low-chroma blue for active/selected fills */
   --accent-ink: oklch(0.82 0.145 258);        /* blue text/icons on dark */
   --on-accent: oklch(0.99 0 0);               /* near-white text on a blue fill */
-  /* Electric-blue bloom for the canvas + the rare feature moment. */
-  --grad-blue: radial-gradient(120% 120% at 50% 0%, oklch(0.50 0.24 258 / 0.22) 0%, transparent 60%);
+  /* White sheen for primary button fills only — never a canvas or panel glow. */
+  --grad-blue: radial-gradient(120% 140% at 50% -20%, color-mix(in srgb, #fff 16%, transparent), transparent 60%);
 
   /* Status — muted, SaaS-clean (Ref3): green ok, orange warn, red err, blue info. */
   --ok: oklch(0.78 0.15 160);   --ok-soft: oklch(0.28 0.05 160);
@@ -77,15 +77,14 @@
   --shadow-glass: 0 24px 64px -24px rgba(0,0,0,.78), 0 0 0 1px var(--glass-border), inset 0 1px 0 var(--hairline-hi);
   --inset-hi: inset 0 1px 0 var(--hairline-hi);
 
-  /* Blue aura — the primary action + in-progress states */
+  /* Accent ring + shadow — primary buttons / in-progress affordances only. */
   --glow-accent:
     0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent),
     0 8px 26px -10px color-mix(in srgb, var(--accent) 42%, transparent);
-  /* Hover glow for glass cards — thin white edge + soft black drop + faint blue halo */
+  /* Hover lift for glass cards — neutral shadow, no blue halo. */
   --glow-card:
     0 0 0 1px var(--glass-border-strong),
-    0 18px 44px -18px rgba(0,0,0,.62),
-    0 6px 22px -12px color-mix(in srgb, var(--accent) 26%, transparent);
+    0 18px 44px -18px rgba(0,0,0,.62);
 
   /* Type — Geist (UI grotesk) + Fraunces (editorial serif, loaded for display use). */
   --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;

@@ -65,7 +65,7 @@
 }
 .genMore:hover::before {
   border-color: var(--accent);
-  background: var(--accent-soft);
+  background: var(--surface-2);
 }
 .genMore:focus-visible {
   outline: none;
@@ -74,7 +74,7 @@
 }
 .genMore:focus-visible::before {
   border-color: var(--accent);
-  background: var(--accent-soft);
+  background: var(--surface-2);
 }
 
 .genMoreInner {

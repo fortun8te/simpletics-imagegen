@@ -254,7 +254,7 @@
 .search:focus-visible {
   border-color: var(--glass-border-strong);
   border-radius: var(--r-lg);
-  box-shadow: var(--inset-hi), 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow: var(--inset-hi), 0 0 0 1px var(--glass-border-strong);
 }
 /* ⌘+K / Ctrl K hint badge on the right. */
 .searchHint {

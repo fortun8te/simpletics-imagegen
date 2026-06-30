@@ -199,7 +199,7 @@
   position: absolute;
   inset: 0 0 auto 0;
   height: 2px;
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  background: var(--surface-2);
   overflow: hidden;
   z-index: 2;
 }
@@ -252,11 +252,7 @@
 }
 .empty:hover .emptyBtn {
   color: var(--accent-ink);
-  background: radial-gradient(
-    130% 130% at 50% 50%,
-    color-mix(in srgb, var(--accent) 10%, transparent),
-    transparent 62%
-  );
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
 }
 .plusBadge {
   display: inline-flex;

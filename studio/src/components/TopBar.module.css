@@ -149,9 +149,7 @@
   height: 30px;
   padding: 0 var(--space-4);
   border-radius: var(--r-md);
-  background:
-    radial-gradient(120% 140% at 50% -20%, color-mix(in srgb, #fff 16%, transparent), transparent 60%),
-    var(--accent);
+  background: var(--grad-blue), var(--accent);
   color: var(--on-accent);
   font-size: 13px;
   font-weight: 600;
@@ -229,8 +227,8 @@
   transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
 }
 .search:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: var(--line-strong);
+  box-shadow: 0 0 0 1px var(--glass-border-strong);
 }
 .searchInput {
   flex: 1;
