@@ -4,7 +4,8 @@
   gap: var(--space-5);
 }
 
-/* Editorial SaaS header — circular glass badge + two-line text block. */
+/* Editorial SaaS header — circular glass badge + two-line text block, with the per-ad
+   "Add variant" action pinned to the right edge. */
 .header {
   display: flex;
   align-items: center;
@@ -59,6 +60,55 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Per-ad "Add variant" — ghost button pinned to the right of the header, aligned with the title.
+   Neutral by default; lifts and picks up the blue accent only on hover. */
+.addBtn {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 11px 6px 9px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--faint);
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--dur-2) var(--ease),
+    color var(--dur-2) var(--ease),
+    background var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+.addBtn:hover {
+  transform: translateY(-1px);
+  color: var(--accent-ink);
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.addBtn:active {
+  transform: translateY(0);
+}
+.addBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.addBtn:disabled:hover {
+  transform: none;
+  color: var(--faint);
+  border-color: var(--line);
+  background: transparent;
+}
+.addBtnLabel {
+  color: inherit;
 }
 
 /* Thin divider under the header. */
