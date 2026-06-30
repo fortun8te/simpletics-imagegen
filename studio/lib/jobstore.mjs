@@ -154,7 +154,7 @@ export function createJobStore({ stateDir }) {
 
   function complete(id, { relPath } = {}) {
     const job = find(id);
-    if (!job) return null;
+    if (!job || job.status === 'canceled') return null;
     job.status = 'done';
     job.relPath = relPath;
     job.error = undefined;
@@ -166,7 +166,7 @@ export function createJobStore({ stateDir }) {
 
   function fail(id, error) {
     const job = find(id);
-    if (!job) return null;
+    if (!job || job.status === 'canceled') return null;
     job.status = 'failed';
     job.error = error != null ? String(error) : undefined;
     job.finishedAt = Date.now();
@@ -178,7 +178,7 @@ export function createJobStore({ stateDir }) {
 
   function requeue(id) {
     const job = find(id);
-    if (!job) return null;
+    if (!job || job.status === 'canceled') return null;
     job.status = 'queued';
     job.startedAt = null;
     job.finishedAt = null;

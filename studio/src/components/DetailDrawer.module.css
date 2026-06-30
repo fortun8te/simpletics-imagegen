@@ -150,8 +150,9 @@
 .action {
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   height: 36px;
+  padding: 0 var(--space-4);
   border-radius: var(--r-md);
-  background: var(--surface-2);
+  background: transparent;
   border: 1px solid var(--line);
   color: var(--ink);
   font-size: 12.5px;
@@ -160,3 +161,15 @@
 .action:hover { background: var(--surface-3); border-color: var(--line-strong); transform: translateY(-1px); }
 .action:active { transform: translateY(0); }
 .action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* Download action — accent colored to distinguish it as primary */
+.downloadAction {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.downloadAction:hover {
+  background: var(--accent);
+  color: white;
+  transform: translateY(-1px);
+}

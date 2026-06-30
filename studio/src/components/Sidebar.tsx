@@ -1,7 +1,6 @@
 // Sidebar (container). NEUEGEN wordmark, a brand switcher (Radix dropdown over config.brands),
 // a live batch list fetched from api.getBatches(brand) with client-side search + recency sort, and a
-// clean footer that is now JUST the workspace/account row whose menu offers workspace switching,
-// Settings and About — no theme item (the app is a single committed dark theme).
+// clean footer with brand identity + direct settings access — no theme item (the app is a single committed dark theme).
 // System status (Codex + bridge health) and Codex usage have MOVED to the Settings dialog,
 // so the sidebar no longer polls /api/health.
 import { useEffect, useMemo, useState } from 'react';
@@ -72,7 +71,7 @@ export default function Sidebar() {
       {/* Wordmark */}
       <div className={styles.brandMark}>
         <span className={styles.mark}>
-          <Icon name="sparkles" size={16} />
+          <Icon name="brand" size={14} />
         </span>
         <span className={styles.wordmark}>NEUEGEN</span>
       </div>
@@ -104,6 +103,8 @@ export default function Sidebar() {
           </DropdownMenu.Portal>
         </DropdownMenu.Root>
       </div>
+
+      <div className={styles.divider} aria-hidden="true" />
 
       {/* Batches */}
       <div className={styles.section}>
@@ -149,69 +150,24 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer — just the account / workspace row now (status + usage moved to Settings) */}
+      {/* Footer — compact identity bar + settings */}
       <div className={styles.footer}>
-        {/* Account / workspace row */}
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger asChild>
-            <button className={styles.account} type="button" aria-label="Workspace menu">
-              <span className={styles.accountMark}>
-                <Icon name="sparkles" size={15} />
-              </span>
-              <span className={styles.accountText}>
-                <span className={styles.accountName}>NEUEGEN</span>
-                <span className={styles.accountSub}>Local</span>
-              </span>
-              <Icon name="chevron-down" size={14} className={styles.accountChevron} />
-            </button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Portal>
-            <DropdownMenu.Content
-              className={styles.accountMenu}
-              align="end"
-              side="top"
-              sideOffset={8}
-            >
-              <div className={styles.menuLabel}>Workspace</div>
-              {brands.map((b) => (
-                <DropdownMenu.Item
-                  key={b.id}
-                  className={styles.accountItem}
-                  data-active={b.id === brand || undefined}
-                  onSelect={() => select(b.id, firstBatchCode(b))}
-                >
-                  <Icon name="layout-grid" size={15} className={styles.accountItemIcon} />
-                  <span className={styles.accountItemLabel}>{b.name ?? b.id}</span>
-                  {b.id === brand && (
-                    <Icon name="check" size={15} className={styles.accountItemCheck} />
-                  )}
-                </DropdownMenu.Item>
-              ))}
-              {brands.length === 0 && <div className={styles.menuEmpty}>No brands</div>}
-
-              <DropdownMenu.Separator className={styles.menuSeparator} />
-
-              <DropdownMenu.Item
-                className={styles.accountItem}
-                onSelect={() => setUI({ settingsOpen: true })}
-              >
-                <Icon name="settings" size={15} className={styles.accountItemIcon} />
-                <span className={styles.accountItemLabel}>Settings</span>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item
-                className={styles.accountItem}
-                onSelect={() => setUI({ settingsOpen: true })}
-              >
-                <Icon name="sparkles" size={15} className={styles.accountItemIcon} />
-                <span className={styles.accountItemLabel}>About NEUEGEN</span>
-              </DropdownMenu.Item>
-
-              <DropdownMenu.Separator className={styles.menuSeparator} />
-
-              <div className={styles.menuAbout}>NEUEGEN · local · single workspace</div>
-            </DropdownMenu.Content>
-          </DropdownMenu.Portal>
-        </DropdownMenu.Root>
+        <div className={styles.footerBar}>
+          <div className={styles.footerBrand}>
+            <span className={styles.footerMark}>
+              <Icon name="brand" size={12} />
+            </span>
+            <span className={styles.footerName}>NEUEGEN</span>
+          </div>
+          <button
+            className={styles.footerSettings}
+            type="button"
+            aria-label="Settings"
+            onClick={() => setUI({ settingsOpen: true })}
+          >
+            <Icon name="settings" size={15} />
+          </button>
+        </div>
       </div>
     </aside>
   );

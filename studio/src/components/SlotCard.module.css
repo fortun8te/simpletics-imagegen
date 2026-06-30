@@ -69,32 +69,6 @@
   border-radius: var(--r-pill);
 }
 
-/* ── version pill — small, refined; blue or neutral ─────────────── */
-.badge {
-  position: absolute;
-  top: var(--space-2);
-  left: var(--space-2);
-  z-index: 2;
-  padding: 3px 8px;
-  font-size: var(--t-label);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  border-radius: var(--r-pill);
-  backdrop-filter: blur(8px);
-  box-shadow: var(--shadow-sm);
-}
-.badgeAccent {
-  color: var(--accent-ink);
-  background: color-mix(in srgb, var(--accent-soft) 78%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
-}
-.badgeMuted {
-  color: var(--muted);
-  background: color-mix(in srgb, var(--bg) 66%, transparent);
-  border: 1px solid var(--line-strong);
-}
-
 /* ── hover action bar — refined icon buttons ────────────────────── */
 .actions {
   position: absolute;
@@ -206,10 +180,6 @@
 }
 .card[data-density='compact'] .label {
   font-size: 11px;
-}
-.card[data-density='compact'] .badge {
-  padding: 2px 6px;
-  font-size: 10px;
 }
 
 /* ── generating — calm blue aura (via --glow-accent), gentle pulse ── */

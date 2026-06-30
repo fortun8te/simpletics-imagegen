@@ -89,13 +89,6 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
           onClick={open}
         />
         <div className={styles.sheen} aria-hidden="true" />
-        {slot.version != null && (
-          <span
-            className={`${styles.badge} ${archived ? styles.badgeMuted : styles.badgeAccent}`}
-          >
-            v{slot.version}
-          </span>
-        )}
         {archived && <span className={styles.archivedTag}>Archived</span>}
 
         <div className={styles.actions} role="toolbar" aria-label="Image actions">

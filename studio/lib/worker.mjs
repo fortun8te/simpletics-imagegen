@@ -48,6 +48,7 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
   let userPaused = false;   // true while paused by the user (pause(); cleared by resume())
   let resumeAt = null;      // epoch ms the cooldown ends (null when not cooling)
   let didComplete = false;  // a job has completed since this run started (distinguishes done vs idle)
+  let runAborted = false;   // user pressed Stop — force idle immediately; cleared on next enqueue
   let runningWorker = false; // true between start() and stop()
   let interval = null;      // the 1s safety-tick interval handle
   let cooldownTimer = null; // the setTimeout that ends a cooldown
@@ -62,6 +63,12 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
   // slot is immediately refilled. Guarded so it never runs while stopped or blocked.
   function tick() {
     if (!runningWorker || blocked()) return;
+    const { queued } = store.counts();
+    if (queued > 0 && runAborted) {
+      runAborted = false;
+      didComplete = false;
+    }
+    if (runAborted) return;
     while (running < concurrency) {
       const job = store.nextQueued(); // atomically flips the job to 'running'
       if (!job) break;
@@ -81,6 +88,13 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
     }
 
     running--;
+
+    const current = store.get(job.id);
+    if (!current || current.status === 'canceled') {
+      notify();
+      if (!runAborted) tick();
+      return;
+    }
 
     if (res && res.ok) {
       store.complete(job.id, { relPath: res.relPath });
@@ -130,6 +144,23 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
     if (userPaused) return;
     userPaused = true;
     notify();
+  }
+
+  // User Stop: cancel queued/in-flight jobs (via store.cancel) then call this to snap the run back to
+  // idle immediately — clears pause/cooldown, suppresses further pulls until the user enqueues again.
+  function abortRun() {
+    let changed = false;
+    if (userPaused) { userPaused = false; changed = true; }
+    if (cooling) {
+      cooling = false;
+      resumeAt = null;
+      clearTimeout(cooldownTimer);
+      cooldownTimer = null;
+      changed = true;
+    }
+    if (didComplete) { didComplete = false; changed = true; }
+    if (!runAborted) { runAborted = true; changed = true; }
+    if (changed) notify();
   }
 
   // User Resume: lift a user pause AND clear any active rate-limit cooldown (so a "Continue" or
@@ -183,6 +214,7 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
   // The run-state machine the UI drives off of. Priority: cooling (a real rate-limit) > running >
   // paused (user) > done (work finished, queue drained) > idle.
   function runState() {
+    if (runAborted) return { state: 'idle', resumeAt: null };
     const { queued } = store.counts();
     let state;
     if (cooling) state = 'cooling';
@@ -193,5 +225,5 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
     return { state, resumeAt: cooling ? resumeAt : null };
   }
 
-  return { start, stop, status, busy, pause, resume, runState };
+  return { start, stop, status, busy, pause, resume, abortRun, runState };
 }

@@ -18,8 +18,8 @@ import { buildState } from './lib/state.mjs';
 import { getCodexUsage, noteGenerated, noteRateLimit } from './lib/usage.mjs';
 
 // ── Paths (injected into the lib modules) ────────────────────────────────────────────────────────
-const STUDIO = dirname(fileURLToPath(import.meta.url));            // .../simpletics-imagegen/studio
-const REPO = join(STUDIO, '..');                                  // .../simpletics-imagegen (config.json, logic.js)
+const STUDIO = dirname(fileURLToPath(import.meta.url));            // .../NEUEGEN/studio
+const REPO = join(STUDIO, '..');                                  // .../NEUEGEN (config.json, logic.js)
 const RENDERS = join(process.env.HOME, 'Downloads', 'static-factory-b1', 'renders');
 const STATE_DIR = join(STUDIO, '.state');
 const DIST = join(STUDIO, 'dist');
@@ -498,7 +498,8 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/cancel' && method === 'POST') {
       const body = await readBody(req);
       store.cancel({ jobId: body.jobId, all: body.all === true });
-      sendJson(res, 200, { ok: true });
+      if (body.all === true) worker.abortRun();
+      sendJson(res, 200, { ok: true, run: worker.runState() });
       return;
     }
 
@@ -517,9 +518,9 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname === '/api/reset' && method === 'POST') {
-      // Clear the whole queue, drop any rate-limit cooldown, and resume so a fresh Generate works.
+      // Clear the whole queue, drop any rate-limit cooldown, and snap back to idle.
       store.cancel({ all: true });
-      worker.resume();
+      worker.abortRun();
       sendJson(res, 200, { ok: true, run: worker.runState() });
       return;
     }

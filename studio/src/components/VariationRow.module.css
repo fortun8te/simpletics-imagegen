@@ -4,26 +4,20 @@
   gap: var(--space-3);
 }
 
-/* Clean label row: a small lime tick, the id, then the muted label. */
+/* Full render-directory path for this variation (and prompt when singular). */
 .label {
   display: flex;
   align-items: baseline;
-  gap: var(--space-2);
-  font-size: var(--t-body);
-  line-height: 1.2;
+  min-width: 0;
+}
+
+.path {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
   color: var(--muted);
-}
-
-.id {
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--ink);
-}
-
-.sep {
-  color: var(--faint);
-}
-
-.text {
-  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

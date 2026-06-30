@@ -11,11 +11,12 @@
   height: 100vh;
   width: 100%;
   overflow: hidden;
-  /* Blue-bloom backdrop (MagUSD/CloudSquare energy): a soft blue light source glowing from the top of
-     the content area, falling off to near-black. Sidebar paints a solid panel over column 1; the
-     topbar + main stay transparent so the bloom shows behind the content. */
+  /* Flat neutral canvas with a single, very faint indigo bloom from the top of the content area —
+     just enough life, no flat-blue tint. Sidebar paints a solid panel over column 1; the topbar +
+     main stay transparent so the bloom shows behind the content. */
   background:
-    radial-gradient(78% 44% at 50% -20%, #1f3d72 0%, #0e1521 32%, #0a0b0e 58%);
+    radial-gradient(90% 50% at 50% -10%, oklch(0.488 0.243 264.376 / 0.10) 0%, transparent 55%),
+    var(--bg);
   color: var(--ink);
 }
 
@@ -25,6 +26,16 @@
   grid-column: 1;
   min-height: 0;
   overflow: hidden;
+}
+
+/* TopBar — pin to row 1 / col 2 and keep below portaled modals (z-index 100+). */
+.shell > :global(header) {
+  grid-row: 1;
+  grid-column: 2;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+  z-index: 2;
 }
 
 /* Main — independent scroll container. min-width:0 lets the grid wrap instead of pushing the column

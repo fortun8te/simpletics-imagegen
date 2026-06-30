@@ -1,64 +1,92 @@
-/* NEUEGEN design system — single committed DARK theme (Antimetal-grade premium), electric-lime accent.
+/* NEUEGEN design system — single committed DARK theme.
+   Synthesis of three references:
+   • Ref1 (Linear/Raycast) — deep charcoal glass, 10–12px radii, thin low-opacity white borders,
+     soft expansive shadows, generous padding, muted section headers, full-width subtle hover.
+   • Ref2 (glassmorphism + electric blue) — near-black canvas, large soft electric-blue radial
+     glow, fine white dot-grid overlay, rgba(255,255,255,~0.05) surfaces + backdrop blur + 1px
+     rgba(255,255,255,~0.1) borders, faint edge reflection, white=primary / muted=metadata.
+   • Ref3 (Claritas SaaS) — charcoal sidebar vs slightly different main bg, vibrant slightly-
+     purplish blue primary action, muted status colors, small-caps grouped menus, gray active
+     pill, breadcrumbs + controls, seamless rows, 8–12px radii, weight/color hierarchy.
    One theme: no toggle, no [data-theme] branching. Tokens drive every component. */
 
 :root {
-  /* Surfaces — deep, cool near-black with quiet elevation steps */
-  --bg: #0a0b0e;
-  --surface: #101216;       /* sidebar / base cards */
-  --surface-2: #161920;     /* insets, hover */
-  --surface-3: #1d212a;     /* popovers, drawer, menus (ride higher) */
-  --tray: #0d0f13;          /* "tray" shell behind a nested card */
+  /* Surfaces — near-black with a whisper of blue, quiet elevation steps (no flat tint). */
+  --bg: oklch(0.135 0.012 255);          /* app canvas */
+  --surface: oklch(0.165 0.012 255);     /* sidebar / base cards (solid fallback behind glass) */
+  --surface-2: oklch(0.205 0.013 255);   /* insets, hover */
+  --surface-3: oklch(0.248 0.015 255);   /* popovers, drawer, menus (ride higher) */
+  --tray: oklch(0.112 0.012 255);        /* "tray" shell behind a nested card */
 
-  /* Ink */
-  --ink: #f3f5f4;
-  --muted: #969ca4;
-  --faint: #5c626b;
+  /* Glass panels — rgba white tints layered over the glow + dot-grid (Ref2). */
+  --glass-bg: rgba(255, 255, 255, 0.045);
+  --glass-bg-2: rgba(255, 255, 255, 0.07);
+  --glass-bg-3: rgba(255, 255, 255, 0.10);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-strong: rgba(255, 255, 255, 0.13);
+  --glass-blur: blur(16px) saturate(140%);
+  --glass-blur-strong: blur(26px) saturate(150%);
 
-  /* Lines / hairlines */
-  --line: #1d2127;
-  --line-soft: #15181d;
-  --line-strong: #2a313b;
-  --hairline-hi: rgba(255, 255, 255, 0.05); /* glassy top edge */
+  /* Ink — neutral */
+  --ink: oklch(0.985 0 0);
+  --muted: oklch(0.708 0 0);
+  --faint: oklch(0.556 0 0);
 
-  /* Accent — clean blue. */
-  --accent: #4f8dff;
-  --accent-2: #6aa3ff;
-  --accent-soft: #15233f;   /* dark blue-tinted surface for active/selected */
-  --accent-ink: #a8c8ff;    /* blue text/icons on dark */
-  --on-accent: #ffffff;     /* white text on a blue fill */
-  /* Clean flat blue gradient: white → light blue → deep blue → near-black (for hero/feature moments). */
-  --grad-blue: linear-gradient(157deg, #eef4ff 0%, #9cc0ff 20%, #3b7df0 50%, #16233f 80%, #0b0c10 100%);
+  /* Lines / hairlines — thin low-opacity white (Ref1/Ref2). Soft, barely-separating borders. */
+  --line: rgba(255, 255, 255, 0.08);
+  --line-soft: rgba(255, 255, 255, 0.05);
+  --line-strong: rgba(255, 255, 255, 0.13);
+  --hairline-hi: rgba(255, 255, 255, 0.07); /* glassy top edge */
 
-  /* Status */
-  --ok: #5fd39b; --ok-soft: #11271d;
-  --warn: #e7b85c; --warn-soft: #2a2413;
-  --err: #ff6f63; --err-soft: #2c1714;
+  /* Accent — vibrant slightly-purplish blue (hue ~258). All the color in the UI lives here. */
+  --accent: oklch(0.55 0.245 258);
+  --accent-2: oklch(0.635 0.235 258);         /* brighter, for hover */
+  --accent-soft: oklch(0.30 0.07 258);        /* low-chroma blue for active/selected fills */
+  --accent-ink: oklch(0.82 0.145 258);        /* blue text/icons on dark */
+  --on-accent: oklch(0.99 0 0);               /* near-white text on a blue fill */
+  /* Electric-blue bloom for the canvas + the rare feature moment. */
+  --grad-blue: radial-gradient(120% 120% at 50% 0%, oklch(0.50 0.24 258 / 0.22) 0%, transparent 60%);
 
-  /* Radii — squircle-ish */
+  /* Status — muted, SaaS-clean (Ref3): green ok, orange warn, red err, blue info. */
+  --ok: oklch(0.78 0.15 160);   --ok-soft: oklch(0.28 0.05 160);
+  --warn: oklch(0.76 0.15 68);  --warn-soft: oklch(0.28 0.06 68);
+  --err: oklch(0.70 0.19 22);   --err-soft: oklch(0.28 0.07 22);
+  --info: oklch(0.78 0.13 250); --info-soft: oklch(0.28 0.06 250);
+
+  /* Radii — 8/10/12 scale (Ref1/Ref3). r-xs reserved for tiny inline corners. */
+  --r-xs: 6px;
   --r-sm: 8px;
-  --r-md: 11px;
-  --r-lg: 16px;
-  --r-xl: 22px;
+  --r-md: 10px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-card: 12px;
   --r-pill: 999px;
 
-  /* Spacing */
+  /* Spacing — generous breathing room */
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
-  --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px;
+  --space-5: 20px; --space-6: 24px; --space-7: 28px; --space-8: 32px;
+  --space-10: 40px; --space-12: 48px;
 
-  /* Soft, diffused, layered shadows (never harsh) + a glassy inset top edge */
-  --shadow-sm: 0 1px 2px rgba(0,0,0,.4), inset 0 1px 0 var(--hairline-hi);
-  --shadow-md: 0 12px 32px -10px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.4), inset 0 1px 0 var(--hairline-hi);
-  --shadow-lg: 0 32px 70px -18px rgba(0,0,0,.7), 0 10px 24px rgba(0,0,0,.45), inset 0 1px 0 var(--hairline-hi);
+  /* Shadows — soft + expansive for floating glass; crisp for inline. Faint glassy top edge. */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.45), 0 1px 3px -1px rgba(0,0,0,.4);
+  --shadow-md: 0 4px 10px -2px rgba(0,0,0,.5), 0 2px 6px -2px rgba(0,0,0,.45), inset 0 1px 0 var(--hairline-hi);
+  --shadow-lg: 0 24px 60px -20px rgba(0,0,0,.72), 0 10px 24px -12px rgba(0,0,0,.5), inset 0 1px 0 var(--hairline-hi);
+  --shadow-glass: 0 24px 64px -24px rgba(0,0,0,.78), 0 0 0 1px var(--glass-border), inset 0 1px 0 var(--hairline-hi);
   --inset-hi: inset 0 1px 0 var(--hairline-hi);
 
-  /* Lime aura — used sparingly on the primary action / in-progress states */
+  /* Blue aura — the primary action + in-progress states */
   --glow-accent:
-    0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent),
-    0 6px 20px -8px color-mix(in srgb, var(--accent) 22%, transparent);
+    0 0 0 1px color-mix(in srgb, var(--accent) 32%, transparent),
+    0 8px 26px -10px color-mix(in srgb, var(--accent) 42%, transparent);
+  /* Hover glow for glass cards — thin white edge + soft black drop + faint blue halo */
+  --glow-card:
+    0 0 0 1px var(--glass-border-strong),
+    0 18px 44px -18px rgba(0,0,0,.62),
+    0 6px 22px -12px color-mix(in srgb, var(--accent) 26%, transparent);
 
-  /* Type — Geist (UI grotesk) + Fraunces (editorial serif display). Loaded in index.html. */
+  /* Type — Geist (UI grotesk) + Fraunces (editorial serif, loaded for display use). */
   --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* Display = the same grotesk (no serif — clean, bold headings). */
+  /* Display = the same grotesk (clean, bold headings — matches the sans reference UIs). */
   --font-display: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Monaco, monospace;
 
@@ -90,11 +118,11 @@ body {
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 input, select, textarea { font: inherit; color: inherit; }
 a { color: var(--accent-ink); text-decoration: none; }
-::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); color: var(--ink); }
+::selection { background: color-mix(in srgb, var(--accent) 32%, transparent); color: var(--ink); }
 
 /* Display heading helper — use for the batch hero + key moments */
 .display { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.01em; }
-/* Eyebrow label helper */
+/* Eyebrow label helper — small all-caps grey (Ref2/Ref3 small-caps) */
 .eyebrow { font-size: var(--t-label); letter-spacing: .14em; text-transform: uppercase; color: var(--faint); font-weight: 500; }
 
 :focus-visible {
@@ -104,8 +132,8 @@ a { color: var(--accent-ink); text-decoration: none; }
 }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
-::-webkit-scrollbar-thumb:hover { background: #39414c; background-clip: padding-box; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 999px; border: 3px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); background-clip: padding-box; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }

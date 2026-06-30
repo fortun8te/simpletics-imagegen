@@ -63,12 +63,12 @@ export default function SettingsDialog() {
             {/* Appearance */}
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>Appearance</p>
-              <div className={s.field}>
-                <label className={s.rowHead} id="settings-density-label">
+              <div className={s.settingRow}>
+                <div className={s.settingText} id="settings-density-label">
                   <span className={s.rowLabel}>Density</span>
                   <span className={s.rowHint}>Spacing of the gallery and lists.</span>
-                </label>
-                <div className={s.segmented} role="radiogroup" aria-labelledby="settings-density-label">
+                </div>
+                <div className={`${s.segmented} ${s.settingControl}`} role="radiogroup" aria-labelledby="settings-density-label">
                   {(['comfortable', 'compact'] as Density[]).map((d) => (
                     <button
                       key={d}
@@ -88,8 +88,8 @@ export default function SettingsDialog() {
             {/* Library */}
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>Library</p>
-              <label className={s.toggleRow} htmlFor="settings-archived">
-                <span className={s.toggleText}>
+              <label className={`${s.settingRow} ${s.toggleRow}`} htmlFor="settings-archived">
+                <span className={s.settingText}>
                   <span className={s.rowLabel}>Show archived</span>
                   <span className={s.rowHint}>Include archived images in the gallery.</span>
                 </span>
@@ -98,7 +98,7 @@ export default function SettingsDialog() {
                   type="button"
                   role="switch"
                   aria-checked={showArchived}
-                  className={`${s.switch} ${showArchived ? s.switchOn : ''}`}
+                  className={`${s.switch} ${s.settingControl} ${showArchived ? s.switchOn : ''}`}
                   onClick={() => setUI({ showArchived: !showArchived })}
                 >
                   <span className={s.knob} aria-hidden />
@@ -126,9 +126,11 @@ export default function SettingsDialog() {
                   </span>
                 </div>
                 <div className={s.systemDivider} aria-hidden />
-                <div className={s.usageRow}>
-                  <span className={s.usageLabel}>Codex usage</span>
-                  <span className={s.usageValue} data-known={usageKnown || undefined}>
+                <div className={`${s.settingRow} ${s.usageRow}`}>
+                  <span className={s.settingText}>
+                    <span className={s.usageLabel}>Codex usage</span>
+                  </span>
+                  <span className={`${s.usageValue} ${s.settingControl}`} data-known={usageKnown || undefined}>
                     {usageLabel}
                     {sessionCount > 0 && (
                       <span className={s.usageSession}> · {sessionCount} this session</span>

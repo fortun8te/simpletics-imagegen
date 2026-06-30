@@ -41,7 +41,7 @@ export default function TopBar() {
   const batch = useStore((s) => s.batch);
   const config = useStore((s) => s.config);
   const run = useStore((s) => s.state?.run) as RunInfo | undefined;
-  const ui = useStore((s) => s.ui);
+  const ads = useStore((s) => s.state?.ads);
   const setUI = useStore((s) => s.setUI);
 
   // Resolve display names from config by current brand/batch ids.
@@ -49,6 +49,20 @@ export default function TopBar() {
   const batchRef = brandRef?.batches.find((bt) => bt.code === batch);
   const brandName = brandRef?.name ?? brand ?? '—';
   const batchName = batchRef?.name ?? batch ?? '—';
+
+  // Count empty (never-generated) slots so the primary action is unambiguous: "Generate N" fills the
+  // gaps; if the batch is already full, the same button enqueues one more variant per variation.
+  let emptyCount = 0;
+  for (const ad of ads ?? [])
+    for (const v of ad.variations)
+      for (const p of v.prompts)
+        for (const slot of p.slots) if (slot.status === 'empty') emptyCount++;
+
+  // Direct generate — no popup. Whole-batch scope: the backend fills empty slots first; with none
+  // left it enqueues one more variant per variation. The label tells the user which case they're in.
+  const doGenerate = () => {
+    if (brand && batch) api.generate(brand, batch, {}, 1);
+  };
 
 
   // Run state machine.
@@ -181,10 +195,13 @@ export default function TopBar() {
           <button
             type="button"
             className={s.primary}
-            onClick={() => setUI({ genOpen: true })}
+            onClick={doGenerate}
+            title={emptyCount > 0
+              ? `Generate the ${emptyCount} missing image${emptyCount === 1 ? '' : 's'} in this batch`
+              : 'Add one more variant to every variation in this batch'}
           >
             <Icon name="sparkles" size={15} />
-            <span>Generate</span>
+            <span>{emptyCount > 0 ? `Generate ${emptyCount}` : 'Generate more'}</span>
           </button>
         )}
       </div>

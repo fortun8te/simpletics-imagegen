@@ -9,14 +9,14 @@
   min-height: 0;
   overflow: hidden;
   background: var(--surface);
-  border-right: 1px solid var(--line);
+  border-right: 1px solid var(--line-soft);
   box-shadow: var(--shadow-sm);
   /* keep the lift on the right edge only, so it reads as a panel divide */
   clip-path: inset(0 -16px 0 0);
   position: relative;
   z-index: 1;
-  padding: var(--space-3);
-  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3) var(--space-3);
+  gap: var(--space-4);
 }
 
 /* Wordmark */
@@ -30,7 +30,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--accent);
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-md);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 8%, transparent) 100%
+  );
+  color: var(--accent-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 .wordmark {
   font-size: 14px;
@@ -39,13 +49,13 @@
   color: var(--ink);
 }
 
-/* Eyebrow — tiny uppercase section label */
+/* Eyebrow — small all-caps grey section label (Ref2) */
 .eyebrow {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--faint);
   padding: 0 var(--space-2) var(--space-2);
 }
 
@@ -146,23 +156,25 @@
   width: 100%;
   height: 32px;
   padding: 0 var(--space-3) 0 calc(var(--space-3) + 18px);
-  border: 1px solid var(--line);
   border-radius: var(--r-md);
-  background: var(--surface-2);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(0, 0, 0, 0.3);
   color: var(--ink);
   font-size: 13px;
   outline: none;
-  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+  transition: box-shadow var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
 }
 .search::placeholder {
-  color: var(--faint);
+  color: rgba(255, 255, 255, 0.35);
 }
 .search:hover {
-  border-color: var(--line-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 .search:focus {
-  border-color: var(--accent);
-  background: var(--surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent), 0 4px 16px rgba(31, 123, 255, 0.15);
 }
 
 /* Batch list */
@@ -225,149 +237,79 @@
   color: var(--faint);
 }
 
-/* Account / workspace footer — pinned to the bottom, its own bordered band */
+/* Footer — pinned compact bar, liquid-glass pill */
 .footer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--line);
+  flex: none;
   margin-top: auto;
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--line);
 }
 
-/* Account button — avatar mark + name/sub stack + chevron */
-.account {
+.footerBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: 36px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: box-shadow var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
+}
+
+.footerBrand {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  width: 100%;
-  padding: var(--space-2);
-  border: 1px solid transparent;
-  border-radius: var(--r-md);
-  background: transparent;
-  color: var(--ink);
-  text-align: left;
-  cursor: pointer;
-  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
+  min-width: 0;
+  user-select: none;
 }
-.account:hover,
-.account[data-state='open'] {
-  background: var(--surface-2);
-  border-color: var(--line);
-}
-.accountMark {
+
+.footerMark {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
   flex: none;
-  border-radius: var(--r-md);
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-.accountText {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.accountName {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.accountSub {
-  font-size: 11px;
-  color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.accountChevron {
-  color: var(--faint);
-  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-sm);
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 8%, transparent) 100%
+  );
+  color: var(--accent-ink);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Account dropdown — sectioned, soft-shadowed, ~260px */
-.accountMenu {
-  width: 260px;
-  padding: var(--space-1);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-lg);
-  z-index: 50;
-}
-.menuLabel {
-  font-size: 10px;
+.footerName {
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--faint);
-  padding: var(--space-2) var(--space-2) var(--space-1);
-}
-.accountItem {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 34px;
-  padding: 0 var(--space-2);
-  border-radius: var(--r-md);
-  font-size: 13px;
-  color: var(--ink);
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-  transition: background var(--dur-2) var(--ease);
-}
-.accountItem[data-highlighted] {
-  background: var(--surface-2);
-}
-.accountItemIcon {
   color: var(--muted);
+}
+
+.footerSettings {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: none;
-}
-.accountItem[data-active] .accountItemIcon {
-  color: var(--accent);
-}
-.accountItemLabel {
-  flex: 1 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.accountItem[data-active] .accountItemLabel {
-  font-weight: 500;
-  color: var(--accent-ink);
-}
-.accountItemCheck {
-  color: var(--accent);
-  flex: none;
-}
-/* Accent pill — the active workspace's current-state value */
-.accountItemValue {
-  flex: none;
-  padding: 2px var(--space-2);
-  border-radius: 999px;
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.4;
-}
-.menuSeparator {
-  height: 1px;
-  margin: var(--space-1) var(--space-2);
-  background: var(--line);
-}
-.menuAbout {
-  padding: var(--space-1) var(--space-2) var(--space-2);
-  font-size: 11px;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
   color: var(--faint);
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+
+.footerSettings:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ink);
+}
+
+.footerSettings:active {
+  background: rgba(255, 255, 255, 0.08);
 }

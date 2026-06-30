@@ -5,31 +5,28 @@ interface IconProps {
   name: string;
   size?: number;
   className?: string;
+  /** Override default 1.6 — use for large display icons only */
+  strokeWidth?: number;
 }
 
 // Each entry returns the inner SVG markup for a 24x24 viewBox.
 // fill:none + stroke:currentColor are applied on the <svg>, so children stay terse.
 const paths: Record<string, JSX.Element> = {
+  // Wordmark monogram — single-stroke N, tuned for 14–16 px
+  brand: <path d="M8 6v12M8 6l8 12M16 18V6" />,
   sparkles: (
     <>
-      <path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6L12 4z" />
-      <path d="M18 15l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7.7-1.9z" />
+      <path d="M12 7l.85 2.6 2.6.85-2.6.85L12 14.3l-.85-2.6-2.6-.85 2.6-.85L12 7z" />
+      <path d="M18 5.5l.45 1.2 1.2.45-1.2.45-.45 1.2-.45-1.2-1.2-.45 1.2-.45.45-1.2z" />
     </>
   ),
   'chevron-down': <path d="M6 9l6 6 6-6" />,
   'chevron-right': <path d="M9 6l6 6-6 6" />,
-  'layout-grid': (
-    <>
-      <rect x="4" y="4" width="7" height="7" rx="1.5" />
-      <rect x="13" y="4" width="7" height="7" rx="1.5" />
-      <rect x="4" y="13" width="7" height="7" rx="1.5" />
-      <rect x="13" y="13" width="7" height="7" rx="1.5" />
-    </>
-  ),
   columns: (
     <>
-      <rect x="4" y="4" width="16" height="16" rx="2" />
-      <path d="M10 4v16M16 4v16" />
+      <rect x="4" y="4" width="7" height="16" rx="1.25" />
+      <rect x="13" y="4" width="7" height="16" rx="1.25" />
+      <path d="M9 4v16M15 4v16" />
     </>
   ),
   table: (
@@ -148,10 +145,19 @@ const paths: Record<string, JSX.Element> = {
       <rect x="4" y="19" width="16" height="0.5" rx="0.25" opacity="0" />
     </>
   ),
+  'layout-grid': (
+    <>
+      <rect x="3" y="3" width="8" height="8" rx="1.25" />
+      <rect x="14" y="3" width="7" height="7" rx="1.25" />
+      <rect x="3" y="14" width="8" height="8" rx="1.25" />
+      <rect x="14" y="14" width="7" height="7" rx="1.25" />
+    </>
+  ),
 };
 
-export function Icon({ name, size = 16, className }: IconProps) {
+export function Icon({ name, size = 16, className, strokeWidth }: IconProps) {
   const glyph = paths[name] ?? paths.dot; // unknown name → neutral dot
+  const sw = strokeWidth ?? (name === 'brand' ? 1.5 : 1.6);
   return (
     <svg
       className={className}
@@ -160,7 +166,7 @@ export function Icon({ name, size = 16, className }: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.6}
+      strokeWidth={sw}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

@@ -9,7 +9,7 @@ Batch-generate static-ad photos through your **own logged-in ChatGPT tab**, on y
 ## Install (one time)
 1. Open `chrome://extensions`.
 2. Turn on **Developer mode** (top right).
-3. Click **Load unpacked** and choose this folder: `~/Downloads/simpletics-imagegen`.
+3. Click **Load unpacked** and choose this folder: `~/Downloads/NEUEGEN`.
 4. Pin the extension if you like.
 
 ## Use

@@ -1,5 +1,5 @@
 {
-  "name": "simpletics-imagegen-work",
+  "name": "neuegen",
   "version": "1.0.0",
   "description": "Batch-generate static-ad photos through your **own logged-in ChatGPT tab**, on your **normal subscription quota**. Because it runs in your real session, ChatGPT renders the images normally (the thing browser automation could not do), and every result auto-downloads under its correct IMG name.",
   "main": "background.js",

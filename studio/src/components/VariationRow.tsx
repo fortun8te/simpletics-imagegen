@@ -1,21 +1,18 @@
-// Presentational row for one variation. A small label line (`id — label`) over its children
-// (the slot grid). Props only — no store access.
+// Presentational row for one variation. Shows the render-directory path for the variation
+// (and prompt when there is only one). Props only — no store access.
 import type { ReactNode } from 'react';
 import styles from './VariationRow.module.css';
 
 interface VariationRowProps {
-  id: string;
-  label?: string;
+  path: string;
   children: ReactNode;
 }
 
-export default function VariationRow({ id, label, children }: VariationRowProps) {
+export default function VariationRow({ path, children }: VariationRowProps) {
   return (
     <div className={styles.row}>
       <div className={styles.label}>
-        <span className={styles.id}>{id}</span>
-        {label ? <span className={styles.sep}>—</span> : null}
-        {label ? <span className={styles.text}>{label}</span> : null}
+        <span className={styles.path}>{path}</span>
       </div>
       {children}
     </div>

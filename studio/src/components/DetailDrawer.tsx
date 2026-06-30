@@ -185,7 +185,7 @@ export default function DetailDrawer() {
 
             {/* Clean action buttons at the foot of the rail */}
             <footer className={s.actions}>
-              <a className={s.action} href={drawerRel ? api.imgUrl(drawerRel) : undefined} download>
+              <a className={`${s.action} ${s.downloadAction}`} href={drawerRel ? api.imgUrl(drawerRel) : undefined} download>
                 <Icon name="download" size={15} /><span>Download</span>
               </a>
               <a className={s.action} href={drawerRel ? api.imgUrl(drawerRel) : undefined} target="_blank" rel="noreferrer">
