@@ -298,12 +298,10 @@
   height: 34px;
   flex: none;
   border-radius: var(--r-md);
-  background: var(--accent-soft);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--inset-hi);
   color: var(--accent-ink);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: 0.02em;
 }
 .aboutText {
   display: flex;

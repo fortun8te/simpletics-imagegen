@@ -150,7 +150,9 @@ export default function SettingsDialog() {
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>About NEUEGEN</p>
               <div className={s.aboutCard}>
-                <span className={s.aboutMark} aria-hidden>N</span>
+                <span className={s.aboutMark} aria-hidden>
+                  <Icon name="brand" size={16} />
+                </span>
                 <div className={s.aboutText}>
                   <span className={s.aboutName}>NEUEGEN</span>
                   <span className={s.aboutDesc}>
