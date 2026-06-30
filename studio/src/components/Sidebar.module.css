@@ -44,7 +44,7 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   box-shadow: var(--inset-hi);
-  color: var(--accent-ink);
+  color: var(--muted);
 }
 .wordmark {
   font-size: 14px;
@@ -150,8 +150,8 @@
   width: 20px;
   height: 20px;
   border-radius: var(--r-sm);
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-  color: var(--accent-ink);
+  background: var(--surface-2);
+  color: var(--muted);
 }
 .brandName {
   font-size: 13px;
@@ -200,11 +200,11 @@
   background: var(--surface-2);
 }
 .menuItem[data-active] {
-  color: var(--accent-ink);
+  color: var(--ink);
   font-weight: 500;
 }
 .menuItem[data-active][data-highlighted] {
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  background: var(--surface-3);
 }
 /* Check slot — keeps label alignment; filled only on the active brand. */
 .menuCheck {
@@ -354,12 +354,12 @@
   border-radius: var(--r-md);
 }
 .batchRow[data-active] {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
+  background: var(--surface-2);
+  color: var(--ink);
 }
 .batchRow[data-active]:hover {
-  background: color-mix(in srgb, var(--accent-soft) 88%, var(--surface-2));
-  color: var(--accent-ink);
+  background: var(--surface-3);
+  color: var(--ink);
 }
 .batchIcon {
   color: var(--faint);
@@ -370,7 +370,7 @@
   color: var(--muted);
 }
 .batchRow[data-active] .batchIcon {
-  color: var(--accent-ink);
+  color: var(--ink);
 }
 .batchName {
   flex: 1 1 auto;
@@ -399,8 +399,8 @@
   color: var(--muted);
 }
 .batchRow[data-active] .batchCount {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
-  color: var(--accent-ink);
+  background: var(--surface-3);
+  color: var(--ink);
 }
 .batchEmpty {
   padding: var(--space-2) var(--space-3);
@@ -459,7 +459,7 @@
   border-radius: var(--r-sm);
   background: var(--glass-bg-2);
   border: 1px solid var(--glass-border);
-  color: var(--accent-ink);
+  color: var(--muted);
 }
 .footerName {
   font-size: 11px;

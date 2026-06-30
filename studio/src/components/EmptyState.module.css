@@ -27,7 +27,7 @@
   width: 56px;
   height: 56px;
   border-radius: var(--r-pill);
-  color: var(--accent-ink);
+  color: var(--muted);
   background: var(--glass-bg-2);
   border: 1px solid var(--glass-border-strong);
   backdrop-filter: var(--glass-blur);

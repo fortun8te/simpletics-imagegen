@@ -1,7 +1,7 @@
 // DetailDrawer — premium floating image modal (Linear/Raycast + Claritas feel).
 // Tall glass panel: a header bar with an "ad / variation / prompt" breadcrumb + close,
-// a two-column body (large image stage left, scrollable REFERENCE/PROMPT/REVISE rail right),
-// and a full-width footer action bar (Download primary / Open / Regenerate / Archive).
+// a three-part body — large image stage (left), a slim vertical action toolbar (middle),
+// and a scrollable REFERENCE/PROMPT/REVISE rail (right). No footer; actions live on the side.
 // Keeps all functionality, Radix Dialog primitives, and the z 100/101 + isolation fix.
 import { useEffect, useMemo, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -125,7 +125,7 @@ export default function DetailDrawer() {
             </Dialog.Close>
           </header>
 
-          {/* Body — two columns: image stage + scrollable rail */}
+          {/* Body — image stage + vertical action toolbar + info rail */}
           <div className={s.body}>
             <div className={s.stage}>
               {drawerRel ? (
@@ -143,22 +143,72 @@ export default function DetailDrawer() {
               )}
             </div>
 
+            {/* Vertical action toolbar — sits between the image and the info rail */}
+            <nav className={s.toolbar} aria-label="Image actions">
+              <a
+                className={`${s.toolBtn} ${s.toolPrimary}`}
+                href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+                download
+                title="Download image"
+                aria-label="Download image"
+              >
+                <Icon name="download" size={18} />
+              </a>
+              <a
+                className={s.toolBtn}
+                href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+                target="_blank"
+                rel="noreferrer"
+                title="Open original in a new tab"
+                aria-label="Open original"
+              >
+                <Icon name="expand" size={18} />
+              </a>
+              <button
+                type="button"
+                className={s.toolBtn}
+                onClick={() => drawerRel && api.regenerate(drawerRel)}
+                title="Regenerate this image"
+                aria-label="Regenerate"
+              >
+                <Icon name="refresh" size={18} />
+              </button>
+              <span className={s.toolDivider} aria-hidden="true" />
+              <button
+                type="button"
+                className={s.toolBtn}
+                onClick={() => drawerRel && slot && api.archive(drawerRel, !isArchived)}
+                disabled={!slot}
+                title={isArchived ? 'Restore from archive' : 'Archive this image'}
+                aria-label={isArchived ? 'Restore' : 'Archive'}
+              >
+                <Icon name={isArchived ? 'restore' : 'archive'} size={18} />
+              </button>
+            </nav>
+
             <aside className={s.rail}>
               <div className={s.railScroll}>
                 {refUrl ? (
                   <section className={s.section}>
-                    <p className={s.label}>Reference</p>
-                    <div className={s.refRow}>
+                    <div className={s.sectionHead}>
+                      <span className={s.label}>Reference</span>
+                    </div>
+                    <div className={s.refCard}>
                       <div className={s.refThumb}>
                         <img src={refUrl} alt={refName || 'Reference'} decoding="async" />
                       </div>
-                      <span className={s.refName}>{refName || 'Reference image'}</span>
+                      <div className={s.refMeta}>
+                        <span className={s.refName}>{refName || 'Reference image'}</span>
+                        <span className={s.refSub}>Used for this prompt</span>
+                      </div>
                     </div>
                   </section>
                 ) : null}
 
                 <section className={s.section}>
-                  <p className={s.label}>Prompt</p>
+                  <div className={s.sectionHead}>
+                    <span className={s.label}>Prompt</span>
+                  </div>
                   {promptLoading ? (
                     <div className={`${s.promptBox} ${s.promptLoading}`} aria-busy="true">
                       <span className={s.skel} /><span className={s.skel} /><span className={`${s.skel} ${s.skelShort}`} />
@@ -171,16 +221,19 @@ export default function DetailDrawer() {
                 </section>
 
                 <section className={s.section}>
-                  <p className={s.label}>Revise</p>
-                  <input
+                  <div className={s.sectionHead}>
+                    <span className={s.label}>Revise</span>
+                    <span className={s.sectionHint}>queues a new version</span>
+                  </div>
+                  <textarea
                     className={s.reviseInput}
-                    type="text"
                     value={instruction}
                     onChange={(e) => setInstruction(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); doRevise(); } }}
-                    placeholder="What should change? (e.g. brighter, show the tube label)"
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doRevise(); } }}
+                    placeholder="What should change? e.g. brighter lighting, show the tube label"
                     disabled={revising}
                     autoComplete="off"
+                    rows={3}
                   />
                   <button
                     type="button"
@@ -192,51 +245,12 @@ export default function DetailDrawer() {
                     <span>{revising ? 'Queuing…' : 'Revise'}</span>
                   </button>
                   <p className={s.hint} aria-live="polite">
-                    {revisedOk ? 'Queued — a new version is on the way.' : 'Queues a new version with your change.'}
+                    {revisedOk ? 'Queued — a new version is on the way.' : ''}
                   </p>
                 </section>
               </div>
             </aside>
           </div>
-
-          {/* Footer — clean full-width action bar, thin divider above */}
-          <footer className={s.actions}>
-            <a
-              className={`${s.action} ${s.downloadAction}`}
-              href={drawerRel ? api.imgUrl(drawerRel) : undefined}
-              download
-              title="Download image"
-            >
-              <Icon name="download" size={15} /><span>Download</span>
-            </a>
-            <a
-              className={s.action}
-              href={drawerRel ? api.imgUrl(drawerRel) : undefined}
-              target="_blank"
-              rel="noreferrer"
-              title="Open original in a new tab"
-            >
-              <Icon name="expand" size={15} /><span>Open</span>
-            </a>
-            <button
-              type="button"
-              className={s.action}
-              onClick={() => drawerRel && api.regenerate(drawerRel)}
-              title="Regenerate this image"
-            >
-              <Icon name="refresh" size={15} /><span>Regenerate</span>
-            </button>
-            <button
-              type="button"
-              className={s.action}
-              onClick={() => drawerRel && slot && api.archive(drawerRel, !isArchived)}
-              disabled={!slot}
-              title={isArchived ? 'Restore from archive' : 'Archive this image'}
-            >
-              <Icon name={isArchived ? 'restore' : 'archive'} size={15} />
-              <span>{isArchived ? 'Restore' : 'Archive'}</span>
-            </button>
-          </footer>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

@@ -8,6 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from './Icon';
 import { useStore } from '../store';
 import { api } from '../api';
+import { refreshState } from '../refresh';
 import type { GridTab } from '../store';
 import type { RunInfo, RunState, SlotStatus } from '../types';
 import s from './TopBar.module.css';
@@ -131,7 +132,7 @@ export default function TopBar() {
   const doReset = () => {
     if (!confirmReset) { setConfirmReset(true); return; }
     setConfirmReset(false);
-    api.reset();
+    api.reset().then(refreshState);
   };
 
   // ⌘+K (or Ctrl+K) focuses the search input from anywhere.
@@ -204,12 +205,14 @@ export default function TopBar() {
             </button>
           ) : null}
 
-          {/* Stop — present in any active state */}
-          {(state === 'running' || state === 'paused' || state === 'cooling') ? (
+          {/* Stop — present in any non-idle state (running/paused/cooling/done). Cancels all
+              jobs + aborts the run so runState snaps to idle; explicit refetch so TopBar reverts
+              to Generate immediately even if no SSE tick fires. */}
+          {(state === 'running' || state === 'paused' || state === 'cooling' || state === 'done') ? (
             <button
               type="button"
               className={s.ghost}
-              onClick={() => api.cancel({ all: true })}
+              onClick={() => api.cancel({ all: true }).then(refreshState)}
               title="Stop all generation"
             >
               <Icon name="stop" size={15} />

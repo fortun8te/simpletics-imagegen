@@ -3,7 +3,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 7, 10, 0.55);
+  background: rgba(0, 0, 0, 0.55);
   animation: fade var(--dur-2) var(--ease);
 }
 
@@ -123,7 +123,7 @@
 }
 
 .radioOn {
-  border-color: var(--accent);
+  border-color: var(--line-strong);
   background: var(--accent-soft);
 }
 

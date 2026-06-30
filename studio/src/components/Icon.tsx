@@ -49,6 +49,12 @@ const paths: Record<string, JSX.Element> = {
     </>
   ),
   stop: <rect x="6" y="6" width="12" height="12" rx="2" />,
+  pause: (
+    <>
+      <rect x="8" y="6" width="3" height="12" rx="1" />
+      <rect x="13" y="6" width="3" height="12" rx="1" />
+    </>
+  ),
   plus: <path d="M12 5v14M5 12h14" />,
   refresh: (
     <>

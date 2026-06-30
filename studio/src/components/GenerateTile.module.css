@@ -18,7 +18,7 @@
 }
 .tile:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+  border-color: var(--line-strong);
   box-shadow: var(--shadow-md);
 }
 
@@ -34,7 +34,7 @@
   transition: color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
 }
 .tile:hover .btn {
-  color: var(--accent-ink);
+  color: var(--ink);
   background: color-mix(in srgb, var(--surface-2) 55%, transparent);
 }
 
@@ -54,9 +54,9 @@
     color var(--dur-2) var(--ease);
 }
 .tile:hover .plusBadge {
-  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  color: var(--accent-ink);
+  border-color: var(--line-strong);
+  background: var(--surface-3);
+  color: var(--ink);
 }
 
 .label {

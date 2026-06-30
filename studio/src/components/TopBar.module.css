@@ -192,12 +192,12 @@
   color: var(--ink);
 }
 .tabActive {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
+  background: var(--surface-2);
+  color: var(--ink);
 }
 .tabActive:hover {
-  background: var(--accent-soft);
-  color: var(--accent-ink);
+  background: var(--surface-3);
+  color: var(--ink);
 }
 .tabCount {
   font-variant-numeric: tabular-nums;
@@ -207,8 +207,7 @@
   text-align: right;
 }
 .tabActive .tabCount {
-  color: var(--accent-ink);
-  opacity: 0.85;
+  color: var(--muted);
 }
 
 /* ---- row 2: pill search (single bordered input; icon + kbd overlay inside) ---- */

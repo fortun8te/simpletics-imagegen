@@ -104,7 +104,7 @@ export default function GridView() {
     <div className={styles.grid}>
       <div className={styles.sections}>
         {ads.map((ad) => (
-          <AdSection key={ad.id} title={ad.title || ad.id} type={ad.type}>
+          <AdSection key={ad.id} adId={ad.id} title={ad.title || ad.id} type={ad.type}>
             {ad.variations.map((variation) => {
               const multiPrompt = variation.prompts.length > 1;
               return (

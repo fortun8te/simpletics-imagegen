@@ -10,7 +10,7 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: color-mix(in srgb, #05060a 72%, transparent);
+  background: rgba(0, 0, 0, 0.82);
   backdrop-filter: var(--glass-blur-strong);
   -webkit-backdrop-filter: var(--glass-blur-strong);
   animation: fade var(--dur-2) var(--ease);
@@ -30,10 +30,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, var(--glass-bg-2), var(--glass-bg)),
-    var(--surface);
-  border: 1px solid var(--glass-border-strong);
+  background: var(--surface);
+  border: 1px solid var(--line);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-glass);
   animation: pop var(--dur-2) var(--ease);
@@ -262,8 +260,7 @@
   background: var(--ok);
 }
 .statusDot[data-state='busy'] {
-  background: var(--info);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--info) 22%, transparent);
+  background: var(--warn);
 }
 .statusDot[data-state='err'] {
   background: var(--err);
@@ -301,7 +298,7 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   box-shadow: var(--inset-hi);
-  color: var(--accent-ink);
+  color: var(--muted);
 }
 .aboutText {
   display: flex;

@@ -8,7 +8,7 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: color-mix(in srgb, #05060a 72%, transparent);
+  background: rgba(0, 0, 0, 0.82);
   backdrop-filter: var(--glass-blur-strong);
   -webkit-backdrop-filter: var(--glass-blur-strong);
   animation: fade var(--dur-2) var(--ease);
@@ -131,7 +131,7 @@
 
 /* RIGHT — scrollable rail */
 .rail {
-  flex: 0 0 400px;
+  flex: 0 0 380px;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -142,13 +142,13 @@
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: var(--space-5);
+  padding: var(--space-5) var(--space-5) var(--space-6);
   display: flex;
   flex-direction: column;
   gap: 0;
 }
 
-/* Sections — small-caps label, thin dividers between */
+/* Sections — small-caps label row, thin dividers between */
 .section {
   display: flex;
   flex-direction: column;
@@ -160,6 +160,18 @@
   padding-top: var(--space-5);
   border-top: 1px solid var(--line-soft);
 }
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.sectionHint {
+  font-size: 10.5px;
+  color: var(--faint);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
 .label {
   margin: 0;
   font-size: var(--t-label);
@@ -169,55 +181,74 @@
   font-weight: 500;
 }
 
-/* REFERENCE */
-.refRow { display: flex; align-items: center; gap: var(--space-3); }
+/* REFERENCE — a clean card: thumb + name + sub */
+.refCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
 .refThumb {
-  width: 52px;
-  height: 52px;
+  width: 48px;
+  height: 48px;
   flex: 0 0 auto;
   border-radius: var(--r-sm);
   overflow: hidden;
   border: 1px solid var(--line);
-  background: var(--surface-2);
+  background: var(--surface-3);
 }
 .refThumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.refName { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.refMeta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.refName {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.refSub { font-size: 11px; color: var(--faint); }
 
-/* PROMPT */
+/* PROMPT — clean mono box, generous padding, scrollable */
 .promptBox {
-  font: 400 12px/1.6 var(--font-mono);
+  font: 400 12px/1.65 var(--font-mono);
   color: var(--muted);
   background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  padding: var(--space-3);
-  max-height: 168px;
+  padding: var(--space-3) var(--space-4);
+  max-height: 200px;
   overflow-y: auto;
   white-space: pre-wrap;
 }
 .promptEmpty { font-family: var(--font-sans); font-style: italic; color: var(--faint); }
-.promptLoading { display: flex; flex-direction: column; gap: 8px; }
+.promptLoading { display: flex; flex-direction: column; gap: 8px; padding: var(--space-3) var(--space-4); }
 .skel { height: 9px; border-radius: 4px; background: linear-gradient(90deg, var(--surface-3), var(--line), var(--surface-3)); background-size: 200% 100%; animation: sh 1.2s linear infinite; }
 .skelShort { width: 55%; }
 @keyframes sh { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) { .skel { animation: none; } }
 
-/* REVISE */
+/* REVISE — textarea + full-width blue primary button */
 .reviseInput {
   width: 100%;
-  height: 38px;
-  padding: 0 var(--space-3);
+  min-height: 76px;
+  resize: vertical;
+  padding: var(--space-3);
   border-radius: var(--r-md);
   background: var(--surface-2);
   border: 1px solid var(--line-strong);
   color: var(--ink);
+  font: 400 13px/1.5 var(--font-sans);
   transition: border-color var(--dur-1) var(--ease), box-shadow var(--dur-1) var(--ease);
 }
 .reviseInput::placeholder { color: var(--faint); }
 .reviseInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
 .reviseInput:disabled { opacity: 0.55; }
 .reviseBtn {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
   height: 38px;
   width: 100%;
   display: inline-flex; align-items: center; justify-content: center; gap: 7px;
@@ -231,40 +262,52 @@
 .reviseBtn:hover:not(:disabled) { background: var(--accent-2); }
 .reviseBtn:active:not(:disabled) { transform: scale(0.985); }
 .reviseBtn:disabled { opacity: 0.45; cursor: not-allowed; }
-.hint { margin: var(--space-2) 0 0; font-size: 11.5px; color: var(--faint); }
+.hint { margin: var(--space-2) 0 0; font-size: 11.5px; color: var(--accent-ink); min-height: 14px; }
+.hint:empty { min-height: 0; }
 
-/* Footer — clean full-width action bar, thin divider above */
-.actions {
+/* Vertical action toolbar — slim rail between image and info */
+.toolbar {
+  flex: 0 0 56px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-5);
-  border-top: 1px solid var(--line);
-  flex: none;
+  padding: var(--space-4) var(--space-2);
+  border-left: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
 }
-.action {
-  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-  height: 36px;
-  padding: 0 var(--space-4);
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
   border-radius: var(--r-md);
   background: transparent;
-  border: 1px solid var(--line);
-  color: var(--ink);
-  font-size: 12.5px;
-  font-weight: 500;
-  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+  border: 1px solid transparent;
+  color: var(--muted);
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
 }
-.action:hover { background: var(--surface-2); border-color: var(--line-strong); }
-.action:active { transform: translateY(0); }
-.action:disabled { opacity: 0.4; cursor: not-allowed; }
-
+.toolBtn:hover {
+  background: var(--surface-2);
+  border-color: var(--line);
+  color: var(--ink);
+}
+.toolBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+.toolDivider {
+  width: 24px;
+  height: 1px;
+  background: var(--line);
+  flex: none;
+}
 /* Download — primary blue accent */
-.downloadAction {
+.toolPrimary {
   background: var(--accent);
   border-color: var(--accent);
   color: var(--on-accent);
 }
-.downloadAction:hover {
+.toolPrimary:hover {
   background: var(--accent-2);
   border-color: var(--accent-2);
   color: var(--on-accent);

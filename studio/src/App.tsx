@@ -4,6 +4,7 @@ import { useEffect, useCallback } from 'react';
 import { useStore, DEFAULT_BRAND, DEFAULT_BATCH } from './store';
 import { api } from './api';
 import { useEvents } from './useEvents';
+import { refreshState } from './refresh';
 import AppShell from './components/AppShell';
 
 export default function App() {
@@ -11,7 +12,6 @@ export default function App() {
   const batch = useStore((s) => s.batch);
   const setConfig = useStore((s) => s.setConfig);
   const select = useStore((s) => s.select);
-  const setState = useStore((s) => s.setState);
 
   useEffect(() => {
     api.getConfig().then((cfg) => {
@@ -25,10 +25,7 @@ export default function App() {
     });
   }, [setConfig, select]);
 
-  const refresh = useCallback(() => {
-    const s = useStore.getState();
-    if (s.brand && s.batch) api.getState(s.brand, s.batch).then(s.setState);
-  }, []);
+  const refresh = useCallback(() => refreshState(), []);
 
   useEffect(() => {
     refresh();

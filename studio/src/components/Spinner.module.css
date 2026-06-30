@@ -3,7 +3,7 @@
 
 .spin {
   display: inline-flex;
-  color: var(--accent-ink);
+  color: var(--muted);
   animation: spin 0.9s linear infinite;
 }
 

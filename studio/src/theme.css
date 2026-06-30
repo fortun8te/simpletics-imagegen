@@ -28,7 +28,7 @@
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-border-strong: rgba(255, 255, 255, 0.13);
   --glass-blur: blur(16px) saturate(140%);
-  --glass-blur-strong: blur(26px) saturate(150%);
+  --glass-blur-strong: blur(10px) saturate(125%);
 
   /* Ink — neutral */
   --ink: oklch(0.985 0 0);
@@ -44,7 +44,7 @@
   /* Accent — vibrant slightly-purplish blue (hue ~258). All the color in the UI lives here. */
   --accent: oklch(0.55 0.245 258);
   --accent-2: oklch(0.635 0.235 258);         /* brighter, for hover */
-  --accent-soft: oklch(0.30 0.07 258);        /* low-chroma blue for active/selected fills */
+  --accent-soft: oklch(0.22 0.008 258);       /* neutral gray fill — not a blue wash */
   --accent-ink: oklch(0.82 0.145 258);        /* blue text/icons on dark */
   --on-accent: oklch(0.99 0 0);               /* near-white text on a blue fill */
   /* White sheen for primary button fills only — never a canvas or panel glow. */
@@ -119,7 +119,8 @@ body {
 }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 input, select, textarea { font: inherit; color: inherit; }
-a { color: var(--accent-ink); text-decoration: none; }
+a { color: var(--muted); text-decoration: none; transition: color var(--dur-2) var(--ease); }
+a:hover { color: var(--accent-ink); }
 ::selection { background: color-mix(in srgb, var(--accent) 32%, transparent); color: var(--ink); }
 
 /* Display heading helper — use for the batch hero + key moments */

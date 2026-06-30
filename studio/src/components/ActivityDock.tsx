@@ -221,7 +221,7 @@ export default function ActivityDock() {
                       title={isPaused ? 'Continue' : 'Pause'}
                       onClick={() => (isPaused ? api.resume() : api.pause())}
                     >
-                      <Icon name={isPaused ? 'chevron-right' : 'columns'} size={12} />
+                      <Icon name={isPaused ? 'chevron-right' : 'pause'} size={12} />
                     </button>
                     <button
                       className={styles.groupAct}
