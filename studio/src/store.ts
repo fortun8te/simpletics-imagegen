@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import type { Config, BatchState } from './types';
 
 export type Density = 'comfortable' | 'compact';
+export type GridTab = 'all' | 'generating' | 'done' | 'failed' | 'archived';
 
 export interface UIState {
   density: Density;
@@ -12,6 +13,8 @@ export interface UIState {
   genOpen: boolean;           // GenerateDialog open
   settingsOpen: boolean;      // SettingsDialog open
   activityOpen: boolean;      // Activity panel pinned open
+  gridTab: GridTab;           // active tab pill in the TopBar (filters GridView by slot status)
+  gridQuery: string;          // in-batch search query, owned here so TopBar can host the search input
 }
 
 interface Store {
@@ -51,6 +54,8 @@ export const useStore = create<Store>((set) => ({
     genOpen: false,
     settingsOpen: false,
     activityOpen: false,
+    gridTab: 'all',
+    gridQuery: '',
   },
 
   setConfig: (config) => set({ config }),

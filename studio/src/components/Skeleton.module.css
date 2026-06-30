@@ -1,3 +1,6 @@
+/* Shimmer placeholder grid for loading states. Glassy surface tones (not flat gray),
+   SlotCard-matched 1:1 aspect + radius. Subtle sweep; reduced-motion safe. */
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -8,6 +11,8 @@
   aspect-ratio: 1;
   border-radius: var(--r-lg);
   background: var(--surface-2);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--inset-hi);
   position: relative;
   overflow: hidden;
 }
@@ -20,10 +25,10 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--surface-3) 50%,
+    var(--glass-bg-3) 50%,
     transparent 100%
   );
-  animation: shimmer 1.4s ease-in-out infinite;
+  animation: shimmer 1.6s var(--ease) infinite;
 }
 
 @keyframes shimmer {
@@ -32,7 +37,7 @@
   }
 }
 
-/* Subtle, and still under reduced motion — drop the sweep, keep the surface. */
+/* Reduced motion — drop the sweep, keep the glassy surface. */
 @media (prefers-reduced-motion: reduce) {
   .block::after {
     animation: none;

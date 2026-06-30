@@ -4,53 +4,67 @@
   gap: var(--space-5);
 }
 
+/* Editorial SaaS header — circular glass badge + two-line text block. */
 .header {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.eyebrow {
-  font-size: var(--t-label);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--faint);
-}
-
-.titleRow {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  min-height: 26px;
 }
 
-/* Ad title in the Fraunces display face — the section's anchor. */
+/* 34px circular icon badge: subtle glass bg, thin white border, thin-line icon. */
+.badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+  color: var(--muted);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Bold title (ad.title) — the section anchor. */
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: var(--t-title);
-  line-height: 1.15;
-  letter-spacing: -0.012em;
+  font-weight: 600;
+  font-size: var(--t-section);
+  line-height: 1.25;
+  letter-spacing: -0.008em;
   color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* Quiet `ad.type` pill. */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  padding: 0 var(--space-2);
-  border-radius: var(--r-pill);
+/* Muted metadata line: "type · N variations · N images". */
+.sub {
+  margin: 0;
   font-size: var(--t-label);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-  background: var(--surface-2);
-  box-shadow: inset 0 0 0 1px var(--line);
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Thin divider under the header. */
+.divider {
+  height: 1px;
+  background: var(--line);
 }
 
 .body {

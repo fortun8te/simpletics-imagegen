@@ -1,7 +1,8 @@
-// DetailDrawer (container) — a wide CENTERED MODAL for one image.
-// (Filename kept so AppShell's `import DetailDrawer from './DetailDrawer'` still resolves.)
-// Layout: a LARGE image fills the left; a right rail holds Reference → Prompt → Revise, with clean
-// action buttons (Download / Open / Regenerate / Archive) at the foot. No versions strip.
+// DetailDrawer — premium floating image modal (Linear/Raycast + Claritas feel).
+// Tall glass panel: a header bar with an "ad / variation / prompt" breadcrumb + close,
+// a two-column body (large image stage left, scrollable REFERENCE/PROMPT/REVISE rail right),
+// and a full-width footer action bar (Download primary / Open / Regenerate / Archive).
+// Keeps all functionality, Radix Dialog primitives, and the z 100/101 + isolation fix.
 import { useEffect, useMemo, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from './Icon';
@@ -80,12 +81,15 @@ export default function DetailDrawer() {
 
   const slot = found?.slot;
   const isArchived = slot?.status === 'archived';
-  const adLabel = found ? found.ad.title || found.ad.id : '—';
-  const varLabel = found ? found.variation.label || found.variation.id : '';
-  const coords = found ? [varLabel, found.prompt.id].filter(Boolean).join(' · ') : '';
   const refUrl = promptInfo?.refUrl || null;
   const refName = promptInfo?.refName || null;
   const promptText = promptInfo?.text?.trim() || '';
+
+  // Breadcrumb: ad / variation / prompt (falls back to the rel path if not located).
+  const crumb = found
+    ? [found.ad.title || found.ad.id, found.variation.label || found.variation.id, found.prompt.id].filter(Boolean)
+    : [drawerRel ?? '—'];
+  const crumbLabel = crumb.join(' / ');
 
   const doRevise = async () => {
     const text = instruction.trim();
@@ -106,99 +110,133 @@ export default function DetailDrawer() {
       <Dialog.Portal>
         <Dialog.Overlay className={s.overlay} />
         <Dialog.Content className={s.content} aria-describedby={undefined}>
-          <Dialog.Close className={s.close} aria-label="Close">
-            <Icon name="x" size={16} />
-          </Dialog.Close>
+          {/* Header — breadcrumb left, close right, thin divider under */}
+          <header className={s.head}>
+            <Dialog.Title className={s.crumb} aria-label={crumbLabel}>
+              {crumb.map((c, i) => (
+                <span key={i} className={s.crumbRow}>
+                  {i > 0 && <span className={s.sep} aria-hidden="true">/</span>}
+                  <span className={i === crumb.length - 1 ? s.crumbNow : s.crumbItem}>{c}</span>
+                </span>
+              ))}
+            </Dialog.Title>
+            <Dialog.Close className={s.close} aria-label="Close">
+              <Icon name="x" size={16} />
+            </Dialog.Close>
+          </header>
 
-          {/* LEFT — large image */}
-          <div className={s.stage}>
-            {drawerRel ? (
-              <img className={s.stageImg} src={api.imgUrl(drawerRel)} alt={coords || drawerRel} decoding="async" />
-            ) : (
-              <div className={s.stageEmpty}>
-                <Icon name="photo" size={24} />
-                <span>No image found.</span>
-              </div>
-            )}
-          </div>
-
-          {/* RIGHT — rail */}
-          <aside className={s.rail}>
-            <header className={s.head}>
-              <p className={s.eyebrow}>Image detail</p>
-              <Dialog.Title className={s.title}>{adLabel}</Dialog.Title>
-              <p className={s.coords}>{coords || drawerRel}</p>
-            </header>
-
-            <div className={s.railScroll}>
-              {refUrl ? (
-                <section className={s.block}>
-                  <p className={s.label}>Reference</p>
-                  <div className={s.refRow}>
-                    <div className={s.refThumb}>
-                      <img src={refUrl} alt={refName || 'Reference'} decoding="async" />
-                    </div>
-                    <span className={s.refName}>{refName || 'Reference image'}</span>
-                  </div>
-                </section>
-              ) : null}
-
-              <section className={s.block}>
-                <p className={s.label}>Prompt</p>
-                {promptLoading ? (
-                  <div className={`${s.promptBox} ${s.promptLoading}`} aria-busy="true">
-                    <span className={s.skel} /><span className={s.skel} /><span className={`${s.skel} ${s.skelShort}`} />
-                  </div>
-                ) : promptText ? (
-                  <div className={s.promptBox}>{promptText}</div>
-                ) : (
-                  <div className={`${s.promptBox} ${s.promptEmpty}`}>No prompt text for this slot.</div>
-                )}
-              </section>
-
-              <section className={s.block}>
-                <p className={s.label}>Revise</p>
-                <input
-                  className={s.reviseInput}
-                  type="text"
-                  value={instruction}
-                  onChange={(e) => setInstruction(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); doRevise(); } }}
-                  placeholder="What should change? (e.g. brighter, show the tube label)"
-                  disabled={revising}
-                  autoComplete="off"
+          {/* Body — two columns: image stage + scrollable rail */}
+          <div className={s.body}>
+            <div className={s.stage}>
+              {drawerRel ? (
+                <img
+                  className={s.stageImg}
+                  src={api.imgUrl(drawerRel)}
+                  alt={crumbLabel || drawerRel}
+                  decoding="async"
                 />
-                <button
-                  type="button"
-                  className={s.reviseBtn}
-                  onClick={doRevise}
-                  disabled={revising || !instruction.trim()}
-                >
-                  <Icon name="sparkles" size={15} />
-                  <span>{revising ? 'Queuing…' : 'Revise'}</span>
-                </button>
-                <p className={s.hint} aria-live="polite">
-                  {revisedOk ? 'Queued — a new version is on the way.' : 'Queues a new version with your change.'}
-                </p>
-              </section>
+              ) : (
+                <div className={s.stageEmpty}>
+                  <Icon name="photo" size={24} />
+                  <span>No image found.</span>
+                </div>
+              )}
             </div>
 
-            {/* Clean action buttons at the foot of the rail */}
-            <footer className={s.actions}>
-              <a className={`${s.action} ${s.downloadAction}`} href={drawerRel ? api.imgUrl(drawerRel) : undefined} download>
-                <Icon name="download" size={15} /><span>Download</span>
-              </a>
-              <a className={s.action} href={drawerRel ? api.imgUrl(drawerRel) : undefined} target="_blank" rel="noreferrer">
-                <Icon name="expand" size={15} /><span>Open</span>
-              </a>
-              <button type="button" className={s.action} onClick={() => drawerRel && api.regenerate(drawerRel)}>
-                <Icon name="refresh" size={15} /><span>Regenerate</span>
-              </button>
-              <button type="button" className={s.action} onClick={() => drawerRel && slot && api.archive(drawerRel, !isArchived)} disabled={!slot}>
-                <Icon name={isArchived ? 'restore' : 'archive'} size={15} /><span>{isArchived ? 'Restore' : 'Archive'}</span>
-              </button>
-            </footer>
-          </aside>
+            <aside className={s.rail}>
+              <div className={s.railScroll}>
+                {refUrl ? (
+                  <section className={s.section}>
+                    <p className={s.label}>Reference</p>
+                    <div className={s.refRow}>
+                      <div className={s.refThumb}>
+                        <img src={refUrl} alt={refName || 'Reference'} decoding="async" />
+                      </div>
+                      <span className={s.refName}>{refName || 'Reference image'}</span>
+                    </div>
+                  </section>
+                ) : null}
+
+                <section className={s.section}>
+                  <p className={s.label}>Prompt</p>
+                  {promptLoading ? (
+                    <div className={`${s.promptBox} ${s.promptLoading}`} aria-busy="true">
+                      <span className={s.skel} /><span className={s.skel} /><span className={`${s.skel} ${s.skelShort}`} />
+                    </div>
+                  ) : promptText ? (
+                    <div className={s.promptBox}>{promptText}</div>
+                  ) : (
+                    <div className={`${s.promptBox} ${s.promptEmpty}`}>No prompt text for this slot.</div>
+                  )}
+                </section>
+
+                <section className={s.section}>
+                  <p className={s.label}>Revise</p>
+                  <input
+                    className={s.reviseInput}
+                    type="text"
+                    value={instruction}
+                    onChange={(e) => setInstruction(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); doRevise(); } }}
+                    placeholder="What should change? (e.g. brighter, show the tube label)"
+                    disabled={revising}
+                    autoComplete="off"
+                  />
+                  <button
+                    type="button"
+                    className={s.reviseBtn}
+                    onClick={doRevise}
+                    disabled={revising || !instruction.trim()}
+                  >
+                    <Icon name="sparkles" size={15} />
+                    <span>{revising ? 'Queuing…' : 'Revise'}</span>
+                  </button>
+                  <p className={s.hint} aria-live="polite">
+                    {revisedOk ? 'Queued — a new version is on the way.' : 'Queues a new version with your change.'}
+                  </p>
+                </section>
+              </div>
+            </aside>
+          </div>
+
+          {/* Footer — clean full-width action bar, thin divider above */}
+          <footer className={s.actions}>
+            <a
+              className={`${s.action} ${s.downloadAction}`}
+              href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+              download
+              title="Download image"
+            >
+              <Icon name="download" size={15} /><span>Download</span>
+            </a>
+            <a
+              className={s.action}
+              href={drawerRel ? api.imgUrl(drawerRel) : undefined}
+              target="_blank"
+              rel="noreferrer"
+              title="Open original in a new tab"
+            >
+              <Icon name="expand" size={15} /><span>Open</span>
+            </a>
+            <button
+              type="button"
+              className={s.action}
+              onClick={() => drawerRel && api.regenerate(drawerRel)}
+              title="Regenerate this image"
+            >
+              <Icon name="refresh" size={15} /><span>Regenerate</span>
+            </button>
+            <button
+              type="button"
+              className={s.action}
+              onClick={() => drawerRel && slot && api.archive(drawerRel, !isArchived)}
+              disabled={!slot}
+              title={isArchived ? 'Restore from archive' : 'Archive this image'}
+            >
+              <Icon name={isArchived ? 'restore' : 'archive'} size={15} />
+              <span>{isArchived ? 'Restore' : 'Archive'}</span>
+            </button>
+          </footer>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

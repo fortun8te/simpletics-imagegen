@@ -7,16 +7,12 @@
 .shell {
   display: grid;
   grid-template-columns: 256px minmax(0, 1fr);
-  grid-template-rows: 52px minmax(0, 1fr);
+  grid-template-rows: 88px minmax(0, 1fr);
   height: 100vh;
   width: 100%;
   overflow: hidden;
-  /* Flat neutral canvas with a single, very faint indigo bloom from the top of the content area —
-     just enough life, no flat-blue tint. Sidebar paints a solid panel over column 1; the topbar +
-     main stay transparent so the bloom shows behind the content. */
-  background:
-    radial-gradient(90% 50% at 50% -10%, oklch(0.488 0.243 264.376 / 0.10) 0%, transparent 55%),
-    var(--bg);
+  /* Flat neutral canvas — no blue tint, no bloom. Sidebar paints a solid panel over column 1. */
+  background: var(--bg);
   color: var(--ink);
 }
 

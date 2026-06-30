@@ -1,22 +1,31 @@
 .row {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
-/* Full render-directory path for this variation (and prompt when singular). */
+/* Quiet metadata row — a leading dot + the full render-directory path. */
 .label {
   display: flex;
-  align-items: baseline;
+  align-items: center;
+  gap: var(--space-2);
   min-width: 0;
+}
+
+.dot {
+  flex: 0 0 auto;
+  width: 4px;
+  height: 4px;
+  border-radius: var(--r-pill);
+  background: var(--line-strong);
 }
 
 .path {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.35;
   letter-spacing: -0.01em;
-  color: var(--muted);
+  color: var(--faint);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

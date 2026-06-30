@@ -1,12 +1,25 @@
 .bar {
   display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ---- shared row layout ---- */
+.row1,
+.row2 {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  height: 100%;
+  height: 44px;
   padding: 0 var(--space-4);
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+/* Thin divider between the two rows so they read as one cohesive bar. */
+.row2 {
+  border-top: 1px solid var(--line-soft);
 }
 
 /* ---- breadcrumb ---- */
@@ -128,23 +141,7 @@
   background: color-mix(in srgb, var(--err) 18%, var(--err-soft));
 }
 
-/* ---- square icon button (density) ---- */
-.iconBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--r-md);
-  color: var(--muted);
-  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
-}
-.iconBtn:hover {
-  background: var(--surface-2);
-  color: var(--ink);
-}
-
-/* ---- primary action (lime fill, dark text) — label/action vary by run state ---- */
+/* ---- primary action (vibrant blue fill) — label/action vary by run state ---- */
 .primary {
   display: inline-flex;
   align-items: center;
@@ -170,4 +167,90 @@
     0 1px 2px rgba(0,0,0,.45),
     0 8px 30px -6px color-mix(in srgb, var(--accent) 72%, transparent),
     var(--inset-hi);
+}
+
+/* ---- row 2: tab pills ---- */
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.tab:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.tabActive {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.tabActive:hover {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.tabCount {
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  color: var(--faint);
+  min-width: 10px;
+  text-align: right;
+}
+.tabActive .tabCount {
+  color: var(--accent-ink);
+  opacity: 0.85;
+}
+
+/* ---- row 2: pill search ---- */
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 30px;
+  width: 320px;
+  max-width: 38vw;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  color: var(--faint);
+  transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.search:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 12.5px;
+}
+.searchInput::placeholder { color: var(--faint); }
+.searchInput:focus { outline: none; }
+.searchInput::-webkit-search-cancel-button { -webkit-appearance: none; }
+.kbd {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1;
+  padding: 3px 6px;
+  border-radius: var(--r-xs);
+  background: var(--surface-3);
+  color: var(--faint);
+  border: 1px solid var(--line);
 }

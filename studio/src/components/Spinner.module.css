@@ -1,7 +1,10 @@
+/* Thin-stroke spinner. Rotation on the wrapper; per-spoke opacities refined
+   into a smooth clockwise fade (head bright at top, tail dim at top-right). */
+
 .spin {
-  animation: spin 0.9s linear infinite;
   display: inline-flex;
-  color: var(--accent);
+  color: var(--accent-ink);
+  animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
@@ -10,7 +13,19 @@
   }
 }
 
-/* No spin under reduced motion — the icon just sits still. */
+/* Refine the 8 spokes into a smooth fade trailing counter-clockwise from the
+   head (top). Path order in Icon: top, bottom, top-left, bottom-right, left,
+   right, bottom-left, top-right. */
+.glyph path:nth-child(1) { opacity: 1; }
+.glyph path:nth-child(2) { opacity: 0.42; }
+.glyph path:nth-child(3) { opacity: 0.92; }
+.glyph path:nth-child(4) { opacity: 0.28; }
+.glyph path:nth-child(5) { opacity: 0.78; }
+.glyph path:nth-child(6) { opacity: 0.18; }
+.glyph path:nth-child(7) { opacity: 0.60; }
+.glyph path:nth-child(8) { opacity: 0.10; }
+
+/* No spin under reduced motion — the glyph just sits still. */
 @media (prefers-reduced-motion: reduce) {
   .spin {
     animation: none;

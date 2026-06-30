@@ -1,3 +1,6 @@
+/* Fixed 1:1 image tile. Subtle surface while loading, clean inset border,
+   soft fade-in on load (reduced-motion makes the fade instant via theme). */
+
 .box {
   aspect-ratio: 1;
   width: 100%;
@@ -5,6 +8,7 @@
   overflow: hidden;
   background: var(--surface-2);
   border: 1px solid var(--line);
+  box-shadow: var(--inset-hi);
 }
 
 .img {
@@ -12,4 +16,10 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease);
+}
+
+.img.loaded {
+  opacity: 1;
 }

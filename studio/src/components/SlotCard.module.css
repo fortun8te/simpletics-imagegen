@@ -1,5 +1,6 @@
-/* SlotCard — premium dark tile (single blue-accent theme). Fixed square, every state crafted.
-   Flatter/cleaner: soft tray shell, gentle hover lift, frosted hover action bar.
+/* SlotCard — premium dark tile. Fixed square, every state crafted.
+   Consistent visual language across all 5 states: aspect-ratio 1, --r-lg radius,
+   1px --line border, subtle glass surface. Blue accent used quietly — no app-level glow.
    Theme tokens only — no hardcoded colors. */
 
 .card {
@@ -7,8 +8,12 @@
   aspect-ratio: 1;
   border-radius: var(--r-lg);
   overflow: hidden;
-  background: var(--tray);
-  box-shadow: var(--shadow-md);
+  /* Subtle glass surface: a faint white wash over the solid tray fallback. */
+  background:
+    linear-gradient(var(--glass-bg), var(--glass-bg)),
+    var(--tray);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
   transition:
     transform var(--dur-2) var(--ease),
     box-shadow var(--dur-2) var(--ease),
@@ -39,37 +44,28 @@
   transform: scale(1.02);
 }
 
-/* a faint inset edge + soft bottom vignette — keeps the tile crafted, not flat */
-.sheen {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: inherit;
-  box-shadow: var(--inset-hi), inset 0 -30px 44px -36px rgba(0, 0, 0, 0.5);
-}
-
 .archived .img {
-  opacity: 0.34;
+  opacity: 0.4;
   filter: saturate(0.7);
 }
-.archived .archivedTag {
+.archivedTag {
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
   z-index: 2;
-  padding: 2px 8px;
+  padding: 3px 8px;
   font-size: var(--t-label);
   font-weight: 500;
   letter-spacing: 0.04em;
   color: var(--muted);
   background: color-mix(in srgb, var(--bg) 70%, transparent);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid var(--line);
   border-radius: var(--r-pill);
 }
 
-/* ── hover action bar — refined icon buttons ────────────────────── */
+/* ── hover action bar — thin, frosted, centered ghost buttons (Linear) ── */
 .actions {
   position: absolute;
   inset: auto 0 0 0;
@@ -77,14 +73,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-2) var(--space-2);
-  /* Frosted blur backdrop: a translucent dark scrim is required for backdrop-filter
-     to composite, so the action buttons stay legible over any image — not raw pixels. */
-  background: color-mix(in srgb, var(--bg) 55%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-top: 1px solid var(--line);
+  gap: 2px;
+  padding: var(--space-2);
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--bg) 72%, transparent),
+    color-mix(in srgb, var(--bg) 24%, transparent)
+  );
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-top: 1px solid var(--line-soft);
   opacity: 0;
   transform: translateY(6px);
   transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
@@ -101,12 +99,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   color: var(--ink);
-  background: color-mix(in srgb, var(--surface-3) 70%, transparent);
-  border: 1px solid var(--line-strong);
-  border-radius: var(--r-md);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
   transition:
     background var(--dur-1) var(--ease),
     color var(--dur-1) var(--ease),
@@ -114,18 +112,18 @@
 }
 .iconBtn:hover {
   color: var(--accent-ink);
-  background: var(--surface-3);
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 26%, transparent);
 }
 
 /* compact density shaves the action bar so tiny tiles don't feel crowded */
 .card[data-density='compact'] .actions {
-  gap: var(--space-1);
-  padding: var(--space-2) 7px 7px;
+  gap: 1px;
+  padding: 7px;
 }
 .card[data-density='compact'] .iconBtn {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
 }
 
 /* ── themed tooltip (Radix) ─────────────────────────────────────── */
@@ -151,7 +149,7 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ── shared centered content (generating / queued / empty / failed) ── */
+/* ── shared centered content (generating / queued / failed) ── */
 .center {
   position: absolute;
   inset: 0;
@@ -182,41 +180,28 @@
   font-size: 11px;
 }
 
-/* ── generating — calm blue aura (via --glow-accent), gentle pulse ── */
+/* ── generating — calm: thin top progress, small spinner, elapsed ── */
 .generating {
-  background: var(--accent-soft);
-  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-  box-shadow: var(--glow-accent);
-  animation: auroraPulse 2.6s var(--ease) infinite;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
 }
 .generating .label {
-  color: var(--accent-ink);
-}
-@keyframes auroraPulse {
-  0%, 100% { box-shadow: var(--glow-accent); opacity: 1; }
-  50% {
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent),
-      0 8px 28px -10px color-mix(in srgb, var(--accent) 34%, transparent);
-    opacity: 0.92;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .generating { animation: none; box-shadow: var(--glow-accent); }
+  color: var(--muted);
 }
 
 .elapsed {
   font-size: 11px;
   font-variant-numeric: tabular-nums;
-  color: var(--muted);
+  color: var(--faint);
 }
 
 .progress {
   position: absolute;
-  inset: auto 0 0 0;
-  height: 3px;
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
   overflow: hidden;
+  z-index: 2;
 }
 .progressBar {
   display: block;
@@ -224,8 +209,7 @@
   width: 38%;
   background: linear-gradient(90deg, var(--accent-2), var(--accent));
   border-radius: var(--r-pill);
-  box-shadow: 0 0 8px -1px color-mix(in srgb, var(--accent) 55%, transparent);
-  animation: indeterminate 1.25s var(--ease) infinite;
+  animation: indeterminate 1.4s var(--ease) infinite;
 }
 @keyframes indeterminate {
   0% { transform: translateX(-110%); }
@@ -235,25 +219,24 @@
   .progressBar { animation: none; width: 100%; }
 }
 
-/* ── queued — quiet dashed ──────────────────────────────────────── */
+/* ── queued — quiet dashed placeholder ──────────────────────────── */
 .queued {
-  background: var(--surface);
   border: 1px dashed var(--line-strong);
   box-shadow: var(--shadow-sm);
 }
-.queued .label {
-  color: var(--muted);
+.queued .label,
+.queued .mutedIcon {
+  color: var(--faint);
 }
 
-/* ── empty — dashed, blue hover ─────────────────────────────────── */
+/* ── empty — dashed tile, inviting Generate affordance ──────────── */
 .empty {
-  background: var(--surface);
   border: 1px dashed var(--line);
   box-shadow: var(--shadow-sm);
 }
 .empty:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
   box-shadow: var(--shadow-md);
 }
 .emptyBtn {
@@ -264,25 +247,48 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  color: var(--muted);
+  color: var(--faint);
   transition: color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
 }
 .empty:hover .emptyBtn {
   color: var(--accent-ink);
   background: radial-gradient(
-    120% 120% at 50% 100%,
-    color-mix(in srgb, var(--accent) 9%, transparent),
-    transparent 65%
+    130% 130% at 50% 50%,
+    color-mix(in srgb, var(--accent) 10%, transparent),
+    transparent 62%
   );
+}
+.plusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface-3) 50%, transparent);
+  color: var(--muted);
+  transition:
+    background var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease),
+    color var(--dur-2) var(--ease);
+}
+.empty:hover .plusBadge {
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent-ink);
 }
 .card[data-density='compact'] .emptyBtn {
   gap: var(--space-1);
 }
+.card[data-density='compact'] .plusBadge {
+  width: 26px;
+  height: 26px;
+}
 
-/* ── failed — err-soft + reason + retry ─────────────────────────── */
+/* ── failed — clean error, --err used sparingly (icon + retry hover) ── */
 .failed {
-  background: var(--err-soft);
-  border: 1px solid color-mix(in srgb, var(--err) 55%, transparent);
+  border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
 }
 .errIcon {
@@ -291,12 +297,13 @@
 .errText {
   font-size: 11px;
   line-height: 1.35;
-  color: var(--err);
+  color: var(--muted);
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+  max-width: 100%;
 }
 
 .retry {
@@ -308,7 +315,7 @@
   font-size: 12px;
   font-weight: 500;
   color: var(--ink);
-  background: color-mix(in srgb, var(--bg) 40%, transparent);
+  background: color-mix(in srgb, var(--surface-3) 55%, transparent);
   border: 1px solid var(--line-strong);
   border-radius: var(--r-pill);
   transition:
@@ -317,7 +324,7 @@
     color var(--dur-1) var(--ease);
 }
 .retry:hover {
-  background: color-mix(in srgb, var(--err) 14%, transparent);
-  border-color: var(--err);
   color: var(--err);
+  background: color-mix(in srgb, var(--err) 12%, transparent);
+  border-color: color-mix(in srgb, var(--err) 40%, transparent);
 }

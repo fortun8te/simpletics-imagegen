@@ -3,7 +3,7 @@
 // clean footer with brand identity + direct settings access — no theme item (the app is a single committed dark theme).
 // System status (Codex + bridge health) and Codex usage have MOVED to the Settings dialog,
 // so the sidebar no longer polls /api/health.
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useStore } from '../store';
 import { api } from '../api';
@@ -33,6 +33,11 @@ function relTime(ts: number): string {
   return `${Math.floor(d / 30)}mo ago`;
 }
 
+// Platform-correct modifier label/hint for the search shortcut.
+const isMac =
+  typeof navigator !== 'undefined' &&
+  /Mac|iPhone|iPad|iPod/.test(navigator.platform || '');
+
 export default function Sidebar() {
   const config = useStore((s) => s.config);
   const brand = useStore((s) => s.brand);
@@ -48,6 +53,8 @@ export default function Sidebar() {
   // changes and refreshed periodically (every 10s) so the list stays current.
   const [batches, setBatches] = useState<BatchMeta[]>([]);
   const [query, setQuery] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (!brand) { setBatches([]); return; }
     let alive = true;
@@ -56,6 +63,19 @@ export default function Sidebar() {
     const t = window.setInterval(load, 10000);
     return () => { alive = false; window.clearInterval(t); };
   }, [brand]);
+
+  // ⌘+K (mac) / Ctrl+K (other) focuses the batch search — the hint badge mirrors the real binding.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const mod = isMac ? e.metaKey : e.ctrlKey;
+      if (mod && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   // Filter by name (client-side), then sort by modifiedAt desc (most-recent first).
   const visible = useMemo(() => {
@@ -78,11 +98,18 @@ export default function Sidebar() {
 
       {/* Workspace — brand switcher */}
       <div className={styles.block}>
-        <div className={styles.eyebrow}>Workspace</div>
+        <div className={styles.sectionLabel}>
+          <span className={styles.eyebrow}>Workspace</span>
+        </div>
         <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild>
             <button className={styles.brandSwitch} type="button">
-              <span className={styles.brandName}>{brandLabel}</span>
+              <span className={styles.brandSwitchInner}>
+                <span className={styles.brandGlyph}>
+                  <Icon name="brand" size={13} />
+                </span>
+                <span className={styles.brandName}>{brandLabel}</span>
+              </span>
               <Icon name="chevron-down" size={14} className={styles.chevron} />
             </button>
           </DropdownMenu.Trigger>
@@ -95,7 +122,10 @@ export default function Sidebar() {
                   data-active={b.id === brand || undefined}
                   onSelect={() => select(b.id, firstBatchCode(b))}
                 >
-                  {b.name ?? b.id}
+                  <span className={styles.menuCheck}>
+                    {b.id === brand && <Icon name="check" size={14} />}
+                  </span>
+                  <span className={styles.menuLabel}>{b.name ?? b.id}</span>
                 </DropdownMenu.Item>
               ))}
               {brands.length === 0 && <div className={styles.menuEmpty}>No brands</div>}
@@ -108,11 +138,17 @@ export default function Sidebar() {
 
       {/* Batches */}
       <div className={styles.section}>
-        <div className={styles.eyebrow}>Batches</div>
+        <div className={styles.sectionLabel}>
+          <span className={styles.eyebrow}>Batches</span>
+          {batches.length > 0 && (
+            <span className={styles.sectionCount}>{batches.length}</span>
+          )}
+        </div>
 
         <div className={styles.searchWrap}>
           <Icon name="search" size={14} className={styles.searchIcon} />
           <input
+            ref={searchRef}
             className={styles.search}
             type="text"
             placeholder="Search batches"
@@ -120,6 +156,9 @@ export default function Sidebar() {
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Search batches"
           />
+          <kbd className={styles.searchHint} aria-hidden="true">
+            {isMac ? '⌘K' : 'Ctrl K'}
+          </kbd>
         </div>
 
         <nav className={styles.batchList}>

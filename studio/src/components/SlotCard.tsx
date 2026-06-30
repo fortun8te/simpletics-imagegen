@@ -88,7 +88,6 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
           alt={`${ad} / ${variation} · run ${slot.run}`}
           onClick={open}
         />
-        <div className={styles.sheen} aria-hidden="true" />
         {archived && <span className={styles.archivedTag}>Archived</span>}
 
         <div className={styles.actions} role="toolbar" aria-label="Image actions">
@@ -116,11 +115,6 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
   if (slot.status === 'generating') {
     return (
       <div className={`${styles.card} ${styles.generating}`} data-density={density}>
-        <div className={styles.center}>
-          <Spinner size={20} />
-          <span className={styles.label}>Generating</span>
-          <span className={styles.elapsed}>{elapsed}</span>
-        </div>
         <div
           className={styles.progress}
           role="progressbar"
@@ -128,6 +122,11 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
           aria-valuetext={`Generating · ${elapsed} elapsed`}
         >
           <span className={styles.progressBar} />
+        </div>
+        <div className={styles.center}>
+          <Spinner size={18} />
+          <span className={styles.label}>Generating</span>
+          <span className={styles.elapsed}>{elapsed}</span>
         </div>
       </div>
     );
@@ -170,7 +169,9 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
   return (
     <div className={`${styles.card} ${styles.empty}`} data-density={density}>
       <button className={styles.emptyBtn} onClick={() => genHere(1)} aria-label="Generate image">
-        <Icon name="plus" size={20} />
+        <span className={styles.plusBadge}>
+          <Icon name="plus" size={18} />
+        </span>
         <span className={styles.label}>Generate</span>
       </button>
     </div>

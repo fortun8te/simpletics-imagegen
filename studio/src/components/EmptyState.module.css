@@ -1,59 +1,82 @@
+/* Centered glass card — intentional, not an error. Icon in a subtle glass circle,
+   bold title, muted hint, optional blue primary action. Generous padding. */
+
 .wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  gap: var(--space-3);
-  padding: var(--space-8) var(--space-6);
+  gap: var(--space-4);
+  max-width: 440px;
+  margin: var(--space-10) auto;
+  padding: var(--space-12) var(--space-8);
   color: var(--muted);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-xl);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-md);
 }
 
 .icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--r-lg);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  color: var(--faint);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-pill);
+  color: var(--accent-ink);
+  background: var(--glass-bg-2);
+  border: 1px solid var(--glass-border-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--inset-hi);
 }
 
 .text {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  max-width: 320px;
+  gap: var(--space-2);
+  max-width: 360px;
 }
 
 .title {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--ink);
 }
 
 .hint {
   font-size: 13px;
   color: var(--muted);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .action {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: var(--space-1);
-  height: 30px;
-  padding: 0 12px;
+  margin-top: var(--space-2);
+  height: 32px;
+  padding: 0 14px;
   border-radius: var(--r-md);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
+  font-size: 13px;
   font-weight: 500;
-  transition: filter var(--dur-2) var(--ease);
+  transition:
+    background var(--dur-1) var(--ease),
+    transform var(--dur-1) var(--ease);
 }
 
 .action:hover {
-  filter: brightness(1.08);
+  background: var(--accent-2);
+  transform: translateY(-1px);
+}
+
+.action:active {
+  transform: translateY(0);
 }

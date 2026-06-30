@@ -1,9 +1,9 @@
-// SettingsDialog (container) — workspace preferences modal.
-// Radix dialog, centered, wider (~560px), with a blurred/dimmed backdrop. Card on --surface,
-// --r-lg, --shadow-lg, generous padding. Closes via Esc / backdrop / X → setUI({settingsOpen:false}).
-// Single committed dark theme, so there is NO theme control. Sectioned with .eyebrow labels:
-//   Appearance (density), Library (show archived), System (Codex + bridge health from /api/health,
-//   polled while the dialog is open, plus the honest Codex usage line), and an About NEUEGEN footer.
+// SettingsDialog — workspace preferences modal, Linear/Raycast command-palette feel.
+// Tall, narrow floating glass panel with a clear header (title + muted subtitle + close),
+// a single scrollable column of small-caps grouped sections separated by faint hairlines,
+// side-by-side setting rows, clean key-value system status rows with colored status dots,
+// and a bordered glass About card. Keeps Radix Dialog primitives, all functionality, and
+// the overlay z-index/isolation fix (z 100/101) so no grid/TopBar text bleeds through.
 import { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from './Icon';
@@ -22,8 +22,8 @@ export default function SettingsDialog() {
 
   const close = () => setUI({ settingsOpen: false });
 
-  // System status — poll /api/health every 5s, but only while the dialog is open
-  // (it lives here now, not in the sidebar). Null until the first probe resolves.
+  // System status — poll /api/health every 5s, but only while the dialog is open.
+  // Null until the first probe resolves.
   const [health, setHealth] = useState<Health | null>(null);
   useEffect(() => {
     if (!settingsOpen) { setHealth(null); return; }
@@ -50,9 +50,9 @@ export default function SettingsDialog() {
         <Dialog.Overlay className={s.overlay} />
         <Dialog.Content className={s.content} aria-describedby={undefined}>
           <div className={s.head}>
-            <div>
+            <div className={s.headText}>
               <Dialog.Title className={s.title}>Settings</Dialog.Title>
-              <p className={s.subtitle}>Workspace preferences for this studio.</p>
+              <p className={s.subtitle}>Workspace preferences</p>
             </div>
             <Dialog.Close className={s.close} aria-label="Close">
               <Icon name="x" size={16} />
@@ -63,74 +63,78 @@ export default function SettingsDialog() {
             {/* Appearance */}
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>Appearance</p>
-              <div className={s.settingRow}>
-                <div className={s.settingText} id="settings-density-label">
-                  <span className={s.rowLabel}>Density</span>
-                  <span className={s.rowHint}>Spacing of the gallery and lists.</span>
-                </div>
-                <div className={`${s.segmented} ${s.settingControl}`} role="radiogroup" aria-labelledby="settings-density-label">
-                  {(['comfortable', 'compact'] as Density[]).map((d) => (
-                    <button
-                      key={d}
-                      type="button"
-                      role="radio"
-                      aria-checked={density === d}
-                      className={`${s.segment} ${density === d ? s.segmentOn : ''}`}
-                      onClick={() => setUI({ density: d })}
-                    >
-                      <span>{d === 'compact' ? 'Compact' : 'Comfortable'}</span>
-                    </button>
-                  ))}
+              <div className={s.rows}>
+                <div className={s.settingRow}>
+                  <div className={s.settingText} id="settings-density-label">
+                    <span className={s.rowLabel}>Density</span>
+                    <span className={s.rowHint}>Spacing of the gallery and lists.</span>
+                  </div>
+                  <div className={`${s.segmented} ${s.settingControl}`} role="radiogroup" aria-labelledby="settings-density-label">
+                    {(['comfortable', 'compact'] as Density[]).map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        role="radio"
+                        aria-checked={density === d}
+                        className={`${s.segment} ${density === d ? s.segmentOn : ''}`}
+                        onClick={() => setUI({ density: d })}
+                      >
+                        <span>{d === 'compact' ? 'Compact' : 'Comfortable'}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             </section>
 
+            <div className={s.groupDivider} aria-hidden />
+
             {/* Library */}
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>Library</p>
-              <label className={`${s.settingRow} ${s.toggleRow}`} htmlFor="settings-archived">
-                <span className={s.settingText}>
-                  <span className={s.rowLabel}>Show archived</span>
-                  <span className={s.rowHint}>Include archived images in the gallery.</span>
-                </span>
-                <button
-                  id="settings-archived"
-                  type="button"
-                  role="switch"
-                  aria-checked={showArchived}
-                  className={`${s.switch} ${s.settingControl} ${showArchived ? s.switchOn : ''}`}
-                  onClick={() => setUI({ showArchived: !showArchived })}
-                >
-                  <span className={s.knob} aria-hidden />
-                </button>
-              </label>
+              <div className={s.rows}>
+                <label className={`${s.settingRow} ${s.toggleRow}`} htmlFor="settings-archived">
+                  <span className={s.settingText}>
+                    <span className={s.rowLabel}>Show archived</span>
+                    <span className={s.rowHint}>Include archived images in the gallery.</span>
+                  </span>
+                  <button
+                    id="settings-archived"
+                    type="button"
+                    role="switch"
+                    aria-checked={showArchived}
+                    className={`${s.switch} ${s.settingControl} ${showArchived ? s.switchOn : ''}`}
+                    onClick={() => setUI({ showArchived: !showArchived })}
+                  >
+                    <span className={s.knob} aria-hidden />
+                  </button>
+                </label>
+              </div>
             </section>
+
+            <div className={s.groupDivider} aria-hidden />
 
             {/* System */}
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>System</p>
-              <div className={s.systemCard}>
-                <div className={s.statusRow} role="status" aria-live="polite">
-                  <span className={s.statusSeg}>
+              <div className={s.rows}>
+                <div className={s.kvRow} role="status" aria-live="polite">
+                  <span className={s.kvLabel}>Codex</span>
+                  <span className={s.kvValue}>
                     <span className={s.statusDot} data-state={codexBusy ? 'busy' : 'ok'} />
-                    <span className={s.statusText}>
-                      {codexBusy ? 'Codex running' : 'Codex ready'}
-                    </span>
-                  </span>
-                  <span className={s.statusDivider} aria-hidden />
-                  <span className={s.statusSeg}>
-                    <span className={s.statusDot} data-state={bridgeUp ? 'ok' : 'err'} />
-                    <span className={s.statusText}>
-                      {bridgeUp ? 'Bridge up' : 'Bridge down'}
-                    </span>
+                    {codexBusy ? 'Running' : 'Ready'}
                   </span>
                 </div>
-                <div className={s.systemDivider} aria-hidden />
-                <div className={`${s.settingRow} ${s.usageRow}`}>
-                  <span className={s.settingText}>
-                    <span className={s.usageLabel}>Codex usage</span>
+                <div className={s.kvRow} role="status" aria-live="polite">
+                  <span className={s.kvLabel}>Bridge</span>
+                  <span className={s.kvValue}>
+                    <span className={s.statusDot} data-state={bridgeUp ? 'ok' : 'err'} />
+                    {bridgeUp ? 'Up' : 'Down'}
                   </span>
-                  <span className={`${s.usageValue} ${s.settingControl}`} data-known={usageKnown || undefined}>
+                </div>
+                <div className={s.kvRow}>
+                  <span className={s.kvLabel}>Codex usage</span>
+                  <span className={s.kvValue} data-known={usageKnown || undefined}>
                     {usageLabel}
                     {sessionCount > 0 && (
                       <span className={s.usageSession}> · {sessionCount} this session</span>
@@ -140,13 +144,13 @@ export default function SettingsDialog() {
               </div>
             </section>
 
+            <div className={s.groupDivider} aria-hidden />
+
             {/* About NEUEGEN */}
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>About NEUEGEN</p>
               <div className={s.aboutCard}>
-                <span className={s.aboutMark}>
-                  <Icon name="sparkles" size={16} />
-                </span>
+                <span className={s.aboutMark} aria-hidden>N</span>
                 <div className={s.aboutText}>
                   <span className={s.aboutName}>NEUEGEN</span>
                   <span className={s.aboutDesc}>

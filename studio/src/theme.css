@@ -8,7 +8,10 @@
    • Ref3 (Claritas SaaS) — charcoal sidebar vs slightly different main bg, vibrant slightly-
      purplish blue primary action, muted status colors, small-caps grouped menus, gray active
      pill, breadcrumbs + controls, seamless rows, 8–12px radii, weight/color hierarchy.
-   One theme: no toggle, no [data-theme] branching. Tokens drive every component. */
+   One theme: no toggle, no [data-theme] branching. Tokens drive every component.
+   FINAL DIRECTION: the canvas is a flat, clean near-black — NO blue background bloom. Blue is
+   reserved for accent (actions / active / selected / in-progress). --grad-blue is an accent
+   sheen for button fills only, never a canvas glow. */
 
 :root {
   /* Surfaces — near-black with a whisper of blue, quiet elevation steps (no flat tint). */

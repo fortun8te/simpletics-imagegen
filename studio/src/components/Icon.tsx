@@ -1,5 +1,6 @@
-// Inline-SVG icon set. Stroke icons, currentColor, 1.6 stroke width, no fill.
+// Inline-SVG icon set. Stroke icons, currentColor, thin 1.5–1.6 stroke, no fill.
 // One source of truth for the whole app — NO icon font / CDN. Add a name → add a path here.
+// 24×24 viewBox, rounded line caps/joins, optically tuned to read at 12–16 px.
 
 interface IconProps {
   name: string;
@@ -9,26 +10,30 @@ interface IconProps {
   strokeWidth?: number;
 }
 
-// Each entry returns the inner SVG markup for a 24x24 viewBox.
+// Each entry returns the inner SVG markup for a 24×24 viewBox.
 // fill:none + stroke:currentColor are applied on the <svg>, so children stay terse.
 const paths: Record<string, JSX.Element> = {
-  // Wordmark monogram — single-stroke N, tuned for 14–16 px
-  brand: <path d="M8 6v12M8 6l8 12M16 18V6" />,
+  // NEUEGEN monogram — a single continuous-stroke N, tuned to read at 12–16 px.
+  // Drawn bottom-left → top-left → diagonal to bottom-right → top-right (one path).
+  brand: <path d="M7.5 19V5l9 14V5" />,
+  // Refined two-star sparkle for Generate / AI moments. Clean 4-point outlines,
+  // pinched just enough to stay crisp (not fuzzy) at 14–15 px.
   sparkles: (
     <>
-      <path d="M12 7l.85 2.6 2.6.85-2.6.85L12 14.3l-.85-2.6-2.6-.85 2.6-.85L12 7z" />
-      <path d="M18 5.5l.45 1.2 1.2.45-1.2.45-.45 1.2-.45-1.2-1.2-.45 1.2-.45.45-1.2z" />
+      <path d="M11 6.5L12.1 9.4 15 10.5 12.1 11.6 11 14.5 9.9 11.6 7 10.5 9.9 9.4z" />
+      <path d="M17.5 14L18.2 15.8 20 16.5 18.2 17.2 17.5 19 16.8 17.2 15 16.5 16.8 15.8z" />
     </>
   ),
   'chevron-down': <path d="M6 9l6 6 6-6" />,
   'chevron-right': <path d="M9 6l6 6-6 6" />,
+  // Two side-by-side panels — distinct from table (grid lines) and layout-grid (2×2).
   columns: (
     <>
-      <rect x="4" y="4" width="7" height="16" rx="1.25" />
-      <rect x="13" y="4" width="7" height="16" rx="1.25" />
-      <path d="M9 4v16M15 4v16" />
+      <rect x="4" y="4" width="7" height="16" rx="1.5" />
+      <rect x="13" y="4" width="7" height="16" rx="1.5" />
     </>
   ),
+  // Bordered grid with header + body rows — distinct from columns (no outer frame).
   table: (
     <>
       <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -36,10 +41,11 @@ const paths: Record<string, JSX.Element> = {
     </>
   ),
   activity: <path d="M3 12h4l3 7 4-14 3 7h4" />,
+  // Lucide-style cog — smooth petal teeth + center bore. Reads clean at 14–15 px.
   settings: (
     <>
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
       <circle cx="12" cy="12" r="3" />
-      <path d="M12 2.5l1.2 2.3 2.5-.4 1 2.4 2.3 1.2-.4 2.5 1.6 2-.4 2.5-2.3 1.2-1 2.4-2.5-.4L12 21.5l-1.2-2.3-2.5.4-1-2.4-2.3-1.2.4-2.5L4 12l.4-2.5L6.7 8.3l1-2.4 2.5.4L12 2.5z" />
     </>
   ),
   stop: <rect x="6" y="6" width="12" height="12" rx="2" />,
@@ -54,14 +60,14 @@ const paths: Record<string, JSX.Element> = {
   ),
   archive: (
     <>
-      <rect x="4" y="4" width="16" height="4" rx="1" />
+      <rect x="4" y="4" width="16" height="4" rx="1.5" />
       <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
       <path d="M10 12h4" />
     </>
   ),
   restore: (
     <>
-      <rect x="4" y="4" width="16" height="4" rx="1" />
+      <rect x="4" y="4" width="16" height="4" rx="1.5" />
       <path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8" />
       <path d="M12 17v-5M9.5 14.5L12 12l2.5 2.5" />
     </>
@@ -82,18 +88,8 @@ const paths: Record<string, JSX.Element> = {
     </>
   ),
   x: <path d="M6 6l12 12M18 6L6 18" />,
-  loader: (
-    <>
-      <path d="M12 3v4" opacity="1" />
-      <path d="M12 17v4" opacity="0.4" />
-      <path d="M5.6 5.6l2.8 2.8" opacity="0.85" />
-      <path d="M15.6 15.6l2.8 2.8" opacity="0.55" />
-      <path d="M3 12h4" opacity="0.7" />
-      <path d="M17 12h4" opacity="0.45" />
-      <path d="M5.6 18.4l2.8-2.8" opacity="0.6" />
-      <path d="M15.6 8.4l2.8-2.8" opacity="0.5" />
-    </>
-  ),
+  // Smooth single-arc spinner — pairs with the rotating wrapper in Spinner.tsx.
+  loader: <path d="M21 12a9 9 0 1 1-6.219-8.56" />,
   alert: (
     <>
       <path d="M12 4l9 16H3l9-16z" />
@@ -138,20 +134,26 @@ const paths: Record<string, JSX.Element> = {
       <path d="M20 20l-3.5-3.5" />
     </>
   ),
+  // Three stacked pill rows — reads as a list layout, distinct from layout-grid.
   'layout-list': (
     <>
-      <rect x="4" y="5" width="16" height="4" rx="1.5" />
-      <rect x="4" y="12" width="16" height="4" rx="1.5" />
-      <rect x="4" y="19" width="16" height="0.5" rx="0.25" opacity="0" />
+      <rect x="4" y="5" width="16" height="3" rx="1.5" />
+      <rect x="4" y="10.5" width="16" height="3" rx="1.5" />
+      <rect x="4" y="16" width="16" height="3" rx="1.5" />
     </>
   ),
+  // Four equal rounded squares — a clean 2×2 grid, distinct from columns/table.
   'layout-grid': (
     <>
-      <rect x="3" y="3" width="8" height="8" rx="1.25" />
-      <rect x="14" y="3" width="7" height="7" rx="1.25" />
-      <rect x="3" y="14" width="8" height="8" rx="1.25" />
-      <rect x="14" y="14" width="7" height="7" rx="1.25" />
+      <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13" y="3.5" width="7.5" height="7.5" rx="1.5" />
+      <rect x="3.5" y="13" width="7.5" height="7.5" rx="1.5" />
+      <rect x="13" y="13" width="7.5" height="7.5" rx="1.5" />
     </>
+  ),
+  // ⌘ command glyph for ⌘+K hints (looped square, single path).
+  command: (
+    <path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z" />
   ),
 };
 
