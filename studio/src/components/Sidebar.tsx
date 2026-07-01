@@ -3,12 +3,13 @@
 // clean footer with brand identity + direct settings access — no theme item (the app is a single committed dark theme).
 // System status (Codex + bridge health) and Codex usage have MOVED to the Settings dialog,
 // so the sidebar no longer polls /api/health.
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useStore } from '../store';
 import { api } from '../api';
 import type { BrandRef, BatchMeta } from '../types';
 import { Icon } from './Icon';
+import { BrandMark } from './BrandMark';
 import styles from './Sidebar.module.css';
 
 // First batch code of a brand, used as the landing batch when switching brands.
@@ -38,12 +39,22 @@ const isMac =
   typeof navigator !== 'undefined' &&
   /Mac|iPhone|iPad|iPod/.test(navigator.platform || '');
 
+// Procedural avatar hue — derived from the first letter of the user's name so different
+// names land on different tones, but always within the blue family (210–270deg).
+function hueForName(name: string): number {
+  const code = (name || '?').charCodeAt(0) || 77;
+  return 210 + (code % 60); // 210–269deg: blue → blue-violet, never drifts to unrelated hues
+}
+
 export default function Sidebar() {
   const config = useStore((s) => s.config);
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
   const select = useStore((s) => s.select);
   const setUI = useStore((s) => s.setUI);
+
+  // Mock account — no real auth/account system yet, placeholder for the eventual one.
+  const userName = 'Michael';
 
   const brands = config.brands ?? [];
   const currentBrand = brands.find((b) => b.id === brand);
@@ -91,7 +102,7 @@ export default function Sidebar() {
       {/* Wordmark */}
       <div className={styles.brandMark}>
         <span className={styles.mark}>
-          <Icon name="brand" size={14} />
+          <BrandMark size={22} />
         </span>
         <span className={styles.wordmark}>NEUEGEN</span>
       </div>
@@ -106,7 +117,7 @@ export default function Sidebar() {
             <button className={styles.brandSwitch} type="button">
               <span className={styles.brandSwitchInner}>
                 <span className={styles.brandGlyph}>
-                  <Icon name="brand" size={13} />
+                  {(brandLabel || '?').charAt(0).toUpperCase()}
                 </span>
                 <span className={styles.brandName}>{brandLabel}</span>
               </span>
@@ -122,8 +133,8 @@ export default function Sidebar() {
                   data-active={b.id === brand || undefined}
                   onSelect={() => select(b.id, firstBatchCode(b))}
                 >
-                  <span className={styles.menuCheck}>
-                    {b.id === brand && <Icon name="check" size={14} />}
+                  <span className={styles.brandGlyph}>
+                    {(b.name ?? b.id ?? '?').charAt(0).toUpperCase()}
                   </span>
                   <span className={styles.menuLabel}>{b.name ?? b.id}</span>
                 </DropdownMenu.Item>
@@ -189,7 +200,7 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer — a single Settings button */}
+      {/* Footer — Settings + a (mock) account row */}
       <div className={styles.footer}>
         <button
           className={styles.settingsBtn}
@@ -198,6 +209,20 @@ export default function Sidebar() {
         >
           <Icon name="settings" size={16} />
           <span>Settings</span>
+        </button>
+        {/* Mock account row — no real auth/account system yet, placeholder for the eventual one. */}
+        <button className={styles.userRow} type="button">
+          <span
+            className={styles.userAvatar}
+            aria-hidden="true"
+            style={{ '--user-hue': hueForName(userName) } as CSSProperties}
+          >
+            {userName.charAt(0).toUpperCase()}
+          </span>
+          <span className={styles.userText}>
+            <span className={styles.userName}>{userName}</span>
+            <span className={styles.userTier}>Max Plan</span>
+          </span>
         </button>
       </div>
     </aside>

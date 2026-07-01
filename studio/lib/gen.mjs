@@ -64,7 +64,11 @@ export async function generateSlot(job, { renders, repoDir }) {
   return new Promise((resolve) => {
     mkdirSync(dirname(out), { recursive: true });
     const args = [TOOL, job.promptText, '-o', out, '--backend', 'codex', '--size', size];
-    if (job.ref) args.push('-i', job.ref);
+    // Reference image(s) — the python CLI's `-i/--ref` is action="append", so multiple are allowed.
+    // `refs` (array) takes precedence; `ref` (single string) is kept for back-compat. Used by Revise,
+    // which passes the ORIGINAL image (and any board images) so the new version builds on it.
+    const refs = Array.isArray(job.refs) ? job.refs : (job.ref ? [job.ref] : []);
+    for (const r of refs) if (r) args.push('-i', String(r));
     // Codex on LOW reasoning: just execute the prompt, don't think (faster, less metered spend).
     // Overridable via CHATGPT_IMAGEGEN_EFFORT / _VERBOSITY.
     const env = {

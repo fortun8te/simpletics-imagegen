@@ -6,17 +6,22 @@
 // The overlays (activity dock, detail drawer, settings) mount once at the end.
 // A single Tooltip.Provider wraps the whole tree so card/icon tooltips work app-wide.
 import * as Tooltip from '@radix-ui/react-tooltip';
+import AppAura from './AppAura';
 import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import BatchView from './BatchView';
 import ActivityDock from './ActivityDock';
 import DetailDrawer from './DetailDrawer';
 import SettingsDialog from './SettingsDialog';
+import GenerateDialog from './GenerateDialog';
 import styles from './AppShell.module.css';
 
 export default function AppShell() {
   return (
     <Tooltip.Provider delayDuration={500} skipDelayDuration={200}>
+      {/* Live WebGL background behind the whole app — theme-aware (AppAura reads the theme and swaps
+          to a light palette in light mode). Panels are glass overlays on top in both themes. */}
+      <AppAura />
       <div className={styles.shell}>
         <Sidebar />
         <TopBar />
@@ -31,6 +36,7 @@ export default function AppShell() {
       <ActivityDock />
       <DetailDrawer />
       <SettingsDialog />
+      <GenerateDialog />
     </Tooltip.Provider>
   );
 }

@@ -13,16 +13,24 @@
 //           (blue=running, muted=queued, red=failed) + an ad/variation/prompt label
 //           + elapsed (mono, right) + quiet hover icon actions.
 //             – running row : stop (per-job cancel)
-//             – queued row  : stop (per-job cancel)
+//             – queued row  : stop (per-job cancel), drag handle (reorder priority)
 //             – failed row  : retry (regenerate)
 //           Run-level controls (pause/continue + stop-all) live on the RUNNING eyebrow
 //           so they read honestly as run-scoped, never per-row.
 // Empty   → a quiet "No active jobs" line when pinned open and idle.
 //
+// QUEUED reorder (native HTML5 drag-and-drop; no DnD library installed/needed): only queued rows are
+// `draggable` — running/done/failed rows never are, since priority only means anything before a job
+// starts. Dropping reorders the local `queued` list immediately (optimistic — the panel never waits
+// on the network to reflect the drop), then POSTs the full new queued-id order for this brand/batch to
+// /api/queue/reorder, which rewrites each job's `order` so the worker's actual picker (jobstore.mjs
+// nextQueued()) honors it. The next SSE `state` push / poll reconciles with the server's truth.
+//
 // All actions map onto the existing api: pause / resume / cancel({ jobId }) /
-// cancel({ all: true }) / regenerate(relPath). useElapsed ticks once a second.
-// Reduced motion is honored via theme.css global rules + a local guard on the dot.
-import { useEffect, useState } from 'react';
+// cancel({ all: true }) / regenerate(relPath) / reorderQueue(brand, batch, jobIds).
+// useElapsed ticks once a second. Reduced motion is honored via theme.css global rules + a local
+// guard on the dot.
+import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { BatchState } from '../types';
 import { useStore } from '../store';
 import { api } from '../api';
@@ -36,10 +44,15 @@ interface DockJob {
   ad: string;
   variation: string;
   prompt: string;
+  // Raw ids (as opposed to `ad`/`variation`'s display label/title) — needed to build a
+  // GenerateScope for the no-relPath retry fallback below, same shape SlotCard's genHere() uses.
+  adId: string;
+  variationId: string;
   relPath?: string;
   status: GroupKey;
   error?: string | null;
   startedAt?: number | null;
+  order?: number | null;
 }
 
 type GroupKey = 'generating' | 'queued' | 'failed';
@@ -69,10 +82,13 @@ function deriveJobs(state: BatchState | null): DockJob[] {
             ad: ad.title || ad.id,
             variation: variation.label || variation.id,
             prompt: prompt.id,
+            adId: ad.id,
+            variationId: variation.id,
             relPath: slot.relPath,
             status: slot.status,
             error: slot.job.error,
             startedAt: slot.job.startedAt,
+            order: slot.job.order,
           });
         }
       }
@@ -100,14 +116,63 @@ function StatusDot({ status }: { status: GroupKey }) {
   return <span className={`${styles.dot} ${styles[`d_${status}`]}`} aria-hidden="true" />;
 }
 
-function JobRow({ job }: { job: DockJob }) {
+function JobRow({
+  job,
+  draggable,
+  dragHandlers,
+  dragOver,
+  dragging,
+  brand,
+  batch,
+}: {
+  job: DockJob;
+  draggable?: boolean;
+  dragHandlers?: {
+    onDragStart: (e: DragEvent) => void;
+    onDragOver: (e: DragEvent) => void;
+    onDrop: (e: DragEvent) => void;
+    onDragEnd: (e: DragEvent) => void;
+  };
+  dragOver?: boolean;
+  dragging?: boolean;
+  brand?: string | null;
+  batch?: string | null;
+}) {
   const elapsed = useElapsed(job.status === 'generating' ? job.startedAt : undefined);
+
+  // Retry a failed job. Most failures are re-runs of an existing slot (has relPath — regenerate
+  // in place). A job that failed on its very first attempt has no relPath yet; fall back to
+  // queuing a fresh single-variant generate for that exact prompt, same as SlotCard's genHere(1).
+  const retry = () => {
+    if (job.relPath) { api.regenerate(job.relPath); return; }
+    if (brand && batch) {
+      api.generate(brand, batch, { prompt: { ad: job.adId, variation: job.variationId, prompt: job.prompt } }, 1);
+    }
+  };
 
   const path = `${job.ad} / ${job.variation} / ${job.prompt}`;
   const title = job.status === 'failed' && job.error ? `${path} — ${job.error}` : path;
 
   return (
-    <li className={styles.row}>
+    <li
+      className={[
+        styles.row,
+        draggable ? styles.draggableRow : '',
+        dragOver ? styles.dropTarget : '',
+        dragging ? styles.dragging : '',
+      ].filter(Boolean).join(' ')}
+      draggable={draggable}
+      onDragStart={dragHandlers?.onDragStart}
+      onDragOver={dragHandlers?.onDragOver}
+      onDrop={dragHandlers?.onDrop}
+      onDragEnd={dragHandlers?.onDragEnd}
+    >
+      {draggable && (
+        <span className={styles.handle} aria-hidden="true" title="Drag to reorder">
+          <Icon name="grip" size={12} />
+        </span>
+      )}
+
       <StatusDot status={job.status} />
 
       <span className={styles.label} title={title}>
@@ -122,12 +187,12 @@ function JobRow({ job }: { job: DockJob }) {
 
       <span className={styles.actions}>
         {job.status === 'failed'
-          ? job.relPath && (
+          ? (
               <button
                 className={styles.act}
                 aria-label="Retry generation"
                 title="Retry"
-                onClick={() => job.relPath && api.regenerate(job.relPath)}
+                onClick={retry}
               >
                 <Icon name="refresh" size={13} />
               </button>
@@ -147,10 +212,90 @@ function JobRow({ job }: { job: DockJob }) {
   );
 }
 
+// QUEUED rows only: native HTML5 drag-and-drop reorder. Holds its own local order as state so a drop
+// reorders the list immediately (optimistic), independent of the next poll/SSE `state` push. Re-syncs
+// from `rows` (server truth) whenever the SET of queued job ids changes — e.g. one starts running and
+// drops out of this list, or a new one is enqueued — but NOT on every prop update, so a reorder isn't
+// clobbered by an in-flight poll that hasn't seen the new order yet.
+function QueuedList({ rows, brand, batch }: { rows: DockJob[]; brand: string | null; batch: string | null }) {
+  const [order, setOrder] = useState<DockJob[]>(rows);
+  const [dragKey, setDragKey] = useState<string | null>(null);
+  const [overKey, setOverKey] = useState<string | null>(null);
+
+  const idsSignature = useMemo(() => rows.map((r) => r.key).sort().join('|'), [rows]);
+  useEffect(() => {
+    setOrder(rows);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idsSignature]);
+
+  const commit = (next: DockJob[]) => {
+    setOrder(next);
+    if (!brand || !batch) return;
+    const jobIds = next.map((j) => j.jobId).filter((id): id is string => !!id);
+    if (jobIds.length > 0) api.reorderQueue(brand, batch, jobIds);
+  };
+
+  const onDragStart = (key: string) => (e: DragEvent) => {
+    setDragKey(key);
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', key); } catch { /* Firefox requires this set */ }
+  };
+
+  const onDragOver = (key: string) => (e: DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (key !== overKey) setOverKey(key);
+  };
+
+  const onDrop = (key: string) => (e: DragEvent) => {
+    e.preventDefault();
+    setOverKey(null);
+    const fromKey = dragKey;
+    setDragKey(null);
+    if (!fromKey || fromKey === key) return;
+    const fromIdx = order.findIndex((j) => j.key === fromKey);
+    const toIdx = order.findIndex((j) => j.key === key);
+    if (fromIdx === -1 || toIdx === -1) return;
+    const next = order.slice();
+    const [moved] = next.splice(fromIdx, 1);
+    next.splice(toIdx, 0, moved);
+    commit(next);
+  };
+
+  const onDragEnd = () => {
+    setDragKey(null);
+    setOverKey(null);
+  };
+
+  return (
+    <ul className={styles.list}>
+      {order.map((job) => (
+        <JobRow
+          key={job.key}
+          job={job}
+          draggable
+          dragOver={overKey === job.key && dragKey !== job.key}
+          dragging={dragKey === job.key}
+          brand={brand}
+          batch={batch}
+          dragHandlers={{
+            onDragStart: onDragStart(job.key),
+            onDragOver: onDragOver(job.key),
+            onDrop: onDrop(job.key),
+            onDragEnd,
+          }}
+        />
+      ))}
+    </ul>
+  );
+}
+
 export default function ActivityDock() {
   const state = useStore((s) => s.state);
   const activityOpen = useStore((s) => s.ui.activityOpen);
   const setUI = useStore((s) => s.setUI);
+  const brand = useStore((s) => s.brand);
+  const batch = useStore((s) => s.batch);
 
   const jobs = deriveJobs(state);
   const run = state?.run;
@@ -181,10 +326,13 @@ export default function ActivityDock() {
     );
   }
 
-  // Expanded panel.
+  // Expanded panel. Queued rows sort by server-side queue priority (`order`) so the initial render —
+  // before any local drag — already reflects what the worker will actually run next.
   const groups = GROUPS.map((g) => ({
     ...g,
-    rows: jobs.filter((j) => j.status === g.key),
+    rows: jobs
+      .filter((j) => j.status === g.key)
+      .sort((a, b) => (g.key === 'queued' ? (a.order ?? 0) - (b.order ?? 0) : 0)),
   })).filter((g) => g.rows.length > 0);
 
   const badge =
@@ -235,11 +383,15 @@ export default function ActivityDock() {
                 )}
               </div>
 
-              <ul className={styles.list}>
-                {g.rows.map((job) => (
-                  <JobRow key={job.key} job={job} />
-                ))}
-              </ul>
+              {g.key === 'queued' ? (
+                <QueuedList rows={g.rows} brand={brand} batch={batch} />
+              ) : (
+                <ul className={styles.list}>
+                  {g.rows.map((job) => (
+                    <JobRow key={job.key} job={job} brand={brand} batch={batch} />
+                  ))}
+                </ul>
+              )}
             </section>
           ))
         ) : (

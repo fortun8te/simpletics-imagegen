@@ -1,7 +1,10 @@
+/* Containers stay fully transparent so the live aurora glows through the
+   gutters between image cards. No surface fills at the grid/section level. */
 .grid {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
+  background: transparent;
 }
 
 /* Ad sections get generous breathing room between them. */
@@ -9,6 +12,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-10);
+  background: transparent;
 }
 
 .promptGroup {
@@ -27,4 +31,40 @@
 .slots {
   display: grid;
   gap: 12px;
+  background: transparent;
+}
+
+/* Row-level "Add another take" — appends a brand-new prompt (p3, p4, ...) to the variation, distinct
+   from "Add variant" (more runs of an existing prompt). Same ghost-button language as AdSection's
+   per-ad addBtn, sized down for the row context. */
+.addTakeBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px 10px 5px 8px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--faint);
+  font-family: var(--font-display);
+  font-size: var(--t-label);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--dur-2) var(--ease),
+    background var(--dur-2) var(--ease),
+    border-color var(--dur-2) var(--ease);
+}
+.addTakeBtn:hover {
+  color: var(--accent-ink);
+  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.addTakeBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
 }

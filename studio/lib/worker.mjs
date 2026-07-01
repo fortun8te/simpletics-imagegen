@@ -27,6 +27,12 @@
 
 import { isLimitReached } from './usage.mjs';
 
+// The generation concurrency limit: how many jobs run at once. This is the single source of
+// truth for the default — callers (studio-server.mjs) may still override via the `concurrency`
+// option (e.g. from process.env.CONCURRENCY), but this constant is what "X at a time" means when
+// nothing else is configured. Tune this number to change default throughput.
+export const MAX_CONCURRENT_JOBS = 3;
+
 /**
  * Create the generation worker.
  *
@@ -34,7 +40,7 @@ import { isLimitReached } from './usage.mjs';
  * @param {object}   opts.store        the job store (createJobStore)
  * @param {string}   opts.renders      RENDERS dir (where images are written)
  * @param {string}   opts.repoDir      REPO dir (passed through to generateSlot for logic.js)
- * @param {number}   [opts.concurrency=3]
+ * @param {number}   [opts.concurrency=MAX_CONCURRENT_JOBS]
  * @param {number}   [opts.cooldownMin=30]
  * @param {Function} [opts.onChange]   called after every transition (drives SSE broadcast)
  * @param {Function} [opts.onRateLimit] called when a RATE_LIMIT cooldown begins, with { resumeAt }
@@ -42,7 +48,7 @@ import { isLimitReached } from './usage.mjs';
  * @returns {{ start:Function, stop:Function, status:Function, busy:Function,
  *            pause:Function, resume:Function, runState:Function }}
  */
-export function createWorker({ store, renders, repoDir, concurrency = 3, cooldownMin = 30, onChange, onRateLimit, onComplete } = {}) {
+export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCURRENT_JOBS, cooldownMin = 30, onChange, onRateLimit, onComplete } = {}) {
   let running = 0;          // count of in-flight generateSlot calls
   let cooling = false;      // true while cooling down after a rate limit (auto-resumes)
   let userPaused = false;   // true while paused by the user (pause(); cleared by resume())
@@ -52,6 +58,7 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
   let runningWorker = false; // true between start() and stop()
   let interval = null;      // the 1s safety-tick interval handle
   let cooldownTimer = null; // the setTimeout that ends a cooldown
+  let inTick = false;       // reentrancy guard for tick() — see note below
 
   const notify = () => { try { onChange && onChange(); } catch {} };
 
@@ -61,20 +68,36 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
 
   // Pull and run as many queued jobs as capacity allows. Each finished job re-ticks so the freed
   // slot is immediately refilled. Guarded so it never runs while stopped or blocked.
+  //
+  // Reentrancy guard (`inTick`): store.nextQueued() fires the store's 'change' event synchronously
+  // (via emitChange()) BEFORE returning the picked job — and tick() itself is registered as a
+  // 'change' listener (see start()). Without this guard, calling nextQueued() on line below
+  // re-enters tick() from inside its own while-loop, at a point where `running` has NOT been
+  // incremented yet for the job just picked (running++ is still pending later in this same
+  // iteration). That nested call would see a stale, too-low `running` count and pull MORE jobs than
+  // the concurrency limit allows — and it recurses once per queued job, so a big batch enqueued at
+  // once could flip its ENTIRE queue to 'running' in one synchronous cascade, blowing straight past
+  // `concurrency`. Guarding tick() to a single active frame makes nested calls a no-op; the outer
+  // loop's own next iteration picks up any newly-freed capacity correctly once `running` is current.
   function tick() {
-    if (!runningWorker || blocked()) return;
-    const { queued } = store.counts();
-    if (queued > 0 && runAborted) {
-      runAborted = false;
-      didComplete = false;
-    }
-    if (runAborted) return;
-    while (running < concurrency) {
-      const job = store.nextQueued(); // atomically flips the job to 'running'
-      if (!job) break;
-      running++;
-      notify(); // a job just went 'running'
-      runJob(job);
+    if (!runningWorker || blocked() || inTick) return;
+    inTick = true;
+    try {
+      const { queued } = store.counts();
+      if (queued > 0 && runAborted) {
+        runAborted = false;
+        didComplete = false;
+      }
+      if (runAborted) return;
+      while (running < concurrency) {
+        const job = store.nextQueued(); // atomically flips the job to 'running'
+        if (!job) break;
+        running++;
+        notify(); // a job just went 'running'
+        runJob(job);
+      }
+    } finally {
+      inTick = false;
     }
   }
 
@@ -106,12 +129,14 @@ export function createWorker({ store, renders, repoDir, concurrency = 3, cooldow
       if (/^RATE_LIMIT:/.test(error)) {
         // Usage limit / 429 — don't burn a retry attempt. Requeue this job and pause the whole
         // worker for the cooldown window, then resume (the backend-owned auto-resume).
-        store.requeue(job.id);
+        store.requeue(job.id, { countsAsAttempt: false });
         notify();
         beginCooldown();
         return; // don't tick while paused
       }
-      // Ordinary failure: retry up to 3 attempts, then give up and mark it failed.
+      // Ordinary failure: retry up to 3 attempts, then give up and mark it failed. requeue() bumps
+      // `attempts` for us, so check the CURRENT count before requeuing (i.e. attempts so far, not
+      // counting this one yet) — once 3 ordinary failures have already happened, stop retrying.
       const current = store.get(job.id);
       const attempts = (current && current.attempts) || 0;
       if (attempts < 3) store.requeue(job.id);

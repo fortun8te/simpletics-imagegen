@@ -10,7 +10,9 @@ import AdSection from '../AdSection';
 import VariationRow from '../VariationRow';
 import { EmptyState } from '../EmptyState';
 import { GenerateTile } from '../GenerateTile';
+import { Icon } from '../Icon';
 import { api } from '../../api';
+import { refreshState } from '../../refresh';
 import type { AdNode, Slot, SlotStatus } from '../../types';
 import { variationRelDir } from '../../paths';
 import styles from './GridView.module.css';
@@ -86,8 +88,16 @@ export default function GridView() {
   };
 
   // Enqueue one more variant for a whole variation (append — does not overwrite existing slots).
-  const genMore = (ad: string, variation: string) =>
-    brand && batch && api.generate(brand, batch, { variation: { ad, variation } }, 1);
+  // Adds one more run to a SPECIFIC prompt (p1, p2, ...) — not the whole variation — so every
+  // prompt row gets its own working "add variant" control, independent of the others.
+  const genMore = (ad: string, variation: string, prompt: string) =>
+    brand && batch && api.generate(brand, batch, { prompt: { ad, variation, prompt } }, 1);
+
+  // Append a brand-new prompt entry (p3, p4, ...) to a variation — a genuine new "take" on the
+  // concept, distinct from genMore (more runs of an EXISTING prompt). Config write only; refetch
+  // state afterward so the new prompt column + its empty slot appear immediately.
+  const addTake = (ad: string, variation: string) =>
+    brand && batch && api.addPrompt(brand, batch, ad, variation).then(refreshState);
 
   const emptyTitle = q
     ? 'No matches'
@@ -122,9 +132,8 @@ export default function GridView() {
                       : `${ad.id}/${variation.id}`
                   }
                 >
-                  {variation.prompts.map((prompt, i) => {
+                  {variation.prompts.map((prompt) => {
                     const slots = prompt.slots;
-                    const isLastPrompt = i === variation.prompts.length - 1;
                     return (
                       <div key={prompt.id} className={styles.promptGroup}>
                         {multiPrompt ? <div className={styles.promptLabel}>{prompt.id}</div> : null}
@@ -139,18 +148,27 @@ export default function GridView() {
                               density={density}
                             />
                           ))}
-                          {isLastPrompt ? (
-                            <GenerateTile
-                              label="Add variant"
-                              ariaLabel="Add one new variant to this variation — existing images are kept"
-                              density={density}
-                              onClick={() => genMore(ad.id, variation.id)}
-                            />
-                          ) : null}
+                          <GenerateTile
+                            label="Add variant"
+                            ariaLabel={`Add one new variant to ${prompt.id} — existing images are kept`}
+                            density={density}
+                            onClick={() => genMore(ad.id, variation.id, prompt.id)}
+                          />
                         </div>
                       </div>
                     );
                   })}
+                  <button
+                    type="button"
+                    className={styles.addTakeBtn}
+                    onClick={() => addTake(ad.id, variation.id)}
+                    disabled={!brand || !batch}
+                    title="Add another take — a brand-new prompt slot for this variation, starting from its last prompt"
+                    aria-label="Add another take to this variation"
+                  >
+                    <Icon name="plus" size={13} strokeWidth={2} />
+                    Add another take
+                  </button>
                 </VariationRow>
               );
             })}

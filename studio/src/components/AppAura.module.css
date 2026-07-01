@@ -1,0 +1,36 @@
+/* AppAura — the live WebGL canvas fixed behind the whole app.
+   Rendered at reduced FBO scale and upscaled by CSS for natural softness (the
+   "a little blurred" feel). pointer-events:none so the app stays interactive.
+   .fallback is a static dark-blue gradient stacked under the canvas, visible only
+   if WebGL2 is unavailable (the canvas stays transparent then). */
+.aura {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* light soften on top of the in-shader fluted glass + upscaling */
+  filter: blur(0.6px) saturate(1.06);
+  opacity: 1;
+}
+
+/* Static fallback: a right-side blue→black glow, roughly matching the shader's
+   at-rest look. Sits under the canvas; only seen if WebGL2 fails. */
+.fallback {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(120% 140% at 100% 50%, rgba(44, 92, 255, 0.45) 0%, rgba(31, 63, 191, 0.28) 22%, rgba(11, 26, 106, 0.16) 46%, rgba(10, 10, 10, 0) 70%),
+    linear-gradient(90deg, #0a0a0a 0%, #0a0c18 55%, #0b1a6a 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas { filter: blur(0.8px) saturate(1.06); }
+}

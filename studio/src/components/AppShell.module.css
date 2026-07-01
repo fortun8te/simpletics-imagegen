@@ -7,13 +7,20 @@
 .shell {
   display: grid;
   grid-template-columns: 256px minmax(0, 1fr);
-  grid-template-rows: 88px minmax(0, 1fr);
-  height: 100vh;
-  width: 100%;
+  grid-template-rows: 100px minmax(0, 1fr);
+  /* Bento: the whole app floats in a clean outer window over the live AppAura. Equal gaps between
+     every panel (sidebar / topbar / content) and equal padding to the outer border, all showing the
+     aura. Outer window is transparent — no blur, no darkening — just a hairline border + radius. */
+  gap: var(--space-3);
+  position: fixed;
+  inset: 14px;
+  padding: var(--space-3);
   overflow: hidden;
-  /* Flat neutral canvas — no blue tint, no bloom. Sidebar paints a solid panel over column 1. */
-  background: var(--bg);
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
   color: var(--ink);
+  z-index: 1;
 }
 
 /* Sidebar spans both rows in column 1, fixed width, owns its own scroll (set inside Sidebar.module.css). */
@@ -35,20 +42,31 @@
 }
 
 /* Main — independent scroll container. min-width:0 lets the grid wrap instead of pushing the column
-   wider than the viewport (which is what was sliding content under the sidebar). */
+   wider than the viewport (which is what was sliding content under the sidebar). TRANSPARENT so the
+   live AppAura background glows through the gutters between cards; the GridView/SlotCards are the
+   glass overlays that sit on top (those agents own their own surfaces). */
 .main {
   grid-row: 2;
   grid-column: 2;
   overflow: auto;
   min-height: 0;
   min-width: 0;
-  padding: var(--space-8) var(--space-8) var(--space-12);
+  /* Inner content panel — same dark-glass card as the sidebar + topbar (equal grid gaps handle the
+     spacing). Rounded + hairline border; the aura shows in the gutters around it. */
+  padding: var(--space-7);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
-/* Content rail — caps measure so the grid wraps to a sensible width and titles always have room. */
+/* Content rail — caps measure so the grid wraps to a sensible width and titles always have room.
+   Transparent: lets the aura show in the gutters; GridView owns its internal surfaces. */
 .rail {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
   min-width: 0;
+  background: transparent;
 }

@@ -253,6 +253,18 @@
   font-weight: 500;
 }
 
+/* Time estimate line — sits just under the image-count estimate, same quiet weight. */
+.eta {
+  font-size: 12px;
+  color: var(--faint);
+  margin-top: -2px;
+}
+
+.eta b {
+  color: var(--muted);
+  font-weight: 500;
+}
+
 /* Footer */
 .foot {
   display: flex;
@@ -283,7 +295,7 @@
 
 .primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-contrast, #fff);
 }
 
 .primary:hover:not(:disabled) {

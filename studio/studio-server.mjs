@@ -8,12 +8,13 @@
 // modules (jobstore / worker / state, which themselves only use node:* + logic.js).
 import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join, dirname, normalize, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { randomUUID } from 'node:crypto';
 
 import { createJobStore } from './lib/jobstore.mjs';
-import { createWorker } from './lib/worker.mjs';
+import { createWorker, MAX_CONCURRENT_JOBS } from './lib/worker.mjs';
 import { buildState } from './lib/state.mjs';
 import { getCodexUsage, noteGenerated, noteRateLimit } from './lib/usage.mjs';
 
@@ -22,6 +23,7 @@ const STUDIO = dirname(fileURLToPath(import.meta.url));            // .../NEUEGE
 const REPO = join(STUDIO, '..');                                  // .../NEUEGEN (config.json, logic.js)
 const RENDERS = join(process.env.HOME, 'Downloads', 'static-factory-b1', 'renders');
 const STATE_DIR = join(STUDIO, '.state');
+const REFS_DIR = join(STATE_DIR, 'refs');   // uploaded Revise board reference images
 const DIST = join(STUDIO, 'dist');
 const CONFIG = join(REPO, 'config.json');
 const BRIDGE = 'http://localhost:8787';
@@ -33,7 +35,7 @@ const worker = createWorker({
   store,
   renders: RENDERS,
   repoDir: REPO,
-  concurrency: Number(process.env.CONCURRENCY) || 3,
+  concurrency: Number(process.env.CONCURRENCY) || MAX_CONCURRENT_JOBS,
   cooldownMin: Number(process.env.COOLDOWN_MIN) || 30,
   onChange: broadcast,
   // Feed the best-effort codex-usage probe with the two real signals the worker has: a completed
@@ -202,12 +204,17 @@ function resolveSlots(batch, scope) {
 
 // Enqueue `variants` jobs for one resolved slot, computing the next free run index up front and
 // laying the variants out across consecutive runs (so they don't all collide on the same run).
-function enqueueSlot(brand, batch, ad, v, p, variants, sizeDefault) {
+function enqueueSlot(brand, batch, ad, v, p, variants, promptOverride, refsOverride) {
   const baseRun = doneRunCount(brand.id, batch.code, ad.id, v.id, p.id)
     + inflightCount(brand.id, batch.code, ad.id, v.id, p.id) + 1;
-  const promptText = p.prompt;
+  const promptText = promptOverride || p.prompt;
   const size = (/^\d+x\d+$/.test(String(batch.aspect || '')) ? batch.aspect : '1024x1024');
-  const ref = isTubeShot(promptText) ? tubeRefPath() : null;
+  const baseRef = isTubeShot(promptText) ? tubeRefPath() : null;
+  // Revise supplies its own refs (the original image + any board uploads); otherwise default to the
+  // tube reference when this is a tube shot. `refs` (array) drives gen.mjs; `ref` kept for back-compat.
+  const refs = (Array.isArray(refsOverride) && refsOverride.length)
+    ? refsOverride.filter(Boolean)
+    : (baseRef ? [baseRef] : []);
   const n = Math.max(1, Math.min(10, Number(variants) || 1));
   let enqueued = 0;
   for (let i = 0; i < n; i++) {
@@ -221,7 +228,8 @@ function enqueueSlot(brand, batch, ad, v, p, variants, sizeDefault) {
       variants: n,
       promptText,
       size,
-      ref,
+      refs,
+      ref: refs[0] || null,
     });
     enqueued++;
   }
@@ -323,7 +331,13 @@ async function serveImg(req, res, query) {
   }
   try {
     const data = await readFile(filePath); // ?w accepted but ignored for v1 — serve full PNG
-    res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=60' });
+    const headers = { 'Content-Type': 'image/png', 'Cache-Control': 'public, max-age=60' };
+    const filename = query.get('filename');
+    if (filename) {
+      const safe = String(filename).replace(/[^\w.\- ]+/g, '').slice(0, 180) || 'image.png';
+      headers['Content-Disposition'] = `attachment; filename="${safe}"`;
+    }
+    res.writeHead(200, headers);
     res.end(data);
   } catch {
     res.writeHead(404, { 'Content-Type': 'text/plain' }); res.end('not found');
@@ -384,6 +398,20 @@ const server = http.createServer(async (req, res) => {
     // ── /asset ─────────────────────────────────────────────────────────────────────────────────
     if (pathname === '/asset' && method === 'GET') {
       await serveAsset(req, res, q);
+      return;
+    }
+
+    // ── /refasset — preview an uploaded Revise-board reference image by id ────────────────────────
+    if (pathname === '/refasset' && method === 'GET') {
+      const id = q.get('id') || '';
+      if (!/^[a-zA-Z0-9_-]+$/.test(id)) { res.writeHead(400); res.end('bad id'); return; }
+      const file = join(REFS_DIR, `${id}.png`);
+      if (!existsSync(file)) { res.writeHead(404); res.end('not found'); return; }
+      try {
+        const buf = await readFile(file);
+        res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'private, max-age=3600' });
+        res.end(buf);
+      } catch { res.writeHead(500); res.end('read error'); }
       return;
     }
 
@@ -461,6 +489,9 @@ const server = http.createServer(async (req, res) => {
         codex: { alive: worker.busy() },
         queue: store.counts(),
         codexUsage: getCodexUsage(),
+        // Rolling average single-image generation time (lib/jobstore.mjs), for GenerateDialog's
+        // per-image / total-batch ETA. Falls back to a 30s default when there's no history yet.
+        estimate: store.avgDurationSeconds(),
       });
       return;
     }
@@ -492,6 +523,74 @@ const server = http.createServer(async (req, res) => {
       if (!brand || !batch || !ad || !v || !p) { sendJson(res, 400, { ok: false, error: 'slot not found in config' }); return; }
       const enqueued = enqueueSlot(brand, batch, ad, v, p, 1);
       sendJson(res, 200, { ok: true, enqueued });
+      return;
+    }
+
+    // Revise = regenerate this slot with the original prompt PLUS a change instruction, as a NEW
+    // version (never overwrites). Same resolution as /api/regenerate, only the prompt is augmented.
+    if (pathname === '/api/revise' && method === 'POST') {
+      const body = await readBody(req);
+      const coords = parseRelPath(body.relPath);
+      const instruction = String(body.instruction || '').trim();
+      if (!coords) { sendJson(res, 400, { ok: false, error: 'bad relPath' }); return; }
+      if (!instruction) { sendJson(res, 400, { ok: false, error: 'empty instruction' }); return; }
+      const config = readConfig();
+      const brand = findBrand(config, coords.brand);
+      const batch = brand && findBatch(brand, coords.batch);
+      const ad = batch && findAd(batch, coords.ad);
+      const v = ad && findVariation(ad, coords.variation);
+      const p = v && findPrompt(v, coords.prompt);
+      if (!brand || !batch || !ad || !v || !p) { sendJson(res, 400, { ok: false, error: 'slot not found in config' }); return; }
+      // The user types stable @imgN labels (1st board upload = @img1, 2nd = @img2, ...) but the
+      // underlying multimodal model sees a flat reference list with the ORIGINAL image always first
+      // — so @imgN is actually "Image N+1" once the original is prepended. Translate before building
+      // the prompt; this is purely a text rewrite, every attached extraRef is still always sent below
+      // regardless of whether it was @-mentioned.
+      const translatedInstruction = instruction.replace(/@img(\d+)/gi, (_m, n) => `Image ${Number(n) + 1}`);
+      const revisedPrompt = `${p.prompt}\n\nApply this change to the image: ${translatedInstruction}`;
+      // References: ALWAYS the original image first (so the new version builds on it), then any board
+      // uploads the user attached (resolved from their upload ids → .state/refs/<id>.png).
+      const origAbs = join(RENDERS, String(body.relPath).replace(/^\/+/, ''));
+      const extraAbs = (Array.isArray(body.extraRefs) ? body.extraRefs : [])
+        .filter((id) => /^[a-zA-Z0-9_-]+$/.test(String(id)))
+        .map((id) => join(REFS_DIR, `${id}.png`))
+        .filter((f) => existsSync(f));
+      const refs = [existsSync(origAbs) ? origAbs : null, ...extraAbs].filter(Boolean);
+      const enqueued = enqueueSlot(brand, batch, ad, v, p, 1, revisedPrompt, refs);
+      sendJson(res, 200, { ok: true, enqueued, refs: refs.length });
+      return;
+    }
+
+    // Upload a Revise-board reference image (base64 data URL) → saved to .state/refs/<id>.png.
+    // Returns the id (passed back in /api/revise extraRefs) + a /refasset url to preview it.
+    if (pathname === '/api/upload-ref' && method === 'POST') {
+      const body = await readBody(req);
+      const m = /^data:image\/(png|jpe?g|webp);base64,([A-Za-z0-9+/=]+)$/.exec(String(body.dataUrl || ''));
+      if (!m) { sendJson(res, 400, { ok: false, error: 'expected a base64 image data URL' }); return; }
+      try {
+        mkdirSync(REFS_DIR, { recursive: true });
+        const id = randomUUID();
+        writeFileSync(join(REFS_DIR, `${id}.png`), Buffer.from(m[2], 'base64'));
+        sendJson(res, 200, { ok: true, id, url: `/refasset?id=${id}` });
+      } catch (e) {
+        sendJson(res, 500, { ok: false, error: String(e && e.message || e) });
+      }
+      return;
+    }
+
+    // Reorder QUEUED jobs within one brand/batch (drag-and-drop priority in ActivityDock). Body:
+    // { brand, batch, jobIds: string[] } — the full desired front-to-back order of the batch's
+    // currently-queued job ids. Rewrites each job's `order` so the worker's nextQueued() (the actual
+    // picker — see lib/jobstore.mjs) honors the new priority, not just the displayed list.
+    if (pathname === '/api/queue/reorder' && method === 'POST') {
+      const body = await readBody(req);
+      const jobIds = Array.isArray(body.jobIds) ? body.jobIds.filter((id) => typeof id === 'string') : [];
+      if (!body.brand || !body.batch || jobIds.length === 0) {
+        sendJson(res, 400, { ok: false, error: 'missing brand/batch/jobIds' });
+        return;
+      }
+      const reordered = store.reorder(body.brand, body.batch, jobIds);
+      sendJson(res, 200, { ok: true, reordered });
       return;
     }
 
@@ -530,6 +629,42 @@ const server = http.createServer(async (req, res) => {
       if (!body.relPath) { sendJson(res, 400, { ok: false, error: 'missing relPath' }); return; }
       store.setArchived(body.relPath, body.archived !== false);
       sendJson(res, 200, { ok: true });
+      return;
+    }
+
+    // Append a new prompt entry ("another take") to a variation's prompts[] in config.json. Body:
+    // { brand, batch, ad, variation }. Auto-numbers the next id (p3, p4, ...) and clones the text of
+    // the LAST existing prompt verbatim — a genuine "another take" slot, not invented content. The
+    // user edits/regenerates it like any other prompt once it exists. Read-modify-write straight from
+    // disk (mirrors readConfig(), which always re-reads fresh) so we never clobber concurrent edits to
+    // other batches/ads.
+    if (pathname === '/api/prompt/add' && method === 'POST') {
+      const body = await readBody(req);
+      const { brand, batch, ad: adId, variation: varId } = body;
+      if (!brand || !batch || !adId || !varId) {
+        sendJson(res, 400, { ok: false, error: 'missing brand/batch/ad/variation' });
+        return;
+      }
+      const config = readConfig();
+      const brandObj = findBrand(config, brand);
+      const batchObj = findBatch(brandObj, batch);
+      const ad = batchObj && findAd(batchObj, adId);
+      const variation = ad && findVariation(ad, varId);
+      if (!variation) {
+        sendJson(res, 404, { ok: false, error: 'variation not found' });
+        return;
+      }
+      // Make sure prompts[] is materialized (mirrors promptEntries()'s p1-synthesis fallback) before
+      // appending, so a variation authored with only the legacy `prompt` string also gets a real array.
+      if (!Array.isArray(variation.prompts) || !variation.prompts.length) {
+        variation.prompts = [{ id: 'p1', label: 'Prompt 1', prompt: variation.prompt || '' }];
+      }
+      const last = variation.prompts[variation.prompts.length - 1];
+      const nextNum = variation.prompts.length + 1;
+      const newPrompt = { id: `p${nextNum}`, label: `Prompt ${nextNum}`, prompt: last && last.prompt || '' };
+      variation.prompts.push(newPrompt);
+      writeFileSync(CONFIG, JSON.stringify(config, null, 2) + '\n');
+      sendJson(res, 200, { ok: true, prompt: newPrompt });
       return;
     }
 

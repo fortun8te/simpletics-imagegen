@@ -2,8 +2,18 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  /* Frosted-glass panel over the live full-app AppAura: translucent --bg fill + backdrop
+     blur so the moving blue aurora glows softly through. Shared glass contract (matches
+     Sidebar + shell). Hairline bottom border defines the bar edge. */
+  background: var(--glass-bg);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  /* sits above the aura */
+  position: relative;
+  z-index: 2;
 }
 
 /* ---- shared row layout ---- */
@@ -13,8 +23,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  height: 44px;
-  padding: 0 var(--space-4);
+  height: 50px;
+  padding: 0 var(--space-8);
   min-width: 0;
 }
 /* Thin divider between the two rows so they read as one cohesive bar. */
@@ -165,6 +175,25 @@
     0 1px 2px rgba(0,0,0,.45),
     0 8px 30px -6px color-mix(in srgb, var(--accent) 72%, transparent),
     var(--inset-hi);
+}
+
+/* Icon-only sibling to .primary — opens the Generate dialog for scope/variant-count/ETA control,
+   instead of the one-click default the primary button always does. */
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  transition: color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.secondary:hover {
+  color: var(--ink);
+  background: var(--surface-3);
 }
 
 /* ---- row 2: tab pills ---- */

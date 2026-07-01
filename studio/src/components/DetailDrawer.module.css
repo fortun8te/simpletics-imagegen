@@ -15,6 +15,11 @@
   -webkit-backdrop-filter: var(--glass-blur-strong);
   animation: fade var(--dur-2) var(--ease);
 }
+/* Light mode: the same near-black scrim at 72% reads as an unexpectedly heavy veil over a
+   light app — soften the opacity, keep the same dark tone so the dimming still feels coherent. */
+:global([data-theme="light"]) .overlay {
+  background: color-mix(in srgb, #05060a 42%, transparent);
+}
 
 .content {
   position: fixed;
@@ -29,14 +34,13 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, var(--glass-bg-2), var(--glass-bg)),
-    var(--surface);
-  border: 1px solid var(--glass-border-strong);
+  /* Heavier modal glass over the live aura — readable but visibly translucent. */
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
   border-radius: var(--r-xl);
   box-shadow: var(--shadow-glass);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
   animation: pop var(--dur-2) var(--ease);
   outline: none;
 }
@@ -123,7 +127,105 @@
   border-radius: var(--r-md);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-md);
+  cursor: copy;
+  transition: filter var(--dur-2) var(--ease);
 }
+.stageImg:active { filter: brightness(0.92); }
+
+/* Click-to-copy toast — appears over the stage bottom-centre, briefly. */
+.copied {
+  position: absolute;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-3);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  color: var(--ink);
+  font-size: var(--t-label);
+  font-weight: 500;
+  pointer-events: none;
+  animation: copiedIn var(--dur-2) var(--ease);
+}
+@keyframes copiedIn { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+/* Revise reference board — original thumb + uploaded thumbs + an add tile. */
+.board {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+.boardThumb {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: var(--surface-2);
+  flex: 0 0 auto;
+}
+.boardThumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.boardOriginal { border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.boardTag {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 2px 0;
+  text-align: center;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--on-accent);
+  background: color-mix(in srgb, var(--accent) 82%, transparent);
+}
+.boardRemove {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 16px; height: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-3);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease);
+}
+.boardThumb:hover .boardRemove { opacity: 1; }
+/* Stable @imgN label on uploaded/pasted extras — same bottom-tag slot as .boardTag (Original),
+   kept neutral (surface, not accent) so the accent stays reserved for Download. */
+.boardIndexTag {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 2px 0;
+  text-align: center;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-family: var(--font-mono);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface-3) 85%, transparent);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+.boardAdd {
+  width: 52px;
+  height: 52px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: var(--r-sm);
+  border: 1px dashed var(--line-strong);
+  background: transparent;
+  color: var(--muted);
+  flex: 0 0 auto;
+  transition: border-color var(--dur-2) var(--ease), color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.boardAdd:hover:not(:disabled) { border-color: var(--accent); color: var(--accent-ink); background: var(--glass-bg); }
+.boardAdd:disabled { opacity: 0.5; cursor: progress; }
 .stageEmpty {
   display: flex;
   flex-direction: column;
@@ -249,21 +351,84 @@
 .reviseInput::placeholder { color: var(--faint); }
 .reviseInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
 .reviseInput:disabled { opacity: 0.55; }
+
+/* Wraps just the textarea so the @ mention dropdown (below) can be positioned absolutely against
+   the textarea's own box, using caret coordinates computed at the JS layer. */
+.reviseInputWrap { position: relative; }
+
+/* @ mention dropdown — small glass list of attached board extras, same recipe as other dropdowns
+   in the app (see Sidebar's DropdownMenu .menu/.menuItem). Position is set inline (computed from
+   caret coordinates); everything else is class-driven. */
+.mentionDropdown {
+  position: absolute;
+  z-index: 20;
+  min-width: 168px;
+  max-height: 184px;
+  overflow-y: auto;
+  padding: var(--space-1);
+  background: var(--glass-bg-3);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+}
+.mentionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: 30px;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--ink);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.mentionItem:hover,
+.mentionItem[data-active="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+.mentionThumb {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: var(--surface-2);
+}
+.mentionThumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mentionLabel { font-family: var(--font-mono); font-size: 11.5px; }
 .reviseBtn {
   height: 36px;
   width: 100%;
   display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
   border-radius: var(--r-md);
-  background: var(--surface-2);
-  border: 1px solid var(--line);
-  color: var(--ink);
+  background: var(--accent);
+  border: 1px solid transparent;
+  color: var(--on-accent);
   font-weight: 500;
   font-size: var(--t-body);
-  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);
+  transition: background var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease), opacity var(--dur-2) var(--ease);
 }
-.reviseBtn:hover:not(:disabled) { background: var(--surface-3); border-color: var(--line-strong); }
-.reviseBtn:active:not(:disabled) { background: var(--surface-2); }
-.reviseBtn:disabled { opacity: 0.45; cursor: not-allowed; }
+.reviseBtn:hover:not(:disabled) { background: var(--accent-2); }
+.reviseBtn:active:not(:disabled) { background: var(--accent); transform: scale(0.99); }
+.reviseBtn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Visible success state — overrides the disabled dim so the queue confirmation clearly registers. */
+.reviseBtnDone,
+.reviseBtnDone:hover,
+.reviseBtnDone:disabled {
+  background: var(--ok-soft);
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 34%, transparent);
+  opacity: 1;
+  cursor: default;
+}
 .hint { margin: 0; font-size: var(--t-label); line-height: 1.5; color: var(--faint); }
 
 /* ACTIONS — 2×2 grid, Download is the single blue primary */

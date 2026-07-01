@@ -8,6 +8,9 @@ export interface JobRef {
   status: JobStatus;
   error?: string | null;
   startedAt?: number | null;
+  // Queue priority (lower = earlier in line); only meaningful while status === 'queued'. Drives the
+  // ActivityDock drag-to-reorder sort. See studio-server.mjs POST /api/queue/reorder.
+  order?: number | null;
 }
 
 export interface Slot {
@@ -70,9 +73,19 @@ export type BatchKind = 'ads' | 'listicle';
 export interface BatchMeta { code: string; name: string; kind: BatchKind; modifiedAt: number; count: number; }
 
 // Prompt + reference for the detail drawer.
-export interface PromptInfo { ok: boolean; text: string; refName?: string | null; refUrl?: string | null; }
+export interface PromptInfo { ok: boolean; text: string; refName?: string | null; refUrl?: string | null; recipe?: PromptRecipe; }
 
-export interface Health { ok: boolean; bridge: boolean; codex: { alive: boolean }; queue: QueueInfo; }
+// Optional block-recipe metadata for a compiled prompt string (config.json `variations[].prompts[]`
+// entries). Additive/forward-looking: a future block-library tool can record which named blocks
+// were compiled into `prompt` and when, without changing how `prompt` itself is read today.
+export interface PromptRecipe { blocks: Record<string, string>; compiledAt: string | null; }
+
+// Rolling average generation duration (lib/jobstore.mjs avgDurationSeconds()), used to show
+// "~Xs per image" + a batch ETA in GenerateDialog. `fallback:true` = no completed-job history yet,
+// `seconds` is the default estimate (not a fabricated measurement).
+export interface GenEstimate { seconds: number; samples: number; fallback: boolean; }
+
+export interface Health { ok: boolean; bridge: boolean; codex: { alive: boolean }; queue: QueueInfo; estimate?: GenEstimate; }
 
 export interface ActivityJob {
   id: string; ad: string; variation: string; prompt: string; run: number;

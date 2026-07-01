@@ -15,20 +15,22 @@
 
 :root {
   /* Surfaces — neutral near-black, zero chroma (no blue canvas tint). */
-  --bg: oklch(0.135 0 0);          /* app canvas */
-  --surface: oklch(0.165 0 0);     /* sidebar / base cards (solid fallback behind glass) */
-  --surface-2: oklch(0.205 0 0);   /* insets, hover */
-  --surface-3: oklch(0.248 0 0);   /* popovers, drawer, menus (ride higher) */
-  --tray: oklch(0.112 0 0);        /* "tray" shell behind a nested card */
+  --bg: oklch(0.098 0 0);          /* app canvas — deep near-black, matches the aura base */
+  --surface: oklch(0.128 0 0);     /* sidebar / base cards (solid fallback behind glass) */
+  --surface-2: oklch(0.168 0 0);   /* insets, hover */
+  --surface-3: oklch(0.208 0 0);   /* popovers, drawer, menus (ride higher) */
+  --tray: oklch(0.078 0 0);        /* "tray" shell behind a nested card */
 
-  /* Glass panels — rgba white tints only (no accent color-mix on large areas). */
-  --glass-bg: rgba(255, 255, 255, 0.045);
-  --glass-bg-2: rgba(255, 255, 255, 0.07);
-  --glass-bg-3: rgba(255, 255, 255, 0.10);
+  /* Glass — ONE consistent DARK frosted system. Every panel/control/modal tints the near-black
+     canvas (darkening the live aura behind it) at three depths; definition comes from the hairline
+     border, not a lighter fill. Used everywhere so transparency reads consistently across the app. */
+  --glass-bg: color-mix(in srgb, var(--bg) 58%, transparent);    /* panels: sidebar, topbar, dock, cards */
+  --glass-bg-2: color-mix(in srgb, var(--bg) 74%, transparent);  /* controls: buttons, inputs, chips, tabs */
+  --glass-bg-3: color-mix(in srgb, var(--bg) 88%, transparent);  /* modals: detail drawer, settings */
   --glass-border: rgba(255, 255, 255, 0.08);
   --glass-border-strong: rgba(255, 255, 255, 0.13);
-  --glass-blur: blur(16px) saturate(140%);
-  --glass-blur-strong: blur(10px) saturate(125%);
+  --glass-blur: blur(18px) saturate(140%);
+  --glass-blur-strong: blur(28px) saturate(140%);
 
   /* Ink — neutral */
   --ink: oklch(0.985 0 0);
@@ -46,7 +48,14 @@
   --accent-2: oklch(0.635 0.235 258);         /* brighter, for hover */
   --accent-soft: oklch(0.22 0.008 258);       /* neutral gray fill — not a blue wash */
   --accent-ink: oklch(0.82 0.145 258);        /* blue text/icons on dark */
-  --on-accent: oklch(0.99 0 0);               /* near-white text on a blue fill */
+  --on-accent: oklch(0.99 0 0);               /* near-white text on a blue fill; default before JS runs */
+  /* Foreground for text/icons sitting ON an accent-colored fill. Aliases --on-accent so every
+     existing `color: var(--on-accent)` consumer (DetailDrawer, TopBar, EmptyState, etc.) stays
+     correct automatically. SettingsDialog's accent picker computes a WCAG contrast check against
+     the live chosen color (preset or custom) and overwrites both --on-accent and --accent-contrast
+     as inline root styles on every pick, so this token always tracks whichever accent is active —
+     not just a hardcoded white-preset special case. New code should prefer --accent-contrast. */
+  --accent-contrast: var(--on-accent);
   /* White sheen for primary button fills only — never a canvas or panel glow. */
   --grad-blue: radial-gradient(120% 140% at 50% -20%, color-mix(in srgb, #fff 16%, transparent), transparent 60%);
 
@@ -106,11 +115,66 @@
   color-scheme: dark;
 }
 
+/* ── Light theme ─────────────────────────────────────────────────────────────────────────────────
+   Opt-in via <html data-theme="light"> (toggled in Settings). Only the COLOUR tokens change — the
+   glass-bg/-2/-3 formulas reference var(--bg), so they recompute to light glass automatically; the
+   border/line/hairline tokens are literal so they're re-stated here as dark-on-light. The live aura
+   renders in both themes (AppAura is theme-aware via its uLight uniform); this background here is
+   the html-level backstop only, used briefly before the canvas paints and visible in its gutters. */
+:root[data-theme="light"] {
+  --bg: oklch(0.985 0 0);
+  --surface: oklch(0.968 0 0);
+  --surface-2: oklch(0.935 0 0);
+  --surface-3: oklch(0.905 0 0);
+  --tray: oklch(0.93 0 0);
+
+  --glass-border: rgba(0, 0, 0, 0.10);
+  --glass-border-strong: rgba(0, 0, 0, 0.16);
+
+  --ink: oklch(0.205 0 0);
+  --muted: oklch(0.448 0 0);
+  --faint: oklch(0.60 0 0);
+
+  --line: rgba(0, 0, 0, 0.10);
+  --line-soft: rgba(0, 0, 0, 0.06);
+  --line-strong: rgba(0, 0, 0, 0.17);
+  --hairline-hi: rgba(255, 255, 255, 0.65);
+
+  --accent: oklch(0.52 0.235 258);
+  --accent-2: oklch(0.46 0.235 258);
+  --accent-soft: oklch(0.93 0.035 258);
+  --accent-ink: oklch(0.47 0.20 258);
+  --on-accent: oklch(0.99 0 0);
+
+  --ok-soft: oklch(0.93 0.05 160);
+  --warn-soft: oklch(0.93 0.06 68);
+  --err-soft: oklch(0.93 0.06 22);
+  --info-soft: oklch(0.93 0.05 250);
+
+  /* Shadows — the base tokens are dark-canvas literals (heavy rgba(0,0,0,..) opacities tuned to
+     read correctly against a near-black app). Left as-is they paint as a heavy black smudge under
+     floating glass panels (modals, dock) on a light surface, so re-state them here at softened
+     opacities — same geometry, lighter ink — for panels/modals/cards in light mode. */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.10), 0 1px 3px -1px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 10px -2px rgba(0,0,0,.12), 0 2px 6px -2px rgba(0,0,0,.08), inset 0 1px 0 var(--hairline-hi);
+  --shadow-lg: 0 24px 60px -20px rgba(0,0,0,.20), 0 10px 24px -12px rgba(0,0,0,.12), inset 0 1px 0 var(--hairline-hi);
+  --shadow-glass: 0 24px 64px -24px rgba(0,0,0,.22), 0 0 0 1px var(--glass-border), inset 0 1px 0 var(--hairline-hi);
+
+  color-scheme: light;
+  /* Clean, subtle light backdrop (very faint cool wash from the top) — no live aura in light mode. */
+  background: radial-gradient(125% 90% at 50% -12%, oklch(0.995 0.012 258) 0%, oklch(0.95 0.004 258) 55%, oklch(0.93 0 0) 100%);
+}
+
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
+/* Stacking backstop for the live AppAura: html paints the aura base black as the absolute
+   fallback, while body + #root stay transparent so the fixed z-index:0 canvas shows through
+   the in-flow shell content above it. */
+html { background: #08090d; }
+#root { background: transparent; }
 body {
   margin: 0;
-  background: var(--bg);
+  background: transparent;
   color: var(--ink);
   font: 400 var(--t-body)/1.5 var(--font-sans);
   font-feature-settings: "ss01", "cv01";

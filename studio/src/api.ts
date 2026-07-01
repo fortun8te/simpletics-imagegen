@@ -46,21 +46,48 @@ export const api = {
   getState: (brand: string, batch: string) =>
     jget<BatchState>(`/api/state?brand=${encodeURIComponent(brand)}&batch=${encodeURIComponent(batch)}`, emptyState(brand, batch)),
   getHealth: () =>
-    jget<Health>('/api/health', { ok: false, bridge: false, codex: { alive: false }, queue: { running: 0, queued: 0, done: 0, failed: 0 } }),
-  imgUrl: (relPath: string, w?: number) =>
-    `/img?path=${encodeURIComponent(relPath)}${w ? `&w=${w}` : ''}`,
+    jget<Health>('/api/health', {
+      ok: false,
+      bridge: false,
+      codex: { alive: false },
+      queue: { running: 0, queued: 0, done: 0, failed: 0 },
+      estimate: { seconds: 30, samples: 0, fallback: true },
+    }),
+  imgUrl: (relPath: string, w?: number, downloadName?: string) => {
+    const q = new URLSearchParams({ path: relPath });
+    if (w) q.set('w', String(w));
+    if (downloadName) q.set('filename', downloadName);
+    return `/img?${q}`;
+  },
   generate: (brand: string, batch: string, scope: GenerateScope, variants: number) =>
     jpost<{ ok: boolean; enqueued: number }>('/api/generate', { brand, batch, scope, variants }, { ok: false, enqueued: 0 }),
   regenerate: (relPath: string) =>
     jpost<{ ok: boolean }>('/api/regenerate', { relPath }, { ok: false }),
-  // Revise = re-generate this slot with the original prompt PLUS a change instruction; queues a new version.
-  revise: (relPath: string, instruction: string) =>
-    jpost<{ ok: boolean }>('/api/revise', { relPath, instruction }, { ok: false }),
+  // Revise = re-generate this slot with the original prompt PLUS a change instruction; queues a new
+  // version. Always uses the ORIGINAL image as a reference; extraRefs are uploaded board image ids.
+  revise: (relPath: string, instruction: string, extraRefs: string[] = []) =>
+    jpost<{ ok: boolean; enqueued?: number; refs?: number }>('/api/revise', { relPath, instruction, extraRefs }, { ok: false }),
+  // Upload a reference image (base64 data URL) for the Revise board → returns { id, url }.
+  uploadRef: (dataUrl: string) =>
+    jpost<{ ok: boolean; id?: string; url?: string }>('/api/upload-ref', { dataUrl }, { ok: false }),
   cancel: (arg: { jobId?: string; all?: boolean }) =>
     jpost<{ ok: boolean }>('/api/cancel', arg, { ok: false }),
+  // Drag-and-drop queue reorder: `jobIds` is the full desired front-to-back order of this batch's
+  // currently-queued job ids. The server rewrites priority so the worker actually honors it.
+  reorderQueue: (brand: string, batch: string, jobIds: string[]) =>
+    jpost<{ ok: boolean; reordered?: number }>('/api/queue/reorder', { brand, batch, jobIds }, { ok: false }),
   pause: () => jpost<{ ok: boolean }>('/api/pause', {}, { ok: false }),
   resume: () => jpost<{ ok: boolean }>('/api/resume', {}, { ok: false }),
   reset: () => jpost<{ ok: boolean }>('/api/reset', {}, { ok: false }),
   archive: (relPath: string, archived: boolean) =>
     jpost<{ ok: boolean }>('/api/archive', { relPath, archived }, { ok: false }),
+  // Append a new prompt entry ("another take", e.g. p3 after p1/p2) to a variation's prompts[] in
+  // config.json. Clones the last prompt's text verbatim as a starting point — caller should refetch
+  // state afterward so the new slot appears. See studio-server.mjs POST /api/prompt/add.
+  addPrompt: (brand: string, batch: string, ad: string, variation: string) =>
+    jpost<{ ok: boolean; prompt?: { id: string; label?: string; prompt: string } }>(
+      '/api/prompt/add',
+      { brand, batch, ad, variation },
+      { ok: false },
+    ),
 };

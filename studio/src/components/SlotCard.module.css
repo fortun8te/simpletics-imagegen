@@ -61,10 +61,10 @@
   font-weight: 500;
   letter-spacing: 0.04em;
   color: var(--muted);
-  background: color-mix(in srgb, var(--bg) 70%, transparent);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--line);
+  background: var(--glass-bg-2);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid var(--glass-border);
   border-radius: var(--r-pill);
 }
 
@@ -78,14 +78,13 @@
   justify-content: center;
   gap: var(--space-1);
   padding: var(--space-2);
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--bg) 72%, transparent),
-    color-mix(in srgb, var(--bg) 24%, transparent)
-  );
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  border-top: 1px solid var(--line-soft);
+  /* Floating-glass action bar over an arbitrary photo — opaque enough glass-bg-3 wash
+     so the photo underneath can't bleed through and discolor it (same recipe as
+     Sidebar/TopBar: a flat token fill + blur, no thin gradient stop). */
+  background: var(--glass-bg-3);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-top: 1px solid var(--glass-border);
   opacity: 0;
   transform: translateY(6px);
   transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
@@ -114,9 +113,9 @@
     border-color var(--dur-1) var(--ease);
 }
 .iconBtn:hover {
-  color: var(--ink);
-  background: var(--surface-2);
-  border-color: transparent;
+  color: var(--accent-ink);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 /* compact density shrinks the icon buttons so tiny tiles don't feel crowded.

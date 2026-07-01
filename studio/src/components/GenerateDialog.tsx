@@ -1,7 +1,13 @@
 // GenerateDialog (container) — batch/ads-level entry point for generation.
 // Reads ui.genOpen + state/brand/batch from the store; calls api.generate.
 // Per-prompt/variation generation is triggered from cards/rows, not here.
-import { useEffect, useMemo, useState } from 'react';
+//
+// Time estimate: on open, fetches the server's rolling average single-image duration
+// (api.getHealth().estimate — lib/jobstore.mjs avgDurationSeconds(), a real measurement from the
+// last ~20 completed jobs, falling back to a 30s default when there's no history yet). Shown next to
+// the variants stepper as "~Xs per image" + a total batch ETA (targetedSlots × variants × avgSeconds),
+// recomputed live as the user changes scope/variants — no extra fetch needed for that part, just math.
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Icon } from './Icon';
 import { useStore } from '../store';
@@ -18,6 +24,17 @@ function slotsOf(ads: AdNode[]): number {
   return n;
 }
 
+// Format a duration in seconds as "~4m 30s" / "~45s" / "~1h 5m" — compact, no leading zeros.
+function formatDuration(totalSeconds: number): string {
+  const s = Math.max(0, Math.round(totalSeconds));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return sec > 0 ? `${m}m ${sec}s` : `${m}m`;
+  return `${sec}s`;
+}
+
 export default function GenerateDialog() {
   const genOpen = useStore((st) => st.ui.genOpen);
   const state = useStore((st) => st.state);
@@ -31,14 +48,28 @@ export default function GenerateDialog() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [variants, setVariants] = useState(2);
   const [submitting, setSubmitting] = useState(false);
+  // Synchronous re-entrancy guard: `submitting` state isn't visible to a second click that fires
+  // in the same tick as the first (before React commits the re-render that disables the button).
+  // A ref mutates immediately, so back-to-back/rapid clicks past the first are turned away for real.
+  const submittingRef = useRef(false);
+  // Rolling-average per-image duration (seconds), fetched fresh each time the dialog opens. Defaults
+  // to 30s (the server's own fallback — see lib/jobstore.mjs avgDurationSeconds()) so the estimate
+  // text always has a number to show, never a blank, even before the fetch resolves.
+  const [avgSeconds, setAvgSeconds] = useState(30);
 
-  // Reset to defaults each time the dialog opens.
+  // Reset to defaults each time the dialog opens, and fetch the latest generation-time estimate.
   useEffect(() => {
     if (genOpen) {
       setScope('batch');
       setSelected(new Set());
       setVariants(2);
       setSubmitting(false);
+      submittingRef.current = false;
+      let cancelled = false;
+      api.getHealth().then((h) => {
+        if (!cancelled && h.estimate) setAvgSeconds(h.estimate.seconds);
+      });
+      return () => { cancelled = true; };
     }
   }, [genOpen]);
 
@@ -60,8 +91,11 @@ export default function GenerateDialog() {
   }, [scope, ads, selected]);
 
   const estimate = targetedSlots * variants;
+  // Total ETA = targeted slots × variants × the rolling average seconds-per-image (live — recomputes
+  // as the user changes the variants stepper or scope, no extra fetch needed).
+  const etaSeconds = estimate * avgSeconds;
 
-  const clampVariants = (n: number) => Math.max(1, Math.min(6, n));
+  const clampVariants = (n: number) => Math.max(1, Math.min(6, Math.round(n) || 1));
 
   const canSubmit =
     !submitting &&
@@ -70,7 +104,8 @@ export default function GenerateDialog() {
     (scope === 'batch' || selected.size > 0);
 
   const submit = async () => {
-    if (!canSubmit || !brand || !batch) return;
+    if (!canSubmit || !brand || !batch || submittingRef.current) return;
+    submittingRef.current = true;
     setSubmitting(true);
     const payload: GenerateScope =
       scope === 'ads' ? { ads: Array.from(selected) } : {};
@@ -180,6 +215,14 @@ export default function GenerateDialog() {
               ~<b>{estimate}</b> {estimate === 1 ? 'image' : 'images'}
               {targetedSlots > 0 ? <> ({targetedSlots} {targetedSlots === 1 ? 'slot' : 'slots'} × {variants})</> : null}
             </p>
+
+            {/* Time estimate — per-image rate (rolling average from recent jobs, or the 30s default)
+                + a total batch ETA. Updates live with variants/scope; no submit required to see it. */}
+            {estimate > 0 && (
+              <p className={s.eta} aria-live="polite">
+                ~{avgSeconds}s per image · <b>~{formatDuration(etaSeconds)}</b> total
+              </p>
+            )}
           </div>
 
           <div className={s.foot}>

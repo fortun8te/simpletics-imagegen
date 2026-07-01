@@ -242,17 +242,28 @@ export default function TopBar() {
               <span>Continue</span>
             </button>
           ) : state === 'cooling' ? null : (
-            <button
-              type="button"
-              className={s.primary}
-              onClick={doGenerate}
-              title={emptyCount > 0
-                ? `Generate the ${emptyCount} image${emptyCount === 1 ? '' : 's'} that haven't been created yet`
-                : 'Add one new variant to every variation — existing images are kept'}
-            >
-              <Icon name="sparkles" size={15} />
-              <span>{emptyCount > 0 ? `Generate ${emptyCount} missing` : 'Add 1 variant'}</span>
-            </button>
+            <>
+              <button
+                type="button"
+                className={s.primary}
+                onClick={doGenerate}
+                title={emptyCount > 0
+                  ? `Generate the ${emptyCount} image${emptyCount === 1 ? '' : 's'} that haven't been created yet`
+                  : 'Add one new variant to every variation — existing images are kept'}
+              >
+                <Icon name="sparkles" size={15} />
+                <span>{emptyCount > 0 ? `Generate ${emptyCount} missing` : 'Add 1 variant'}</span>
+              </button>
+              <button
+                type="button"
+                className={s.secondary}
+                onClick={() => setUI({ genOpen: true })}
+                title="Choose scope, variant count, and see a time estimate before generating"
+                aria-label="Generate with options"
+              >
+                <Icon name="sliders" size={14} />
+              </button>
+            </>
           )}
         </div>
       </div>

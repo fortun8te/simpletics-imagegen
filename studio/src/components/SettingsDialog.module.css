@@ -1,8 +1,8 @@
-/* SettingsDialog — Linear/Raycast command-palette feel.
-   Tall, narrow floating glass panel over a strong glass backdrop. Clear header with a
-   thin divider, a single scrollable column of small-caps grouped sections separated by
-   very low-opacity hairlines, seamless side-by-side setting rows, clean key-value system
-   rows with small colored status dots, and a bordered glass About card.
+/* SettingsDialog — Linear/Raycast command-palette feel, Cursor-style settings layout.
+   Wide floating glass panel over a strong glass backdrop. Clear header with a thin divider,
+   then a left icon+label nav column (mirrors the section eyebrows) beside a scrollable
+   content column showing only the active section's cards. Seamless side-by-side setting
+   rows, clean key-value system rows with small colored status dots.
    Single committed dark theme; all token-based. Overlay z 100 / content z 101 + isolation
    keeps grid/TopBar text from bleeding through. */
 
@@ -15,6 +15,11 @@
   -webkit-backdrop-filter: var(--glass-blur-strong);
   animation: fade var(--dur-2) var(--ease);
 }
+/* Light mode: an 82%-opaque black veil tuned for the dark canvas reads as a near-black wall
+   behind a light dialog — soften so the dimming stays legible without crushing the backdrop. */
+:global([data-theme="light"]) .overlay {
+  background: rgba(0, 0, 0, 0.45);
+}
 
 .content {
   position: fixed;
@@ -24,16 +29,19 @@
   transform: translate3d(-50%, -50%, 0);
   z-index: 101;
   isolation: isolate;
-  width: 560px;
+  width: 760px;
   max-width: calc(100vw - 32px);
   max-height: calc(100vh - 48px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  /* Heavier modal glass over the live aura — readable but visibly translucent. */
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
   animation: pop var(--dur-2) var(--ease);
   outline: none;
 }
@@ -92,49 +100,107 @@
   color: var(--ink);
 }
 
-/* Body — single scrollable column of grouped sections, generous breathing room */
+/* Layout — left nav column + right scrollable content column, side by side */
+.layout {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
+/* Nav — vertical list of icon+label items; the active item gets a soft surface highlight,
+   same data-active convention Sidebar's own rows use. Own hairline on the right separates
+   it from the content column. */
+.nav {
+  flex: none;
+  width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-5) var(--space-3);
+  border-right: 1px solid var(--line);
+  overflow-y: auto;
+}
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 32px;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-md);
+  font-size: var(--t-body);
+  font-weight: 500;
+  color: var(--muted);
+  text-align: left;
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
+}
+.navItem svg {
+  flex: none;
+  opacity: 0.85;
+}
+.navItem:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+.navItem[data-active] {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+.navItem[data-active] svg {
+  opacity: 1;
+  color: var(--accent);
+}
+
+/* Body — single scrollable column of grouped sections, generous breathing room. Padding/gaps
+   sized up from the original compact pass so the wider dialog reads as spacious, not a dense
+   stack of cards crowding each other. */
 .body {
   position: relative;
   z-index: 1;
   flex: 1 1 auto;
   overflow-y: auto;
-  padding: var(--space-5);
+  padding: var(--space-7) var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-6);
   background: transparent;
+  min-width: 0;
 }
 
 /* Section — small-caps eyebrow over its rows */
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 .eyebrow {
   margin: 0;
 }
 
-/* Very low-opacity divider between groups */
-.groupDivider {
-  height: 1px;
-  flex: none;
-  background: var(--line-soft);
-}
-
-/* Seamless rows — no heavy borders, just spacing between rows */
+/* Cards stack — each setting is its own elevated card, grouped under the section's
+   plain-text eyebrow label which sits outside the cards. */
 .rows {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
-/* Setting row — label + hint on the left, control on the right */
+/* Setting card — dark rounded surface, padded; label+hint stacked on the left,
+   the live control right-aligned and vertically centered against them. */
 .settingRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.settingRow:hover {
+  border-color: var(--glass-border-strong);
 }
 .settingText {
   display: flex;
@@ -148,7 +214,7 @@
 }
 .rowLabel {
   font-size: var(--t-body);
-  font-weight: 500;
+  font-weight: 600;
   color: var(--ink);
 }
 .rowHint {
@@ -162,7 +228,7 @@
   align-items: stretch;
   gap: 2px;
   padding: 3px;
-  background: var(--surface-2);
+  background: var(--surface-3);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
 }
@@ -187,6 +253,102 @@
   background: var(--surface);
   color: var(--ink);
   box-shadow: var(--shadow-sm);
+}
+
+/* Accent swatches — same container recipe as .segmented (padded pill housing equal-weight
+   options), but each option is a round color sample instead of a text label. The selected
+   swatch gets the same "lifted" treatment as .segmentOn (raised surface + shadow + a ring
+   in its own color) so the two controls read as siblings. */
+.swatches {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 3px;
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+.swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  transition: background var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.swatch:hover {
+  background: color-mix(in srgb, var(--surface) 55%, var(--surface-3) 45%);
+}
+.swatchOn {
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.swatchDot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--swatch-color);
+  box-shadow: var(--inset-hi), 0 0 0 1px var(--glass-border);
+  transition: transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.swatchOn .swatchDot {
+  box-shadow: var(--inset-hi), 0 0 0 1.5px var(--swatch-color), 0 0 0 3px var(--surface);
+  transform: scale(1.05);
+}
+
+/* Accent control — the swatches pill plus the hex text field stacked beside it, so the whole
+   cluster still reads as one right-aligned control against the card's label+hint. */
+.accentControl {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Custom swatch — same look as a preset swatch, but it's a <label> wrapping a real native
+   <input type="color">. The input is invisibly stretched to fill the label (clicking anywhere
+   on the swatch opens the OS color picker) while .swatchDot stays the only visible paint, so it
+   matches the preset swatches pixel-for-pixel instead of showing the browser's own color-well UI. */
+.customSwatch {
+  position: relative;
+  cursor: pointer;
+}
+.colorInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Hex text field — direct entry, kept in sync with the color input both ways. Monospace so
+   hex digits stay legible and don't jitter the field width while typing. */
+.hexInput {
+  flex: none;
+  width: 84px;
+  height: 30px;
+  padding: 0 var(--space-2);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  font: 500 12px/1 var(--font-mono);
+  color: var(--ink);
+  text-align: center;
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.hexInput::placeholder {
+  color: var(--faint);
+}
+.hexInput:hover {
+  border-color: var(--glass-border-strong);
+}
+.hexInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
 }
 
 /* Show-archived toggle row */
@@ -222,13 +384,17 @@
   transform: translateX(16px);
 }
 
-/* System — clean key-value rows with small colored status dots (no bulky tags) */
+/* System — same card surface as settingRow, key-value content with small colored status dots */
 .kvRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
   min-width: 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
 }
 .kvLabel {
   font-size: var(--t-body);
@@ -268,57 +434,4 @@
 .usageSession {
   color: var(--faint);
   font-weight: 400;
-}
-
-/* About NEUEGEN — clean bordered glass card with the N monogram */
-.aboutCard {
-  position: relative;
-  z-index: 0;
-  isolation: isolate;
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border-radius: var(--r-md);
-  background: var(--glass-bg-2);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--inset-hi);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  overflow: hidden;
-}
-.aboutMark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  flex: none;
-  border-radius: var(--r-md);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--inset-hi);
-  color: var(--muted);
-}
-.aboutText {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.aboutName {
-  font-size: var(--t-body);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-}
-.aboutDesc {
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--muted);
-}
-.aboutMeta {
-  font-size: 11px;
-  color: var(--faint);
-  font-variant-numeric: tabular-nums;
 }
