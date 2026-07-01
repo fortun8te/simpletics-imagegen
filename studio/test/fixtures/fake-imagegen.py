@@ -32,7 +32,9 @@ def main():
         return 1
 
     if out_path:
-        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+        dirpath = os.path.dirname(out_path)
+        if dirpath:
+            os.makedirs(dirpath, exist_ok=True)
         with open(out_path, "wb") as f:
             f.write(b"FAKE_PNG_FOR_TESTS")
     return 0
