@@ -33,6 +33,10 @@ import { isLimitReached } from './usage.mjs';
 // nothing else is configured. Tune this number to change default throughput.
 export const MAX_CONCURRENT_JOBS = 3;
 
+// How many consecutive failures with the IDENTICAL error text mean "this is structurally broken"
+// (a dead credential, a missing tool) rather than one-off flakiness. See runState()'s 'blocked'.
+const FAIL_STREAK_THRESHOLD = 3;
+
 /**
  * Create the generation worker.
  *
@@ -59,12 +63,17 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
   let interval = null;      // the 1s safety-tick interval handle
   let cooldownTimer = null; // the setTimeout that ends a cooldown
   let inTick = false;       // reentrancy guard for tick() — see note below
+  let blockedReason = null;     // non-null once FAIL_STREAK_THRESHOLD identical failures happen in a row
+  let lastFailSignature = null; // the error text of the most recent ordinary (non-RATE_LIMIT) failure
+  let consecutiveFails = 0;     // how many times in a row lastFailSignature has repeated
 
   const notify = () => { try { onChange && onChange(); } catch {} };
 
-  // The worker is "blocked" from pulling new jobs while either the user paused it or a rate-limit
-  // cooldown is active. In-flight jobs always finish regardless.
-  const blocked = () => userPaused || cooling || isLimitReached();
+  // The worker is gated from pulling new jobs while the user paused it, a rate-limit cooldown is
+  // active, a structural failure streak has tripped, or the usage cap is hit. In-flight jobs always
+  // finish regardless. (Renamed from `blocked` to avoid clashing with the new public 'blocked'
+  // run-state below — this is the internal pull gate, not the same thing as blockedReason.)
+  const pullGated = () => userPaused || cooling || blockedReason != null || isLimitReached();
 
   // Pull and run as many queued jobs as capacity allows. Each finished job re-ticks so the freed
   // slot is immediately refilled. Guarded so it never runs while stopped or blocked.
@@ -80,7 +89,7 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
   // `concurrency`. Guarding tick() to a single active frame makes nested calls a no-op; the outer
   // loop's own next iteration picks up any newly-freed capacity correctly once `running` is current.
   function tick() {
-    if (!runningWorker || blocked() || inTick) return;
+    if (!runningWorker || pullGated() || inTick) return;
     inTick = true;
     try {
       const { queued } = store.counts();
@@ -122,6 +131,9 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
     if (res && res.ok) {
       store.complete(job.id, { relPath: res.relPath });
       didComplete = true;
+      consecutiveFails = 0;
+      lastFailSignature = null;
+      blockedReason = null;
       try { onComplete && onComplete(job); } catch {}
       notify();
     } else {
@@ -137,10 +149,25 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
       // Ordinary failure: retry up to 3 attempts, then give up and mark it failed. requeue() bumps
       // `attempts` for us, so check the CURRENT count before requeuing (i.e. attempts so far, not
       // counting this one yet) — once 3 ordinary failures have already happened, stop retrying.
+      // A FATAL error (gen.mjs's classification for known-permanent failures) skips straight to
+      // failed — retrying it just wastes more subprocess spawns against the same broken setup.
       const current = store.get(job.id);
       const attempts = (current && current.attempts) || 0;
-      if (attempts < 3) store.requeue(job.id);
-      else store.fail(job.id, error);
+      const isFatal = /^FATAL:/.test(error);
+      if (!isFatal && attempts < 3) {
+        store.requeue(job.id);
+      } else {
+        store.fail(job.id, error);
+        // Circuit breaker: N consecutive TERMINAL failures (jobs that gave up, not individual retry
+        // attempts) with the IDENTICAL error text means something structural is broken (dead
+        // credential, missing tool, ...), not one-off flakiness — stop burning the queue against it
+        // and tell the user plainly instead of quietly retrying forever. Checking on terminal
+        // failures only (rather than every retry) avoids tripping mid-retry and stranding a job that
+        // still has retry budget left in a permanently 'queued' limbo.
+        if (error === lastFailSignature) consecutiveFails++;
+        else { lastFailSignature = error; consecutiveFails = 1; }
+        if (consecutiveFails >= FAIL_STREAK_THRESHOLD) blockedReason = error;
+      }
       notify();
     }
 
@@ -183,6 +210,12 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
       cooldownTimer = null;
       changed = true;
     }
+    if (blockedReason) {
+      blockedReason = null;
+      consecutiveFails = 0;
+      lastFailSignature = null;
+      changed = true;
+    }
     if (didComplete) { didComplete = false; changed = true; }
     if (!runAborted) { runAborted = true; changed = true; }
     if (changed) notify();
@@ -198,6 +231,12 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
       resumeAt = null;
       clearTimeout(cooldownTimer);
       cooldownTimer = null;
+      changed = true;
+    }
+    if (blockedReason) {
+      blockedReason = null;
+      consecutiveFails = 0;
+      lastFailSignature = null;
       changed = true;
     }
     if (changed) notify();
@@ -227,7 +266,7 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
 
   function status() {
     // `paused` kept for back-compat: true while EITHER a user-pause or a rate-limit cooldown holds.
-    return { running, paused: blocked(), userPaused, cooling, resumeAt };
+    return { running, paused: pullGated(), userPaused, cooling, resumeAt };
   }
 
   // The worker is "busy" while any job is in flight OR while it's cooling down (a cooldown means work
@@ -239,15 +278,20 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
   // The run-state machine the UI drives off of. Priority: cooling (a real rate-limit) > running >
   // paused (user) > done (work finished, queue drained) > idle.
   function runState() {
-    if (runAborted) return { state: 'idle', resumeAt: null };
+    if (runAborted) return { state: 'idle', resumeAt: null, blockedReason: null };
     const { queued } = store.counts();
     let state;
-    if (cooling) state = 'cooling';
+    if (blockedReason) state = 'blocked';
+    else if (cooling) state = 'cooling';
     else if (running > 0) state = 'running';
     else if (userPaused) state = 'paused';
     else if (queued === 0 && didComplete) state = 'done';
     else state = 'idle';
-    return { state, resumeAt: cooling ? resumeAt : null };
+    return {
+      state,
+      resumeAt: cooling ? resumeAt : null,
+      blockedReason: state === 'blocked' ? blockedReason : null,
+    };
   }
 
   return { start, stop, status, busy, pause, resume, abortRun, runState };
