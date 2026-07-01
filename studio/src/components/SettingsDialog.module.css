@@ -435,3 +435,28 @@
   color: var(--faint);
   font-weight: 400;
 }
+
+/* Small numeric input used by the System section's usage-limit / concurrency rows. */
+.numberInput {
+  width: 72px;
+  height: 30px;
+  padding: 0 var(--space-2);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  font: 500 13px/1 var(--font-mono);
+  color: var(--ink);
+  text-align: center;
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.numberInput::placeholder {
+  color: var(--faint);
+}
+.numberInput:hover {
+  border-color: var(--glass-border-strong);
+}
+.numberInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+}

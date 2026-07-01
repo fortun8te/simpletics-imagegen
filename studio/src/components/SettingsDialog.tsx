@@ -271,6 +271,30 @@ export default function SettingsDialog() {
   const bridgeUp = !!health?.bridge;
   const codexBusy = !!health?.codex?.alive;
 
+  // Concurrency — free-typed text kept separate from the last-known server value, so mid-edit typing
+  // isn't clobbered by the next 5s health poll. Only commits (POSTs) on blur/Enter.
+  const [concurrencyInput, setConcurrencyInput] = useState('');
+  useEffect(() => {
+    if (health?.concurrency != null) setConcurrencyInput(String(health.concurrency));
+  }, [health?.concurrency]);
+  const commitConcurrency = () => {
+    const n = Math.max(1, Math.min(10, Math.round(Number(concurrencyInput)) || 1));
+    setConcurrencyInput(String(n));
+    api.setConcurrency(n);
+  };
+
+  // Usage limit — same free-typed-then-commit pattern. Empty string = unlimited (limit: null).
+  const [usageLimitInput, setUsageLimitInput] = useState('');
+  useEffect(() => {
+    setUsageLimitInput(codexUsage?.limit != null ? String(codexUsage.limit) : '');
+  }, [codexUsage?.limit]);
+  const commitUsageLimit = () => {
+    const trimmed = usageLimitInput.trim();
+    const n = trimmed === '' ? null : Math.max(1, Math.round(Number(trimmed)) || 1);
+    setUsageLimitInput(n == null ? '' : String(n));
+    api.setUsageLimit(n);
+  };
+
   // Honest usage line — never invent a number when codexUsage says unknown.
   const usageKnown = !!codexUsage?.known;
   const usageLabel = usageKnown
@@ -460,6 +484,40 @@ export default function SettingsDialog() {
                       <span className={s.usageSession}> · {sessionCount} this session</span>
                     )}
                   </span>
+                </div>
+                <div className={s.settingRow}>
+                  <div className={s.settingText} id="settings-concurrency-label">
+                    <span className={s.rowLabel}>Concurrency</span>
+                    <span className={s.rowHint}>How many images generate at once (1–10).</span>
+                  </div>
+                  <input
+                    aria-labelledby="settings-concurrency-label"
+                    className={`${s.numberInput} ${s.settingControl}`}
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={concurrencyInput}
+                    onChange={(e) => setConcurrencyInput(e.target.value)}
+                    onBlur={commitConcurrency}
+                    onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                  />
+                </div>
+                <div className={s.settingRow}>
+                  <div className={s.settingText} id="settings-usage-limit-label">
+                    <span className={s.rowLabel}>Usage limit</span>
+                    <span className={s.rowHint}>Pause after N images this session. Blank = unlimited.</span>
+                  </div>
+                  <input
+                    aria-labelledby="settings-usage-limit-label"
+                    className={`${s.numberInput} ${s.settingControl}`}
+                    type="number"
+                    min={1}
+                    placeholder="Unlimited"
+                    value={usageLimitInput}
+                    onChange={(e) => setUsageLimitInput(e.target.value)}
+                    onBlur={commitUsageLimit}
+                    onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                  />
                 </div>
               </div>
             </section>
