@@ -26,6 +26,25 @@ const part = (value) => String(value || '').trim().replace(/[^a-zA-Z0-9_-]+/g, '
 // error is PREFIXED with 'RATE_LIMIT: ' so the worker can cool down and retry later.
 const RATE_LIMIT_RE = /HTTP 429|usage limit|too many requests|rate.?limit|quota|exceeded/i;
 
+// Errors that can never succeed by retrying (a dead OAuth credential, a missing tool install).
+// PREFIXED with 'FATAL: ' so worker.mjs skips the normal 3-attempt retry loop for these — retrying
+// a known-permanent error just wastes more subprocess spawns against the same broken setup.
+const FATAL_RE = /token refresh failed|refresh_token is no longer valid|auth\.json not found|no ChatGPT OAuth access_token|chatgpt-imagegen tool not found/i;
+
+// How long a single generation attempt may run before it's treated as hung and killed. Overridable
+// via CHATGPT_IMAGEGEN_TIMEOUT_MS (same env-override convention as EFFORT/VERBOSITY below). Read
+// lazily (not at module-load time) so tests can set the env var per-case.
+function getTimeoutMs() {
+  return Number(process.env.CHATGPT_IMAGEGEN_TIMEOUT_MS) || 180_000;
+}
+
+// Apply the RATE_LIMIT / FATAL prefix classification consistently everywhere an error is returned.
+function classifyError(error) {
+  if (RATE_LIMIT_RE.test(error)) return `RATE_LIMIT: ${error}`;
+  if (FATAL_RE.test(error)) return `FATAL: ${error}`;
+  return error;
+}
+
 /**
  * Generate one image slot through the codex backend.
  *
@@ -56,7 +75,7 @@ export async function generateSlot(job, { renders, repoDir }) {
   const out = join(renders, finalRel);
 
   if (!existsSync(TOOL)) {
-    return { ok: false, error: `chatgpt-imagegen tool not found at ${TOOL} (set CHATGPT_IMAGEGEN)` };
+    return { ok: false, error: classifyError(`chatgpt-imagegen tool not found at ${TOOL} (set CHATGPT_IMAGEGEN)`) };
   }
 
   const size = /^\d+x\d+$/.test(String(job.size || '')) ? job.size : '1024x1024';
@@ -78,10 +97,26 @@ export async function generateSlot(job, { renders, repoDir }) {
       ...(CA_BUNDLE ? { SSL_CERT_FILE: CA_BUNDLE, REQUESTS_CA_BUNDLE: CA_BUNDLE } : {}),
     };
     const child = spawn('python3', args, { stdio: ['ignore', 'pipe', 'pipe'], env });
-    let err = '', sout = '';
+    let err = '', sout = '', timedOut = false;
     child.stdout.on('data', (d) => { sout += d.toString(); });
     child.stderr.on('data', (d) => { err += d.toString(); });
+
+    // A hung subprocess (network stall, etc.) must never occupy a concurrency slot forever.
+    const timeoutMs = getTimeoutMs();
+    const timer = setTimeout(() => {
+      timedOut = true;
+      try { child.kill('SIGTERM'); } catch {}
+      const killTimer = setTimeout(() => { try { child.kill('SIGKILL'); } catch {} }, 5000);
+      if (killTimer.unref) killTimer.unref();
+    }, timeoutMs);
+    if (timer.unref) timer.unref();
+
     child.on('close', (code) => {
+      clearTimeout(timer);
+      if (timedOut) {
+        resolve({ ok: false, error: `TIMEOUT: generation exceeded ${Math.round(timeoutMs / 1000)}s` });
+        return;
+      }
       if (code === 0 && existsSync(out)) {
         resolve({ ok: true, relPath: finalRel });
         return;
@@ -89,13 +124,11 @@ export async function generateSlot(job, { renders, repoDir }) {
       // Capture BOTH streams: the codex usage-limit / HTTP 429 notice can surface on stdout, so
       // include stdout in the error text the rate-limit detector greps.
       let error = (err + '\n' + sout).trim().split('\n').slice(-4).join(' | ') || `exit ${code}`;
-      if (RATE_LIMIT_RE.test(error)) error = `RATE_LIMIT: ${error}`;
-      resolve({ ok: false, error });
+      resolve({ ok: false, error: classifyError(error) });
     });
     child.on('error', (e) => {
-      let error = String(e.message || e);
-      if (RATE_LIMIT_RE.test(error)) error = `RATE_LIMIT: ${error}`;
-      resolve({ ok: false, error });
+      clearTimeout(timer);
+      resolve({ ok: false, error: classifyError(String(e.message || e)) });
     });
   });
 }
