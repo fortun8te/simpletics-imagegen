@@ -212,7 +212,6 @@ export function createJobStore({ stateDir }) {
     job.error = error != null ? String(error) : undefined;
     job.finishedAt = Date.now();
     job.attempts = (job.attempts || 0) + 1;
-    recordDuration(job);
     saveJobs();
     emitChange();
     return job;
