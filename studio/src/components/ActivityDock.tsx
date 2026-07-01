@@ -299,7 +299,7 @@ export default function ActivityDock() {
 
   const jobs = deriveJobs(state);
   const run = state?.run;
-  const isPaused = run?.state === 'paused' || run?.state === 'cooling';
+  const isPaused = run?.state === 'paused' || run?.state === 'cooling' || run?.state === 'blocked';
 
   const running = jobs.filter((j) => j.status === 'generating').length;
   const queued = jobs.filter((j) => j.status === 'queued').length;
