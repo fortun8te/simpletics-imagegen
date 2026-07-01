@@ -79,6 +79,10 @@ export const api = {
   pause: () => jpost<{ ok: boolean }>('/api/pause', {}, { ok: false }),
   resume: () => jpost<{ ok: boolean }>('/api/resume', {}, { ok: false }),
   reset: () => jpost<{ ok: boolean }>('/api/reset', {}, { ok: false }),
+  setUsageLimit: (limit: number | null) =>
+    jpost<{ ok: boolean; limit?: number | null }>('/api/usage-limit', { limit }, { ok: false }),
+  setConcurrency: (n: number) =>
+    jpost<{ ok: boolean; concurrency?: number }>('/api/concurrency', { n }, { ok: false }),
   archive: (relPath: string, archived: boolean) =>
     jpost<{ ok: boolean }>('/api/archive', { relPath, archived }, { ok: false }),
   // Append a new prompt entry ("another take", e.g. p3 after p1/p2) to a variation's prompts[] in

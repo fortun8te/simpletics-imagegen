@@ -31,7 +31,9 @@ export interface CodexInfo { alive: boolean; progress?: CodexProgress | null; }
 export interface QueueInfo { running: number; queued: number; done: number; failed: number; }
 
 // Run state machine (worker-owned). `cooling` = paused by a codex rate-limit; auto-resumes at resumeAt.
-export type RunState = 'idle' | 'running' | 'paused' | 'cooling' | 'done';
+// `blocked` = the circuit breaker tripped (N consecutive identical failures) — needs a human fix,
+// does not auto-resume; see blockedReason.
+export type RunState = 'idle' | 'running' | 'paused' | 'cooling' | 'blocked' | 'done';
 export interface RunInfo {
   state: RunState;
   running: number;
@@ -40,6 +42,7 @@ export interface RunInfo {
   failed: number;
   total: number;            // running + queued + done + failed for the current run
   resumeAt?: number | null; // epoch ms when a cooling run auto-resumes
+  blockedReason?: string | null; // set only while state === 'blocked'; the repeated error text
 }
 
 // Best-effort codex usage/quota. `known:false` → show an honest "unknown", never a fake number.
@@ -85,7 +88,7 @@ export interface PromptRecipe { blocks: Record<string, string>; compiledAt: stri
 // `seconds` is the default estimate (not a fabricated measurement).
 export interface GenEstimate { seconds: number; samples: number; fallback: boolean; }
 
-export interface Health { ok: boolean; bridge: boolean; codex: { alive: boolean }; queue: QueueInfo; estimate?: GenEstimate; }
+export interface Health { ok: boolean; bridge: boolean; codex: { alive: boolean }; queue: QueueInfo; estimate?: GenEstimate; concurrency?: number; }
 
 export interface ActivityJob {
   id: string; ad: string; variation: string; prompt: string; run: number;
