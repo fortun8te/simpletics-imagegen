@@ -149,7 +149,7 @@
 }
 .navItem[data-active] svg {
   opacity: 1;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /* Body — single scrollable column of grouped sections, generous breathing room. Padding/gaps
@@ -346,6 +346,29 @@
   border-color: var(--glass-border-strong);
 }
 .hexInput:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+/* Numeric setting input (budget caps + grace window) — same chip shape as .hexInput. */
+.numInput {
+  flex: none;
+  width: 84px;
+  height: 30px;
+  padding: 0 var(--space-2);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  font: 500 13px/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  text-align: center;
+  transition: border-color var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.numInput::placeholder { color: var(--faint); }
+.numInput:hover { border-color: var(--glass-border-strong); }
+.numInput:focus {
   outline: none;
   border-color: var(--accent);
   background: var(--surface);

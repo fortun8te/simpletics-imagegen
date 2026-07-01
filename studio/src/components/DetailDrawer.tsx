@@ -198,8 +198,11 @@ export default function DetailDrawer() {
 
   const slot = found?.slot;
   const isArchived = slot?.status === 'archived';
-  const refUrl = promptInfo?.refUrl || null;
-  const refName = promptInfo?.refName || null;
+  const refList = promptInfo?.refs?.length
+    ? promptInfo.refs
+    : promptInfo?.refUrl
+      ? [{ role: 'extra' as const, name: promptInfo.refName || 'Reference', url: promptInfo.refUrl }]
+      : [];
   const promptText = promptInfo?.text?.trim() || '';
 
   // Breadcrumb: ad / variation / prompt (falls back to the rel path if not located).
@@ -378,20 +381,22 @@ export default function DetailDrawer() {
 
             <aside className={s.rail}>
               <div className={s.railScroll}>
-                {refUrl ? (
+                {refList.length > 0 ? (
                   <section className={s.section}>
                     <div className={s.sectionHead}>
-                      <span className={s.label}>Reference</span>
+                      <span className={s.label}>References</span>
                     </div>
-                    <div className={s.refCard}>
-                      <div className={s.refThumb}>
-                        <img src={refUrl} alt={refName || 'Reference'} decoding="async" />
+                    {refList.map((ref) => (
+                      <div key={`${ref.role}-${ref.url}`} className={s.refCard}>
+                        <div className={s.refThumb}>
+                          <img src={ref.url} alt={ref.name} decoding="async" />
+                        </div>
+                        <div className={s.refMeta}>
+                          <span className={s.refName}>{ref.name}</span>
+                          <span className={s.refSub}>{ref.role}</span>
+                        </div>
                       </div>
-                      <div className={s.refMeta}>
-                        <span className={s.refName}>{refName || 'Reference image'}</span>
-                        <span className={s.refSub}>Used for this prompt</span>
-                      </div>
-                    </div>
+                    ))}
                   </section>
                 ) : null}
 

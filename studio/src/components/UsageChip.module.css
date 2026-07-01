@@ -1,0 +1,202 @@
+/* Codex usage ring — dual concentric rings (outer 5h, inner weekly) + compact % labels. */
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: none;
+  min-height: 24px;
+  padding: 0 6px;
+  border-radius: var(--r-sm, 6px);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--faint);
+  opacity: 0.72;
+  transition: opacity var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+}
+.chip:hover {
+  opacity: 1;
+  background: var(--surface-3);
+}
+.chip:active {
+  opacity: 1;
+}
+.chip:disabled {
+  cursor: default;
+}
+
+.ring {
+  flex: none;
+  display: block;
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+}
+
+/* Checking — spin a short accent arc on the outer track; quiet the live glow underneath. */
+.ringBusy .fillLive,
+.ringBusy .fillLiveInner,
+.ringBusy .edge {
+  opacity: 0.38;
+  animation-play-state: paused;
+}
+.checkArc {
+  opacity: 0.88;
+  transform-origin: 11px 11px;
+  animation: usageChipSpin 1.15s linear infinite;
+}
+@keyframes usageChipSpin {
+  to { transform: rotate(360deg); }
+}
+
+.pctsChecking {
+  opacity: 0.52;
+  transition: opacity var(--dur-2) var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkArc {
+    animation: none;
+    opacity: 0.65;
+  }
+  .ringBusy .fillLive,
+  .ringBusy .fillLiveInner {
+    opacity: 0.5;
+  }
+}
+
+.track {
+  fill: none;
+  stroke: color-mix(in srgb, white 16%, transparent);
+  stroke-width: 1.65;
+}
+.trackInner {
+  stroke: color-mix(in srgb, white 11%, transparent);
+  stroke-width: 1.35;
+}
+
+.fill {
+  fill: none;
+  stroke-linecap: round;
+  stroke-width: 1.65;
+  transition: stroke-dasharray 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fillInner {
+  stroke-width: 1.35;
+}
+
+/* Live arcs — soft glow pulse, no stroke-width wobble or liquid distortion. */
+.fillLive {
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 38%, transparent));
+  animation: usageChipGlow 2.4s ease-in-out infinite;
+}
+.fillLiveInner {
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--accent-2) 32%, transparent));
+  animation: usageChipGlowInner 2.8s ease-in-out infinite;
+}
+@keyframes usageChipGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--accent) 30%, transparent));
+    opacity: 0.92;
+  }
+  50% {
+    filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 52%, transparent));
+    opacity: 1;
+  }
+}
+@keyframes usageChipGlowInner {
+  0%, 100% {
+    filter: drop-shadow(0 0 1.5px color-mix(in srgb, var(--accent-2) 24%, transparent));
+    opacity: 0.88;
+  }
+  50% {
+    filter: drop-shadow(0 0 3.5px color-mix(in srgb, var(--accent-2) 42%, transparent));
+    opacity: 1;
+  }
+}
+
+.edge {
+  fill: rgba(255, 255, 255, 0.9);
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.55));
+  animation: usageChipEdge 2.2s ease-in-out infinite;
+}
+.edgeInner {
+  fill: rgba(255, 255, 255, 0.78);
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+}
+@keyframes usageChipEdge {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.fillLow {
+  stroke: var(--warn, #e0a030);
+}
+.fillStale {
+  stroke: var(--faint);
+  transition: none;
+}
+
+.pcts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  line-height: 1.05;
+}
+.pct {
+  font-size: 11px;
+  font-weight: 500;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.pctWeekly {
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.pctStale {
+  color: var(--faint);
+}
+
+/* ---- tooltip ---- */
+.tip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 260px;
+  padding: var(--space-3) var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-2, 0 8px 24px -8px rgba(0, 0, 0, 0.5));
+  font-size: 12px;
+  z-index: 60;
+}
+.tipRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.tipLabel {
+  color: var(--muted);
+}
+.tipVal {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.tipFoot {
+  margin-top: 2px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line-soft);
+  color: var(--faint);
+  font-size: 11px;
+}
+.tipArrow {
+  fill: var(--surface-3);
+}

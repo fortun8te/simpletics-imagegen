@@ -9,6 +9,7 @@ type Status = SlotStatus | JobStatus;
 const LABELS: Record<Status, string> = {
   empty: 'Empty',
   queued: 'Queued',
+  waiting: 'Starting',
   generating: 'Generating',
   running: 'Running',
   done: 'Done',

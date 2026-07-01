@@ -11,6 +11,11 @@ import { useStore } from '../store';
 import type { AccentRGB, Density, Theme } from '../store';
 import { api } from '../api';
 import type { Health } from '../types';
+import {
+  applyAccentColor,
+  hexToRgb,
+  refreshAccentDerivatives,
+} from '../lib/accent';
 import s from './SettingsDialog.module.css';
 
 // Theme MODE is a superset of the store's resolved Theme ('dark' | 'light'): 'auto' follows
@@ -89,74 +94,13 @@ const writeCustomHex = (hex: string) => {
   try { localStorage.setItem(CUSTOM_HEX_KEY, hex); } catch { /* ignore */ }
 };
 
-// #rrggbb -> {r,g,b}. Returns null for anything that isn't a clean 6-digit hex (e.g. the input
-// mid-edit) so callers can ignore incomplete typing instead of applying a garbage color.
-const hexToRgb = (hex: string): AccentRGB | null => {
-  const m = /^#?([0-9a-fA-F]{6})$/.exec(hex.trim());
-  if (!m) return null;
-  const n = parseInt(m[1], 16);
-  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
-};
-const rgbToHex = ({ r, g, b }: AccentRGB): string =>
-  `#${[r, g, b].map((c) => Math.round(c).toString(16).padStart(2, '0')).join('')}`;
-// Mix toward white for the "-2"/hover variant, same relationship every existing preset already
-// has between its `accent` and brighter `accent2`.
-const lighten = ({ r, g, b }: AccentRGB, amt: number): AccentRGB => ({
-  r: r + (255 - r) * amt,
-  g: g + (255 - g) * amt,
-  b: b + (255 - b) * amt,
-});
-
-// Relative luminance (WCAG formula) on linearized sRGB channels, used to decide whether dark
-// or white text/icons stay legible painted on top of an arbitrary accent fill. Generalizes the
-// old hardcoded `[data-accent="white"]` CSS override (which only handled the one near-white
-// preset) to any chosen color, preset or custom.
-const relLuminance = ({ r, g, b }: AccentRGB): number => {
-  const lin = (c: number) => {
-    const v = c / 255;
-    return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-  };
-  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-};
-// Contrast ratio of a color against black/white; pick whichever ink wins, returned as a CSS color.
-const onAccentFor = (rgb: AccentRGB): string => {
-  const L = relLuminance(rgb);
-  const contrastWithWhite = (1.0 + 0.05) / (L + 0.05);
-  const contrastWithBlack = (L + 0.05) / (0.0 + 0.05);
-  return contrastWithWhite >= contrastWithBlack ? 'oklch(0.99 0 0)' : 'oklch(0.18 0 0)';
-};
-
-// Apply any accent color (preset or custom) to the live CSS custom properties: --accent/--accent-2
-// as the picked color + a lightened hover variant, and --on-accent computed live via the contrast
-// check above so text/icons painted on top of the fill stay legible for any color, not just the
-// 3 presets — replaces the old data-accent="white" CSS-only special case.
-const applyAccentColor = (rgb: AccentRGB, presetAccent?: { accent: string; accent2: string }) => {
-  try {
-    const root = document.documentElement;
-    if (presetAccent) {
-      root.style.setProperty('--accent', presetAccent.accent);
-      root.style.setProperty('--accent-2', presetAccent.accent2);
-    } else {
-      root.style.setProperty('--accent', rgbToHex(rgb));
-      root.style.setProperty('--accent-2', rgbToHex(lighten(rgb, 0.18)));
-    }
-    const onAccent = onAccentFor(rgb);
-    root.style.setProperty('--on-accent', onAccent);
-    root.style.setProperty('--accent-contrast', onAccent);
-  } catch { /* SSR/no-DOM */ }
-};
-
-// Apply the persisted accent immediately on module load, before first paint of accent-driven
-// chrome (buttons, focus rings, the avatar gradient) — mirrors store.ts's applyTheme bootstrap.
-// Also seed the store's accentRGB synchronously (not via setUI, to avoid touching localStorage
-// again for a value SettingsDialog already persists under its own ACCENT_KEY) so AppAura reads
-// the correct palette on its very first frame instead of one render late.
-{
-  const bootId = readAccent();
-  const bootRgb = bootId === 'custom' ? (hexToRgb(readCustomHex()) ?? hexToRgb(DEFAULT_CUSTOM_HEX)!) : ACCENTS[bootId].rgb;
-  applyAccentColor(bootRgb, bootId === 'custom' ? undefined : ACCENTS[bootId]);
-  useStore.setState((st) => ({ ui: { ...st.ui, accentRGB: bootRgb } }));
-}
+const bootAccentId = readAccent();
+const bootRgb =
+  bootAccentId === 'custom'
+    ? (hexToRgb(readCustomHex()) ?? hexToRgb(DEFAULT_CUSTOM_HEX)!)
+    : ACCENTS[bootAccentId].rgb;
+applyAccentColor(bootRgb, bootAccentId === 'custom' ? undefined : ACCENTS[bootAccentId]);
+useStore.setState((st) => ({ ui: { ...st.ui, accentRGB: bootRgb } }));
 
 // Left-nav sections — mirrors the three plain-text eyebrows the body already groups its
 // cards under, just given icons + a switcher so the dialog reads like a settings app
@@ -185,13 +129,26 @@ export default function SettingsDialog() {
   const density = useStore((st) => st.ui.density);
   const showArchived = useStore((st) => st.ui.showArchived);
   const setUI = useStore((st) => st.setUI);
-  const codexUsage = useStore((st) => st.state?.codexUsage);
+  const codexUsage = useStore((st) => st.codexUsage ?? st.state?.codexUsage);
+  const settings = useStore((st) => st.settings);
+  const setSettings = useStore((st) => st.setSettings);
 
   const [section, setSectionState] = useState<SectionId>(() => readSection());
   const setSection = (id: SectionId) => {
     setSectionState(id);
     writeSection(id);
   };
+
+  // Deep-link: a caller (e.g. the StatusBanner budget "Adjust" link) can open Settings straight to
+  // a section via ui.settingsSection. Consume it once, then clear so it doesn't re-trigger.
+  const settingsSection = useStore((st) => st.ui.settingsSection);
+  useEffect(() => {
+    if (settingsSection) {
+      setSection(settingsSection);
+      setUI({ settingsSection: null });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settingsSection]);
 
   const close = () => setUI({ settingsOpen: false });
 
@@ -271,12 +228,10 @@ export default function SettingsDialog() {
   const bridgeUp = !!health?.bridge;
   const codexBusy = !!health?.codex?.alive;
 
-  // Honest usage line — never invent a number when codexUsage says unknown.
-  const usageKnown = !!codexUsage?.known;
-  const usageLabel = usageKnown
-    ? (codexUsage?.label ?? 'active')
-    : 'unknown';
-  const sessionCount = codexUsage?.sessionGenerated ?? 0;
+  // Persist a budget/grace change → POST /api/settings, push canonical settings back into the store
+  // (shared with the sidebar UsageChip). Blank cap input = null (unlimited).
+  const persistSettings = (partial: Parameters<typeof api.setSettings>[0]) =>
+    api.setSettings(partial).then((r) => { if (r.ok) setSettings(r.settings); });
 
   return (
     <Dialog.Root open={settingsOpen} onOpenChange={(o) => !o && close()}>
@@ -452,16 +407,36 @@ export default function SettingsDialog() {
                     {bridgeUp ? 'Up' : 'Down'}
                   </span>
                 </div>
-                <div className={s.kvRow}>
-                  <span className={s.kvLabel}>Codex usage</span>
-                  <span className={s.kvValue} data-known={usageKnown || undefined}>
-                    {usageLabel}
-                    {sessionCount > 0 && (
-                      <span className={s.usageSession}> · {sessionCount} this session</span>
-                    )}
-                  </span>
+                {codexUsage?.plan && (
+                  <div className={s.kvRow}>
+                    <span className={s.kvLabel}>Plan</span>
+                    <span className={s.kvValue}>{codexUsage.plan}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Generation — the cancel-free waiting window before Codex is spent. */}
+              <p className={`eyebrow ${s.eyebrow}`} style={{ marginTop: 'var(--space-4)' }}>Generation</p>
+              <div className={s.rows}>
+                <div className={s.settingRow}>
+                  <div className={s.settingText}>
+                    <span className={s.rowLabel}>Grace window</span>
+                    <span className={s.rowHint}>Cancel-free seconds before Codex is spent. 0 = spawn immediately.</span>
+                  </div>
+                  <input
+                    className={`${s.numInput} ${s.settingControl}`}
+                    type="number"
+                    min={0}
+                    defaultValue={settings?.graceSeconds ?? 10}
+                    key={`grace-${settings?.graceSeconds ?? 10}`}
+                    onBlur={(e) => persistSettings({ graceSeconds: Math.max(0, Math.round(Number(e.target.value) || 0)) })}
+                  />
                 </div>
               </div>
+
+              <p className={s.rowHint} style={{ marginTop: 'var(--space-3)' }}>
+                For real Codex quota, run <code>codex</code> and use <code>/statusline</code> or <code>/usage</code>.
+              </p>
             </section>
             )}
             </div>

@@ -7,7 +7,7 @@
 .shell {
   display: grid;
   grid-template-columns: 256px minmax(0, 1fr);
-  grid-template-rows: 100px minmax(0, 1fr);
+  grid-template-rows: 60px minmax(0, 1fr);
   /* Bento: the whole app floats in a clean outer window over the live AppAura. Equal gaps between
      every panel (sidebar / topbar / content) and equal padding to the outer border, all showing the
      aura. Outer window is transparent — no blur, no darkening — just a hairline border + radius. */

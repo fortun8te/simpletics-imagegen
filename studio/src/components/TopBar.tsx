@@ -1,19 +1,12 @@
-// TopBar (container) — two-row Claritas-style bar.
-//   Row 1: breadcrumb (brand / batch) + the run state-machine control center.
-//   Row 2: status tab pills (with live counts) + a pill search input (⌘+K to focus).
-// Reads brand/batch/run/ui/config via store selectors; calls setUI + api.
-// The primary action's label + handler are derived from `state.run.state`:
-//   idle → Generate · running → Pause+Stop · paused → Continue+Stop · cooling → countdown+Stop.
-import { useEffect, useMemo, useRef, useState } from 'react';
+// TopBar — breadcrumb + Gallery/Plan mode + run controls (single slim row).
+import { useEffect, useMemo, useState } from 'react';
 import { Icon } from './Icon';
-import { useStore } from '../store';
+import { useStore, type BatchViewMode } from '../store';
 import { api } from '../api';
 import { refreshState } from '../refresh';
-import type { GridTab } from '../store';
-import type { RunInfo, RunState, SlotStatus } from '../types';
+import type { RunInfo, RunState } from '../types';
 import s from './TopBar.module.css';
 
-// Small inline pause glyph (no entry in the shared Icon set).
 function PauseGlyph({ size = 15 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -24,7 +17,6 @@ function PauseGlyph({ size = 15 }: { size?: number }) {
   );
 }
 
-// Format a millisecond gap as m:ss for the cooling countdown.
 function fmtCountdown(ms: number): string {
   const t = Math.max(0, Math.round(ms / 1000));
   const m = Math.floor(t / 60);
@@ -32,143 +24,118 @@ function fmtCountdown(ms: number): string {
   return `${m}:${ss}`;
 }
 
-// Format a seconds ETA as a terse "~Nm" / "~Ns".
 function fmtEta(seconds: number): string {
   if (!isFinite(seconds) || seconds <= 0) return '';
   if (seconds < 60) return `~${Math.round(seconds)}s`;
   return `~${Math.round(seconds / 60)}m`;
 }
 
-// Slot statuses that each tab represents. `all` = null (no status filter).
-const TAB_STATUSES: Record<GridTab, SlotStatus[] | null> = {
-  all: null,
-  generating: ['generating', 'queued'],
-  done: ['done'],
-  failed: ['failed'],
-  archived: ['archived'],
-};
+const MODES: { key: BatchViewMode; label: string; icon: string }[] = [
+  { key: 'gallery', label: 'Gallery', icon: 'layout-grid' },
+  { key: 'plan', label: 'Plan', icon: 'layout-list' },
+];
 
 export default function TopBar() {
-  const brand = useStore((s) => s.brand);
-  const batch = useStore((s) => s.batch);
-  const config = useStore((s) => s.config);
-  const run = useStore((s) => s.state?.run) as RunInfo | undefined;
-  const ads = useStore((s) => s.state?.ads);
-  const setUI = useStore((s) => s.setUI);
-  const gridTab = useStore((s) => s.ui.gridTab);
-  const gridQuery = useStore((s) => s.ui.gridQuery);
+  const brand = useStore((st) => st.brand);
+  const batch = useStore((st) => st.batch);
+  const config = useStore((st) => st.config);
+  const run = useStore((st) => st.state?.run) as RunInfo | undefined;
+  const ads = useStore((st) => st.state?.ads);
+  const setUI = useStore((st) => st.setUI);
+  const batchViewMode = useStore((st) => st.ui.batchViewMode);
 
-  // Resolve display names from config by current brand/batch ids.
   const brandRef = config.brands.find((b) => b.id === brand);
   const batchRef = brandRef?.batches.find((bt) => bt.code === batch);
   const brandName = brandRef?.name ?? brand ?? '—';
   const batchName = batchRef?.name ?? batch ?? '—';
 
-  // Single nested loop over state.ads derives: empty slots (for the Generate label)
-  // and per-status counts (for the tab pills). Re-runs on every store update.
-  const { emptyCount, counts } = useMemo(() => {
+  const emptyCount = useMemo(() => {
     let empty = 0;
-    const c = { all: 0, generating: 0, done: 0, failed: 0, archived: 0 };
     for (const ad of ads ?? [])
       for (const v of ad.variations)
         for (const p of v.prompts)
-          for (const slot of p.slots) {
-            c.all++;
+          for (const slot of p.slots)
             if (slot.status === 'empty') empty++;
-            else if (slot.status === 'generating' || slot.status === 'queued') c.generating++;
-            else if (slot.status === 'done') c.done++;
-            else if (slot.status === 'failed') c.failed++;
-            else if (slot.status === 'archived') c.archived++;
-          }
-    return { emptyCount: empty, counts: c };
+    return empty;
   }, [ads]);
 
-  // Direct generate — no popup. Whole-batch scope: the backend fills empty slots first; with none
-  // left it enqueues one more variant per variation. The label tells the user which case they're in.
   const doGenerate = () => {
     if (brand && batch) api.generate(brand, batch, {}, 1);
   };
 
-  // Run state machine.
   const state: RunState = run?.state ?? 'idle';
   const done = run?.done ?? 0;
   const total = run?.total ?? 0;
   const queued = run?.queued ?? 0;
   const resumeAt = run?.resumeAt ?? null;
 
-  // Ticking clock — drives the cooling countdown and the rate-based ETA.
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    if (state !== 'cooling' && state !== 'running') return;
+    if (state !== 'cooling' && state !== 'running' && state !== 'ready') return;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, [state]);
 
-  // Track when the current run started running, to derive a rough done-rate ETA.
   const [runStart, setRunStart] = useState<number | null>(null);
   useEffect(() => {
     if (state === 'running') setRunStart((p) => p ?? Date.now());
     else setRunStart(null);
   }, [state]);
 
-  // Rough ETA: extrapolate remaining work from the rate of completed jobs so far.
   let eta = '';
   if (state === 'running' && runStart && done > 0 && total > done) {
     const elapsed = (now - runStart) / 1000;
-    const rate = done / elapsed; // jobs/sec
+    const rate = done / elapsed;
     if (rate > 0) eta = fmtEta((total - done) / rate);
   }
 
-  // Inline reset confirm (two-step, no native dialog by default).
-  const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
   useEffect(() => {
-    if (!confirmReset) return;
-    const id = setTimeout(() => setConfirmReset(false), 4000);
-    return () => clearTimeout(id);
-  }, [confirmReset]);
+    if (!confirmCancel) return;
+    const id = setTimeout(() => setConfirmCancel(false), 4000);
+    return () => clearInterval(id);
+  }, [confirmCancel]);
 
-  const showReset = queued > 0 || state === 'cooling';
+  const showCancelAll =
+    state === 'running' || state === 'paused' || state === 'cooling' || state === 'ready' || state === 'done' || queued > 0;
 
-  const doReset = () => {
-    if (!confirmReset) { setConfirmReset(true); return; }
-    setConfirmReset(false);
-    api.reset().then(refreshState);
+  const verifyAndResume = () => api.resume({ verify: true }).then(refreshState);
+
+  const doCancelAll = () => {
+    if (!confirmCancel) { setConfirmCancel(true); return; }
+    setConfirmCancel(false);
+    api.cancel({ all: true }).then(() => api.reset()).then(refreshState);
   };
-
-  // ⌘+K (or Ctrl+K) focuses the search input from anywhere.
-  const searchRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        searchRef.current?.focus();
-        searchRef.current?.select();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
-  const tabs: { key: GridTab; label: string; count: number }[] = [
-    { key: 'all', label: 'All', count: counts.all },
-    { key: 'generating', label: 'Generating', count: counts.generating },
-    { key: 'done', label: 'Done', count: counts.done },
-    { key: 'failed', label: 'Failed', count: counts.failed },
-    { key: 'archived', label: 'Archived', count: counts.archived },
-  ];
 
   return (
     <header className={s.bar}>
-      {/* Row 1 — breadcrumb + run controls (slim, ~44px) */}
-      <div className={s.row1}>
+      <div className={s.row}>
         <nav className={s.crumb} aria-label="Location">
           <span className={s.brand}>{brandName}</span>
           <span className={s.slash} aria-hidden>/</span>
           <span className={s.batch}>{batchName}</span>
         </nav>
 
+        <div className={s.modeSwitch} role="tablist" aria-label="Batch view">
+          {MODES.map((m) => {
+            const active = batchViewMode === m.key;
+            return (
+              <button
+                key={m.key}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                className={`${s.modeBtn} ${active ? s.modeBtnActive : ''}`}
+                onClick={() => setUI({ batchViewMode: m.key })}
+              >
+                <Icon name={m.icon} size={14} />
+                <span>{m.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
         <div className={s.right}>
-          {/* Inline progress + ETA while a run is live */}
           {(state === 'running' || state === 'paused') && total > 0 ? (
             <button
               type="button"
@@ -182,64 +149,46 @@ export default function TopBar() {
             </button>
           ) : null}
 
-          {/* Cooling countdown — auto-resumes, so no Continue button */}
           {state === 'cooling' ? (
             <span className={s.cooling} role="status">
               <Icon name="clock" size={14} />
-              <span>
-                Resuming in {resumeAt ? fmtCountdown(resumeAt - now) : '—'}
-              </span>
+              <span>Rate-limited · can continue in {resumeAt ? fmtCountdown(resumeAt - now) : '—'}</span>
             </span>
           ) : null}
 
-          {/* Reset — clears the queue / cooldown; inline two-step confirm */}
-          {showReset ? (
-            <button
-              type="button"
-              className={`${s.ghost} ${confirmReset ? s.ghostWarn : ''}`}
-              onClick={doReset}
-              title="Clear the queue and reset the run"
-            >
-              <Icon name="refresh" size={15} />
-              <span>{confirmReset ? 'Confirm reset?' : 'Reset'}</span>
-            </button>
+          {state === 'ready' ? (
+            <span className={s.cooling} role="status">
+              <Icon name="sparkles" size={14} />
+              <span>Ready when you are</span>
+            </span>
           ) : null}
 
-          {/* Stop — present in any non-idle state (running/paused/cooling/done). Cancels all
-              jobs + aborts the run so runState snaps to idle; explicit refetch so TopBar reverts
-              to Generate immediately even if no SSE tick fires. */}
-          {(state === 'running' || state === 'paused' || state === 'cooling' || state === 'done') ? (
+          {showCancelAll ? (
             <button
               type="button"
-              className={s.ghost}
-              onClick={() => api.cancel({ all: true }).then(refreshState)}
-              title="Stop all generation"
+              className={`${s.ghost} ${confirmCancel ? s.ghostWarn : ''}`}
+              onClick={doCancelAll}
+              title="Cancel everything — abort the run and clear the queue"
             >
               <Icon name="stop" size={15} />
-              <span>Stop</span>
+              <span>{confirmCancel ? 'Confirm cancel?' : 'Cancel all'}</span>
             </button>
           ) : null}
 
-          {/* Primary — label + action change with run state */}
           {state === 'running' ? (
-            <button
-              type="button"
-              className={s.primary}
-              onClick={() => api.pause()}
-              title="Pause — finish in-flight jobs, stop pulling new ones"
-            >
+            <button type="button" className={s.primary} onClick={() => api.pause()} title="Pause">
               <PauseGlyph size={15} />
               <span>Pause</span>
             </button>
           ) : state === 'paused' ? (
-            <button
-              type="button"
-              className={s.primary}
-              onClick={() => api.resume()}
-              title="Continue the run"
-            >
+            <button type="button" className={s.primary} onClick={verifyAndResume} title="Check Codex quota and continue">
               <Icon name="chevron-right" size={15} />
               <span>Continue</span>
+            </button>
+          ) : state === 'ready' ? (
+            <button type="button" className={s.primary} onClick={verifyAndResume} title="Check Codex quota, then resume">
+              <Icon name="chevron-right" size={15} />
+              <span>Check & continue</span>
             </button>
           ) : state === 'cooling' ? null : (
             <>
@@ -249,7 +198,7 @@ export default function TopBar() {
                 onClick={doGenerate}
                 title={emptyCount > 0
                   ? `Generate the ${emptyCount} image${emptyCount === 1 ? '' : 's'} that haven't been created yet`
-                  : 'Add one new variant to every variation — existing images are kept'}
+                  : 'Add one new variant to every variation'}
               >
                 <Icon name="sparkles" size={15} />
                 <span>{emptyCount > 0 ? `Generate ${emptyCount} missing` : 'Add 1 variant'}</span>
@@ -258,7 +207,7 @@ export default function TopBar() {
                 type="button"
                 className={s.secondary}
                 onClick={() => setUI({ genOpen: true })}
-                title="Choose scope, variant count, and see a time estimate before generating"
+                title="Generate with options"
                 aria-label="Generate with options"
               >
                 <Icon name="sliders" size={14} />
@@ -267,46 +216,6 @@ export default function TopBar() {
           )}
         </div>
       </div>
-
-      {/* Row 2 — tab pills + search (~44px) */}
-      <div className={s.row2}>
-        <div className={s.tabs} role="tablist" aria-label="Filter slots by status">
-          {tabs.map((t) => {
-            const active = gridTab === t.key;
-            return (
-              <button
-                key={t.key}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                className={`${s.tab} ${active ? s.tabActive : ''}`}
-                onClick={() => setUI({ gridTab: t.key })}
-                title={`Show ${t.label.toLowerCase()} slots`}
-              >
-                <span>{t.label}</span>
-                <span className={s.tabCount} aria-hidden>{t.count}</span>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className={s.searchWrap}>
-          <Icon name="search" size={14} className={s.searchIcon} />
-          <input
-            ref={searchRef}
-            type="search"
-            className={s.searchInput}
-            placeholder="Search ads, variations, paths…"
-            value={gridQuery}
-            onChange={(e) => setUI({ gridQuery: e.target.value })}
-            aria-label="Search within this batch"
-          />
-          <kbd className={s.kbd} aria-hidden>⌘K</kbd>
-        </div>
-      </div>
     </header>
   );
 }
-
-// Re-exported so GridView can mirror the exact same status mapping without drifting.
-export { TAB_STATUSES };

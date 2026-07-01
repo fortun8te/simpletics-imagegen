@@ -41,6 +41,7 @@ export default function GenerateDialog() {
   const brand = useStore((st) => st.brand);
   const batch = useStore((st) => st.batch);
   const setUI = useStore((st) => st.setUI);
+  const usage = useStore((st) => st.codexUsage);
 
   const ads = state?.ads ?? [];
 
@@ -221,6 +222,15 @@ export default function GenerateDialog() {
             {estimate > 0 && (
               <p className={s.eta} aria-live="polite">
                 ~{avgSeconds}s per image · <b>~{formatDuration(etaSeconds)}</b> total
+              </p>
+            )}
+
+            {/* Budget preview — how this run moves the trailing-5h usage toward the cap. Only shown
+                when we have real usage numbers; omits the "/ cap" tail when 5h is uncapped. */}
+            {estimate > 0 && usage?.known && usage.used5h != null && (
+              <p className={s.eta} aria-live="polite">
+                This run: <b>+{estimate}</b> → 5h usage {usage.used5h}→{usage.used5h + estimate}
+                {usage.cap5h != null ? <> / {usage.cap5h}</> : null}
               </p>
             )}
           </div>

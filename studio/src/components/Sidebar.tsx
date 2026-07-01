@@ -3,13 +3,15 @@
 // clean footer with brand identity + direct settings access — no theme item (the app is a single committed dark theme).
 // System status (Codex + bridge health) and Codex usage have MOVED to the Settings dialog,
 // so the sidebar no longer polls /api/health.
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useStore } from '../store';
 import { api } from '../api';
 import type { BrandRef, BatchMeta } from '../types';
 import { Icon } from './Icon';
 import { BrandMark } from './BrandMark';
+import UsageChip from './UsageChip';
+import MarqueeText from './MarqueeText';
 import styles from './Sidebar.module.css';
 
 // First batch code of a brand, used as the landing batch when switching brands.
@@ -39,12 +41,6 @@ const isMac =
   typeof navigator !== 'undefined' &&
   /Mac|iPhone|iPad|iPod/.test(navigator.platform || '');
 
-// Procedural avatar hue — derived from the first letter of the user's name so different
-// names land on different tones, but always within the blue family (210–270deg).
-function hueForName(name: string): number {
-  const code = (name || '?').charCodeAt(0) || 77;
-  return 210 + (code % 60); // 210–269deg: blue → blue-violet, never drifts to unrelated hues
-}
 
 export default function Sidebar() {
   const config = useStore((s) => s.config);
@@ -176,6 +172,10 @@ export default function Sidebar() {
           {visible.map((bt) => {
             const active = bt.code === batch;
             const kindIcon = bt.kind === 'listicle' ? 'layout-list' : 'layout-grid';
+            const label = bt.name || bt.code;
+            const tip = bt.modifiedAt
+              ? `${label} · updated ${relTime(bt.modifiedAt)}`
+              : label;
             return (
               <button
                 key={bt.code}
@@ -183,10 +183,11 @@ export default function Sidebar() {
                 className={styles.batchRow}
                 data-active={active || undefined}
                 onClick={() => { if (brand) select(brand, bt.code); }}
-                title={bt.modifiedAt ? `Updated ${relTime(bt.modifiedAt)}` : undefined}
               >
                 <Icon name={kindIcon} size={16} className={styles.batchIcon} />
-                <span className={styles.batchName}>{bt.name || bt.code}</span>
+                <MarqueeText className={styles.batchName} tip={tip}>
+                  {label}
+                </MarqueeText>
                 <span className={styles.batchCount}>{bt.count}</span>
               </button>
             );
@@ -200,7 +201,7 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Footer — Settings + a (mock) account row */}
+      {/* Footer — Settings + a (mock) account row with the Codex usage ring inline on the right */}
       <div className={styles.footer}>
         <button
           className={styles.settingsBtn}
@@ -211,19 +212,18 @@ export default function Sidebar() {
           <span>Settings</span>
         </button>
         {/* Mock account row — no real auth/account system yet, placeholder for the eventual one. */}
-        <button className={styles.userRow} type="button">
-          <span
-            className={styles.userAvatar}
-            aria-hidden="true"
-            style={{ '--user-hue': hueForName(userName) } as CSSProperties}
-          >
-            {userName.charAt(0).toUpperCase()}
-          </span>
-          <span className={styles.userText}>
-            <span className={styles.userName}>{userName}</span>
-            <span className={styles.userTier}>Max Plan</span>
-          </span>
-        </button>
+        <div className={styles.userRow}>
+          <button className={styles.userRowMain} type="button">
+            <span className={styles.userAvatar} aria-hidden="true">
+              {userName.charAt(0).toUpperCase()}
+            </span>
+            <span className={styles.userText}>
+              <span className={styles.userName}>{userName}</span>
+              <span className={styles.userTier}>Max Plan</span>
+            </span>
+          </button>
+          <UsageChip />
+        </div>
       </div>
     </aside>
   );

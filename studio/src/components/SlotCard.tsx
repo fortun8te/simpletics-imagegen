@@ -34,6 +34,20 @@ function useElapsed(startedAt?: number | null): string {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 
+// Live seconds-until countdown from a future epoch-ms timestamp (the waiting-window `spendAt`).
+// Ticks once a second, floors at 0. Returns null when there's no target. Reuses the same
+// elapsed-timer pattern (setInterval on mount) so the waiting phase counts down honestly.
+function useCountdown(spendAt?: number | null): number | null {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!spendAt) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [spendAt]);
+  if (!spendAt) return null;
+  return Math.max(0, Math.ceil((spendAt - now) / 1000));
+}
+
 // Wrap a hover icon-button in a themed Radix tooltip. A single Tooltip.Provider is mounted
 // app-wide in AppShell, so we use Root/Trigger/Portal/Content only (no nested provider).
 function HoverAction({
@@ -67,6 +81,9 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
   const elapsed = useElapsed(slot.status === 'generating' ? slot.job?.startedAt : undefined);
+  const secsLeft = useCountdown(slot.status === 'waiting' ? slot.job?.spendAt : undefined);
+  const jobId = slot.job?.id;
+  const cancelJob = () => jobId && api.cancel({ jobId });
 
   // Per-prompt-slot generate target (used by empty / make-variations).
   const promptScope = { prompt: { ad, variation, prompt } };
@@ -112,6 +129,24 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
     );
   }
 
+  // ── waiting — cancel-free grace window before Codex is spent ─────────
+  if (slot.status === 'waiting') {
+    return (
+      <div className={`${styles.card} ${styles.waiting}`} data-density={density}>
+        <div className={styles.center}>
+          <Icon name="clock" size={20} className={styles.mutedIcon} />
+          <span className={styles.label}>
+            {secsLeft != null ? `Starting in ${secsLeft}s` : 'Starting…'}
+          </span>
+          <button className={`${styles.retry} ${styles.cancelFree}`} onClick={cancelJob}>
+            <Icon name="x" size={13} />
+            Cancel — no Codex used
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   // ── generating ────────────────────────────────────────────────────
   if (slot.status === 'generating') {
     return (
@@ -128,6 +163,12 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
           <Spinner size={18} />
           <span className={styles.label}>Generating</span>
           <span className={styles.elapsed}>{elapsed}</span>
+          {jobId && (
+            <button className={styles.retry} onClick={cancelJob} title="Codex in use">
+              <Icon name="x" size={13} />
+              Cancel · Codex in use
+            </button>
+          )}
         </div>
       </div>
     );

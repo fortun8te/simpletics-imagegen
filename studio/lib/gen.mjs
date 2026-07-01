@@ -25,6 +25,18 @@ const part = (value) => String(value || '').trim().replace(/[^a-zA-Z0-9_-]+/g, '
 // Codex usage-limit / HTTP 429 surface text. When the tool's error matches this, the returned
 // error is PREFIXED with 'RATE_LIMIT: ' so the worker can cool down and retry later.
 const RATE_LIMIT_RE = /HTTP 429|usage limit|too many requests|rate.?limit|quota|exceeded/i;
+// Dead / expired codex sign-in surface text. A match classifies the failure as `auth` (Area 2) so the
+// backend can raise blockers.auth and the UI can prompt a `codex login` + Retry all.
+const AUTH_RE = /HTTP 401|token refresh|invalid_grant|unauthor/i;
+
+// Classify a raw error string into a failure `reason` (auth | rate_limit | other). RATE_LIMIT wins by
+// its explicit prefix (added below); auth is matched on the raw text; everything else is 'other'.
+export function classifyError(error) {
+  const s = String(error || '');
+  if (/^RATE_LIMIT:/.test(s) || RATE_LIMIT_RE.test(s)) return 'rate_limit';
+  if (AUTH_RE.test(s)) return 'auth';
+  return 'other';
+}
 
 /**
  * Generate one image slot through the codex backend.
@@ -79,23 +91,34 @@ export async function generateSlot(job, { renders, repoDir }) {
     };
     const child = spawn('python3', args, { stdio: ['ignore', 'pipe', 'pipe'], env });
     let err = '', sout = '';
+    // Watchdog: the imagegen subprocess has no internal timeout, so a stuck codex request (or a
+    // wedged auth refresh) can otherwise hold a concurrency slot forever. Kill it and fail cleanly.
+    let settled = false;
+    const done = (result) => { if (settled) return; settled = true; clearTimeout(timer); resolve(result); };
+    const TIMEOUT_MS = Number(process.env.GEN_TIMEOUT_MS) || 240000; // 4 min; generous for slow gens
+    const timer = setTimeout(() => {
+      try { child.kill('SIGKILL'); } catch {}
+      done({ ok: false, error: `timed out after ${Math.round(TIMEOUT_MS / 1000)}s`, reason: 'other' });
+    }, TIMEOUT_MS);
     child.stdout.on('data', (d) => { sout += d.toString(); });
     child.stderr.on('data', (d) => { err += d.toString(); });
     child.on('close', (code) => {
       if (code === 0 && existsSync(out)) {
-        resolve({ ok: true, relPath: finalRel });
+        done({ ok: true, relPath: finalRel });
         return;
       }
       // Capture BOTH streams: the codex usage-limit / HTTP 429 notice can surface on stdout, so
       // include stdout in the error text the rate-limit detector greps.
       let error = (err + '\n' + sout).trim().split('\n').slice(-4).join(' | ') || `exit ${code}`;
+      const reason = classifyError(error);
       if (RATE_LIMIT_RE.test(error)) error = `RATE_LIMIT: ${error}`;
-      resolve({ ok: false, error });
+      done({ ok: false, error, reason });
     });
     child.on('error', (e) => {
       let error = String(e.message || e);
+      const reason = classifyError(error);
       if (RATE_LIMIT_RE.test(error)) error = `RATE_LIMIT: ${error}`;
-      resolve({ ok: false, error });
+      done({ ok: false, error, reason });
     });
   });
 }

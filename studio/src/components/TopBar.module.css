@@ -16,20 +16,15 @@
   z-index: 2;
 }
 
-/* ---- shared row layout ---- */
-.row1,
-.row2 {
+/* ---- single row layout ---- */
+.row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  height: 50px;
-  padding: 0 var(--space-8);
+  height: 52px;
+  padding: 0 var(--space-6);
   min-width: 0;
-}
-/* Thin divider between the two rows so they read as one cohesive bar. */
-.row2 {
-  border-top: 1px solid var(--line-soft);
 }
 
 /* ---- breadcrumb ---- */
@@ -53,6 +48,39 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* ---- Gallery | Plan mode switch ---- */
+.modeSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex: none;
+  padding: 3px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+}
+.modeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.modeBtn:hover {
+  color: var(--ink);
+}
+.modeBtnActive {
+  color: var(--ink);
+  background: var(--glass-bg-3);
+  box-shadow: var(--shadow-sm);
 }
 
 /* ---- right cluster ---- */
@@ -194,110 +222,4 @@
 .secondary:hover {
   color: var(--ink);
   background: var(--surface-3);
-}
-
-/* ---- row 2: tab pills ---- */
-.tabs {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  min-width: 0;
-}
-.tab {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 28px;
-  padding: 0 var(--space-3);
-  border-radius: var(--r-pill);
-  color: var(--muted);
-  font-size: 12.5px;
-  font-weight: 500;
-  white-space: nowrap;
-  transition: background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
-}
-.tab:hover {
-  background: var(--surface-2);
-  color: var(--ink);
-}
-.tabActive {
-  background: var(--surface-2);
-  color: var(--ink);
-}
-.tabActive:hover {
-  background: var(--surface-3);
-  color: var(--ink);
-}
-.tabCount {
-  font-variant-numeric: tabular-nums;
-  font-size: 11px;
-  color: var(--faint);
-  min-width: 10px;
-  text-align: right;
-}
-.tabActive .tabCount {
-  color: var(--muted);
-}
-
-/* ---- row 2: pill search (single bordered input; icon + kbd overlay inside) ---- */
-.searchWrap {
-  position: relative;
-  flex: 0 1 320px;
-  width: 320px;
-  max-width: 38vw;
-}
-.searchIcon {
-  position: absolute;
-  left: var(--space-3);
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--faint);
-  pointer-events: none;
-  z-index: 1;
-}
-.searchInput {
-  width: 100%;
-  height: 30px;
-  padding: 0 calc(var(--space-6) + var(--space-2)) 0 calc(var(--space-3) + 18px);
-  border: 1px solid var(--line);
-  border-radius: var(--r-pill);
-  background: var(--surface-2);
-  color: var(--ink);
-  font-size: 12.5px;
-  outline: none;
-  transition: border-color var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
-}
-.searchInput::placeholder { color: var(--faint); }
-.searchInput:hover {
-  border-color: var(--line-strong);
-}
-/* Override global :focus-visible double-ring — one thin accent ring on the pill only. */
-.searchInput:focus,
-.searchInput:focus-visible {
-  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
-}
-.searchInput::-webkit-search-cancel-button { -webkit-appearance: none; }
-.kbd {
-  position: absolute;
-  right: var(--space-2);
-  top: 50%;
-  transform: translateY(-50%);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 22px;
-  height: 18px;
-  padding: 0 5px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  line-height: 1;
-  border-radius: var(--r-xs);
-  background: var(--surface-3);
-  color: var(--faint);
-  border: 1px solid var(--line);
-  pointer-events: none;
-  user-select: none;
-  z-index: 1;
 }

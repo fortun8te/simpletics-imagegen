@@ -13,13 +13,24 @@ import path from 'node:path';
 
 const MAX_JOBS = 500;
 const MAX_DURATION_SAMPLES = 20; // rolling-average window for completed-job duration
+// How long a `failed` / `canceled` record lingers before the periodic sweep drops it (Area 2). This
+// is what makes the "Failed" nag drain to 0 on its own instead of piling up red tiles forever. The
+// server can override via FAILED_TTL (ms); tests pass a short value through the factory option.
+const DEFAULT_FAILED_TTL = 45_000;
 
 // Sanitize one path segment the same way the rest of the studio backend does.
 const seg = (s) => String(s).replace(/[^a-zA-Z0-9_-]+/g, '-');
 
-export function createJobStore({ stateDir }) {
+export function createJobStore({ stateDir, failedTtl } = {}) {
   const jobsFile = path.join(stateDir, 'jobs.json');
   const archiveFile = path.join(stateDir, 'archive.json');
+  // Auto-clear TTL for failed/canceled records (Area 2). Precedence: explicit option > env > default.
+  const FAILED_TTL = (() => {
+    if (Number.isFinite(Number(failedTtl)) && Number(failedTtl) >= 0) return Number(failedTtl);
+    const env = Number(process.env.FAILED_TTL);
+    if (Number.isFinite(env) && env >= 0) return env;
+    return DEFAULT_FAILED_TTL;
+  })();
 
   // --- in-memory state ---------------------------------------------------
   let jobs = [];                  // most-recent-first is not required; we keep enqueue order
@@ -70,7 +81,10 @@ export function createJobStore({ stateDir }) {
       // Reconcile orphans: a job left 'running' means the process died mid-generation — no worker
       // owns it now, so mark it 'failed' (never leave a perpetual fake "running" run after restart).
       for (const j of jobs) {
-        if (j.status === 'running') { j.status = 'failed'; j.error = j.error || 'interrupted (server restarted)'; }
+        if (j.status === 'running') { j.status = 'failed'; j.reason = j.reason || 'other'; j.error = j.error || 'interrupted (server restarted)'; }
+        // A `waiting` job never spent Codex (the grace timer hadn't fired) — the timer died with the
+        // process, so just drop it back to 'queued' to be re-armed cleanly rather than failing it.
+        else if (j.status === 'waiting') { j.status = 'queued'; j.spendAt = null; }
       }
       // Recover the counter so new ids never collide with persisted ones.
       for (const j of jobs) {
@@ -126,6 +140,31 @@ export function createJobStore({ stateDir }) {
     return jobs.find((j) => j.id === id);
   }
 
+  // Auto-clear (Area 2): drop 'failed' / 'canceled' records whose finishedAt is older than FAILED_TTL
+  // so the "Failed" nag drains to 0 on its own. 'done' records are kept (bounded by MAX_JOBS). Called
+  // by a periodic timer AND lazily before any read (counts/forBatch/list) so exposed counts never
+  // include an already-expired record even between ticks. Returns true if anything was removed.
+  function sweepExpired() {
+    if (!(FAILED_TTL >= 0)) return false;
+    const now = Date.now();
+    const before = jobs.length;
+    jobs = jobs.filter((j) => {
+      if (j.status !== 'failed' && j.status !== 'canceled') return true;
+      // Use the most recent known timestamp; a record with no usable timestamp (legacy jobs from
+      // before this field existed, or orphans) resolves to 0 → treated as long-expired and swept,
+      // so failures can never get permanently stuck in the "Failed" nag.
+      const fin = Number(j.finishedAt) || Number(j.startedAt) || Number(j.enqueuedAt) || 0;
+      return !((now - fin) >= FAILED_TTL);
+    });
+    return jobs.length !== before;
+  }
+
+  // Public sweep: run the auto-clear and persist/notify if it removed anything.
+  function sweep() {
+    if (sweepExpired()) { saveJobs(); emitChange(); return true; }
+    return false;
+  }
+
   // --- mutations ---------------------------------------------------------
   function enqueue(spec = {}) {
     const {
@@ -146,6 +185,8 @@ export function createJobStore({ stateDir }) {
       status: 'queued',
       relPath: undefined,
       error: undefined,
+      reason: undefined,     // failure class (auth|rate_limit|other), set by fail()
+      spendAt: null,         // waiting-window spawn deadline (epoch ms), set by beginWaiting()
       enqueuedAt: Date.now(),
       startedAt: null,
       finishedAt: null,
@@ -160,10 +201,15 @@ export function createJobStore({ stateDir }) {
     return job;
   }
 
-  // Atomically pick the queued job with the lowest `order` (ties broken by enqueuedAt), flip it to
-  // 'running'. `order` is what reorder() rewrites, so this is what makes a drag-drop reorder a REAL
-  // priority change rather than a cosmetic one.
-  function nextQueued() {
+  // Atomically pick the queued job with the lowest `order` (ties broken by enqueuedAt) and flip it
+  // into the next lifecycle state. `order` is what reorder() rewrites, so this is what makes a
+  // drag-drop reorder a REAL priority change rather than a cosmetic one.
+  //
+  // Waiting window (Area 1): pass { toWaiting:true, spendAt } to flip the job to 'waiting' with its
+  // spawn deadline (it occupies a concurrency slot but hasn't spent Codex). Default (no opts, or
+  // graceSeconds===0) flips straight to 'running' as before. This single atomic pick preserves the
+  // worker's reentrancy invariants (the pick happens before running++ in the worker).
+  function nextQueued({ toWaiting = false, spendAt = null } = {}) {
     let pick = null;
     for (const j of jobs) {
       if (j.status === 'queued') {
@@ -175,11 +221,31 @@ export function createJobStore({ stateDir }) {
       }
     }
     if (!pick) return null;
-    pick.status = 'running';
-    pick.startedAt = Date.now();
+    if (toWaiting) {
+      pick.status = 'waiting';
+      pick.spendAt = Number(spendAt) || Date.now();
+    } else {
+      pick.status = 'running';
+      pick.spendAt = null;
+      pick.startedAt = Date.now();
+    }
     saveJobs();
     emitChange();
     return pick;
+  }
+
+  // Promote a 'waiting' job to 'running' when its grace timer fires (Area 1). No-op (returns null)
+  // if the job was canceled/paused-away or is no longer 'waiting' — the worker checks the return so
+  // it never spawns a job that slipped out of the waiting state under it.
+  function promote(id) {
+    const job = find(id);
+    if (!job || job.status !== 'waiting') return null;
+    job.status = 'running';
+    job.spendAt = null;
+    job.startedAt = Date.now();
+    saveJobs();
+    emitChange();
+    return job;
   }
 
   // Record a completed job's wall-clock duration into the rolling average window. Only meaningful
@@ -198,6 +264,8 @@ export function createJobStore({ stateDir }) {
     job.status = 'done';
     job.relPath = relPath;
     job.error = undefined;
+    job.reason = undefined;
+    job.spendAt = null;
     job.finishedAt = Date.now();
     recordDuration(job);
     saveJobs();
@@ -205,11 +273,14 @@ export function createJobStore({ stateDir }) {
     return job;
   }
 
-  function fail(id, error) {
+  function fail(id, error, reason) {
     const job = find(id);
     if (!job || job.status === 'canceled') return null;
     job.status = 'failed';
     job.error = error != null ? String(error) : undefined;
+    // Failure class (Area 2): auth | rate_limit | other. Defaults to 'other' when unclassified.
+    job.reason = reason === 'auth' || reason === 'rate_limit' ? reason : 'other';
+    job.spendAt = null;
     job.finishedAt = Date.now();
     job.attempts = (job.attempts || 0) + 1;
     recordDuration(job);
@@ -238,6 +309,8 @@ export function createJobStore({ stateDir }) {
     job.status = 'queued';
     job.startedAt = null;
     job.finishedAt = null;
+    job.reason = undefined;
+    job.spendAt = null;
     if (countsAsAttempt) job.attempts = (job.attempts || 0) + 1;
     // Re-queue at the back of the line: refresh enqueuedAt AND order so it runs after current work.
     job.enqueuedAt = Date.now();
@@ -291,10 +364,14 @@ export function createJobStore({ stateDir }) {
   function cancel({ jobId, all } = {}) {
     let changed = 0;
     for (const j of jobs) {
-      const active = j.status === 'queued' || j.status === 'running';
+      // 'waiting' is an active state that occupies a slot (Area 1) — it must be cancelable so a job
+      // can be stopped BEFORE it spawns (no Codex spent). The worker clears its grace timer on the
+      // 'change' this emits (it re-checks each waiting job's live status when the timer fires).
+      const active = j.status === 'queued' || j.status === 'waiting' || j.status === 'running';
       if (!active) continue;
       if (all || j.id === jobId) {
         j.status = 'canceled';
+        j.spendAt = null;
         j.finishedAt = Date.now();
         changed++;
         if (jobId && !all) break;
@@ -307,25 +384,71 @@ export function createJobStore({ stateDir }) {
     return changed;
   }
 
+  // Remove job records now (Area 2 manual clear). `scope` ∈ 'failed'|'canceled'|'done'|'all',
+  // optionally narrowed to a brand/batch. Only ever removes terminal records (failed/canceled/done) —
+  // never queued/waiting/running (use cancel() for those). Returns the count removed.
+  function clear({ scope = 'failed', brand, batch } = {}) {
+    const terminal = new Set(['failed', 'canceled', 'done']);
+    const wanted = scope === 'all' ? terminal : new Set([scope].filter((s) => terminal.has(s)));
+    if (wanted.size === 0) return 0;
+    const before = jobs.length;
+    jobs = jobs.filter((j) => {
+      if (!wanted.has(j.status)) return true;
+      if (brand != null && j.brand !== brand) return true;
+      if (batch != null && j.batch !== batch) return true;
+      return false; // matches scope (+ optional brand/batch) → remove
+    });
+    const removed = before - jobs.length;
+    if (removed) { saveJobs(); emitChange(); }
+    return removed;
+  }
+
+  // Requeue failed jobs (Area 2 retry): reset attempts to 0 and flip back to 'queued' so the worker
+  // picks them up again. Optionally scoped to a brand/batch. Returns the count requeued.
+  function retryFailed({ brand, batch } = {}) {
+    let n = 0;
+    for (const j of jobs) {
+      if (j.status !== 'failed') continue;
+      if (brand != null && j.brand !== brand) continue;
+      if (batch != null && j.batch !== batch) continue;
+      j.status = 'queued';
+      j.attempts = 0;
+      j.error = undefined;
+      j.reason = undefined;
+      j.spendAt = null;
+      j.startedAt = null;
+      j.finishedAt = null;
+      j.enqueuedAt = Date.now();
+      j.order = orderCounter++;
+      n++;
+    }
+    if (n) { saveJobs(); emitChange(); }
+    return n;
+  }
+
   // --- queries -----------------------------------------------------------
   function get(id) {
     return find(id) || null;
   }
 
   function list() {
+    sweepExpired(); // don't surface already-expired failed/canceled records (Area 2)
     // Most recent first.
     return jobs.slice().reverse();
   }
 
   function forBatch(brand, batch) {
+    sweepExpired();
     return jobs.filter((j) => j.brand === brand && j.batch === batch);
   }
 
   function counts() {
-    const c = { running: 0, queued: 0, done: 0, failed: 0 };
+    sweepExpired();
+    const c = { running: 0, queued: 0, waiting: 0, done: 0, failed: 0 };
     for (const j of jobs) {
       if (j.status === 'running') c.running++;
       else if (j.status === 'queued') c.queued++;
+      else if (j.status === 'waiting') c.waiting++;
       else if (j.status === 'done') c.done++;
       else if (j.status === 'failed') c.failed++;
     }
@@ -372,14 +495,28 @@ export function createJobStore({ stateDir }) {
   ensureDir();
   load();
 
+  // Periodic auto-clear sweep (Area 2). Runs on a fixed interval so expired failed/canceled records
+  // are dropped even with no reads/mutations happening. unref'd so it never keeps the process alive
+  // (matters for the throwaway test scripts). Skipped when TTL is disabled (<0, never used here).
+  let sweepTimer = null;
+  if (FAILED_TTL >= 0) {
+    const period = Math.max(1000, Math.min(FAILED_TTL || DEFAULT_FAILED_TTL, DEFAULT_FAILED_TTL));
+    sweepTimer = setInterval(() => { try { sweep(); } catch {} }, period);
+    if (sweepTimer.unref) sweepTimer.unref();
+  }
+
   return {
     enqueue,
     nextQueued,
+    promote,
     complete,
     fail,
     requeue,
     cancel,
+    clear,
+    retryFailed,
     reorder,
+    sweep,
     get,
     list,
     forBatch,
@@ -390,5 +527,7 @@ export function createJobStore({ stateDir }) {
     archivedCount,
     on,
     off,
+    // Stop the periodic sweep timer (used by tests; the server runs for the process lifetime).
+    dispose() { if (sweepTimer) { clearInterval(sweepTimer); sweepTimer = null; } },
   };
 }

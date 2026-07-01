@@ -11,6 +11,7 @@ import Sidebar from './Sidebar';
 import TopBar from './TopBar';
 import BatchView from './BatchView';
 import ActivityDock from './ActivityDock';
+import StatusBanner from './StatusBanner';
 import DetailDrawer from './DetailDrawer';
 import SettingsDialog from './SettingsDialog';
 import GenerateDialog from './GenerateDialog';
@@ -33,6 +34,7 @@ export default function AppShell() {
       </div>
 
       {/* Portaled overlays live outside the grid so they never share a stacking context with TopBar. */}
+      <StatusBanner />
       <ActivityDock />
       <DetailDrawer />
       <SettingsDialog />

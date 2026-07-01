@@ -218,6 +218,31 @@
   .progressBar { animation: none; width: 100%; }
 }
 
+/* ── waiting — cancel-free grace window (accent-tinted, prominent Cancel) ── */
+.waiting {
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+  box-shadow: var(--shadow-sm);
+}
+.waiting .label {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.waiting .mutedIcon {
+  color: var(--accent-ink);
+}
+/* Cancel — no Codex used: reuse the .retry pill shape but read as a safe/free action (accent, not
+   destructive-red) so users trust that cancelling during the window costs nothing. */
+.cancelFree {
+  color: var(--accent-ink, var(--ink));
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+}
+.cancelFree:hover {
+  color: var(--accent-ink, var(--ink));
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 48%, transparent);
+}
+
 /* ── queued — quiet dashed placeholder ──────────────────────────── */
 .queued {
   border: 1px dashed var(--line-strong);

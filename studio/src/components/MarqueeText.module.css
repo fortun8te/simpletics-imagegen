@@ -1,0 +1,59 @@
+.wrap {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Fade the trailing edge when clipped — hints there's more without widening the sidebar. */
+.wrapClip {
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 12px), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 12px), transparent 100%);
+}
+.wrapClip:hover,
+.wrapClip:focus-within {
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
+.text {
+  display: block;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.textScroll {
+  text-overflow: clip;
+  animation: marqueeScroll 5.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+  will-change: transform;
+}
+
+@keyframes marqueeScroll {
+  0%, 18% { transform: translateX(0); }
+  82%, 100% { transform: translateX(calc(-1 * var(--marquee-dist, 0px))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .textScroll { animation: none; }
+}
+
+.tip {
+  max-width: 280px;
+  padding: 6px 10px;
+  border-radius: var(--r-md);
+  background: var(--surface-3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.35;
+  z-index: 60;
+}
+.tipArrow {
+  fill: var(--surface-3);
+}

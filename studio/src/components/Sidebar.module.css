@@ -3,7 +3,7 @@
    Fixed-width column (set in AppShell); it owns its own overflow so the batch list scrolls
    independently of <main>. Single committed dark theme, all token-driven.
 
-   Visual language (Claritas/Linear, dark, blue accent, NO blue glow):
+   Visual language (Claritas/Linear, dark, accent-driven, NO accent canvas glow):
    • Two-tier radii — r-sm (8) for inline tiles, r-md (10) for rows, r-lg (12) for glass surfaces.
    • Glass pills (switcher / search / footer) share one treatment: glass-bg + glass-border +
      inset-hi + backdrop blur, so the footer reads as a sibling of the search pill.
@@ -407,12 +407,8 @@
   color: var(--ink);
 }
 .batchName {
-  flex: 1 1 auto;
   font-size: 13px;
   font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 /* Count chip on the right. */
 .batchCount {
@@ -490,7 +486,7 @@
   isolation: isolate;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
   width: 100%;
   height: 44px;
   margin-top: var(--space-2);
@@ -517,10 +513,22 @@
 .userRow > * { position: relative; z-index: 1; }
 .userRow:hover { border-color: var(--glass-border-strong); }
 
-/* Avatar — procedural hue derived from the user's name (see hueForName in Sidebar.tsx, passed
-   in as --user-hue). The gradient angle/stops stay fixed; only the hue drifts, slowly and
-   continuously, via animated hue-rotate so it never settles — reads as "alive" without being
-   distracting. Stays in the blue family: hue-rotate is clamped to a narrow ±18deg swing. */
+/* The account button now shares the row with the usage ring (right side); it owns just the
+   avatar + name/tier and grows to fill the remaining space. */
+.userRowMain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: inherit;
+  text-align: left;
+}
+
+/* Avatar — uses the live accent gradient (tracks Settings accent picker). */
 .userAvatar {
   position: relative;
   display: inline-flex;
@@ -532,23 +540,14 @@
   border-radius: 50%;
   background: linear-gradient(
     150deg,
-    oklch(0.64 0.19 calc(var(--user-hue, 258) - 14)) 0%,
-    oklch(0.55 0.22 var(--user-hue, 258)) 55%,
-    oklch(0.6 0.16 calc(var(--user-hue, 258) + 18)) 100%
+    var(--accent-2) 0%,
+    var(--accent) 52%,
+    color-mix(in srgb, var(--accent) 68%, var(--accent-2)) 100%
   );
   box-shadow: var(--inset-hi), 0 2px 6px -2px color-mix(in srgb, var(--accent) 45%, transparent);
   color: var(--on-accent);
   font-size: 12px;
   font-weight: 600;
-  animation: avatarHueDrift 18s ease-in-out infinite;
-}
-@keyframes avatarHueDrift {
-  0% { filter: hue-rotate(0deg) saturate(100%); }
-  50% { filter: hue-rotate(10deg) saturate(112%); }
-  100% { filter: hue-rotate(0deg) saturate(100%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .userAvatar { animation: none; }
 }
 /* Name + plan stacked tightly as one compact text block, vertically centered against
    the avatar — top line is the name (normal weight, ink), bottom line is the plan

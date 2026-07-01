@@ -1,6 +1,6 @@
 // Typed fetch client for the studio-server (§3). Same-origin in prod; Vite proxies in dev.
 // Every call resolves to a safe fallback on network/parse error rather than throwing.
-import type { Config, BatchState, Health, GenerateScope, BatchMeta, PromptInfo } from './types';
+import type { Config, BatchState, Health, GenerateScope, BatchMeta, PromptInfo, GenSettings, ResumeResult } from './types';
 
 async function jget<T>(url: string, fallback: T): Promise<T> {
   try {
@@ -28,11 +28,14 @@ async function jpost<T>(url: string, body: unknown, fallback: T): Promise<T> {
 const emptyState = (brand: string, batch: string): BatchState => ({
   brand, batch, ads: [],
   codex: { alive: false, progress: null },
-  queue: { running: 0, queued: 0, done: 0, failed: 0 },
-  run: { state: 'idle', running: 0, queued: 0, done: 0, failed: 0, total: 0, resumeAt: null },
+  queue: { running: 0, queued: 0, waiting: 0, done: 0, failed: 0 },
+  run: { state: 'idle', running: 0, queued: 0, waiting: 0, done: 0, failed: 0, total: 0, resumeAt: null },
   codexUsage: { known: false, label: 'unknown' },
+  blockers: { auth: false, cooling: null, budget: false },
   archivedCount: 0,
 });
+
+const DEFAULT_SETTINGS: GenSettings = { graceSeconds: 10, budget: { maxPer5h: null, maxPer7d: null } };
 
 export const api = {
   getConfig: () => jget<Config>('/api/config', { brands: [] }),
@@ -50,9 +53,16 @@ export const api = {
       ok: false,
       bridge: false,
       codex: { alive: false },
-      queue: { running: 0, queued: 0, done: 0, failed: 0 },
+      queue: { running: 0, queued: 0, waiting: 0, done: 0, failed: 0 },
       estimate: { seconds: 30, samples: 0, fallback: true },
     }),
+  refreshUsage: () =>
+    jpost<{ ok: boolean; codexUsage?: Health['codexUsage']; blockers?: Health['blockers']; error?: string }>(
+      '/api/usage/refresh',
+      {},
+      { ok: false },
+    ),
+  assetUrl: (name: string) => `/asset?name=${encodeURIComponent(name)}`,
   imgUrl: (relPath: string, w?: number, downloadName?: string) => {
     const q = new URLSearchParams({ path: relPath });
     if (w) q.set('w', String(w));
@@ -77,7 +87,10 @@ export const api = {
   reorderQueue: (brand: string, batch: string, jobIds: string[]) =>
     jpost<{ ok: boolean; reordered?: number }>('/api/queue/reorder', { brand, batch, jobIds }, { ok: false }),
   pause: () => jpost<{ ok: boolean }>('/api/pause', {}, { ok: false }),
-  resume: () => jpost<{ ok: boolean }>('/api/resume', {}, { ok: false }),
+  resume: (opts?: { verify?: boolean }) =>
+    jpost<ResumeResult>('/api/resume', opts ?? {}, { ok: false }),
+  dismissResume: () =>
+    jpost<{ ok: boolean; run?: ResumeResult['run'] }>('/api/resume/dismiss', {}, { ok: false }),
   reset: () => jpost<{ ok: boolean }>('/api/reset', {}, { ok: false }),
   archive: (relPath: string, archived: boolean) =>
     jpost<{ ok: boolean }>('/api/archive', { relPath, archived }, { ok: false }),
@@ -90,4 +103,16 @@ export const api = {
       { brand, batch, ad, variation },
       { ok: false },
     ),
+  // Gen settings (graceSeconds + budget caps), owned by lib/usage.mjs (.state/settings.json).
+  getSettings: () =>
+    jget<{ ok: boolean; settings: GenSettings }>('/api/settings', { ok: false, settings: DEFAULT_SETTINGS }),
+  setSettings: (partial: Partial<GenSettings>) =>
+    jpost<{ ok: boolean; settings: GenSettings }>('/api/settings', partial, { ok: false, settings: DEFAULT_SETTINGS }),
+  // Remove matching job records now (failed/canceled/done/all). Auto-clear handles the common
+  // case; this is the explicit form used by any manual clear.
+  clearJobs: (scope: 'failed' | 'canceled' | 'done' | 'all', opts?: { brand?: string; batch?: string }) =>
+    jpost<{ ok: boolean; cleared: number }>('/api/jobs/clear', { scope, ...opts }, { ok: false, cleared: 0 }),
+  // Requeue failed jobs (attempts→0, status→queued). Used by the StatusBanner "Retry all".
+  retryFailed: (opts?: { brand?: string; batch?: string }) =>
+    jpost<{ ok: boolean; requeued: number }>('/api/jobs/retry', { scope: 'failed', ...opts }, { ok: false, requeued: 0 }),
 };

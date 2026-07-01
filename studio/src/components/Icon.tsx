@@ -140,6 +140,19 @@ const paths: Record<string, JSX.Element> = {
       <path d="M20 20l-3.5-3.5" />
     </>
   ),
+  copy: (
+    <>
+      <rect x="9" y="9" width="11" height="11" rx="2" />
+      <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+    </>
+  ),
+  'file-text': (
+    <>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <path d="M14 2v6h6" />
+      <path d="M8 13h8M8 17h8M8 9h2" />
+    </>
+  ),
   // Three stacked pill rows — reads as a list layout, distinct from layout-grid.
   'layout-list': (
     <>

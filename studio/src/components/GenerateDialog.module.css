@@ -5,6 +5,11 @@
   inset: 0;
   background: rgba(0, 0, 0, 0.55);
   animation: fade var(--dur-2) var(--ease);
+  /* Without an explicit z-index here, this z-index:auto layer loses to AppShell's .shell
+     (position:fixed; z-index:1) regardless of DOM order — an explicit z-index always beats auto
+     in the same stacking context. Match the app's 100+ convention for portaled modals (see
+     SettingsDialog/DetailDrawer) so the dialog isn't rendered invisibly behind the app shell. */
+  z-index: 100;
 }
 
 .content {
@@ -23,6 +28,7 @@
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
   animation: pop var(--dur-2) var(--ease);
   outline: none;
+  z-index: 101;
 }
 
 @keyframes fade {

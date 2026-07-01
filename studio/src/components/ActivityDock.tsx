@@ -34,6 +34,7 @@ import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { BatchState } from '../types';
 import { useStore } from '../store';
 import { api } from '../api';
+import { refreshState } from '../refresh';
 import { Icon } from './Icon';
 import styles from './ActivityDock.module.css';
 
@@ -52,13 +53,15 @@ interface DockJob {
   status: GroupKey;
   error?: string | null;
   startedAt?: number | null;
+  spendAt?: number | null;
   order?: number | null;
 }
 
-type GroupKey = 'generating' | 'queued' | 'failed';
+type GroupKey = 'generating' | 'waiting' | 'queued' | 'failed';
 
 // Group ordering + small-caps eyebrow labels (most relevant first).
 const GROUPS: { key: GroupKey; label: string }[] = [
+  { key: 'waiting', label: 'Starting' },
   { key: 'generating', label: 'Running' },
   { key: 'queued', label: 'Queued' },
   { key: 'failed', label: 'Failed' },
@@ -73,7 +76,7 @@ function deriveJobs(state: BatchState | null): DockJob[] {
       for (const prompt of variation.prompts) {
         for (const slot of prompt.slots) {
           if (!slot.job) continue;
-          if (slot.status !== 'generating' && slot.status !== 'queued' && slot.status !== 'failed') {
+          if (slot.status !== 'generating' && slot.status !== 'waiting' && slot.status !== 'queued' && slot.status !== 'failed') {
             continue;
           }
           jobs.push({
@@ -88,6 +91,7 @@ function deriveJobs(state: BatchState | null): DockJob[] {
             status: slot.status,
             error: slot.job.error,
             startedAt: slot.job.startedAt,
+            spendAt: slot.job.spendAt,
             order: slot.job.order,
           });
         }
@@ -110,6 +114,19 @@ function useElapsed(startedAt?: number | null): string | null {
   const m = Math.floor(total / 60);
   const s = total % 60;
   return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+// Live seconds-until countdown from a future epoch-ms `spendAt` (waiting window). Ticks once a
+// second, floors at 0. Null when no target.
+function useCountdown(spendAt?: number | null): number | null {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!spendAt) return;
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, [spendAt]);
+  if (!spendAt) return null;
+  return Math.max(0, Math.ceil((spendAt - now) / 1000));
 }
 
 function StatusDot({ status }: { status: GroupKey }) {
@@ -139,6 +156,7 @@ function JobRow({
   batch?: string | null;
 }) {
   const elapsed = useElapsed(job.status === 'generating' ? job.startedAt : undefined);
+  const secsLeft = useCountdown(job.status === 'waiting' ? job.spendAt : undefined);
 
   // Retry a failed job. Most failures are re-runs of an existing slot (has relPath — regenerate
   // in place). A job that failed on its very first attempt has no relPath yet; fall back to
@@ -184,6 +202,9 @@ function JobRow({
       </span>
 
       {job.status === 'generating' && elapsed && <span className={styles.elapsed}>{elapsed}</span>}
+      {job.status === 'waiting' && (
+        <span className={styles.elapsed}>{secsLeft != null ? `${secsLeft}s` : '—'}</span>
+      )}
 
       <span className={styles.actions}>
         {job.status === 'failed'
@@ -200,8 +221,8 @@ function JobRow({
           : job.jobId && (
               <button
                 className={styles.act}
-                aria-label="Cancel generation"
-                title="Stop"
+                aria-label={job.status === 'waiting' ? 'Cancel — no Codex used' : 'Cancel generation'}
+                title={job.status === 'waiting' ? 'Cancel — no Codex used' : 'Codex in use — cancel'}
                 onClick={() => job.jobId && api.cancel({ jobId: job.jobId })}
               >
                 <Icon name="x" size={13} />
@@ -299,9 +320,10 @@ export default function ActivityDock() {
 
   const jobs = deriveJobs(state);
   const run = state?.run;
-  const isPaused = run?.state === 'paused' || run?.state === 'cooling';
+  const isPaused = run?.state === 'paused' || run?.state === 'cooling' || run?.state === 'ready';
 
   const running = jobs.filter((j) => j.status === 'generating').length;
+  const waiting = jobs.filter((j) => j.status === 'waiting').length;
   const queued = jobs.filter((j) => j.status === 'queued').length;
   const failed = jobs.filter((j) => j.status === 'failed').length;
 
@@ -311,7 +333,10 @@ export default function ActivityDock() {
   // Closed but jobs exist → a small pill that expands the panel.
   if (!activityOpen) {
     const pillLabel =
-      running > 0 ? `${running} running` : queued > 0 ? `${queued} queued` : `${failed} failed`;
+      running > 0 ? `${running} running`
+      : waiting > 0 ? `${waiting} starting`
+      : queued > 0 ? `${queued} queued`
+      : `${failed} failed`;
     return (
       <button
         className={styles.pill}
@@ -319,7 +344,7 @@ export default function ActivityDock() {
         title="Open activity"
         onClick={() => setUI({ activityOpen: true })}
       >
-        <StatusDot status={running > 0 ? 'generating' : queued > 0 ? 'queued' : 'failed'} />
+        <StatusDot status={running > 0 ? 'generating' : waiting > 0 ? 'waiting' : queued > 0 ? 'queued' : 'failed'} />
         <span className={styles.pillText}>{pillLabel}</span>
         <Icon name="chevron-down" size={13} className={styles.pillChev} />
       </button>
@@ -336,7 +361,11 @@ export default function ActivityDock() {
   })).filter((g) => g.rows.length > 0);
 
   const badge =
-    running > 0 ? `${running} running` : queued > 0 ? `${queued} queued` : failed > 0 ? `${failed} failed` : '';
+    running > 0 ? `${running} running`
+    : waiting > 0 ? `${waiting} starting`
+    : queued > 0 ? `${queued} queued`
+    : failed > 0 ? `${failed} failed`
+    : '';
 
   return (
     <section className={styles.panel} aria-label="Activity">
@@ -367,7 +396,7 @@ export default function ActivityDock() {
                       className={styles.groupAct}
                       aria-label={isPaused ? 'Continue run' : 'Pause run'}
                       title={isPaused ? 'Continue' : 'Pause'}
-                      onClick={() => (isPaused ? api.resume() : api.pause())}
+                      onClick={() => (isPaused ? api.resume({ verify: true }).then(refreshState) : api.pause())}
                     >
                       <Icon name={isPaused ? 'chevron-right' : 'pause'} size={12} />
                     </button>

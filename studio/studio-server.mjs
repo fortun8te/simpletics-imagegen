@@ -16,7 +16,7 @@ import { randomUUID } from 'node:crypto';
 import { createJobStore } from './lib/jobstore.mjs';
 import { createWorker, MAX_CONCURRENT_JOBS } from './lib/worker.mjs';
 import { buildState } from './lib/state.mjs';
-import { getCodexUsage, noteGenerated, noteRateLimit } from './lib/usage.mjs';
+import { getCodexUsage, refreshCodexUsage, noteGenerated, noteRateLimit, clearRateLimit, verifyCodexQuota, getBlockers, getSettings, updateSettings } from './lib/usage.mjs';
 
 // ── Paths (injected into the lib modules) ────────────────────────────────────────────────────────
 const STUDIO = dirname(fileURLToPath(import.meta.url));            // .../NEUEGEN/studio
@@ -40,7 +40,13 @@ const worker = createWorker({
   onChange: broadcast,
   // Feed the best-effort codex-usage probe with the two real signals the worker has: a completed
   // job (an honest "generated this session" tick) and the start of a rate-limit cooldown.
-  onComplete: () => { noteGenerated(1); },
+  // Pass the job's real finishedAt so usage.mjs can fold it into the windowed used5h/used7d estimate
+  // (and a success clears any dead-auth signal). Read the fresh record for an accurate timestamp.
+  onComplete: (job) => {
+    let finishedAt = Date.now();
+    try { const j = store.get(job && job.id); if (j && j.finishedAt) finishedAt = j.finishedAt; } catch {}
+    noteGenerated(1, finishedAt);
+  },
   onRateLimit: ({ resumeAt }) => { noteRateLimit({ resumeAt }); },
 });
 worker.start();
@@ -132,6 +138,54 @@ function isTubeShot(promptText) { return TUBE_RE.test(String(promptText || ''));
 function tubeRefPath() {
   const p = join(REPO, 'assets', 'nanox.png');
   return existsSync(p) ? p : null;
+}
+
+function assetRefPath(name) {
+  const p = join(REPO, 'assets', `${name}.png`);
+  return existsSync(p) ? p : null;
+}
+
+function layoutRefPath(file) {
+  if (!file) return null;
+  const p = join(REPO, 'assets', 'refs', file);
+  return existsSync(p) ? p : null;
+}
+
+function modelRenderRel(brand, batch, adId, modelId) {
+  return `${part(brand)}/${part(batch)}/models/${part(adId)}/${part(modelId)}/run-1.png`;
+}
+
+// Build the full reference list for a prompt (product, layout, model face, extras, tube).
+function buildPromptRefs(brand, batch, ad, variation, promptText) {
+  const refs = [];
+  const seen = new Set();
+  const push = (role, name, url) => {
+    const key = `${role}:${url}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    refs.push({ role, name, url });
+  };
+
+  if (ad.product && assetRefPath(ad.product)) {
+    push('product', ad.product, `/asset?name=${encodeURIComponent(ad.product)}`);
+  }
+  if (ad.ref && layoutRefPath(ad.ref)) {
+    push('layout', ad.ref, `/refs?name=${encodeURIComponent(ad.ref)}`);
+  }
+  if (ad.kind === 'face') {
+    const modelId = variation.model || (ad.models && ad.models[0] && ad.models[0].id);
+    if (modelId) {
+      const rel = modelRenderRel(brand.id, batch.code, ad.id, modelId);
+      push('model', modelId, `/img?path=${encodeURIComponent(rel)}&w=320`);
+    }
+  }
+  for (const key of ad.extraRefs || []) {
+    if (assetRefPath(key)) push('extra', key, `/asset?name=${encodeURIComponent(key)}`);
+  }
+  if (isTubeShot(promptText) && tubeRefPath()) {
+    push('tube', 'nanox', '/asset?name=nanox');
+  }
+  return refs;
 }
 
 const part = (v) => String(v || '').trim().replace(/[^a-zA-Z0-9_-]+/g, '-');
@@ -267,14 +321,15 @@ async function fetchBridgeProgress() {
 // jobs belonging to this brand/batch so the progress reflects THIS run, not unrelated batches.
 function buildRunInfo(brand, batch) {
   const { state, resumeAt } = worker.runState();
-  let running = 0, queued = 0, done = 0, failed = 0;
+  let running = 0, queued = 0, waiting = 0, done = 0, failed = 0;
   for (const j of store.forBatch(brand, batch)) {
     if (j.status === 'running') running++;
     else if (j.status === 'queued') queued++;
+    else if (j.status === 'waiting') waiting++;
     else if (j.status === 'done') done++;
     else if (j.status === 'failed') failed++;
   }
-  return { state, running, queued, done, failed, total: running + queued + done + failed, resumeAt: resumeAt ?? null };
+  return { state, running, queued, waiting, done, failed, total: running + queued + waiting + done + failed, resumeAt: resumeAt ?? null };
 }
 
 // ── Static file serving (SPA) ────────────────────────────────────────────────────────────────────
@@ -363,6 +418,35 @@ async function serveAsset(req, res, query) {
   }
 }
 
+// ── /refs — serve a layout reference image from REPO/assets/refs (jpg/png) ───────────────────────
+async function serveLayoutRef(req, res, query) {
+  const name = query.get('name');
+  if (!name || name.includes('..') || name.includes('/') || name.includes('\\')) {
+    res.writeHead(400, { 'Content-Type': 'text/plain' }); res.end('bad name'); return;
+  }
+  const REFS_ROOT = join(REPO, 'assets', 'refs');
+  const lower = name.toLowerCase();
+  const candidates = [name];
+  if (!lower.endsWith('.jpg') && !lower.endsWith('.jpeg') && !lower.endsWith('.png')) {
+    candidates.push(`${name}.jpg`, `${name}.png`);
+  }
+  let filePath = null;
+  for (const candidate of candidates) {
+    const p = normalize(join(REFS_ROOT, candidate));
+    if (p.startsWith(REFS_ROOT + sep) && existsSync(p)) { filePath = p; break; }
+  }
+  if (!filePath) { res.writeHead(404, { 'Content-Type': 'text/plain' }); res.end('not found'); return; }
+  const ext = extname(filePath).toLowerCase();
+  const type = ext === '.png' ? 'image/png' : 'image/jpeg';
+  try {
+    const data = await readFile(filePath);
+    res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'public, max-age=300' });
+    res.end(data);
+  } catch {
+    res.writeHead(500, { 'Content-Type': 'text/plain' }); res.end('read error');
+  }
+}
+
 // ── Request router ───────────────────────────────────────────────────────────────────────────────
 const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, `http://localhost:${PORT}`);
@@ -398,6 +482,12 @@ const server = http.createServer(async (req, res) => {
     // ── /asset ─────────────────────────────────────────────────────────────────────────────────
     if (pathname === '/asset' && method === 'GET') {
       await serveAsset(req, res, q);
+      return;
+    }
+
+    // ── /refs — layout reference images from assets/refs ─────────────────────────────────────────
+    if (pathname === '/refs' && method === 'GET') {
+      await serveLayoutRef(req, res, q);
       return;
     }
 
@@ -449,12 +539,17 @@ const server = http.createServer(async (req, res) => {
       const p = v && findPrompt(v, q.get('prompt'));
       const text = p ? p.prompt : (v ? v.prompt : null);
       if (!text) { sendJson(res, 200, { ok: false, text: '' }); return; }
-      const tube = isTubeShot(text);
+      const refs = buildPromptRefs(brand, batch, ad, v, text);
+      const legacy = refs.find((r) => r.role === 'tube') || refs[0] || null;
       sendJson(res, 200, {
         ok: true,
         text,
-        refName: tube ? 'nanox' : null,
-        refUrl: tube ? '/asset?name=nanox' : null,
+        label: (p && p.label) || (p && p.id) || null,
+        copy: v ? (v.copy || null) : null,
+        recipe: (p && p.recipe) || null,
+        refs,
+        refName: legacy ? legacy.name : null,
+        refUrl: legacy ? legacy.url : null,
       });
       return;
     }
@@ -475,7 +570,8 @@ const server = http.createServer(async (req, res) => {
         renders: RENDERS,
         codex,
         run: buildRunInfo(brand.id, batchCode),
-        codexUsage: getCodexUsage(),
+        codexUsage: getCodexUsage({ force: true }),
+        blockers: getBlockers(),
       });
       sendJson(res, 200, state);
       return;
@@ -488,10 +584,23 @@ const server = http.createServer(async (req, res) => {
         bridge,
         codex: { alive: worker.busy() },
         queue: store.counts(),
-        codexUsage: getCodexUsage(),
+        codexUsage: getCodexUsage({ force: true }),
+        blockers: getBlockers(),
         // Rolling average single-image generation time (lib/jobstore.mjs), for GenerateDialog's
         // per-image / total-batch ETA. Falls back to a 30s default when there's no history yet.
         estimate: store.avgDurationSeconds(),
+      });
+      return;
+    }
+
+    if (pathname === '/api/usage/refresh' && method === 'POST') {
+      const r = await refreshCodexUsage();
+      broadcast();
+      sendJson(res, 200, {
+        ok: !!r.ok,
+        codexUsage: r.usage,
+        blockers: getBlockers(),
+        error: r.error,
       });
       return;
     }
@@ -611,7 +720,42 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (pathname === '/api/resume' && method === 'POST') {
-      worker.resume(); // lift a user pause AND clear any active cooldown, then refill capacity
+      const body = await readBody(req);
+      const { cooling, cooldownReady, rateLimitHold } = worker.status();
+      const needsVerify = body.verify !== false && (cooling || cooldownReady || rateLimitHold);
+      if (needsVerify) {
+        const v = await verifyCodexQuota();
+        if (!v.ok) {
+          broadcast();
+          sendJson(res, 200, {
+            ok: false,
+            resumed: false,
+            stillLimited: true,
+            reason: v.reason,
+            resetAt: v.resetAt ?? null,
+            error: v.error ?? null,
+            codexUsage: v.usage ?? getCodexUsage({ force: true }),
+            blockers: getBlockers(),
+            run: worker.runState(),
+          });
+          return;
+        }
+      }
+      worker.resume();
+      broadcast();
+      sendJson(res, 200, {
+        ok: true,
+        resumed: true,
+        codexUsage: getCodexUsage({ force: true }),
+        blockers: getBlockers(),
+        run: worker.runState(),
+      });
+      return;
+    }
+
+    if (pathname === '/api/resume/dismiss' && method === 'POST') {
+      worker.dismissReady();
+      broadcast();
       sendJson(res, 200, { ok: true, run: worker.runState() });
       return;
     }
@@ -665,6 +809,41 @@ const server = http.createServer(async (req, res) => {
       variation.prompts.push(newPrompt);
       writeFileSync(CONFIG, JSON.stringify(config, null, 2) + '\n');
       sendJson(res, 200, { ok: true, prompt: newPrompt });
+      return;
+    }
+
+    // Clear job records now (Area 2 manual clear). Body: { scope:'failed'|'canceled'|'done'|'all',
+    // brand?, batch? }. Only removes terminal records; never touches queued/waiting/running jobs.
+    if (pathname === '/api/jobs/clear' && method === 'POST') {
+      const body = await readBody(req);
+      const scope = ['failed', 'canceled', 'done', 'all'].includes(body.scope) ? body.scope : 'failed';
+      const cleared = store.clear({ scope, brand: body.brand, batch: body.batch });
+      sendJson(res, 200, { ok: true, cleared });
+      return;
+    }
+
+    // Requeue failed jobs (Area 2 retry). Body: { scope:'failed', brand?, batch? }. Resets attempts
+    // to 0 and flips status → queued so the worker picks them up again.
+    if (pathname === '/api/jobs/retry' && method === 'POST') {
+      const body = await readBody(req);
+      const requeued = store.retryFailed({ brand: body.brand, batch: body.batch });
+      sendJson(res, 200, { ok: true, requeued });
+      return;
+    }
+
+    // Read the persisted settings ({ graceSeconds, budget:{maxPer5h,maxPer7d} }) — Area 1/4.
+    if (pathname === '/api/settings' && method === 'GET') {
+      sendJson(res, 200, { ok: true, settings: getSettings() });
+      return;
+    }
+
+    // Merge a settings patch ({ graceSeconds?, budget?:{maxPer5h?,maxPer7d?} }) and persist it. The
+    // change takes effect immediately (worker reads getGraceSeconds() each tick; budget gates spawns).
+    if (pathname === '/api/settings' && method === 'POST') {
+      const body = await readBody(req);
+      const settings = updateSettings(body || {});
+      broadcast(); // surface the new budget/grace to any listening clients
+      sendJson(res, 200, { ok: true, settings });
       return;
     }
 

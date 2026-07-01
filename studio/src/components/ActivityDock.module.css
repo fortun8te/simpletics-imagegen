@@ -229,6 +229,7 @@
 }
 
 .d_generating { background: var(--accent); }
+.d_waiting    { background: color-mix(in srgb, var(--accent) 55%, var(--faint)); }
 .d_queued     { background: var(--faint); }
 .d_failed     { background: var(--err); }
 

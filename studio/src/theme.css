@@ -46,9 +46,9 @@
   /* Accent — vibrant slightly-purplish blue (hue ~258). All the color in the UI lives here. */
   --accent: oklch(0.55 0.245 258);
   --accent-2: oklch(0.635 0.235 258);         /* brighter, for hover */
-  --accent-soft: oklch(0.22 0.008 258);       /* neutral gray fill — not a blue wash */
-  --accent-ink: oklch(0.82 0.145 258);        /* blue text/icons on dark */
-  --on-accent: oklch(0.99 0 0);               /* near-white text on a blue fill; default before JS runs */
+  --accent-soft: oklch(0.22 0.008 258);       /* overridden live by accent picker */
+  --accent-ink: oklch(0.82 0.145 258);        /* overridden live — text on dark / tints */
+  --on-accent: oklch(0.99 0 0);               /* overridden live — text on solid accent fills */
   /* Foreground for text/icons sitting ON an accent-colored fill. Aliases --on-accent so every
      existing `color: var(--on-accent)` consumer (DetailDrawer, TopBar, EmptyState, etc.) stays
      correct automatically. SettingsDialog's accent picker computes a WCAG contrast check against

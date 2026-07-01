@@ -12,6 +12,9 @@ export default function App() {
   const batch = useStore((s) => s.batch);
   const setConfig = useStore((s) => s.setConfig);
   const select = useStore((s) => s.select);
+  const setUsage = useStore((s) => s.setUsage);
+  const setBlockers = useStore((s) => s.setBlockers);
+  const setSettings = useStore((s) => s.setSettings);
 
   useEffect(() => {
     api.getConfig().then((cfg) => {
@@ -39,6 +42,30 @@ export default function App() {
   }, [brand, batch, refresh]);
 
   useEvents(refresh);
+
+  // Health poll — the authoritative source for codexUsage + blockers per the contract. Runs
+  // independent of the per-batch state fetch so the UsageChip/StatusBanner stay live even when no
+  // batch is selected. /api/state also mirrors these (see store.setState) for between-poll freshness.
+  useEffect(() => {
+    let alive = true;
+    const probe = () =>
+      api.getHealth().then((h) => {
+        if (!alive) return;
+        if (h.codexUsage) setUsage(h.codexUsage);
+        if (h.blockers) setBlockers(h.blockers);
+      });
+    probe();
+    const t = window.setInterval(probe, 5000);
+    return () => { alive = false; window.clearInterval(t); };
+  }, [setUsage, setBlockers]);
+
+  // Gen settings — fetched once on load (graceSeconds + budget caps). Refreshed after any write
+  // by the components that call api.setSettings (which push the returned settings into the store).
+  useEffect(() => {
+    let alive = true;
+    api.getSettings().then((r) => { if (alive && r.ok) setSettings(r.settings); });
+    return () => { alive = false; };
+  }, [setSettings]);
 
   return <AppShell />;
 }

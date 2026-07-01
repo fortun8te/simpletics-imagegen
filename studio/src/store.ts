@@ -1,8 +1,10 @@
 // Global UI + data store (Zustand). Components read slices; App owns fetching and calls setState.
 // Single dark theme (no toggle), no view switch, no filter — see V3-PLAN.md.
 import { create } from 'zustand';
-import type { Config, BatchState } from './types';
+import type { Config, BatchState, CodexUsage, Blockers, GenSettings, BatchViewMode } from './types';
+import { refreshAccentDerivatives } from './lib/accent';
 
+export type { BatchViewMode } from './types';
 export type Density = 'comfortable' | 'compact';
 export type Theme = 'dark' | 'light';
 export type GridTab = 'all' | 'generating' | 'done' | 'failed' | 'archived';
@@ -22,9 +24,9 @@ export interface UIState {
   drawerRel: string | null;   // relPath of the slot shown in the detail drawer, or null
   genOpen: boolean;           // GenerateDialog open
   settingsOpen: boolean;      // SettingsDialog open
+  settingsSection: 'appearance' | 'library' | 'system' | null; // deep-link a Settings section on open
   activityOpen: boolean;      // Activity panel pinned open
-  gridTab: GridTab;           // active tab pill in the TopBar (filters GridView by slot status)
-  gridQuery: string;          // in-batch search query, owned here so TopBar can host the search input
+  batchViewMode: BatchViewMode; // gallery = image grid, plan = creative spec from config
 }
 
 interface Store {
@@ -34,12 +36,21 @@ interface Store {
   state: BatchState | null;   // current batch state (null until first load)
   loading: boolean;
   ui: UIState;
+  // Global generation-system signals, sourced from /api/health (and mirrored in /api/state). Kept at
+  // the top level — not just inside `state` — so the StatusBanner + UsageChip stay live even when no
+  // batch is selected, and update on the health poll independent of the per-batch state fetch.
+  codexUsage: CodexUsage | null;
+  blockers: Blockers | null;
+  settings: GenSettings | null; // gen settings (graceSeconds + budget), fetched from /api/settings
 
   setConfig: (c: Config) => void;
   select: (brand: string, batch: string) => void;
   setState: (s: BatchState) => void;
   setLoading: (b: boolean) => void;
   setUI: (u: Partial<UIState>) => void;
+  setUsage: (u: CodexUsage | null) => void;
+  setBlockers: (b: Blockers | null) => void;
+  setSettings: (s: GenSettings | null) => void;
 }
 
 // Preferred landing target (the arthritis listicle), used by App when present in config.
@@ -62,6 +73,9 @@ export const useStore = create<Store>((set) => ({
   batch: readPref<string | null>('neuegen.lastBatch', null),
   state: null,
   loading: false,
+  codexUsage: null,
+  blockers: null,
+  settings: null,
   ui: {
     density: readPref<Density>('neuegen.density', 'compact'),
     theme: readPref<Theme>('neuegen.theme', 'dark'),
@@ -70,9 +84,9 @@ export const useStore = create<Store>((set) => ({
     drawerRel: null,
     genOpen: false,
     settingsOpen: false,
+    settingsSection: null,
     activityOpen: false,
-    gridTab: 'all',
-    gridQuery: '',
+    batchViewMode: readPref<BatchViewMode>('neuegen.batchViewMode', 'gallery'),
   },
 
   setConfig: (config) => set({ config }),
@@ -81,14 +95,32 @@ export const useStore = create<Store>((set) => ({
     writePref('neuegen.lastBatch', batch);
     set((s) => ({ brand, batch, state: null, loading: true, ui: { ...s.ui, drawerRel: null } }));
   },
-  setState: (state) => set({ state, loading: false }),
+  setState: (state) =>
+    set((s) => ({
+      state,
+      loading: false,
+      // /api/state also carries the live usage/blockers; mirror them so the banner/chip stay fresh
+      // between health polls. Fall back to the existing top-level values if this payload omits them.
+      codexUsage: state.codexUsage ?? s.codexUsage,
+      blockers: state.blockers ?? s.blockers,
+    })),
   setLoading: (loading) => set({ loading }),
   setUI: (u) =>
     set((s) => {
       if (u.density && u.density !== s.ui.density) writePref('neuegen.density', u.density);
-      if (u.theme && u.theme !== s.ui.theme) { writePref('neuegen.theme', u.theme); applyTheme(u.theme); }
+      if (u.batchViewMode && u.batchViewMode !== s.ui.batchViewMode) {
+        writePref('neuegen.batchViewMode', u.batchViewMode);
+      }
+      if (u.theme && u.theme !== s.ui.theme) {
+        writePref('neuegen.theme', u.theme);
+        applyTheme(u.theme);
+        if (s.ui.accentRGB) refreshAccentDerivatives(s.ui.accentRGB);
+      }
       return { ui: { ...s.ui, ...u } };
     }),
+  setUsage: (codexUsage) => set({ codexUsage }),
+  setBlockers: (blockers) => set({ blockers }),
+  setSettings: (settings) => set({ settings }),
 }));
 
 // Apply the persisted theme immediately on load (before first paint of themed components).
