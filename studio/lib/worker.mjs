@@ -266,7 +266,7 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
 
   function status() {
     // `paused` kept for back-compat: true while EITHER a user-pause or a rate-limit cooldown holds.
-    return { running, paused: pullGated(), userPaused, cooling, resumeAt };
+    return { running, paused: pullGated(), userPaused, cooling, resumeAt, concurrency };
   }
 
   // The worker is "busy" while any job is in flight OR while it's cooling down (a cooldown means work
@@ -294,5 +294,13 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
     };
   }
 
-  return { start, stop, status, busy, pause, resume, abortRun, runState };
+  // Change how many jobs run at once, effective immediately (no restart). Clamped to a sane range;
+  // raising it re-ticks so newly-available capacity gets filled right away.
+  function setConcurrency(n) {
+    concurrency = Math.max(1, Math.min(10, Math.floor(Number(n)) || 1));
+    tick();
+    return concurrency;
+  }
+
+  return { start, stop, status, busy, pause, resume, abortRun, runState, setConcurrency };
 }

@@ -85,3 +85,34 @@ test('a success resets the failure streak', async () => {
     delete process.env.FAKE_IMAGEGEN_ERROR;
   }
 });
+
+test('setConcurrency raises the limit and pulls more work immediately', async () => {
+  const stateDir = mkdtempSync(join(tmpdir(), 'worker-test-'));
+  const renders = mkdtempSync(join(tmpdir(), 'worker-renders-'));
+  process.env.CHATGPT_IMAGEGEN = FAKE_TOOL;
+  // The fixture's hang mode sleeps 5s then exits on its own — plenty of time to observe in-flight
+  // counts here, and short enough that we don't need to explicitly kill anything in `finally`.
+  process.env.FAKE_IMAGEGEN_MODE = 'hang';
+  const store = createJobStore({ stateDir });
+  const worker = createWorker({ store, renders, repoDir: REPO, concurrency: 1, cooldownMin: 30 });
+  worker.start();
+  try {
+    for (let i = 0; i < 3; i++) {
+      store.enqueue({ brand: 'b', batch: 'x', ad: 'a', variation: 'v', prompt: `p${i}`, run: 1, promptText: 't' });
+    }
+    await waitFor(() => store.counts().running === 1);
+    assert.equal(store.counts().queued, 2);
+    assert.equal(worker.status().concurrency, 1);
+
+    worker.setConcurrency(3);
+    assert.equal(worker.status().concurrency, 3);
+    await waitFor(() => store.counts().running === 3);
+    assert.equal(store.counts().queued, 0);
+  } finally {
+    worker.stop();
+    rmSync(stateDir, { recursive: true, force: true });
+    rmSync(renders, { recursive: true, force: true });
+    delete process.env.CHATGPT_IMAGEGEN;
+    delete process.env.FAKE_IMAGEGEN_MODE;
+  }
+});
