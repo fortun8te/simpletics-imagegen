@@ -39,6 +39,18 @@ function fmtEta(seconds: number): string {
   return `~${Math.round(seconds / 60)}m`;
 }
 
+// Turn the worker's raw repeated-error text into a short, actionable hint. Falls back to showing
+// the raw text if it doesn't match a known pattern — never hides the real error.
+function blockedHint(reason: string): string {
+  if (/token refresh|auth\.json|OAuth/i.test(reason)) {
+    return 'Codex login has expired. Run `codex login` in your terminal, then hit Retry.';
+  }
+  if (/tool not found/i.test(reason)) {
+    return "The generation tool isn't where the server expects it. Check CHATGPT_IMAGEGEN, then hit Retry.";
+  }
+  return `Generation stopped — the last 3 attempts failed the same way: "${reason}"`;
+}
+
 // Slot statuses that each tab represents. `all` = null (no status filter).
 const TAB_STATUSES: Record<GridTab, SlotStatus[] | null> = {
   all: null,
@@ -95,6 +107,7 @@ export default function TopBar() {
   const total = run?.total ?? 0;
   const queued = run?.queued ?? 0;
   const resumeAt = run?.resumeAt ?? null;
+  const blockedReason = run?.blockedReason ?? null;
 
   // Ticking clock — drives the cooling countdown and the rate-based ETA.
   const [now, setNow] = useState(() => Date.now());
@@ -127,7 +140,7 @@ export default function TopBar() {
     return () => clearTimeout(id);
   }, [confirmReset]);
 
-  const showReset = queued > 0 || state === 'cooling';
+  const showReset = queued > 0 || state === 'cooling' || state === 'blocked';
 
   const doReset = () => {
     if (!confirmReset) { setConfirmReset(true); return; }
@@ -192,6 +205,14 @@ export default function TopBar() {
             </span>
           ) : null}
 
+          {/* Blocked — the circuit breaker tripped. Does not auto-resolve; needs a human fix. */}
+          {state === 'blocked' ? (
+            <span className={s.blocked} role="alert" title={blockedReason ?? undefined}>
+              <Icon name="alert" size={14} />
+              <span className={s.blockedText}>{blockedHint(blockedReason ?? 'unknown error')}</span>
+            </span>
+          ) : null}
+
           {/* Reset — clears the queue / cooldown; inline two-step confirm */}
           {showReset ? (
             <button
@@ -240,6 +261,16 @@ export default function TopBar() {
             >
               <Icon name="chevron-right" size={15} />
               <span>Continue</span>
+            </button>
+          ) : state === 'blocked' ? (
+            <button
+              type="button"
+              className={s.primary}
+              onClick={() => api.resume()}
+              title="Try again — clears the block and resumes the queue"
+            >
+              <Icon name="refresh" size={15} />
+              <span>Retry</span>
             </button>
           ) : state === 'cooling' ? null : (
             <>
