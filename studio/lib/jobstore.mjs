@@ -68,9 +68,22 @@ export function createJobStore({ stateDir }) {
     if (Array.isArray(loadedJobs)) {
       jobs = loadedJobs.filter((j) => j && typeof j === 'object' && typeof j.id === 'string');
       // Reconcile orphans: a job left 'running' means the process died mid-generation — no worker
-      // owns it now, so mark it 'failed' (never leave a perpetual fake "running" run after restart).
+      // owns it now. Treat it exactly like any other failed attempt (same 3-attempt cap runJob()
+      // uses): requeue if there's budget left, otherwise fail for real. A restart during active
+      // development should not manufacture failures that never actually happened.
       for (const j of jobs) {
-        if (j.status === 'running') { j.status = 'failed'; j.error = j.error || 'interrupted (server restarted)'; }
+        if (j.status !== 'running') continue;
+        const attempts = (j.attempts || 0) + 1;
+        j.startedAt = null;
+        if (attempts < 4) {
+          j.status = 'queued';
+          j.attempts = attempts;
+        } else {
+          j.status = 'failed';
+          j.attempts = attempts;
+          j.error = j.error || 'interrupted (server restarted) — retry budget exhausted';
+          j.finishedAt = Date.now();
+        }
       }
       // Recover the counter so new ids never collide with persisted ones.
       for (const j of jobs) {
