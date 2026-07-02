@@ -41,6 +41,31 @@ const paths: Record<string, JSX.Element> = {
     </>
   ),
   activity: <path d="M3 12h4l3 7 4-14 3 7h4" />,
+  palette: (
+    <>
+      <path d="M12 3c-4.2 0-7.5 2.8-7.5 6.8 0 2.2 1.1 4 2.8 5.2" />
+      <circle cx="8.2" cy="9.2" r="1.35" />
+      <circle cx="12" cy="7.2" r="1.35" />
+      <circle cx="15.8" cy="9.2" r="1.35" />
+      <circle cx="14.2" cy="13.2" r="1.35" />
+    </>
+  ),
+  // Mode tab — two offset artboards. Clean stroke stack, reads at 13 px like file-text / photo.
+  design: (
+    <>
+      <rect x="4" y="10" width="13" height="9" rx="2" />
+      <rect x="7" y="5" width="13" height="9" rx="2" />
+    </>
+  ),
+  server: (
+    <>
+      <rect x="4" y="4" width="16" height="5" rx="1.5" />
+      <rect x="4" y="11" width="16" height="5" rx="1.5" />
+      <rect x="4" y="18" width="16" height="2" rx="1" />
+      <circle cx="7.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="7.5" cy="13.5" r="1" fill="currentColor" stroke="none" />
+    </>
+  ),
   // Lucide-style cog — smooth petal teeth + center bore. Reads clean at 14–15 px.
   settings: (
     <>
@@ -56,6 +81,79 @@ const paths: Record<string, JSX.Element> = {
     </>
   ),
   plus: <path d="M12 5v14M5 12h14" />,
+  minus: <path d="M5 12h14" />,
+  // Figma-style layer-type icons (13px optimized)
+  'type-text': <path d="M5 6h14M12 6v13" />,
+  'shape-square': <rect x="5" y="5" width="14" height="14" rx="1.5" />,
+  'shape-circle': <circle cx="12" cy="12" r="7.5" />,
+  'shape-star': <path d="M12 4l2 5 5.4.3-4.2 3.5 1.4 5.2L12 15l-4.6 3 1.4-5.2L4.6 9.3 10 9z" />,
+  'shape-line': <path d="M5 19L19 5" />,
+  'shape-poly': <path d="M4 17l5-7 4 4 7-9" />,
+  frame: (
+    <>
+      <path d="M7 3v18M17 3v18" />
+      <path d="M3 7h18M3 17h18" />
+    </>
+  ),
+  diamond: <path d="M12 4l8 8-8 8-8-8z" />,
+  mask: (
+    <>
+      <circle cx="10" cy="12" r="6.5" />
+      <path d="M14 5.8a6.5 6.5 0 0 1 0 12.4" />
+    </>
+  ),
+  pen: (
+    <>
+      <path d="M12 19l7-7-4-4-7 7-1.5 5.5z" />
+      <path d="M15 8l1.5-1.5a1.4 1.4 0 0 1 2 0l-0 0a1.4 1.4 0 0 1 0 2L17 10" />
+    </>
+  ),
+  // Figma mark — outline version of the five-module logo, tuned for 13-15px.
+  figma: (
+    <>
+      <path d="M9 2h3v6H9a3 3 0 0 1 0-6z" />
+      <path d="M12 2h3a3 3 0 0 1 0 6h-3V2z" />
+      <path d="M9 8h3v6H9a3 3 0 0 1 0-6z" />
+      <circle cx="15" cy="11" r="3" />
+      <path d="M9 14h3v3a3 3 0 1 1-3-3z" />
+    </>
+  ),
+  eye: (
+    <>
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" />
+      <circle cx="12" cy="12" r="2.8" />
+    </>
+  ),
+  'eye-off': (
+    <>
+      <path d="M4 4l16 16" />
+      <path d="M9.9 5.9A9.4 9.4 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.2 3.9M6 7.5A16 16 0 0 0 2.5 12S6 18.5 12 18.5a9.3 9.3 0 0 0 3.5-.7" />
+    </>
+  ),
+  lock: (
+    <>
+      <rect x="6" y="11" width="12" height="9" rx="2" />
+      <path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3" />
+    </>
+  ),
+  unlock: (
+    <>
+      <rect x="6" y="11" width="12" height="9" rx="2" />
+      <path d="M8.5 11V8a3.5 3.5 0 0 1 6.8-1" />
+    </>
+  ),
+  undo: (
+    <>
+      <path d="M8 7L4 11l4 4" />
+      <path d="M4 11h10a5 5 0 0 1 0 10h-3" />
+    </>
+  ),
+  redo: (
+    <>
+      <path d="M16 7l4 4-4 4" />
+      <path d="M20 11H10a5 5 0 0 0 0 10h3" />
+    </>
+  ),
   refresh: (
     <>
       <path d="M20 11a8 8 0 0 0-14-4.5L4 9" />
@@ -144,6 +242,12 @@ const paths: Record<string, JSX.Element> = {
     <>
       <rect x="9" y="9" width="11" height="11" rx="2" />
       <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+    </>
+  ),
+  pencil: (
+    <>
+      <path d="M17 3a2.8 2.8 0 0 1 4 4L7.5 20.5 3 21.5l1-4.5L17 3z" />
+      <path d="M15 5l4 4" />
     </>
   ),
   'file-text': (

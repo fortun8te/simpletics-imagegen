@@ -31,8 +31,9 @@ function fmtEta(seconds: number): string {
 }
 
 const MODES: { key: BatchViewMode; label: string; icon: string }[] = [
-  { key: 'gallery', label: 'Gallery', icon: 'layout-grid' },
-  { key: 'plan', label: 'Plan', icon: 'layout-list' },
+  { key: 'plan', label: 'Plan', icon: 'file-text' },
+  { key: 'gallery', label: 'Images', icon: 'photo' },
+  { key: 'design', label: 'Design', icon: 'design' },
 ];
 
 export default function TopBar() {
@@ -43,6 +44,8 @@ export default function TopBar() {
   const ads = useStore((st) => st.state?.ads);
   const setUI = useStore((st) => st.setUI);
   const batchViewMode = useStore((st) => st.ui.batchViewMode);
+  const planQuery = useStore((st) => st.ui.planQuery);
+  const adCursor = useStore((st) => st.ui.adCursor);
 
   const brandRef = config.brands.find((b) => b.id === brand);
   const batchRef = brandRef?.batches.find((bt) => bt.code === batch);
@@ -107,35 +110,99 @@ export default function TopBar() {
     api.cancel({ all: true }).then(() => api.reset()).then(refreshState);
   };
 
+  const doExport = () => {
+    if (brand && batch) window.location.assign(api.exportBatchUrl(brand, batch));
+  };
+
   return (
     <header className={s.bar}>
       <div className={s.row}>
-        <nav className={s.crumb} aria-label="Location">
-          <span className={s.brand}>{brandName}</span>
-          <span className={s.slash} aria-hidden>/</span>
-          <span className={s.batch}>{batchName}</span>
-        </nav>
+        <div className={s.left}>
+          <div className={s.modeSwitch} role="tablist" aria-label="Batch view">
+            {MODES.map((m) => {
+              const active = batchViewMode === m.key;
+              return (
+                <button
+                  key={m.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  className={`${s.modeBtn} ${active ? s.modeBtnActive : ''}`}
+                  onClick={() => setUI({ batchViewMode: m.key })}
+                >
+                  <Icon name={m.icon} size={14} />
+                  <span>{m.label}</span>
+                </button>
+              );
+            })}
+          </div>
+          {/* Plan/Images already repeat brand + batch in the BatchHero right below —
+              the crumb here would just be a redundant second copy eating middle-column
+              space. Only show it where there's no hero: Design mode, or no batch picked. */}
+          {batchViewMode === 'design' || !brand || !batch ? (
+            <nav className={s.crumb} aria-label="Location">
+              <span className={s.brand}>{brandName}</span>
+              <span className={s.slash} aria-hidden>/</span>
+              <span className={s.batch}>{batchName}</span>
+            </nav>
+          ) : null}
+        </div>
 
-        <div className={s.modeSwitch} role="tablist" aria-label="Batch view">
-          {MODES.map((m) => {
-            const active = batchViewMode === m.key;
-            return (
-              <button
-                key={m.key}
-                type="button"
-                role="tab"
-                aria-selected={active}
-                className={`${s.modeBtn} ${active ? s.modeBtnActive : ''}`}
-                onClick={() => setUI({ batchViewMode: m.key })}
-              >
-                <Icon name={m.icon} size={14} />
-                <span>{m.label}</span>
-              </button>
-            );
-          })}
+        {/* Middle — search (Plan + Images, same field/store value so switching views keeps
+            your filter) + the scroll-tracked "which ad am I on" cursor (both modes). Replaces
+            PlanView's old in-content sticky chrome. */}
+        <div className={s.middle}>
+          {batchViewMode === 'plan' || batchViewMode === 'gallery' ? (
+            <label className={s.search}>
+              <Icon name="search" size={14} />
+              <input
+                id="plan-search-input"
+                type="search"
+                className={s.searchInput}
+                placeholder={batchViewMode === 'plan' ? 'Search ads, concepts, prompts…' : 'Search ads…'}
+                value={planQuery}
+                onChange={(e) => setUI({ planQuery: e.target.value })}
+                spellCheck={false}
+              />
+              {planQuery ? (
+                <button
+                  type="button"
+                  className={s.searchClear}
+                  onClick={() => setUI({ planQuery: '' })}
+                  aria-label="Clear search"
+                >
+                  <Icon name="x" size={12} />
+                </button>
+              ) : (
+                <kbd className={s.searchKey}>/</kbd>
+              )}
+            </label>
+          ) : null}
+          {adCursor ? (
+            <span className={s.adCursor} aria-live="polite" title={adCursor.title}>
+              <span className={s.adCursorNum}>{adCursor.index + 1}/{adCursor.total}</span>
+              <span className={s.adCursorTitle}>{adCursor.title}</span>
+            </span>
+          ) : null}
         </div>
 
         <div className={s.right}>
+          {/* Design mode has no batch content yet — run controls don't apply there. */}
+          {batchViewMode === 'design' ? null : (
+          <>
+          {/* Export lives with the images — only shown in the Images view. */}
+          {brand && batch && batchViewMode === 'gallery' ? (
+            <button
+              type="button"
+              className={s.ghost}
+              onClick={doExport}
+              title="Export batch as ZIP (⌘E) — folders per ad, full-quality PNGs"
+            >
+              <Icon name="download" size={15} />
+              <span>Export</span>
+            </button>
+          ) : null}
+
           {(state === 'running' || state === 'paused') && total > 0 ? (
             <button
               type="button"
@@ -213,6 +280,8 @@ export default function TopBar() {
                 <Icon name="sliders" size={14} />
               </button>
             </>
+          )}
+          </>
           )}
         </div>
       </div>
