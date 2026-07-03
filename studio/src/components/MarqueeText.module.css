@@ -10,11 +10,6 @@
   -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 12px), transparent 100%);
   mask-image: linear-gradient(90deg, #000 0%, #000 calc(100% - 12px), transparent 100%);
 }
-.wrapClip:hover,
-.wrapClip:focus-within {
-  -webkit-mask-image: none;
-  mask-image: none;
-}
 
 .text {
   display: block;
@@ -28,7 +23,8 @@
 
 .textScroll {
   text-overflow: clip;
-  animation: marqueeScroll 5.5s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+  /* 450ms dwell before the scroll starts — skimming the list no longer jolts every row. */
+  animation: marqueeScroll 5.5s cubic-bezier(0.45, 0, 0.55, 1) 450ms infinite alternate backwards;
   will-change: transform;
 }
 

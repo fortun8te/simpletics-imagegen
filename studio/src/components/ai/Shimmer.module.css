@@ -1,0 +1,42 @@
+/* Shimmer — readable base (ink/muted mix) + a bright band sweeping across the text.
+   Same gradient recipe as design/TextShimmer so the two read identically, but with the
+   elements API's tunable duration/spread via CSS vars. */
+.shimmer {
+  display: inline-block;
+  max-width: 100%;
+  min-width: 0;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 0%,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 42%,
+    var(--ink) 50%,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 58%,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 100%
+  );
+  background-size: var(--shimmer-spread, 220%) 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: aiShimmerSweep var(--shimmer-dur, 2.2s) linear infinite;
+}
+
+@keyframes aiShimmerSweep {
+  0%   { background-position: 120% center; }
+  100% { background-position: -20% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--ink);
+  }
+}
+:global([data-reduced-motion="true"]) .shimmer {
+  animation: none;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--ink);
+}

@@ -1,0 +1,70 @@
+/* Persona — a small CSS orb that reacts to AI state. Variants recolor the core; state drives
+   motion. Monochrome-friendly, accent-tinted, theme tokens only. */
+.orb {
+  position: relative;
+  flex: none;
+  display: inline-block;
+  border-radius: 50%;
+}
+.core {
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--persona-hi) 90%, transparent), transparent 60%),
+    linear-gradient(150deg, var(--persona-a), var(--persona-b));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--persona-a) 45%, transparent);
+  opacity: 0;
+}
+
+/* ── variants: (a, b) core gradient stops + highlight ── */
+.orb[data-variant="obsidian"] { --persona-a: var(--ink); --persona-b: var(--surface-3); --persona-hi: var(--muted); }
+.orb[data-variant="mana"]     { --persona-a: var(--accent); --persona-b: var(--accent-2, var(--accent)); --persona-hi: #fff; }
+.orb[data-variant="opal"]     { --persona-a: var(--info, var(--accent)); --persona-b: var(--accent); --persona-hi: #fff; }
+.orb[data-variant="halo"]     { --persona-a: var(--warn, var(--accent)); --persona-b: var(--accent); --persona-hi: #fff; }
+.orb[data-variant="glint"]    { --persona-a: var(--ok, var(--accent)); --persona-b: var(--accent); --persona-hi: #fff; }
+.orb[data-variant="command"]  { --persona-a: var(--surface-3); --persona-b: var(--surface-2); --persona-hi: var(--ink); }
+
+/* ── states ──
+   Perf note: only `transform`/`opacity` are animated (compositor-only, no layout/paint per
+   frame). `will-change` is scoped to the specific animating state selectors — not left on
+   permanently — so the browser promotes `.core`/`.ring` to their own GPU layer for the
+   lifetime of the animation (avoiding a full repaint of the gradient background each frame)
+   without holding the memory cost once the state changes. No box-shadow/filter/blur values
+   are ever animated. */
+.orb[data-state="thinking"] .core { animation: personaBreathe 1.5s var(--ease) infinite; will-change: transform; }
+.orb[data-state="speaking"] .core { animation: personaBreathe 0.7s var(--ease) infinite; will-change: transform; }
+.orb[data-state="listening"] .ring { opacity: 1; animation: personaPing 1.6s var(--ease) infinite; will-change: transform, opacity; }
+.orb[data-state="asleep"] .core { opacity: 0.5; filter: saturate(0.4); }
+
+@keyframes personaBreathe {
+  0%, 100% { transform: scale(0.9); }
+  50% { transform: scale(1.06); }
+}
+@keyframes personaPing {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb .core, .orb .ring { animation: none !important; will-change: auto; }
+}
+:global([data-reduced-motion="true"]) .orb .core,
+:global([data-reduced-motion="true"]) .orb .ring { animation: none !important; will-change: auto; }
+
+/* ── identity row ── */
+.identity { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.idText { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.idName { font-size: 11.5px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+.idSub {
+  font: 500 9px/1.2 var(--font-mono);
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

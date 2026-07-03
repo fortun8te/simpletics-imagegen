@@ -108,9 +108,9 @@ useStore.setState((st) => ({ ui: { ...st.ui, accentRGB: bootRgb } }));
 // theme/accent above) so reopening Settings returns to wherever the user last left it.
 type SectionId = 'appearance' | 'library' | 'system';
 const SECTIONS: { id: SectionId; label: string; icon: string }[] = [
-  { id: 'appearance', label: 'Appearance', icon: 'sun' },
-  { id: 'library', label: 'Library', icon: 'archive' },
-  { id: 'system', label: 'System', icon: 'activity' },
+  { id: 'appearance', label: 'Appearance', icon: 'palette' },
+  { id: 'library', label: 'Library', icon: 'photo' },
+  { id: 'system', label: 'System', icon: 'server' },
 ];
 const SECTION_KEY = 'neuegen.settingsSection';
 const readSection = (): SectionId => {
@@ -124,10 +124,77 @@ const writeSection = (id: SectionId) => {
   try { localStorage.setItem(SECTION_KEY, id); } catch { /* ignore */ }
 };
 
+// Stepper — a clean numeric control replacing the raw <input type="number"> (whose native
+// browser spin buttons look inconsistent across platforms and clash with the token system).
+// Custom accent-hover +/- buttons flank a plain digit field; the unit label sits inline.
+// Same commit-on-blur contract as before: typed edits land via onCommit once the field
+// blurs or Enter is pressed, not on every keystroke.
+function Stepper({
+  value,
+  unit,
+  min = 0,
+  onCommit,
+  className,
+}: {
+  value: number;
+  unit?: string;
+  min?: number;
+  onCommit: (n: number) => void;
+  className?: string;
+}) {
+  const [draft, setDraft] = useState(String(value));
+  useEffect(() => { setDraft(String(value)); }, [value]);
+
+  const commit = (n: number) => {
+    const clamped = Math.max(min, Math.round(n));
+    setDraft(String(clamped));
+    onCommit(clamped);
+  };
+  const step = (delta: number) => commit((Number(draft) || 0) + delta);
+
+  // className (settingControl) goes on the OUTER wrapper only — it carries a min-width +
+  // justify-content:flex-end meant to align this row's control column with its siblings'
+  // (segmented / switch), not to stretch the pill itself. The pill keeps its natural width.
+  return (
+    <div className={className}>
+    <div className={s.stepper}>
+      <button
+        type="button"
+        className={s.stepBtn}
+        onClick={() => step(-1)}
+        disabled={(Number(draft) || 0) <= min}
+        aria-label="Decrease"
+      >
+        <Icon name="minus" size={13} strokeWidth={2} />
+      </button>
+      <input
+        className={s.stepInput}
+        type="text"
+        inputMode="numeric"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value.replace(/[^0-9]/g, ''))}
+        onBlur={() => commit(Number(draft) || 0)}
+        onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+      />
+      {unit ? <span className={s.stepUnit}>{unit}</span> : null}
+      <button
+        type="button"
+        className={s.stepBtn}
+        onClick={() => step(1)}
+        aria-label="Increase"
+      >
+        <Icon name="plus" size={13} strokeWidth={2} />
+      </button>
+    </div>
+    </div>
+  );
+}
+
 export default function SettingsDialog() {
   const settingsOpen = useStore((st) => st.ui.settingsOpen);
   const density = useStore((st) => st.ui.density);
   const showArchived = useStore((st) => st.ui.showArchived);
+  const reducedMotion = useStore((st) => st.ui.reducedMotion);
   const setUI = useStore((st) => st.setUI);
   const codexUsage = useStore((st) => st.codexUsage ?? st.state?.codexUsage);
   const settings = useStore((st) => st.settings);
@@ -227,6 +294,18 @@ export default function SettingsDialog() {
 
   const bridgeUp = !!health?.bridge;
   const codexBusy = !!health?.codex?.alive;
+  const codexSnap = codexUsage?.codex;
+
+  const [refreshingUsage, setRefreshingUsage] = useState(false);
+  const refreshUsageNow = () => {
+    setRefreshingUsage(true);
+    api.refreshUsage()
+      .then((r) => {
+        if (r.codexUsage) useStore.getState().setUsage(r.codexUsage);
+        if (r.blockers) useStore.getState().setBlockers(r.blockers);
+      })
+      .finally(() => setRefreshingUsage(false));
+  };
 
   // Persist a budget/grace change → POST /api/settings, push canonical settings back into the store
   // (shared with the sidebar UsageChip). Blank cap input = null (unlimited).
@@ -258,8 +337,10 @@ export default function SettingsDialog() {
                   data-active={section === item.id || undefined}
                   onClick={() => setSection(item.id)}
                 >
-                  <Icon name={item.icon} size={15} />
-                  <span>{item.label}</span>
+                  <span className={s.navIcon} aria-hidden>
+                    <Icon name={item.icon} size={18} strokeWidth={1.75} />
+                  </span>
+                  <span className={s.navLabel}>{item.label}</span>
                 </button>
               ))}
             </nav>
@@ -361,6 +442,23 @@ export default function SettingsDialog() {
                     />
                   </div>
                 </div>
+
+                <label className={`${s.settingRow} ${s.toggleRow}`} htmlFor="settings-reduced-motion">
+                  <span className={s.settingText}>
+                    <span className={s.rowLabel}>Reduce motion</span>
+                    <span className={s.rowHint}>Less movement in the UI, including decorative animations.</span>
+                  </span>
+                  <button
+                    id="settings-reduced-motion"
+                    type="button"
+                    role="switch"
+                    aria-checked={reducedMotion}
+                    className={`${s.switch} ${s.settingControl} ${reducedMotion ? s.switchOn : ''}`}
+                    onClick={() => setUI({ reducedMotion: !reducedMotion })}
+                  >
+                    <span className={s.knob} aria-hidden />
+                  </button>
+                </label>
               </div>
             </section>
             )}
@@ -392,30 +490,49 @@ export default function SettingsDialog() {
             {section === 'system' && (
             <section className={s.section}>
               <p className={`eyebrow ${s.eyebrow}`}>System</p>
+              {/* Clean key-value rows with small status dots — no icon tiles. */}
               <div className={s.rows}>
                 <div className={s.kvRow} role="status" aria-live="polite">
                   <span className={s.kvLabel}>Codex</span>
-                  <span className={s.kvValue}>
-                    <span className={s.statusDot} data-state={codexBusy ? 'busy' : 'ok'} />
-                    {codexBusy ? 'Running' : 'Ready'}
+                  <span className={s.kvValue} data-known>
+                    <span className={s.statusDot} data-state={codexBusy ? 'busy' : 'ok'} aria-hidden />
+                    {codexBusy ? 'Running a generation' : 'Ready'}
+                    {codexSnap?.fivehLeft != null ? ` · ${codexSnap.fivehLeft}% left (5h)` : ''}
                   </span>
                 </div>
                 <div className={s.kvRow} role="status" aria-live="polite">
                   <span className={s.kvLabel}>Bridge</span>
-                  <span className={s.kvValue}>
-                    <span className={s.statusDot} data-state={bridgeUp ? 'ok' : 'err'} />
-                    {bridgeUp ? 'Up' : 'Down'}
+                  <span className={s.kvValue} data-known={bridgeUp || undefined}>
+                    <span className={s.statusDot} data-state={bridgeUp ? 'ok' : 'err'} aria-hidden />
+                    {bridgeUp ? 'Connected on :8787' : 'Not reachable'}
                   </span>
                 </div>
-                {codexUsage?.plan && (
+                {codexUsage?.plan ? (
                   <div className={s.kvRow}>
-                    <span className={s.kvLabel}>Plan</span>
-                    <span className={s.kvValue}>{codexUsage.plan}</span>
+                    <span className={s.kvLabel}>Account</span>
+                    <span className={s.kvValue} data-known>{codexUsage.plan}</span>
                   </div>
-                )}
+                ) : null}
               </div>
 
-              {/* Generation — the cancel-free waiting window before Codex is spent. */}
+              <div className={s.rows}>
+                <div className={s.settingRow}>
+                  <div className={s.settingText}>
+                    <span className={s.rowLabel}>Refresh Codex quota</span>
+                    <span className={s.rowHint}>Probe codex for a fresh 5h / weekly snapshot.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={`${s.refreshBtn} ${s.settingControl}`}
+                    onClick={refreshUsageNow}
+                    disabled={refreshingUsage}
+                  >
+                    <Icon name="refresh" size={14} />
+                    {refreshingUsage ? 'Checking…' : 'Check now'}
+                  </button>
+                </div>
+              </div>
+
               <p className={`eyebrow ${s.eyebrow}`} style={{ marginTop: 'var(--space-4)' }}>Generation</p>
               <div className={s.rows}>
                 <div className={s.settingRow}>
@@ -423,13 +540,11 @@ export default function SettingsDialog() {
                     <span className={s.rowLabel}>Grace window</span>
                     <span className={s.rowHint}>Cancel-free seconds before Codex is spent. 0 = spawn immediately.</span>
                   </div>
-                  <input
-                    className={`${s.numInput} ${s.settingControl}`}
-                    type="number"
-                    min={0}
-                    defaultValue={settings?.graceSeconds ?? 10}
-                    key={`grace-${settings?.graceSeconds ?? 10}`}
-                    onBlur={(e) => persistSettings({ graceSeconds: Math.max(0, Math.round(Number(e.target.value) || 0)) })}
+                  <Stepper
+                    className={s.settingControl}
+                    value={settings?.graceSeconds ?? 10}
+                    unit="sec"
+                    onCommit={(n) => persistSettings({ graceSeconds: n })}
                   />
                 </div>
               </div>

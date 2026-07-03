@@ -5,6 +5,21 @@ import type { Config, BatchState, CodexUsage, Blockers, GenSettings, BatchViewMo
 import { refreshAccentDerivatives } from './lib/accent';
 
 export type { BatchViewMode } from './types';
+
+// One frame of a visible agent stream (SSE `plan`/`design` events — lib/planner.mjs /
+// lib/design-agent.mjs onStep payloads): either a step or a terminal done/error marker.
+// `docId` (design channel only) attributes the frame to the DesignDoc the agent is running
+// against — the server can run MAX_CONCURRENT>1 design agents at once (e.g. two variant docs
+// edited/generated back to back), and `design` is one shared SSE broadcast, so without docId a
+// client watching variant A can't tell its own steps apart from variant B's on the same wire.
+export interface AgentEvent {
+  runId: string;
+  docId?: string;
+  step?: { i: number; tool?: string; kind?: string; summary: string; data?: unknown; at: number };
+  done?: boolean;
+  error?: string;
+  result?: unknown;
+}
 export type Density = 'comfortable' | 'compact';
 export type Theme = 'dark' | 'light';
 export type GridTab = 'all' | 'generating' | 'done' | 'failed' | 'archived';
@@ -15,6 +30,16 @@ export type GridTab = 'all' | 'generating' | 'done' | 'failed' | 'archived';
 // AppAura subscribes to this the same way it already subscribes to `theme` (a ref synced via
 // useEffect, read live in the render loop without re-initializing GL).
 export interface AccentRGB { r: number; g: number; b: number; }
+
+// Latest document-change SSE frame (server `doc` events: a design/skeleton/element/brandkit was
+// saved). Only the most recent event is kept — views that care (DesignView) watch this and
+// debounce their own refetch. `at` is the client receive time so identical payloads still tick.
+export interface DocTick {
+  kind: 'design' | 'skeleton' | 'element' | 'brandkit' | (string & {});
+  id: string;
+  updatedAt?: number;
+  at: number;
+}
 
 export interface UIState {
   density: Density;
@@ -27,6 +52,15 @@ export interface UIState {
   settingsSection: 'appearance' | 'library' | 'system' | null; // deep-link a Settings section on open
   activityOpen: boolean;      // Activity panel pinned open
   batchViewMode: BatchViewMode; // gallery = image grid, plan = creative spec from config
+  reducedMotion: boolean;       // user override — less UI/decor animation
+  planQuery: string;            // Plan search text — the input lives in the TopBar
+  // Visible agent streams (SSE `plan` / `design` events append here; rails render them live).
+  planEvents: AgentEvent[];
+  designEvents: AgentEvent[];
+  // Which ad the viewport is currently on (scroll-tracked by PlanView/GridView, shown in the TopBar).
+  adCursor: { index: number; total: number; title: string } | null;
+  // Latest `doc` SSE frame (see DocTick) — null until the first doc event arrives.
+  docTick: DocTick | null;
 }
 
 interface Store {
@@ -48,6 +82,11 @@ interface Store {
   setState: (s: BatchState) => void;
   setLoading: (b: boolean) => void;
   setUI: (u: Partial<UIState>) => void;
+  /** Append an SSE agent event to its stream (a `done` marker for a NEW runId resets the
+   *  stream first, so each run starts a clean log). Streams are capped at 60 events. */
+  pushAgentEvent: (channel: 'plan' | 'design', ev: AgentEvent) => void;
+  /** Record the latest `doc` SSE event (a design/skeleton/element/brandkit changed on disk). */
+  setDocTick: (t: DocTick) => void;
   setUsage: (u: CodexUsage | null) => void;
   setBlockers: (b: Blockers | null) => void;
   setSettings: (s: GenSettings | null) => void;
@@ -60,11 +99,23 @@ export const DEFAULT_BATCH = 'b2';
 const readPref = <T,>(key: string, fallback: T): T => {
   try { const v = localStorage.getItem(key); return v == null ? fallback : (v as unknown as T); } catch { return fallback; }
 };
+const readBoolPref = (key: string, fallback: boolean): boolean => {
+  try {
+    const v = localStorage.getItem(key);
+    if (v === 'true') return true;
+    if (v === 'false') return false;
+  } catch { /* ignore */ }
+  return fallback;
+};
 const writePref = (key: string, value: string) => { try { localStorage.setItem(key, value); } catch { /* ignore */ } };
 
 // Apply the theme to the document root so theme.css's [data-theme="light"] overrides take effect.
 const applyTheme = (theme: Theme) => {
   try { document.documentElement.dataset.theme = theme; } catch { /* SSR/no-DOM */ }
+};
+
+const applyReducedMotion = (on: boolean) => {
+  try { document.documentElement.dataset.reducedMotion = on ? 'true' : 'false'; } catch { /* SSR/no-DOM */ }
 };
 
 export const useStore = create<Store>((set) => ({
@@ -87,6 +138,12 @@ export const useStore = create<Store>((set) => ({
     settingsSection: null,
     activityOpen: false,
     batchViewMode: readPref<BatchViewMode>('neuegen.batchViewMode', 'gallery'),
+    planQuery: '',
+    planEvents: [],
+    designEvents: [],
+    adCursor: null,
+    docTick: null,
+    reducedMotion: readBoolPref('neuegen.reducedMotion', false),
   },
 
   setConfig: (config) => set({ config }),
@@ -105,6 +162,32 @@ export const useStore = create<Store>((set) => ({
       blockers: state.blockers ?? s.blockers,
     })),
   setLoading: (loading) => set({ loading }),
+  pushAgentEvent: (channel, ev) =>
+    set((s) => {
+      const key = channel === 'plan' ? 'planEvents' : 'designEvents';
+      const cur = s.ui[key];
+      // `plan` has one global run at a time — a new runId always starts a fresh stream.
+      // `design` can have >1 run in flight across different variant docs (each frame now carries
+      // its own docId — see AgentEvent). A new run must only clear THAT doc's prior events, not
+      // the whole stream, or a second variant's agent starting mid-run wipes the first variant's
+      // still-live history out from under it (and the reverse when switching tabs back).
+      let base: AgentEvent[];
+      if (channel === 'plan') {
+        base = cur.length && cur[0].runId !== ev.runId ? [] : cur;
+      } else if (ev.docId) {
+        const sameDocLatest = [...cur].reverse().find((e) => e.docId === ev.docId);
+        base = sameDocLatest && sameDocLatest.runId !== ev.runId
+          ? cur.filter((e) => e.docId !== ev.docId)
+          : cur;
+      } else {
+        // No docId on the frame (e.g. the pre-doc layout-extract run) — fall back to the
+        // previous global-reset behavior so that rail still works, just without isolation.
+        base = cur.length && cur[0].runId !== ev.runId ? [] : cur;
+      }
+      return { ui: { ...s.ui, [key]: [...base, ev].slice(-60) } };
+    }),
+  setDocTick: (docTick) => set((s) => ({ ui: { ...s.ui, docTick } })),
+
   setUI: (u) =>
     set((s) => {
       if (u.density && u.density !== s.ui.density) writePref('neuegen.density', u.density);
@@ -116,6 +199,10 @@ export const useStore = create<Store>((set) => ({
         applyTheme(u.theme);
         if (s.ui.accentRGB) refreshAccentDerivatives(s.ui.accentRGB);
       }
+      if (u.reducedMotion !== undefined && u.reducedMotion !== s.ui.reducedMotion) {
+        writePref('neuegen.reducedMotion', String(u.reducedMotion));
+        applyReducedMotion(u.reducedMotion);
+      }
       return { ui: { ...s.ui, ...u } };
     }),
   setUsage: (codexUsage) => set({ codexUsage }),
@@ -125,3 +212,4 @@ export const useStore = create<Store>((set) => ({
 
 // Apply the persisted theme immediately on load (before first paint of themed components).
 applyTheme(useStore.getState().ui.theme);
+applyReducedMotion(useStore.getState().ui.reducedMotion);

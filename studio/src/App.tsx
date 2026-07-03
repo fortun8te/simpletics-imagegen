@@ -5,7 +5,17 @@ import { useStore, DEFAULT_BRAND, DEFAULT_BATCH } from './store';
 import { api } from './api';
 import { useEvents } from './useEvents';
 import { refreshState } from './refresh';
+import { isAppActive, pollIntervalMs } from './lib/activity';
 import AppShell from './components/AppShell';
+
+function syncIdleFlags() {
+  try {
+    const hidden = document.hidden;
+    const active = isAppActive();
+    document.documentElement.dataset.tabHidden = hidden ? 'true' : 'false';
+    document.documentElement.dataset.appIdle = !hidden && !active ? 'true' : 'false';
+  } catch { /* SSR */ }
+}
 
 export default function App() {
   const brand = useStore((s) => s.brand);
@@ -20,9 +30,6 @@ export default function App() {
     api.getConfig().then((cfg) => {
       setConfig(cfg);
       const brands = cfg.brands || [];
-      // Prefer whatever the user last had open (persisted in the store from localStorage) so a
-      // reload lands back on the same batch instead of always resetting to the hardcoded default.
-      // Falls back to the default/first brand if the persisted one no longer exists.
       const wantBrand = brands.find((b) => b.id === brand) || brands.find((b) => b.id === DEFAULT_BRAND) || brands[0];
       if (!wantBrand) return;
       const batches = wantBrand.batches || [];
@@ -43,29 +50,68 @@ export default function App() {
 
   useEvents(refresh);
 
-  // Health poll — the authoritative source for codexUsage + blockers per the contract. Runs
-  // independent of the per-batch state fetch so the UsageChip/StatusBanner stay live even when no
-  // batch is selected. /api/state also mirrors these (see store.setState) for between-poll freshness.
+  // Idle / tab flags — pause decorative CSS animations when nothing is running.
+  useEffect(() => {
+    syncIdleFlags();
+    const onVis = () => syncIdleFlags();
+    document.addEventListener('visibilitychange', onVis);
+    const unsub = useStore.subscribe(syncIdleFlags);
+    const tick = window.setInterval(syncIdleFlags, 3000);
+    return () => {
+      document.removeEventListener('visibilitychange', onVis);
+      unsub();
+      window.clearInterval(tick);
+    };
+  }, []);
+
+  // Health poll — adaptive: 5s while active, 45s idle, 2m when tab hidden.
   useEffect(() => {
     let alive = true;
-    const probe = () =>
+    let timer: number | undefined;
+    const probe = () => {
+      if (!alive) return;
+      if (document.hidden) { schedule(); return; }
       api.getHealth().then((h) => {
         if (!alive) return;
         if (h.codexUsage) setUsage(h.codexUsage);
         if (h.blockers) setBlockers(h.blockers);
-      });
+      }).finally(() => schedule());
+    };
+    const schedule = () => {
+      if (!alive) return;
+      timer = window.setTimeout(probe, pollIntervalMs('health'));
+    };
     probe();
-    const t = window.setInterval(probe, 5000);
-    return () => { alive = false; window.clearInterval(t); };
+    return () => { alive = false; if (timer) window.clearTimeout(timer); };
   }, [setUsage, setBlockers]);
 
-  // Gen settings — fetched once on load (graceSeconds + budget caps). Refreshed after any write
-  // by the components that call api.setSettings (which push the returned settings into the store).
   useEffect(() => {
     let alive = true;
     api.getSettings().then((r) => { if (alive && r.ok) setSettings(r.settings); });
     return () => { alive = false; };
   }, [setSettings]);
+
+  useEffect(() => {
+    let alive = true;
+    let timer: number | undefined;
+    const maybeRefresh = () => {
+      if (!alive || document.hidden || isAppActive()) { schedule(); return; }
+      const asOf = useStore.getState().codexUsage?.codex?.asOf;
+      if (!asOf || Date.now() - asOf < 45 * 60 * 1000) { schedule(); return; }
+      api.refreshUsage().then((r) => {
+        if (!alive) return;
+        if (r.codexUsage) setUsage(r.codexUsage);
+        if (r.blockers) setBlockers(r.blockers);
+        schedule();
+      });
+    };
+    const schedule = () => {
+      if (!alive) return;
+      timer = window.setTimeout(maybeRefresh, 15 * 60 * 1000);
+    };
+    maybeRefresh();
+    return () => { alive = false; if (timer) window.clearTimeout(timer); };
+  }, [setUsage, setBlockers]);
 
   return <AppShell />;
 }

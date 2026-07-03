@@ -48,6 +48,8 @@ export default function GenerateDialog() {
   const [scope, setScope] = useState<Scope>('batch');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [variants, setVariants] = useState(2);
+  const [defer, setDefer] = useState<'now' | '30m' | '1h' | 'later'>('now');
+  const [laterAt, setLaterAt] = useState('');
   const [submitting, setSubmitting] = useState(false);
   // Synchronous re-entrancy guard: `submitting` state isn't visible to a second click that fires
   // in the same tick as the first (before React commits the re-render that disables the button).
@@ -64,6 +66,8 @@ export default function GenerateDialog() {
       setScope('batch');
       setSelected(new Set());
       setVariants(2);
+      setDefer('now');
+      setLaterAt('');
       setSubmitting(false);
       submittingRef.current = false;
       let cancelled = false;
@@ -96,6 +100,17 @@ export default function GenerateDialog() {
   // as the user changes the variants stepper or scope, no extra fetch needed).
   const etaSeconds = estimate * avgSeconds;
 
+  const runAt = useMemo(() => {
+    const now = Date.now();
+    if (defer === '30m') return now + 30 * 60 * 1000;
+    if (defer === '1h') return now + 60 * 60 * 1000;
+    if (defer === 'later' && laterAt) {
+      const t = new Date(laterAt).getTime();
+      if (t > now + 60_000) return t;
+    }
+    return undefined;
+  }, [defer, laterAt]);
+
   const clampVariants = (n: number) => Math.max(1, Math.min(6, Math.round(n) || 1));
 
   const canSubmit =
@@ -110,7 +125,7 @@ export default function GenerateDialog() {
     setSubmitting(true);
     const payload: GenerateScope =
       scope === 'ads' ? { ads: Array.from(selected) } : {};
-    await api.generate(brand, batch, payload, variants);
+    await api.generate(brand, batch, payload, variants, runAt);
     close();
   };
 
@@ -211,6 +226,35 @@ export default function GenerateDialog() {
               </div>
             </div>
 
+            {/* Start time */}
+            <div className={s.field}>
+              <p className={s.label} id="gen-defer-label">Start</p>
+              <div className={s.radios} role="radiogroup" aria-labelledby="gen-defer-label">
+                {(['now', '30m', '1h', 'later'] as const).map((d) => (
+                  <label key={d} className={`${s.radio} ${defer === d ? s.radioOn : ''}`}>
+                    <input
+                      type="radio"
+                      name="gen-defer"
+                      value={d}
+                      checked={defer === d}
+                      onChange={() => setDefer(d)}
+                    />
+                    <span className={s.radioLabel}>
+                      {d === 'now' ? 'Now' : d === '30m' ? 'In 30 min' : d === '1h' ? 'In 1 hour' : 'Later…'}
+                    </span>
+                  </label>
+                ))}
+              </div>
+              {defer === 'later' ? (
+                <input
+                  type="datetime-local"
+                  className={s.datetime}
+                  value={laterAt}
+                  onChange={(e) => setLaterAt(e.target.value)}
+                />
+              ) : null}
+            </div>
+
             {/* Estimate */}
             <p className={s.estimate} aria-live="polite">
               ~<b>{estimate}</b> {estimate === 1 ? 'image' : 'images'}
@@ -246,7 +290,7 @@ export default function GenerateDialog() {
               disabled={!canSubmit}
             >
               <Icon name="sparkles" size={15} />
-              <span>Generate</span>
+              <span>{runAt ? 'Schedule' : 'Generate'}</span>
             </button>
           </div>
         </Dialog.Content>

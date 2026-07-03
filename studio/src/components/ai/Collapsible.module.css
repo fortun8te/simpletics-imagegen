@@ -1,0 +1,17 @@
+/* Collapsible content — grid-rows 0fr→1fr height animation (no fixed max-height guessing).
+   Degrades to an instant snap under prefers-reduced-motion. */
+.wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--dur-2) var(--ease);
+}
+.wrap[data-state="open"] { grid-template-rows: 1fr; }
+.inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wrap { transition: none; }
+}
+:global([data-reduced-motion="true"]) .wrap { transition: none; }

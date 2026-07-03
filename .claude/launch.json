@@ -1,0 +1,59 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "studio-prod",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "studio/studio-server.mjs"
+      ],
+      "port": 8788,
+      "autoPort": true
+    },
+    {
+      "name": "studio-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "studio", "--", "--port", "5173", "--strictPort"],
+      "port": 5173
+    },
+    {
+      "name": "studio-redesign",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--prefix",
+        ".worktrees/ui-redesign/studio",
+        "--",
+        "--port",
+        "5199",
+        "--strictPort"
+      ],
+      "port": 5199
+    },
+    {
+      "name": "a350-viewer",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5901",
+        "--directory",
+        "/private/tmp/claude-501/-Users-michael-Downloads-NEUEGEN/493f0a9d-4b7e-4ef4-9497-f22899f7771d/scratchpad"
+      ],
+      "port": 5901
+    },
+    {
+      "name": "diamond-harness",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5902",
+        "--directory",
+        "/private/tmp/claude-501/-Users-michael-Downloads-NEUEGEN/4d7ba620-e1b1-4f96-8553-1f7be39a942f/scratchpad"
+      ],
+      "port": 5902
+    }
+  ]
+}

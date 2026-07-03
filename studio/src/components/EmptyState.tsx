@@ -7,7 +7,8 @@ interface EmptyStateProps {
   icon?: string;
   title: string;
   hint?: string;
-  action?: { label: string; onClick: () => void };
+  /** Verb-first CTA; icon defaults to "plus" (e.g. "x" for clear-filter actions). */
+  action?: { label: string; onClick: () => void; icon?: string };
 }
 
 export function EmptyState({ icon, title, hint, action }: EmptyStateProps) {
@@ -24,7 +25,7 @@ export function EmptyState({ icon, title, hint, action }: EmptyStateProps) {
       </div>
       {action && (
         <button type="button" className={styles.action} onClick={action.onClick}>
-          <Icon name="plus" size={15} />
+          <Icon name={action.icon ?? 'plus'} size={15} />
           {action.label}
         </button>
       )}

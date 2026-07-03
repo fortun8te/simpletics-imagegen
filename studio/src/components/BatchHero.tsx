@@ -60,21 +60,21 @@ export default function BatchHero() {
   // Eyebrow — BRAND · KIND, both honest and derivable. Uppercased in CSS.
   const eyebrow = [brandName, kind].filter(Boolean).join(' · ');
 
-  // One quiet line of meta — the only summary sentence. No type-name dump.
+  // One quiet line of meta — the only summary sentence. Counts fold in here (no chip row).
   const meta = [
     `${variations} ${variations === 1 ? 'variation' : 'variations'}`,
     `${images} ${images === 1 ? 'image' : 'images'}`,
+    inProgress > 0 ? `${inProgress} remaining` : null,
     `${pct}% generated`,
-  ].join(' · ');
+  ].filter(Boolean).join(' · ');
 
   return (
     <header className={styles.hero}>
-      {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
-
-      <h1 className={styles.name}>{name}</h1>
-
-      <p className={styles.meta}>{meta}</p>
-
+      <div className={styles.text}>
+        {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
+        <h1 className={styles.name}>{name}</h1>
+        <p className={styles.meta}>{meta}</p>
+      </div>
       <div
         className={styles.progressTrack}
         role="progressbar"
@@ -84,21 +84,6 @@ export default function BatchHero() {
         aria-label="Batch generated"
       >
         <div className={styles.progressFill} style={{ width: `${pct}%` }} />
-      </div>
-
-      <div className={styles.chips}>
-        <div className={styles.chip}>
-          <span className={styles.chipValue}>{done}</span>
-          <span className={styles.chipLabel}>Generated</span>
-        </div>
-        <div className={styles.chip}>
-          <span className={styles.chipValue}>{variations}</span>
-          <span className={styles.chipLabel}>Variations</span>
-        </div>
-        <div className={styles.chip}>
-          <span className={styles.chipValue}>{inProgress}</span>
-          <span className={styles.chipLabel}>In progress</span>
-        </div>
       </div>
     </header>
   );

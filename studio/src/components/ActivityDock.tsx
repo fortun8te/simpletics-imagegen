@@ -32,10 +32,11 @@
 // guard on the dot.
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { BatchState } from '../types';
-import { useStore } from '../store';
+import { useStore, type AgentEvent } from '../store';
 import { api } from '../api';
 import { refreshState } from '../refresh';
 import { Icon } from './Icon';
+import { WorkingDot } from './WorkingIndicator';
 import styles from './ActivityDock.module.css';
 
 // One derived row per slot-with-a-job. Carries the coords + relPath needed to act.
@@ -101,6 +102,70 @@ function deriveJobs(state: BatchState | null): DockJob[] {
   return jobs;
 }
 
+// ── design LOOP (vision reading / refining) ──────────────────────────────────────────────────
+// The Design-mode loop streams over the SSE `design` channel (store.ui.designEvents), NOT the
+// batch `state` tree. It reads a reference on a FAST PATH — usually ONE ~60s vision pass, with an
+// occasional corrective 2nd pass — emitting granular progress ("merged 4 duplicate regions → 6
+// unique"). We surface the LATEST granular message as the live line, not an N/M pass counter.
+interface DesignLoop {
+  runId: string;
+  active: boolean;          // false once a terminal `done`/`error` frame lands
+  failed: boolean;
+  pass: number;             // current/last attempt (1-based) — quiet metadata only
+  totalPasses: number;
+  layers: number | null;    // layers extracted so far
+  summary: string;          // latest granular step summary (shimmer target while active)
+}
+
+// Parse the current design run out of the shared event stream. Returns null when idle.
+function deriveDesignLoop(events: AgentEvent[], totalPasses = 2): DesignLoop | null {
+  if (!events.length) return null;
+  const runId = events[0].runId;
+  const last = events[events.length - 1];
+  const active = !last.done && !last.error;
+  const failed = !!last.error;
+  let pass = 1;
+  let layers: number | null = null;
+  let summary = 'Reading reference…';
+  for (const e of events) {
+    const s = e.step;
+    if (!s) continue;
+    if (s.summary) summary = s.summary;
+    const data = s.data as { pass?: number; attempt?: number; layers?: number } | undefined;
+    if (typeof data?.pass === 'number') pass = Math.max(pass, data.pass);
+    if (typeof data?.attempt === 'number') pass = Math.max(pass, data.attempt);
+    if (typeof data?.layers === 'number') layers = data.layers;
+    const pm = /(?:pass|attempt|retry|try)\s*#?\s*(\d+)/i.exec(s.summary || '');
+    if (pm) pass = Math.max(pass, Number(pm[1]));
+    const lm = /(\d+)\s*layers?/i.exec(s.summary || '');
+    if (lm) layers = Number(lm[1]);
+  }
+  return { runId, active, failed, pass, totalPasses, layers, summary };
+}
+
+// A single row for the live design loop: status dot + the latest granular message as a readable,
+// truncating single line (shimmers while active). Any metadata is a quiet inline mono suffix
+// (layers, or "failed") — never a boxy pass tag.
+function DesignLoopRow({ loop }: { loop: DesignLoop }) {
+  const tone: GroupKey = loop.failed ? 'failed' : loop.active ? 'generating' : 'queued';
+  const suffix = loop.failed
+    ? 'failed'
+    : loop.layers != null ? `${loop.layers}L` : null;
+  return (
+    <li className={styles.row}>
+      <StatusDot status={tone} />
+      <span className={styles.label} title={loop.summary}>
+        <span className={styles.labelLine}>
+          <span className={styles.seg} data-shimmer={loop.active || undefined}>{loop.summary}</span>
+        </span>
+      </span>
+      {suffix ? (
+        <span className={styles.metaSuffix} data-failed={loop.failed || undefined}>{suffix}</span>
+      ) : null}
+    </li>
+  );
+}
+
 // "3:07" mm:ss elapsed from a start timestamp, ticking once a second while mounted.
 function useElapsed(startedAt?: number | null): string | null {
   const [now, setNow] = useState(() => Date.now());
@@ -129,8 +194,15 @@ function useCountdown(spendAt?: number | null): number | null {
   return Math.max(0, Math.ceil((spendAt - now) / 1000));
 }
 
+function statusTone(status: GroupKey): 'active' | 'waiting' | 'queued' | 'failed' {
+  if (status === 'generating') return 'active';
+  if (status === 'waiting') return 'waiting';
+  if (status === 'failed') return 'failed';
+  return 'queued';
+}
+
 function StatusDot({ status }: { status: GroupKey }) {
-  return <span className={`${styles.dot} ${styles[`d_${status}`]}`} aria-hidden="true" />;
+  return <WorkingDot tone={statusTone(status)} />;
 }
 
 function JobRow({
@@ -194,11 +266,17 @@ function JobRow({
       <StatusDot status={job.status} />
 
       <span className={styles.label} title={title}>
-        <span className={styles.seg}>{job.ad}</span>
-        <span className={styles.sep}>/</span>
-        <span className={styles.segMute}>{job.variation}</span>
-        <span className={styles.sep}>/</span>
-        <span className={styles.segFaint}>{job.prompt}</span>
+        <span className={styles.labelLine}>
+          <span className={styles.seg} data-shimmer={job.status === 'generating' || undefined}>{job.ad}</span>
+          <span className={styles.sep}>/</span>
+          <span className={styles.segMute}>{job.variation}</span>
+          <span className={styles.sep}>/</span>
+          <span className={styles.segFaint}>{job.prompt}</span>
+        </span>
+        {job.status === 'failed' && job.error ? (
+          // the error used to be buried in title= — surface it as a second line
+          <span className={styles.errorLine} title={job.error}>{job.error}</span>
+        ) : null}
       </span>
 
       {job.status === 'generating' && elapsed && <span className={styles.elapsed}>{elapsed}</span>}
@@ -318,6 +396,11 @@ export default function ActivityDock() {
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
 
+  const designEvents = useStore((s) => s.ui.designEvents);
+  const designLoop = useMemo(() => deriveDesignLoop(designEvents), [designEvents]);
+  // Only an ACTIVE (or just-failed) design loop earns a slot in the dock — a completed read is done.
+  const showLoop = !!designLoop && (designLoop.active || designLoop.failed);
+
   const jobs = deriveJobs(state);
   const run = state?.run;
   const isPaused = run?.state === 'paused' || run?.state === 'cooling' || run?.state === 'ready';
@@ -327,16 +410,23 @@ export default function ActivityDock() {
   const queued = jobs.filter((j) => j.status === 'queued').length;
   const failed = jobs.filter((j) => j.status === 'failed').length;
 
-  // Closed and nothing happening → nothing to render.
-  if (!activityOpen && jobs.length === 0) return null;
+  // Closed and nothing happening (no image jobs AND no live design loop) → nothing to render.
+  if (!activityOpen && jobs.length === 0 && !showLoop) return null;
 
-  // Closed but jobs exist → a small pill that expands the panel.
+  // Closed but something's live → a small pill that expands the panel. The design loop takes
+  // precedence in the label when it's active (that's the thing the user is watching build).
   if (!activityOpen) {
     const pillLabel =
-      running > 0 ? `${running} running`
+      showLoop && designLoop!.active ? 'reading reference'
+      : running > 0 ? `${running} running`
       : waiting > 0 ? `${waiting} starting`
       : queued > 0 ? `${queued} queued`
+      : showLoop && designLoop!.failed ? 'read failed'
       : `${failed} failed`;
+    const pillDot: GroupKey =
+      showLoop && designLoop!.active ? 'generating'
+      : running > 0 ? 'generating' : waiting > 0 ? 'waiting'
+      : queued > 0 ? 'queued' : 'failed';
     return (
       <button
         className={styles.pill}
@@ -344,7 +434,7 @@ export default function ActivityDock() {
         title="Open activity"
         onClick={() => setUI({ activityOpen: true })}
       >
-        <StatusDot status={running > 0 ? 'generating' : waiting > 0 ? 'waiting' : queued > 0 ? 'queued' : 'failed'} />
+        <StatusDot status={pillDot} />
         <span className={styles.pillText}>{pillLabel}</span>
         <Icon name="chevron-down" size={13} className={styles.pillChev} />
       </button>
@@ -361,7 +451,8 @@ export default function ActivityDock() {
   })).filter((g) => g.rows.length > 0);
 
   const badge =
-    running > 0 ? `${running} running`
+    showLoop && designLoop!.active ? 'reading'
+    : running > 0 ? `${running} running`
     : waiting > 0 ? `${waiting} starting`
     : queued > 0 ? `${queued} queued`
     : failed > 0 ? `${failed} failed`
@@ -383,6 +474,24 @@ export default function ActivityDock() {
       </header>
 
       <div className={styles.body} aria-live="polite">
+        {showLoop ? (
+          <section className={styles.group}>
+            <div className={styles.groupLabel}>
+              <span className={styles.groupName}>{designLoop!.failed ? 'Read failed' : 'Reading'}</span>
+              {!designLoop!.failed && designLoop!.layers != null ? (
+                <span className={styles.groupCount}>{designLoop!.layers} layers</span>
+              ) : null}
+            </div>
+            <ul className={styles.list}>
+              <DesignLoopRow loop={designLoop!} />
+            </ul>
+          </section>
+        ) : null}
+
+        {groups.length === 0 && !showLoop ? (
+          <p className={styles.empty}>No active jobs</p>
+        ) : null}
+
         {groups.length > 0 ? (
           groups.map((g) => (
             <section key={g.key} className={styles.group}>
@@ -423,9 +532,7 @@ export default function ActivityDock() {
               )}
             </section>
           ))
-        ) : (
-          <p className={styles.empty}>No active jobs</p>
-        )}
+        ) : null}
       </div>
     </section>
   );

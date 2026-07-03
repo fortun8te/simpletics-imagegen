@@ -1,6 +1,7 @@
 // TopBar — breadcrumb + Gallery/Plan mode + run controls (single slim row).
 import { useEffect, useMemo, useState } from 'react';
 import { Icon } from './Icon';
+import { WorkingDot } from './WorkingIndicator';
 import { useStore, type BatchViewMode } from '../store';
 import { api } from '../api';
 import { refreshState } from '../refresh';
@@ -210,7 +211,7 @@ export default function TopBar() {
               onClick={() => setUI({ activityOpen: true })}
               title="Show activity"
             >
-              <span className={`${s.runDot} ${state === 'paused' ? s.runDotPaused : ''}`} aria-hidden />
+              <WorkingDot tone={state === 'paused' ? 'paused' : 'active'} />
               <span className={s.progressNums}>{done}/{total}</span>
               {eta ? <span className={s.eta}>{eta}</span> : null}
             </button>

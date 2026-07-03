@@ -58,6 +58,8 @@ and `View='grid'` only. New api: `api.getBatches(brand)→BatchMeta[]`, `api.get
   activity pill toggles it. Premium card (`--surface`, `--shadow-md`, `--r-lg`). (No store flag needed if
   the TopBar pill just scrolls/focuses it; simplest acceptable: dock auto-shows on activity as today, and
   the TopBar pill is the visible indicator. Don't leave the user unable to find activity.)
+- **Image-gen live state:** use `WorkingIndicator` / `WorkingDot` from `src/components/WorkingIndicator.tsx`
+  (see `docs/WORKING-INDICATOR.md`). Do not duplicate the ping animation elsewhere.
 
 ## AppShell.tsx (update)
 - Mount `<SettingsDialog/>` alongside DetailDrawer/GenerateDialog/ActivityDock.

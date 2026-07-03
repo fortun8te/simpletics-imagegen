@@ -171,6 +171,10 @@ export function createJobStore({ stateDir, failedTtl } = {}) {
       brand, batch, ad, variation, prompt,
       run = 1, variants = 1, promptText, size, ref,
     } = spec;
+    // Full reference list for gen.mjs -i (product/layout/model/extras/tube, or Revise's board).
+    // This was silently dropped before Phase 0.4 — only the single legacy `ref` survived the
+    // store, so multi-ref jobs reached codex with at most one image.
+    const refs = Array.isArray(spec.refs) ? spec.refs.filter(Boolean).map(String) : [];
 
     const id = `${seg(ad)}_${seg(variation)}_${seg(prompt)}_r${run}_${counter++}`;
     const job = {
@@ -182,6 +186,7 @@ export function createJobStore({ stateDir, failedTtl } = {}) {
       promptText,
       size,
       ref,
+      refs,
       status: 'queued',
       relPath: undefined,
       error: undefined,
@@ -191,6 +196,7 @@ export function createJobStore({ stateDir, failedTtl } = {}) {
       startedAt: null,
       finishedAt: null,
       attempts: 0,
+      scheduledAt: Number(spec.scheduledAt) > Date.now() ? Number(spec.scheduledAt) : null,
       // Queue priority: lower runs first. Defaults to enqueue order; reorder() can rewrite it so a
       // dragged-up queued job actually runs sooner (see ../PLAN.md "draggable queue reorder").
       order: orderCounter++,
@@ -213,6 +219,7 @@ export function createJobStore({ stateDir, failedTtl } = {}) {
     let pick = null;
     for (const j of jobs) {
       if (j.status === 'queued') {
+        if (j.scheduledAt && j.scheduledAt > Date.now()) continue;
         if (!pick
           || (j.order ?? 0) < (pick.order ?? 0)
           || ((j.order ?? 0) === (pick.order ?? 0) && (j.enqueuedAt ?? 0) < (pick.enqueuedAt ?? 0))) {

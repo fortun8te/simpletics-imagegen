@@ -6,7 +6,7 @@
 // does NOT capture usage from the Codex desktop app or other machines/sessions, so the gap can be
 // large. Past STALE_MS we still show the last known number but strip color and motion — flat gray,
 // no gradient, no animation — so it reads as "last known" rather than "live now."
-import { useId, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import { useStore } from '../store';
 import { api } from '../api';
@@ -51,38 +51,32 @@ function arcGeom(r: number, usedFrac: number) {
   };
 }
 
-type ArcGradProps = {
-  id: string;
-  startX: number;
-  startY: number;
-  endX: number;
-  endY: number;
-  inner?: boolean;
-};
-
-function ArcGrad({ id, startX, startY, endX, endY, inner }: ArcGradProps) {
-  return (
-    <linearGradient
-      id={id}
-      gradientUnits="userSpaceOnUse"
-      x1={startX}
-      y1={startY}
-      x2={endX}
-      y2={endY}
-    >
-      <stop offset="0%" stopColor={inner ? 'var(--accent-2)' : 'var(--accent-2)'} stopOpacity={inner ? 0.45 : 0.55} />
-      <stop offset="60%" stopColor="var(--accent)" />
-      <stop offset="100%" stopColor="rgba(255,255,255,.88)" />
-    </linearGradient>
-  );
+// Compact count for the chip: 9400 → "9.4k".
+function fmtCredits(n: number): string {
+  if (n >= 10_000) return `${Math.round(n / 1000)}k`;
+  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+  return String(n);
 }
 
 export default function UsageChip() {
-  const uid = useId().replace(/:/g, '');
   const usage = useStore((st) => st.codexUsage);
   const setUsage = useStore((st) => st.setUsage);
   const setBlockers = useStore((st) => st.setBlockers);
   const [pendingChecks, setPendingChecks] = useState(0);
+  // TrendTrack credits — fetched from our own backend (which proxies + caches the free
+  // /v1/usage probe). null = unknown/no key → the TT line simply doesn't render.
+  const [ttCredits, setTtCredits] = useState<number | null>(null);
+  useEffect(() => {
+    let alive = true;
+    const probe = () =>
+      fetch('/api/trendtrack/usage')
+        .then((r) => r.json())
+        .then((d) => { if (alive) setTtCredits(d?.ok && Number.isFinite(d.remaining) ? d.remaining : null); })
+        .catch(() => { if (alive) setTtCredits(null); });
+    probe();
+    const t = window.setInterval(probe, 10 * 60 * 1000); // the probe itself is free
+    return () => { alive = false; window.clearInterval(t); };
+  }, []);
   const codex = usage?.codex;
 
   if (!codex || codex.fivehLeft == null) return null;
@@ -100,9 +94,6 @@ export default function UsageChip() {
   const outer = arcGeom(OUTER_R, fivehUsed);
   const inner = weeklyLeft != null ? arcGeom(INNER_R, weeklyUsed) : null;
 
-  const outerGradId = `usage5h-${uid}`;
-  const innerGradId = `usageWk-${uid}`;
-
   const checkNow = () => {
     setPendingChecks((n) => n + 1);
     api.refreshUsage()
@@ -118,13 +109,10 @@ export default function UsageChip() {
   const ariaBits = [
     `5h: ${fivehLeft}% remaining`,
     weeklyLeft != null ? `weekly: ${weeklyLeft}% remaining` : null,
+    ttCredits != null ? `TrendTrack: ${ttCredits} credits` : null,
     stale ? `last known snapshot, ${ago(codex.asOf)}` : null,
     'click to check for a newer reading',
   ].filter(Boolean).join('. ');
-
-  const outerStroke = stale || low ? undefined : `url(#${outerGradId})`;
-  const innerStroke =
-    weeklyLeft == null || stale || weeklyLow ? undefined : `url(#${innerGradId})`;
 
   return (
     <Tooltip.Root>
@@ -142,30 +130,6 @@ export default function UsageChip() {
             viewBox={`0 0 ${SIZE} ${SIZE}`}
             aria-hidden
           >
-            {!stale && (
-              <defs>
-                {outer.dash > 0.01 && !low && (
-                  <ArcGrad
-                    id={outerGradId}
-                    startX={outer.startX}
-                    startY={outer.startY}
-                    endX={outer.endX}
-                    endY={outer.endY}
-                  />
-                )}
-                {inner && inner.dash > 0.01 && !weeklyLow && (
-                  <ArcGrad
-                    id={innerGradId}
-                    startX={inner.startX}
-                    startY={inner.startY}
-                    endX={inner.endX}
-                    endY={inner.endY}
-                    inner
-                  />
-                )}
-              </defs>
-            )}
-
             <circle className={s.track} cx={CENTER} cy={CENTER} r={OUTER_R} />
             {outer.dash > 0.01 && (
               <circle
@@ -173,15 +137,10 @@ export default function UsageChip() {
                 cx={CENTER}
                 cy={CENTER}
                 r={OUTER_R}
-                stroke={outerStroke}
                 strokeDasharray={`${outer.dash} ${outer.c - outer.dash}`}
                 transform={`rotate(-90 ${CENTER} ${CENTER})`}
               />
             )}
-            {!stale && !low && outer.dash > 0.01 && (
-              <circle className={s.edge} cx={outer.endX} cy={outer.endY} r="1.15" />
-            )}
-
             {inner && (
               <>
                 <circle className={`${s.track} ${s.trackInner}`} cx={CENTER} cy={CENTER} r={INNER_R} />
@@ -191,13 +150,9 @@ export default function UsageChip() {
                     cx={CENTER}
                     cy={CENTER}
                     r={INNER_R}
-                    stroke={innerStroke}
                     strokeDasharray={`${inner.dash} ${inner.c - inner.dash}`}
                     transform={`rotate(-90 ${CENTER} ${CENTER})`}
                   />
-                )}
-                {!stale && !weeklyLow && inner.dash > 0.01 && (
-                  <circle className={`${s.edge} ${s.edgeInner}`} cx={inner.endX} cy={inner.endY} r="0.85" />
                 )}
               </>
             )}
@@ -223,6 +178,9 @@ export default function UsageChip() {
                 W{weeklyLeft}%
               </span>
             )}
+            {ttCredits != null && (
+              <span className={s.pctWeekly}>TT{fmtCredits(ttCredits)}</span>
+            )}
           </span>
         </button>
       </Tooltip.Trigger>
@@ -236,6 +194,12 @@ export default function UsageChip() {
             <div className={s.tipRow}>
               <span className={s.tipLabel}>Weekly</span>
               <span className={s.tipVal}>{weeklyLeft}% left · resets {fmt(codex.weeklyResetsAt)}</span>
+            </div>
+          )}
+          {ttCredits != null && (
+            <div className={s.tipRow}>
+              <span className={s.tipLabel}>TrendTrack</span>
+              <span className={s.tipVal}>{ttCredits.toLocaleString()} credits left</span>
             </div>
           )}
           <div className={s.tipFoot}>

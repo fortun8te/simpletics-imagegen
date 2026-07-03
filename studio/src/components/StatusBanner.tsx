@@ -143,6 +143,35 @@ export default function StatusBanner() {
     );
   }
 
+  // ── daily cap (1.5× daily share of weekly quota) ─────────────────────
+  if (blockers.dailyCap) {
+    const d = blockers.dailyCap;
+    const bonus = d.bonusPts > 0 ? ` (incl. +${d.bonusPts} continued)` : '';
+    return (
+      <div className={`${s.banner} ${s.budget}`} role="status">
+        <Icon name="activity" size={15} className={s.icon} />
+        <span className={s.text}>
+          Daily cap reached — {d.spentToday}% of your weekly Codex quota used today
+          (cap {d.allowedPts}%{bonus} · 1.5× the daily share).
+          <span className={s.sub}>Queued work holds until you continue or tomorrow.</span>
+        </span>
+        <button
+          type="button"
+          className={s.action}
+          onClick={() =>
+            api.dailyCapContinue().then((r) => {
+              if (r.blockers) setBlockers(r.blockers);
+              refreshState();
+            })
+          }
+        >
+          <Icon name="chevron-right" size={14} />
+          <span>Continue (+10%)</span>
+        </button>
+      </div>
+    );
+  }
+
   // ── budget ──────────────────────────────────────────────────────────
   if (blockers.budget) {
     const used = usage?.used5h;

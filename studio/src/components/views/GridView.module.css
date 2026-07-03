@@ -14,6 +14,12 @@
   gap: var(--space-10);
   background: transparent;
 }
+/* Offscreen ad sections skip layout + paint entirely (hundreds of thumbs per batch).
+   The intrinsic-size estimate keeps the scrollbar stable before a section renders. */
+.sections > * {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
 
 .promptGroup {
   display: flex;
@@ -21,50 +27,19 @@
   gap: var(--space-2);
 }
 
+/* Prompt id chip — same mono-chip language as PlanView's promptId. */
 .promptLabel {
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  align-self: flex-start;
+  padding: 1px 6px;
+  border-radius: 5px;
+  border: 1px solid var(--line);
+  font: 600 10.5px/1.5 var(--font-mono);
   color: var(--muted);
+  background: var(--glass-bg-2);
 }
 
 .slots {
   display: grid;
   gap: 12px;
   background: transparent;
-}
-
-/* Row-level "Add another take" — appends a brand-new prompt (p3, p4, ...) to the variation, distinct
-   from "Add variant" (more runs of an existing prompt). Same ghost-button language as AdSection's
-   per-ad addBtn, sized down for the row context. */
-.addTakeBtn {
-  align-self: flex-start;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 5px 10px 5px 8px;
-  border: 1px dashed var(--line);
-  border-radius: var(--r-md);
-  background: transparent;
-  color: var(--faint);
-  font-family: var(--font-display);
-  font-size: var(--t-label);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    color var(--dur-2) var(--ease),
-    background var(--dur-2) var(--ease),
-    border-color var(--dur-2) var(--ease);
-}
-.addTakeBtn:hover {
-  color: var(--accent-ink);
-  border-color: color-mix(in srgb, var(--accent) 32%, transparent);
-  background: color-mix(in srgb, var(--accent) 10%, transparent);
-}
-.addTakeBtn:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
 }

@@ -34,3 +34,9 @@
 @media (prefers-reduced-motion: reduce) {
   .canvas { filter: blur(0.8px) saturate(1.06); }
 }
+
+/* Pause decorative CSS animations when idle or tab is in the background. */
+:global(html[data-app-idle="true"]) :local(.canvas),
+:global(html[data-tab-hidden="true"]) :local(.canvas) {
+  filter: blur(0.8px) saturate(1.04);
+}

@@ -1,0 +1,100 @@
+/* ChainOfThought — quiet reasoning steps threaded on a vertical rail. Monochrome, theme tokens. */
+.root { display: flex; flex-direction: column; }
+
+.header {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: var(--muted);
+}
+.header:hover { color: var(--ink); }
+.chev {
+  display: inline-flex;
+  color: var(--faint);
+  transition: transform var(--dur-1) var(--ease);
+}
+.header[data-state="open"] .chev { transform: rotate(90deg); }
+.headerText { font-size: 11px; font-weight: 600; letter-spacing: 0.01em; }
+
+.content { display: flex; flex-direction: column; padding: 4px 0 2px; }
+
+.step {
+  display: flex;
+  gap: 9px;
+  align-items: flex-start;
+  padding: 3px 0;
+}
+/* rail: a thin line behind the node, drawn full-height so consecutive steps connect */
+.rail {
+  position: relative;
+  flex: none;
+  width: 16px;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+}
+.rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  transform: translateX(-50%);
+  background: var(--line-soft);
+}
+.step:first-child .rail::before { top: 9px; }
+.step:last-child .rail::before { bottom: calc(100% - 18px); }
+
+.node {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--faint);
+}
+.dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+.step[data-status="complete"] .node { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, var(--line)); }
+.step[data-status="active"] .node {
+  color: var(--accent-ink, var(--accent));
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+  animation: cotPulse 1.4s var(--ease) infinite;
+}
+.step[data-status="pending"] .node { opacity: 0.7; }
+.step[data-status="pending"] .stepLabel { color: var(--faint); }
+
+@keyframes cotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 30%, transparent); }
+  50% { box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) { .step[data-status="active"] .node { animation: none; } }
+:global([data-reduced-motion="true"]) .step[data-status="active"] .node { animation: none; }
+
+.stepBody { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 1px; }
+.stepLabel {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.step[data-status="active"] .stepLabel { color: var(--ink); }
+.stepDesc {
+  font: 400 10px/1.5 var(--font-mono);
+  color: var(--muted);
+  word-break: break-word;
+}

@@ -18,12 +18,15 @@ const LABELS: Record<Status, string> = {
   canceled: 'Canceled',
 };
 
+/** In-progress states pulse their dot; terminal states are static (motion = in-progress). */
+const LIVE: Set<Status> = new Set(['waiting', 'generating', 'running']);
+
 export function StatusPill({ status }: { status: Status }) {
   const label = LABELS[status] ?? status;
   return (
-    <span className={`${styles.pill} ${styles[status] ?? ''}`}>
-      <span className={styles.dot} aria-hidden="true" />
-      {label}
+    <span className={`${styles.pill} ${styles[status] ?? ''}`} title={label}>
+      <span className={`${styles.dot} ${LIVE.has(status) ? styles.dotLive : ''}`} aria-hidden="true" />
+      <span className={styles.label}>{label}</span>
     </span>
   );
 }

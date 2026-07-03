@@ -8,7 +8,11 @@
   width: 100%;
   border-radius: var(--r-md);
   overflow: hidden;
-  background: var(--surface-2);
+  /* Checkerboard backing so transparent PNGs read correctly in BOTH themes
+     (product cutouts used to float invisibly on the dark surface). */
+  background:
+    repeating-conic-gradient(color-mix(in srgb, var(--ink) 6%, transparent) 0% 25%, transparent 0% 50%) 0 0 / 14px 14px,
+    var(--surface-2);
   border: 1px solid var(--line);
   box-shadow: var(--inset-hi);
 }
@@ -37,7 +41,9 @@
   z-index: 1;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* contain (not cover): never crop or stretch non-square renders — the checkerboard
+     backing fills the letterbox, and transparent PNGs keep reading correctly. */
+  object-fit: contain;
   display: block;
   opacity: 0;
   transition: opacity var(--dur-2) var(--ease);
@@ -45,4 +51,17 @@
 
 .img.loaded {
   opacity: 1;
+}
+
+/* Broken-image fallback: quiet icon tile over the checkerboard (hides the shimmer too). */
+.fallback {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--faint);
+  background: var(--surface-2);
 }

@@ -27,7 +27,7 @@
 //
 // Zero external deps: node:* only (gen.mjs is dynamically imported by spec).
 
-import { isLimitReached, getGraceSeconds, noteAuthFailure } from './usage.mjs';
+import { isLimitReached, isDailyCapReached, getGraceSeconds, noteAuthFailure } from './usage.mjs';
 import { classifyError } from './gen.mjs';
 
 // The generation concurrency limit: how many jobs run at once. This is the single source of
@@ -72,7 +72,7 @@ export function createWorker({ store, renders, repoDir, concurrency = MAX_CONCUR
 
   // The worker is "blocked" from pulling new jobs while either the user paused it or a rate-limit
   // cooldown is active. In-flight jobs always finish regardless.
-  const blocked = () => userPaused || cooling || isLimitReached();
+  const blocked = () => userPaused || cooling || isLimitReached() || isDailyCapReached();
 
   // Pull and run as many queued jobs as capacity allows. Each finished job re-ticks so the freed
   // slot is immediately refilled. Guarded so it never runs while stopped or blocked.

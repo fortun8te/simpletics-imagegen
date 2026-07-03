@@ -1,0 +1,134 @@
+/* PresetPicker — one-click archetype presets. Trigger row + searchable popover, modeled on the
+   Editor's Elements browser but tuned to feel PRIMARY: accent-tinted trigger, big tappable rows
+   with a glyph + prominent archetype name. Theme tokens only. */
+
+.row { position: relative; flex: none; }
+
+/* trigger — accent-tinted so it reads as the marquee action (a preset is a whole ad) */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+  color: var(--accent-ink);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+.trigger:hover,
+.trigger[data-active] {
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.trigger svg { flex: none; }
+.count {
+  margin-left: auto;
+  font: 600 9.5px/1 var(--font-mono);
+  color: color-mix(in srgb, var(--accent-ink) 75%, transparent);
+}
+
+/* popover — opens ABOVE the trigger (it sits low in the left column), like the Elements popover */
+.pop {
+  position: absolute;
+  left: 0;
+  right: -8px;
+  bottom: calc(100% + 6px);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: min(56vh, 500px);
+  padding: var(--space-2);
+  border-radius: var(--r-lg);
+  background: var(--surface-1, var(--glass-bg-3));
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg, 0 10px 30px rgba(0, 0, 0, 0.4));
+}
+
+.popHead { display: flex; align-items: center; gap: var(--space-2); flex: none; }
+.search {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 11.5px;
+}
+.search:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+/* Replace / Add mode pill — tells the user what a click will do */
+.mode {
+  flex: none;
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-soft);
+  background: var(--surface-2);
+  font: 600 9px/1.6 var(--font-mono);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.popBody { display: flex; flex-direction: column; gap: var(--space-2); overflow-y: auto; }
+
+.cat { display: flex; flex-direction: column; gap: 4px; }
+.catLabel {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.list { display: flex; flex-direction: column; gap: 2px; }
+
+/* big tappable preset row: glyph tile + name (prominent) + one-line hint */
+.preset {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+.preset:hover,
+.preset[data-hi] {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-2));
+  border-color: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+.glyph {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  background: var(--surface-3);
+  color: var(--muted);
+}
+.preset:hover .glyph,
+.preset[data-hi] .glyph { color: var(--accent-ink); background: color-mix(in srgb, var(--accent) 14%, var(--surface-3)); }
+.text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.name { font-size: 12.5px; font-weight: 700; color: var(--ink); line-height: 1.15; }
+.hint {
+  font-size: 10px;
+  line-height: 1.35;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.empty { margin: 0; padding: var(--space-2); font-size: 11px; line-height: 1.5; color: var(--faint); }

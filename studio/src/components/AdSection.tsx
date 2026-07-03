@@ -13,8 +13,11 @@ interface AdSectionProps {
   // until a parent passes the ad id (GridView renders <AdSection title=... type=...> today).
   adId?: string;
   type?: string;
+  /** Classified ad type (native/static/offer/carousel/ugc/face) — rendered as a chip. */
+  adTypeTag?: string;
   variationCount?: number;
   imageCount?: number;
+  showActions?: boolean;
   children: ReactNode;
 }
 
@@ -22,8 +25,10 @@ export default function AdSection({
   title,
   adId,
   type,
+  adTypeTag,
   variationCount,
   imageCount,
+  showActions = true,
   children,
 }: AdSectionProps) {
   const brand = useStore((s) => s.brand);
@@ -46,12 +51,16 @@ export default function AdSection({
     <section className={styles.section}>
       <header className={styles.header}>
         <span className={styles.badge} aria-hidden="true">
-          <Icon name="layout-grid" size={17} strokeWidth={1.5} />
+          <Icon name="photo" size={17} strokeWidth={1.5} />
         </span>
         <div className={styles.text}>
-          <h2 className={styles.title}>{title}</h2>
+          <h2 className={styles.title}>
+            {title}
+            {adTypeTag ? <span className={styles.typeTag}>{adTypeTag}</span> : null}
+          </h2>
           {meta ? <p className={styles.sub}>{meta}</p> : null}
         </div>
+        {showActions ? (
         <button
           type="button"
           className={styles.addBtn}
@@ -63,6 +72,7 @@ export default function AdSection({
           <Icon name="plus" size={15} strokeWidth={2} />
           <span className={styles.addBtnLabel}>Add variant</span>
         </button>
+        ) : null}
       </header>
       <div className={styles.divider} aria-hidden="true" />
       <div className={styles.body}>{children}</div>

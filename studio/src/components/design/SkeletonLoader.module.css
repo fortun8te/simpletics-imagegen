@@ -1,0 +1,29 @@
+/* SkeletonLoader — clean agent loading row: the loading-ui diamond + a text-shimmer action line
+   + a quiet clock. Theme tokens only. (Diamond animation is inline in its SVG; text-shimmer lives
+   in TextShimmer.module.css.) */
+
+.loader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-2) 0;
+}
+
+/* The action line grows to fill and truncates; TextShimmer handles the sweep + legible base. */
+.step {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.clock {
+  flex: none;
+  font: 500 11px/1 var(--font-mono);
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}

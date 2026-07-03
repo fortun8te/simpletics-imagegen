@@ -3,3 +3,4 @@ dist/
 .state/
 .cache/
 *.log
+.env

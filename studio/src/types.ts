@@ -83,11 +83,25 @@ export interface CodexUsage {
   resetAt?: number | null;
 }
 
+// Daily-cap readout (lib/usage.mjs getDailyCap). Points are percentage points of the WEEKLY
+// codex window; the cap is 1.5 × the fair daily share (100/7 ≈ 14.3 → cap ≈ 21.4 pts/day).
+export interface DailyCap {
+  measurable: boolean;   // false = codex has no weekly snapshot yet; cap can't block
+  blocked: boolean;
+  spentToday: number;    // pts of weekly quota consumed today
+  capPts: number;        // the base 1.5× daily share (≈21.4)
+  bonusPts: number;      // extra pts granted via Continue (+10 each)
+  allowedPts: number;    // capPts + bonusPts
+  weeklyLeft: number | null;
+  asOf: number | null;   // epoch ms of the codex snapshot the readout is based on
+}
+
 // Active generation blockers (contract §blockers object). Drives the StatusBanner.
 export interface Blockers {
   auth: boolean;                        // generation failing due to dead codex auth
   cooling: { resetAt: number } | null;  // rate-limit cooldown active
   budget: boolean;                      // a self-imposed cap is currently blocking spawns
+  dailyCap?: DailyCap | null;           // present (full readout) only while the daily cap blocks
 }
 
 // Self-imposed budget caps (contract §Settings). null = unlimited.
@@ -156,7 +170,53 @@ export interface ConfigBrand extends BrandRef {
 }
 export interface Config { brands: ConfigBrand[]; }
 
-export type BatchViewMode = 'gallery' | 'plan';
+export type BatchViewMode = 'gallery' | 'plan' | 'design';
+
+// ── Planner (Phase 1) ────────────────────────────────────────────────────────────────────────────
+// A cached TrendTrack ref as the planner ranks it (0-credit local reads; lib/planner.mjs).
+export interface PlanRef {
+  id: string; brand: string; hook: string | null; primary_text: string | null;
+  scaling_verdict: string | null; reach: number | null; days_running: number | null;
+  cta: string | null; media_type: string | null; local_image: string | null;
+  score: number | null;
+}
+export interface PlanPromptDraft { id: string; hook: string; prompt: string }
+export interface PlanProposal {
+  mode: 'brief' | 'refs'; adType: string; brief: string;
+  hypothesis: string; hypothesisSource: 'codex' | 'fallback';
+  refs: PlanRef[]; prompts: PlanPromptDraft[];
+}
+export interface PlanRunStep { i: number; tool: string; summary: string; data?: unknown; at: number }
+export interface PlanRun {
+  id: string; steps: PlanRunStep[]; done: boolean;
+  result?: PlanProposal | null; error?: string; startedAt?: number; finishedAt?: number;
+}
+
+// ── Design mode (Phase 2) ────────────────────────────────────────────────────────────────────────
+export interface DesignSummary {
+  id: string; name: string; template?: string; adType?: string;
+  brand?: string | null;
+  layers: number; updatedAt: number; createdAt: number;
+  /** Gallery preview PNG (written on save) or null. */
+  thumb?: string | null;
+  /** User labels for gallery filtering (server-persisted on the design doc). */
+  tags?: string[];
+}
+
+export interface SkeletonSummary {
+  id: string; name: string; canvas: { w: number; h: number };
+  brand?: string | null;
+  layerCount: number;
+  sourceRef?: { kind: string; ref: string; url: string; label?: string } | null;
+  extractedBy: 'codex' | 'manual' | 'figma';
+  createdAt: number;
+}
+
+export interface SavedElement {
+  id: string; name: string; canvas: { w: number; h: number };
+  layers: import('./lib/sceneGraph').Layer[];
+  createdAt: number;
+}
 export type PromptRefRole = 'product' | 'layout' | 'model' | 'extra' | 'tube';
 export interface PromptRef { role: PromptRefRole; name: string; url: string; }
 

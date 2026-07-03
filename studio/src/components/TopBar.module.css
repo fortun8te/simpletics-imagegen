@@ -20,11 +20,110 @@
 .row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-4);
   height: 52px;
   padding: 0 var(--space-6);
   min-width: 0;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+  flex: none;
+}
+
+/* ---- middle cluster: plan search + ad cursor ---- */
+.middle {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  /* Children have min-widths; when the row runs out of space, clip instead of
+     painting over the right cluster. */
+  overflow: clip;
+}
+.search {
+  flex: 0 1 300px;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--glass-bg-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  transition: border-color var(--dur-2) var(--ease);
+}
+.search:focus-within {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  color: var(--ink);
+}
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-size: 12.5px;
+  color: var(--ink);
+  outline: none;
+}
+.searchInput::placeholder { color: var(--faint); }
+.searchClear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-sm);
+  color: var(--muted);
+}
+.searchClear:hover { color: var(--ink); background: var(--surface-3); }
+.searchKey {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  font: 500 10px/1 var(--font-mono);
+  color: var(--faint);
+}
+
+/* Scroll-tracked ad cursor — one quiet chip: n/N + the current ad's title. Pinned right. */
+.adCursor {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  margin-left: auto;
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-soft);
+  background: var(--glass-bg-2);
+  font-size: 12px;
+  color: var(--muted);
+}
+.adCursorNum {
+  flex: none;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.adCursorTitle {
+  min-width: 0;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ---- breadcrumb ---- */
@@ -36,13 +135,20 @@
   font-size: 13px;
 }
 .brand {
+  flex: 0 1 auto;
+  min-width: 0;
   color: var(--muted);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .slash {
+  flex: none;
   color: var(--faint);
 }
 .batch {
+  flex: 0 1 auto;
+  min-width: 32px;
   color: var(--ink);
   font-weight: 500;
   white-space: nowrap;
@@ -50,7 +156,27 @@
   text-overflow: ellipsis;
 }
 
-/* ---- Gallery | Plan mode switch ---- */
+/* Scaling — the crumb gives way first (the hero right below repeats brand + batch),
+   then the cursor title, then button labels.
+   ≤1180px: drop the breadcrumb + the cursor's title; keep search + n/N. */
+@media (max-width: 1180px) {
+  .crumb { display: none; }
+  .adCursorTitle { display: none; }
+  .adCursor { flex: none; } /* n/N alone must never be squeezed out */
+  .search { flex-basis: 220px; min-width: 110px; }
+}
+/* ≤940px: drop button labels too, keep icons + n/N. */
+@media (max-width: 940px) {
+  .ghost span { display: none; }
+  .row { gap: var(--space-3); padding: 0 var(--space-4); }
+  .search { flex-basis: 170px; }
+}
+/* ≤700px: the cursor chip goes entirely; search takes whatever is left. */
+@media (max-width: 700px) {
+  .adCursor { display: none; }
+}
+
+/* ---- Plan | Gallery mode switch ---- */
 .modeSwitch {
   display: inline-flex;
   align-items: center;
@@ -77,17 +203,31 @@
 .modeBtn:hover {
   color: var(--ink);
 }
+/* Active mode — accent fill (same treatment as the primary Generate button);
+   inactive stays darkened/muted so the current view is unmistakable. */
 .modeBtnActive {
-  color: var(--ink);
-  background: var(--glass-bg-3);
-  box-shadow: var(--shadow-sm);
+  color: var(--on-accent);
+  background: var(--grad-blue), var(--accent);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.4),
+    0 4px 14px -4px color-mix(in srgb, var(--accent) 55%, transparent),
+    var(--inset-hi);
+}
+.modeBtnActive:hover {
+  color: var(--on-accent);
+  filter: brightness(1.05);
 }
 
 /* ---- right cluster ---- */
+/* No margin-left:auto here — that's a leftover from the old 2-column (left + right) layout.
+   With .middle now a real flex-grow:1 column between them, an auto margin on .right would
+   absorb the row's free space BEFORE flex-grow gets it (auto margins resolve first), starving
+   .middle down to near-zero on wide screens. .right just sits at its natural size after .middle. */
 .right {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  flex: none;
 }
 
 /* ---- inline run progress (done/total + ETA) ---- */
@@ -118,23 +258,8 @@
   color: var(--faint);
   font-variant-numeric: tabular-nums;
 }
-.runDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent);
-  animation: pulse 1.8s var(--ease) infinite;
-}
-.runDotPaused {
-  background: var(--warn);
-  animation: none;
-}
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 55%, transparent); }
-  70% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 0%, transparent); }
-  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent); }
-}
+
+/* run dot → WorkingIndicator (see docs/WORKING-INDICATOR.md) */
 
 /* ---- cooling countdown ---- */
 .cooling {

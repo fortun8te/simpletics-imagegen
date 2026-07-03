@@ -11,9 +11,9 @@
   cursor: pointer;
   background: transparent;
   border: none;
-  color: var(--faint);
-  opacity: 0.72;
-  transition: opacity var(--dur-2) var(--ease), background var(--dur-2) var(--ease);
+  color: var(--muted);
+  opacity: 0.82;
+  transition: opacity var(--dur-2) var(--ease), background var(--dur-2) var(--ease), color var(--dur-2) var(--ease);
 }
 .chip:hover {
   opacity: 1;
@@ -36,10 +36,8 @@
 
 /* Checking — spin a short accent arc on the outer track; quiet the live glow underneath. */
 .ringBusy .fillLive,
-.ringBusy .fillLiveInner,
-.ringBusy .edge {
+.ringBusy .fillLiveInner {
   opacity: 0.38;
-  animation-play-state: paused;
 }
 .checkArc {
   opacity: 0.88;
@@ -68,11 +66,11 @@
 
 .track {
   fill: none;
-  stroke: color-mix(in srgb, white 16%, transparent);
+  stroke: var(--usage-track);
   stroke-width: 1.65;
 }
 .trackInner {
-  stroke: color-mix(in srgb, white 11%, transparent);
+  stroke: var(--usage-track-inner);
   stroke-width: 1.35;
 }
 
@@ -86,48 +84,17 @@
   stroke-width: 1.35;
 }
 
-/* Live arcs — soft glow pulse, no stroke-width wobble or liquid distortion. */
+/* Live arcs — flat solid accent, no gradient. The old 3-stop gradient (accent → accent-2 →
+   white) read muddy/pink at 22px; a single clean stroke reads clearly at this size instead. */
 .fillLive {
-  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 38%, transparent));
-  animation: usageChipGlow 2.4s ease-in-out infinite;
+  stroke: var(--accent);
+  filter: drop-shadow(0 0 2.5px var(--usage-glow));
+  opacity: 0.95;
 }
 .fillLiveInner {
-  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--accent-2) 32%, transparent));
-  animation: usageChipGlowInner 2.8s ease-in-out infinite;
-}
-@keyframes usageChipGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 2.5px color-mix(in srgb, var(--accent) 30%, transparent));
-    opacity: 0.92;
-  }
-  50% {
-    filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 52%, transparent));
-    opacity: 1;
-  }
-}
-@keyframes usageChipGlowInner {
-  0%, 100% {
-    filter: drop-shadow(0 0 1.5px color-mix(in srgb, var(--accent-2) 24%, transparent));
-    opacity: 0.88;
-  }
-  50% {
-    filter: drop-shadow(0 0 3.5px color-mix(in srgb, var(--accent-2) 42%, transparent));
-    opacity: 1;
-  }
-}
-
-.edge {
-  fill: rgba(255, 255, 255, 0.9);
-  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.55));
-  animation: usageChipEdge 2.2s ease-in-out infinite;
-}
-.edgeInner {
-  fill: rgba(255, 255, 255, 0.78);
-  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
-}
-@keyframes usageChipEdge {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 1; }
+  stroke: var(--accent-2);
+  filter: drop-shadow(0 0 1.5px var(--usage-glow-inner));
+  opacity: 0.9;
 }
 
 .fillLow {

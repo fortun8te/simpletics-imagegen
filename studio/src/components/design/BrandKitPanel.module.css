@@ -1,0 +1,56 @@
+.wrap { display: flex; flex-direction: column; gap: var(--space-1); }
+.toggle {
+  align-self: flex-start;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--faint);
+  cursor: pointer;
+}
+.toggle:hover { color: var(--ink); }
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line-soft);
+  background: var(--glass-bg-2);
+}
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.area {
+  width: 100%;
+  min-height: 52px;
+  padding: 6px 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--surface);
+  font: 400 11px/1.45 var(--font-sans);
+  color: var(--ink);
+  resize: vertical;
+}
+.area:focus { outline: none; border-color: var(--accent); }
+.save {
+  align-self: flex-end;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--ink);
+  color: var(--surface);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.save:disabled { opacity: 0.5; cursor: default; }

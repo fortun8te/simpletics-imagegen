@@ -1,50 +1,54 @@
-/* BatchHero — flat, premium header. No card, no radial glow: it sits on the page like Solaris's
-   "Welcome back" moment. Eyebrow → Fraunces display name → one quiet meta line → thin blue
-   progress bar → a calm row of flat metric chips. Theme tokens only (single dark, blue accent). */
+/* BatchHero — compact, flat header. One tight text block (eyebrow → name → meta) with a
+   thin progress bar under it. No card, no glow, no metric chips. Theme tokens only. */
 .hero {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  padding: var(--space-2) 0 var(--space-6);
+  padding: 0 0 var(--space-5);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
 /* Eyebrow — BRAND · KIND, quiet and uppercased. */
 .eyebrow {
   margin: 0;
-  font-size: var(--t-label);
-  letter-spacing: 0.14em;
+  font-size: 10.5px;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   font-weight: 500;
   color: var(--faint);
 }
 
-/* The batch NAME — Fraunces display, large, weight 500, slight negative tracking. */
+/* The batch NAME — display face, sized as a working title, not a landing page. */
 .name {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-size: var(--t-display);
-  line-height: 1.05;
-  letter-spacing: -0.018em;
+  font-weight: 550;
+  font-size: 22px;
+  line-height: 1.15;
+  letter-spacing: -0.014em;
   color: var(--ink);
 }
 
-/* A single quiet line of meta. */
+/* One quiet line of meta — variations · images · remaining · % generated. */
 .meta {
   margin: 0;
-  font-size: var(--t-body);
+  font-size: 12px;
   line-height: 1.4;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
 
-/* Thin blue progress bar — flat, sits just under the meta line. */
+/* Thin progress bar — flat, sits just under the text block. */
 .progressTrack {
   position: relative;
-  height: 3px;
+  height: 2px;
   width: 100%;
-  max-width: 420px;
-  margin-top: var(--space-1);
+  max-width: 300px;
   border-radius: var(--r-pill);
   background: var(--surface-2);
   overflow: hidden;
@@ -55,37 +59,4 @@
   border-radius: var(--r-pill);
   background: var(--accent);
   transition: width var(--dur-3) var(--ease);
-}
-
-/* Flat metric chips, Solaris-style: quiet card, mono number, small uppercase label. */
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-top: var(--space-3);
-}
-.chip {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 96px;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  border: 1px solid var(--line);
-}
-.chipValue {
-  font-family: var(--font-mono);
-  font-size: var(--t-title);
-  font-weight: 500;
-  line-height: 1;
-  color: var(--ink);
-  font-variant-numeric: tabular-nums;
-}
-.chipLabel {
-  font-size: var(--t-label);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--faint);
-  font-weight: 500;
 }

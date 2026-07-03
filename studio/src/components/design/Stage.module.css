@@ -1,0 +1,243 @@
+/* Stage.module.css — scroll container + scaled artboard. Theme tokens for all CHROME
+   (selection, handles, guides, underlay frame); hardcoded colors are allowed only inside
+   the artboard itself, where user content renders. */
+
+/* The scroll container: fills whatever box the shell gives it. Flex + margin:auto on the
+   artboard centers it while keeping every edge reachable when zoomed past the container. */
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+}
+
+/* Agent run in flight — read-only. The shell's stageWrap[data-locked] already sets
+   pointer-events:none on this whole subtree; `cursor: wait` here is purely cosmetic
+   (a not-allowed/wait affordance the instant a pointer enters the canvas) since a
+   pointer-events:none element can't itself show a cursor to descendants that ignore
+   events — set on .artboard too so the user sees it over the actual content. */
+.stage[data-locked],
+.stage[data-locked] .artboard {
+  cursor: wait;
+}
+
+/* The artboard: width set inline (fit → 100%, zoom → canvas.w * zoom px), height via
+   aspect-ratio. container-type: inline-size makes cqw = canvas-px-proportional everywhere. */
+.artboard {
+  position: relative;
+  flex: none;
+  margin: auto;
+  container-type: inline-size;
+  touch-action: none;
+}
+
+/* Clipping box for user content — selection chrome sits OUTSIDE it, unclipped.
+   Hairline via box-shadow (a border would inset the % coordinate space by 1px). */
+.clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: #000;
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+
+/* ── layers ── */
+.layer {
+  position: absolute;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+}
+.layer:active { cursor: grabbing; }
+/* Base / locked / hidden layers are click-through: hits fall to whatever is underneath,
+   or to the stage itself (→ deselect). */
+.layer[data-inert] {
+  pointer-events: none;
+  cursor: default;
+}
+.layer img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.text {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  white-space: pre-wrap; /* inline editing inserts real newlines */
+  user-select: none;
+}
+.shape {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── tracing-paper underlay: above all layers, never interactive ──
+   The dashed frame is only a partial-opacity affordance (shows this is a translucent
+   trace, not the real artwork). At full opacity the reference must render as the
+   literal, unmodified image with nothing stacked on top of it. */
+.underlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 1;
+}
+.underlay:not([style*="opacity: 1"]) {
+  outline: 1px dashed color-mix(in srgb, var(--accent) 65%, transparent);
+  outline-offset: -1px;
+}
+
+/* ── alignment guides: 1px accent lines across the artboard while snapped ── */
+.guideV,
+.guideH {
+  position: absolute;
+  background: var(--accent);
+  pointer-events: none;
+  z-index: 2;
+}
+.guideV { top: 0; bottom: 0; width: 1px; }
+.guideH { left: 0; right: 0; height: 1px; }
+
+/* ── selection chrome (unclipped; handles keep constant SCREEN size — px, not cqw) ── */
+.selection {
+  position: absolute;
+  pointer-events: none;
+  z-index: 3;
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+.handle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  box-sizing: border-box;
+  background: var(--surface-3);
+  border: 1.5px solid var(--accent);
+  border-radius: 3px;
+  box-shadow: var(--shadow-sm);
+  pointer-events: auto;
+  touch-action: none;
+}
+
+/* ── inline text editor: sits exactly over the layer box, font matched inline ── */
+.textEditor {
+  position: absolute;
+  z-index: 4;
+  display: block;
+  box-sizing: border-box;
+  margin: 0;
+  border: 0;
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+  background: transparent;
+  font-family: var(--font-sans);
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  caret-color: var(--accent-2);
+}
+.textEditor:focus {
+  outline: 2px solid var(--accent);
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* Instagram-caption pill inner span — box-decoration-break clones bg/radius/padding per line. */
+.pillInner {
+  display: inline;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  white-space: pre-wrap;
+}
+
+/* autoH text: box grows with content — never clips (min-height set inline). */
+.layer[data-autoh] { overflow: visible; }
+.text[data-autoh] { height: auto; min-height: 100%; overflow: visible; }
+
+/* group selection reads dashed, layers solid */
+.selection[data-group] { outline-style: dashed; }
+
+/* marquee select rectangle */
+.marquee {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* ── X-ray: numbered anatomy outlines (the "how this ad is built" view) ── */
+.xrayBox {
+  position: absolute;
+  pointer-events: none;
+  border: 1.5px solid;
+  border-radius: 2px;
+}
+.xrayBox[data-group] { border-style: dashed; }
+.xrayTag {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  transform: translateY(-100%);
+  padding: 1px 6px 2px;
+  border-radius: 4px 4px 4px 0;
+  font: 600 10px/1.4 var(--font-mono);
+  color: #0b0b0e;
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* live zoom % readout, bottom-right of the stage */
+.zoomBadge {
+  position: sticky;
+  align-self: flex-end;
+  margin-left: auto;
+  bottom: 8px;
+  right: 8px;
+  z-index: 5;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
+  font: 500 10.5px/1.6 var(--font-mono);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* clip/mask group wrapper — children render in an inner canvas-sized frame so their
+   canvas-percentage coords stay valid while the wrapper clips. */
+.groupClip { position: absolute; pointer-events: none; }
+.groupClip * { pointer-events: auto; }
+.groupInner { position: absolute; }
+
+/* One-shot accent flash on nodes the agent just edited (pulse once, settle — Lovable-style). */
+.editFlash {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 70%, transparent);
+  opacity: 0;
+  animation: editFlash 1.2s var(--ease) 1;
+}
+@keyframes editFlash {
+  0%   { opacity: 1; }
+  60%  { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editFlash { animation: none; }
+}

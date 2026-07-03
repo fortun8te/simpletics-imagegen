@@ -10,6 +10,7 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:8788',
       '/img': 'http://localhost:8788',
+      '/asset': 'http://localhost:8788',
       '/events': { target: 'http://localhost:8788', changeOrigin: true },
     },
   },

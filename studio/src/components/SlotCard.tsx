@@ -8,7 +8,7 @@ import { useStore, type Density } from '../store';
 import { api } from '../api';
 import { Icon } from './Icon';
 import { GenerateTile } from './GenerateTile';
-import { Spinner } from './Spinner';
+import { WorkingIndicator } from './WorkingIndicator';
 import styles from './SlotCard.module.css';
 
 interface SlotCardProps {
@@ -105,6 +105,8 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
           src={api.imgUrl(slot.relPath)}
           alt={`${ad} / ${variation} · run ${slot.run}`}
           onClick={open}
+          loading="lazy"
+          decoding="async"
         />
         {archived && <span className={styles.archivedTag}>Archived</span>}
 
@@ -160,9 +162,7 @@ export default function SlotCard({ slot, ad, variation, prompt, density }: SlotC
           <span className={styles.progressBar} />
         </div>
         <div className={styles.center}>
-          <Spinner size={18} />
-          <span className={styles.label}>Generating</span>
-          <span className={styles.elapsed}>{elapsed}</span>
+          <WorkingIndicator label="Generating" meta={elapsed} tone="active" muted />
           {jobId && (
             <button className={styles.retry} onClick={cancelJob} title="Codex in use">
               <Icon name="x" size={13} />

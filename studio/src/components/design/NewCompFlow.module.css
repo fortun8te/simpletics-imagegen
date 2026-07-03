@@ -1,0 +1,463 @@
+/* NewCompFlow — reference picker → extract → base image. Theme tokens only. */
+
+.flow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.headRow { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.headTitles { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+.title { margin: 0; font-size: var(--t-section); font-weight: 600; color: var(--ink); }
+.sub { font-size: 12px; color: var(--muted); }
+
+.refActions { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+
+/* No-reference path: a tiny inline canvas-preset chooser (replaces the old base step). */
+.blankChoice {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+}
+
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 var(--space-4);
+  border-radius: var(--r-md);
+  background: var(--grad-blue), var(--accent);
+  color: var(--on-accent);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,.4), var(--inset-hi);
+  white-space: nowrap;
+}
+.primaryBtn:hover:not(:disabled) { filter: brightness(1.06); }
+.primaryBtn:disabled { opacity: 0.55; cursor: default; }
+
+.ghostBtn {
+  flex: none;
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.ghostBtn:hover { color: var(--ink); background: var(--surface-2); }
+
+/* ── the picked reference: extraction theater ── */
+.selectedRef {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--r-xl);
+  background: var(--glass-bg);
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--glass-border));
+}
+.selectedRefTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.selectedRefLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.selectedRefActions { display: flex; gap: var(--space-2); flex: none; }
+.extractNote { font-size: 12px; line-height: 1.45; color: var(--accent-ink); }
+.extractNote[data-failed] { color: #f0a8a8; }
+
+/* The reference LARGE, centered. .stageInner shrink-wraps the <img> (width/height auto,
+   no object-fit letterboxing), so absolutely-positioned overlay boxes expressed as
+   percentages of skeleton canvas coords land exactly on the picture. */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+  padding: var(--space-2);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, #000 35%, transparent);
+}
+.stageInner { position: relative; flex: none; max-width: 100%; }
+.stageInner img {
+  display: block;
+  /* fixed target height + auto width: aspect ratio is preserved even when max-width
+     kicks in (CSS replaced-element constraint resolution), so the element box always
+     equals the picture — overlay percentages stay exact. */
+  height: 440px;
+  width: auto;
+  max-width: 100%;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: #000;
+  transition: filter var(--dur-2) var(--ease);
+}
+.stage[data-scanning] .stageInner img { filter: brightness(0.8) saturate(0.85); }
+
+/* scanning treatment: subtle dim + a sweeping horizontal scan line */
+.scanShade {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--r-sm);
+  background: rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+.scanLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -56px;
+  height: 56px;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    color-mix(in srgb, var(--accent) 22%, transparent)
+  );
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 80%, transparent);
+  box-shadow: 0 1px 10px color-mix(in srgb, var(--accent) 45%, transparent);
+  animation: scanSweep 2.4s ease-in-out infinite;
+}
+@keyframes scanSweep {
+  0% { top: -56px; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scanLine { animation: none; opacity: 0.5; top: 40%; }
+}
+
+/* Extraction-failed overlay — a plain centered error pill, no "trace it by hand yourself"
+   dashed-frame metaphor (removed: extraction is reliable now, that affordance is stale). */
+.failFrame {
+  position: absolute;
+  inset: 4px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--space-3);
+  pointer-events: none;
+}
+.failMsg {
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, 0.72);
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+}
+
+/* ── side-by-side compare: reference (left) + comp being built (right) ── */
+/* Two aspect-locked panes. On narrow widths they stack. Both bounded to the container width so
+   nothing overflows horizontally. --ref-aspect (w/h) is set inline from the measured reference. */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-2);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, #000 35%, transparent);
+  max-width: 100%;
+}
+@media (max-width: 560px) {
+  .compare { grid-template-columns: 1fr; }
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  min-width: 0; /* let the frame shrink inside the grid track — no overflow */
+}
+.paneTag {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The aspect-locked frame: uses the reference aspect for BOTH panes so left and right match.
+   aspect-ratio keeps the shape; the media inside is contained and can never overflow. */
+.paneFrame {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: var(--ref-aspect, 0.8);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: #000;
+  overflow: hidden;
+}
+.paneFrame[data-building] {
+  background: var(--surface-2);
+  transition: background var(--dur-3) var(--ease);
+}
+
+.refImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* aspect-locked, letterboxed if needed — never overflows */
+  background: #000;
+}
+.paneFrame[data-scanning] .refImg { filter: brightness(0.82) saturate(0.85); }
+
+/* ── the building-comp scaffold: a real skeleton-loading UI ──────────────────────────────────
+   Grey placeholder blocks (hero/image, text-line bars of varied widths, a CTA pill) arranged
+   like an ad. Each block cycles: unrevealed = faint empty outline → loading = grey base with a
+   moving light shimmer sweep → settled = solid grey (image block/CTA get a little more presence).
+   The shimmer is a light band swept across a grey base via background-position, YouTube/LinkedIn
+   style. Tokens: --skel-base (grey fill), --skel-sheen (the moving highlight). */
+.scaffold {
+  --skel-base: color-mix(in srgb, var(--muted) 20%, var(--surface-2));
+  --skel-sheen: color-mix(in srgb, var(--ink) 24%, transparent);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4.5%;
+  padding: 6% 8%;
+  box-sizing: border-box;
+}
+
+/* Each slot is a placeholder block. Base state = unrevealed: a faint empty outline (not yet read).
+   The sheen layer lives in ::after so it can sweep independently of the base fill. */
+.slot {
+  position: relative;
+  flex: none;
+  border-radius: var(--r-xs);
+  overflow: hidden;
+  background: color-mix(in srgb, var(--muted) 9%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--muted) 16%, transparent);
+  opacity: 0.4;
+  transition:
+    opacity var(--dur-3) var(--ease),
+    background var(--dur-3) var(--ease),
+    box-shadow var(--dur-3) var(--ease);
+}
+.slot[data-kind='cta'] { border-radius: var(--r-pill); }
+.slot[data-kind='hero'] { border-radius: var(--r-sm); }
+
+/* The moving light band — a diagonal highlight swept across the block by animating its position.
+   Hidden until the slot is active. */
+.slot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    var(--skel-sheen) 48%,
+    var(--skel-sheen) 52%,
+    transparent 80%
+  );
+  background-size: 220% 100%;
+  background-position: 150% center;
+  transition: opacity var(--dur-3) var(--ease);
+}
+
+/* Active (revealed, still reading): grey base fill + the sheen sweeps across, continuously. */
+.slot[data-active] {
+  opacity: 1;
+  background: var(--skel-base);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--muted) 26%, transparent);
+}
+.slot[data-active]::after {
+  opacity: 1;
+  animation: skelSweep 1.6s linear infinite;
+}
+/* Hero is an image block → a touch darker base + a faint centered image glyph tint so it reads
+   as media loading rather than text. Its sweep runs slightly slower for a heavier feel. */
+.slot[data-kind='hero'][data-active] {
+  background:
+    radial-gradient(
+      circle at 50% 46%,
+      color-mix(in srgb, var(--ink) 10%, transparent) 0 18%,
+      transparent 40%
+    ),
+    color-mix(in srgb, var(--muted) 26%, var(--surface-2));
+}
+.slot[data-kind='hero'][data-active]::after { animation-duration: 2s; }
+/* Stagger the sweep per row so the panel shimmers like content streaming in, not one flat pulse. */
+.slot[data-active]:nth-child(2)::after { animation-delay: 0.12s; }
+.slot[data-active]:nth-child(3)::after { animation-delay: 0.24s; }
+.slot[data-active]:nth-child(4)::after { animation-delay: 0.36s; }
+.slot[data-active]:nth-child(5)::after { animation-delay: 0.48s; }
+.slot[data-active]:nth-child(6)::after { animation-delay: 0.6s; }
+.slot[data-active]:nth-child(7)::after { animation-delay: 0.72s; }
+
+/* Settled (read + landed): sweep stops, block goes solid grey — content has filled in. */
+.slot[data-settled] {
+  background: color-mix(in srgb, var(--muted) 30%, var(--surface-2));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--muted) 36%, transparent);
+}
+.slot[data-settled]::after { opacity: 0; animation: none; }
+.slot[data-kind='hero'][data-settled] {
+  background: color-mix(in srgb, var(--muted) 36%, var(--surface-2));
+}
+.slot[data-kind='cta'][data-settled] {
+  /* CTA lands with a hint of accent so the scaffold feels like a real, finished comp */
+  background: color-mix(in srgb, var(--accent) 32%, var(--surface-3));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 44%, transparent);
+}
+
+@keyframes skelSweep {
+  0%   { background-position: 150% center; }
+  100% { background-position: -50% center; }
+}
+
+/* Reduced motion: static grey placeholders, no sweep. Active/settled still differ in fill so
+   progress remains legible without any animation. */
+@media (prefers-reduced-motion: reduce) {
+  .slot[data-active]::after,
+  .slot[data-kind='hero'][data-active]::after { animation: none; opacity: 0; }
+}
+:global([data-reduced-motion='true']) .slot[data-active]::after,
+:global([data-reduced-motion='true']) .slot[data-kind='hero'][data-active]::after {
+  animation: none;
+  opacity: 0;
+}
+
+/* status lines under the theater */
+.statusArea {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 18px;
+}
+
+.groupLabel { margin: var(--space-2) 0 0; }
+.empty { margin: 0; font-size: 12px; color: var(--faint); }
+
+.refGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-2);
+}
+.refCell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 2px solid var(--line);
+  background: var(--surface-2);
+  padding: 0;
+  transition: border-color var(--dur-2) var(--ease);
+}
+.refCell:hover { border-color: var(--line-strong); }
+.refCell[data-picked] { border-color: var(--accent); }
+.refCell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.refCellLabel {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 10px 8px 6px;
+  font-size: 9.5px;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.92);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.refCellLabel b { text-transform: uppercase; font-size: 8.5px; letter-spacing: 0.05em; margin-right: 4px; }
+
+.canvasLabel { font-size: 10px; font-weight: 600; color: var(--faint); padding: 0 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+.canvasBtn {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+.canvasBtn:hover { color: var(--ink); }
+.canvasBtn[data-active] { background: var(--glass-bg-3); color: var(--ink); box-shadow: var(--shadow-sm); }
+
+/* ── extraction countdown + live run feed ── */
+.extractStatus { font-size: 12px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+.extractHint { font-size: 11px; line-height: 1.4; color: var(--muted); }
+.countdownBar {
+  height: 3px;
+  border-radius: 2px;
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.countdownFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 1s linear;
+}
+
+/* ── local search (0 credits) + explicit priced live import ── */
+.searchRow { display: flex; align-items: center; gap: var(--space-2); }
+.searchInput {
+  flex: 1;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--glass-bg-2);
+  font-size: 12.5px;
+  color: var(--ink);
+}
+.searchInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.creditChip {
+  flex: none;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--line-soft);
+  font: 500 10.5px/1 var(--font-mono);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.liveSearchBtn {
+  align-self: flex-start;
+  height: 28px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-md);
+  border: 1px dashed color-mix(in srgb, #e0a94d 50%, transparent);
+  background: color-mix(in srgb, #e0a94d 8%, transparent);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #e0a94d;
+}
+.liveSearchBtn:hover:not(:disabled) { background: color-mix(in srgb, #e0a94d 14%, transparent); }
+.liveSearchBtn:disabled { opacity: 0.6; }

@@ -1,0 +1,139 @@
+/* WorkingIndicator — canonical "live work" affordance for Codex image generation.
+   One pulsing dot + optional label. Use THIS for image-gen activity — not Spinner,
+   not ad-hoc keyframes. See studio/docs/WORKING-INDICATOR.md */
+
+.dot {
+  flex: none;
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-pill);
+  background: var(--faint);
+}
+
+.dotActive {
+  background: var(--accent);
+}
+
+.dotWaiting {
+  background: color-mix(in srgb, var(--accent) 55%, var(--faint));
+}
+
+.dotQueued {
+  background: var(--faint);
+}
+
+.dotPaused {
+  background: var(--warn);
+}
+
+.dotFailed {
+  background: var(--err);
+}
+
+/* Expanding ring — the "flicker" users notice. Quiet, never a panel glow. */
+.dotActive::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--accent);
+  opacity: 0;
+  animation: activityPing var(--dur-3) var(--ease) infinite;
+}
+
+@keyframes activityPing {
+  0%   { transform: scale(0.6); opacity: 0.5; }
+  70%  { transform: scale(1.5); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dotActive::after { animation: none; }
+}
+
+:global([data-reduced-motion="true"]) .dotActive::after {
+  animation: none;
+}
+
+/* Inline row: dot + label (+ optional meta) */
+.row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.label {
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ChatGPT/Cursor-style live-work shimmer on the CURRENT step label (active tone only). */
+.labelShimmer {
+  background: var(--shimmer);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer var(--dur-shimmer) linear infinite;
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .labelShimmer { animation: none; color: var(--muted); background: none; }
+}
+
+:global([data-reduced-motion="true"]) .labelShimmer {
+  animation: none;
+  color: var(--muted);
+  background: none;
+}
+
+.meta {
+  font-size: 12.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+.rowMuted .label {
+  color: var(--muted);
+}
+
+/* Glass pill — ActivityDock collapsed, optional compact surfaces */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  color: var(--ink);
+  font-size: var(--t-body);
+  transition: background var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+}
+
+.pill:hover {
+  background: var(--glass-bg-2);
+}
+
+.pillText {
+  font-size: var(--t-body);
+  font-weight: 500;
+  white-space: nowrap;
+}

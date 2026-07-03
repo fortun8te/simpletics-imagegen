@@ -1,0 +1,735 @@
+/* DesignView — the gallery: hero strip (new comp / drop zone / search), comps grid,
+   copied layouts under a disclosure. Theme tokens only. */
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ── hero strip — the start funnel on one compact line ─────────────────── */
+.hero {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* split "New comp" button: main = from reference, chevron = start menu (reference / blanks) */
+.newSplit {
+  display: inline-flex;
+  align-items: stretch;
+  flex: none;
+  border-radius: var(--r-md);
+  box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 22px -6px color-mix(in srgb, var(--accent) 60%, transparent), var(--inset-hi);
+}
+.newBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 var(--space-4);
+  border-radius: var(--r-md);
+  background: var(--grad-blue), var(--accent);
+  color: var(--on-accent);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 22px -6px color-mix(in srgb, var(--accent) 60%, transparent), var(--inset-hi);
+}
+.newBtn:hover { filter: brightness(1.06); }
+/* inside the split the segments share one shadow (on .newSplit) and split the radius */
+.newSplit .newBtn {
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  box-shadow: none;
+  padding-right: var(--space-3);
+}
+.newBtnMore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  border-left: 1px solid color-mix(in srgb, black 26%, transparent);
+  background: var(--grad-blue), var(--accent);
+  color: var(--on-accent);
+}
+.newBtnMore:hover, .newBtnMore[data-state='open'] { filter: brightness(1.1); }
+
+/* the drop/paste affordance — a quiet inline zone, not a floating sentence */
+.dropZone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 var(--space-3);
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  font-size: 11px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+.view[data-drop] .dropZone {
+  color: var(--muted);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+
+/* search + agent chip, right-aligned on the hero line */
+.heroRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+.searchInput {
+  height: 28px;
+  width: 210px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--ink);
+  font-size: 12px;
+}
+.searchInput::placeholder { color: var(--faint); }
+.searchInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 50%, var(--glass-border)); }
+
+/* model/agent info chip — quiet */
+.agentChip {
+  flex: none;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  font-size: 10.5px;
+  color: var(--faint);
+  white-space: nowrap;
+}
+
+/* ── tag filter row (chips only — search lives in the hero) ────────────── */
+.filterRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.clearFilter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  font-size: 10.5px;
+  color: var(--muted);
+  background: transparent;
+  border: 1px dashed var(--line);
+}
+.clearFilter:hover { color: var(--ink); border-color: var(--line-strong); }
+
+/* ── section chrome — consistent eyebrow + count, shared rhythm ────────── */
+.section { display: flex; flex-direction: column; gap: var(--space-3); }
+.sectionHead { display: flex; align-items: center; gap: var(--space-2); }
+.sectionHead p { margin: 0; }
+.sectionCount {
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+}
+/* "Select all" — quiet text button in the section head (⌘/Ctrl-A mirrors it) */
+.selectAll {
+  margin-left: auto;
+  padding: 2px 8px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--faint);
+  font-size: 10.5px;
+  cursor: pointer;
+  transition: color var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+}
+.selectAll:hover { color: var(--accent-ink); background: color-mix(in srgb, var(--ink) 7%, transparent); }
+
+/* "Copied layouts" disclosure header — collapsed by default */
+.disclosure {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.disclosure:hover .discChevron { color: var(--muted); }
+.discChevron {
+  display: inline-flex;
+  color: var(--faint);
+  transition: transform var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.discChevron[data-open] { transform: rotate(90deg); }
+
+/* copied layouts (skeletons) — source ad thumb + meta */
+.skelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--space-3);
+}
+.skelCard {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-2);
+  border-radius: var(--r-lg);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  text-align: left;
+  transition: border-color var(--dur-2) var(--ease);
+}
+.skelCard:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--glass-border)); }
+
+/* Selection wrapper around a skeleton card — same relative-position + selected-ring pattern as
+   .compCard/.stackCard so the shared .selBox checkbox and marquee ring behave identically. */
+.skelCardWrap { position: relative; border-radius: var(--r-lg); }
+.skelCardWrap .skelCard { width: 100%; }
+.skelCardWrap[data-selected] .skelCard {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--accent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.skelCardWrap:hover .selBox,
+.skelCardWrap[data-selected] .selBox { opacity: 1; }
+.skelCard img {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: #000;
+}
+.skelBody { display: flex; flex-direction: column; gap: 3px; min-width: 0; justify-content: center; }
+.skelName {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.skelMeta { font-size: 10.5px; color: var(--faint); }
+
+/* ── comps — visual thumbnail cards ────────────────────────────────────── */
+.compGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-3);
+}
+.compCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-lg);
+  background: var(--glass-bg-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition: border-color var(--dur-2) var(--ease);
+}
+.compCard:hover { border-color: var(--line-strong); }
+/* Uniform-HEIGHT thumb area: the image renders contained at its NATURAL aspect, centered —
+   1:1 / 4:5 / 9:16 comps all sit cleanly in the same grid without letterboxing the tile.
+   The tile itself is a subtle surface; the checkerboard sits behind the image only. */
+.compThumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 188px;
+  padding: var(--space-2);
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+  cursor: pointer;
+}
+.thumbImg {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 2px;
+  /* transparency checkerboard behind the IMAGE, not the whole tile */
+  background: repeating-conic-gradient(color-mix(in srgb, var(--ink) 7%, transparent) 0% 25%, transparent 0% 50%) 0 0 / 12px 12px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+/* aspect-ratio badge, from the image's natural dimensions */
+.ratioBadge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.82);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 14px;
+  pointer-events: none;
+}
+.thumbEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--faint);
+}
+/* no-thumb-yet tile: big quiet name initial (comp exists, preview not rendered yet) */
+.thumbInitial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+  border-radius: var(--r-sm);
+  user-select: none;
+}
+
+/* card footer — name + meta on one baseline, updated-time right-aligned faint */
+.compBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2) var(--space-3) var(--space-3);
+}
+.cardFoot {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.compName {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.compName:hover { color: var(--accent-ink); }
+.compMeta { flex: none; font-size: 10px; color: var(--faint); white-space: nowrap; }
+.compTime { flex: none; font-size: 10px; color: var(--faint); opacity: 0.75; white-space: nowrap; }
+
+/* ── tag chips — quiet: no borders, faint surface, lowercase ───────────── */
+.tagRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.tagChip {
+  padding: 2px 7px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  font-size: 9.5px;
+  line-height: 14px;
+  text-transform: lowercase;
+  color: var(--muted);
+  white-space: nowrap;
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.tagChip:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 11%, transparent); }
+.tagChip[data-active] {
+  color: var(--on-accent);
+  background: var(--accent);
+}
+.tagMore { font-size: 9.5px; color: var(--faint); }
+.tagInput {
+  width: 76px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--glass-border));
+  font-size: 10px;
+  color: var(--ink);
+}
+.tagInput:focus { outline: none; }
+
+/* ── the single "⋯" card menu (replaces the icon-button cluster) ───────── */
+.menuBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--r-sm);
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease), background var(--dur-1) var(--ease);
+}
+.compCard:hover .menuBtn,
+.stackCard:hover .menuBtn,
+.menuBtn:focus-visible,
+.menuBtn[data-state='open'] { opacity: 1; }
+.menuBtn:hover, .menuBtn[data-state='open'] { background: rgba(0, 0, 0, 0.72); }
+
+/* Figma-quiet dropdown (shared: card ⋯ menu + New-comp split menu) — icons column + labels,
+   one radius, no double borders; danger separated. */
+.menu {
+  min-width: 188px;
+  padding: var(--space-1);
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-md);
+  z-index: 120;
+}
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 28px;
+  padding: 0 var(--space-2);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+}
+.menuItem[data-highlighted] { background: var(--surface-2); }
+.menuIcon {
+  display: inline-flex;
+  justify-content: center;
+  flex: none;
+  width: 16px;
+  color: var(--muted);
+}
+.menuItem[data-danger] { color: #ff7b72; }
+.menuItem[data-danger] .menuIcon { color: inherit; }
+.menuItem[data-danger][data-highlighted] { background: color-mix(in srgb, #ff7b72 12%, transparent); }
+.menuSep { height: 1px; margin: 4px var(--space-1); background: var(--line-soft); }
+
+/* generic small button — modal Cancel etc. */
+.cardBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: var(--r-sm);
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  font-size: 11px;
+  backdrop-filter: blur(8px);
+}
+.cardBtn:hover { color: var(--ink); background: var(--surface-3); }
+
+/* drop-a-PNG affordance */
+.view[data-drop] { outline: 2px dashed color-mix(in srgb, var(--accent) 60%, transparent); outline-offset: -6px; border-radius: var(--r-xl); }
+
+.note {
+  position: fixed;
+  bottom: var(--space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  border: 1px solid var(--glass-border);
+  font-size: 12px;
+  color: var(--ink);
+  box-shadow: var(--shadow-md);
+  white-space: nowrap;
+}
+
+/* apply-to-batch modal (moved here from the editor) */
+.modalScrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.modal {
+  width: 640px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--r-xl);
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+}
+.modalTitle { margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
+.modalActions { display: flex; justify-content: flex-end; gap: var(--space-2); }
+.applyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--space-2);
+  overflow-y: auto;
+}
+.applyCell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 2px solid var(--line);
+  background: var(--surface-2);
+  padding: 0;
+}
+.applyCell:hover { border-color: var(--line-strong); }
+.applyCell[data-picked] { border-color: var(--accent); }
+.applyCell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.applyCell span {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 6px 6px 4px;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.9);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* variant stacks — same-set comps collapse into one row of small cards */
+.stackRow { margin-bottom: var(--space-3); }
+.stackHead { margin: 0 0 var(--space-2); font-size: 12px; font-weight: 600; color: var(--muted); }
+.stackCards { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.stackCard {
+  position: relative;
+  width: 120px;
+  border-radius: var(--r-md);
+  background: var(--glass-bg-2);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition: border-color var(--dur-2) var(--ease);
+}
+.stackCard:hover { border-color: var(--line-strong); }
+/* same natural-aspect treatment as the main grid, at stack scale */
+.stackThumb {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 128px;
+  padding: var(--space-1);
+  background: color-mix(in srgb, var(--surface-2) 55%, transparent);
+  cursor: pointer;
+}
+.stackLetter {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  min-width: 16px;
+  padding: 1px 4px;
+  border-radius: var(--r-xs);
+  background: rgba(0, 0, 0, 0.65);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Make-variants / push-to-siblings popovers (reuse the modal scrim) */
+.modalSm { width: 420px; }
+.modalHint { margin: 0; font-size: 11.5px; line-height: 1.45; color: var(--muted); }
+.countRow { display: flex; gap: var(--space-2); }
+.countBtn {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--dur-2) var(--ease);
+}
+.countBtn:hover:not(:disabled) { border-color: var(--accent); }
+.countBtn:disabled { opacity: 0.5; cursor: default; }
+.checkCol { display: flex; flex-direction: column; gap: 6px; }
+.checkRow {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.checkRow span:first-of-type { font-weight: 600; }
+.checkHint { font-size: 10.5px; color: var(--faint); }
+
+/* ── always-on multi-select: selected card state + check + marquee + floating bar ──────── */
+
+/* Selected card: accent ring (drawn on the card wrapper so both grid + stack cards match). */
+.compCard[data-selected],
+.stackCard[data-selected] {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--accent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.compCard[data-selected]:hover,
+.stackCard[data-selected]:hover { border-color: transparent; }
+
+/* ── the easy-select checkbox (top-left of every card) ──────────────────────
+   The discoverable, modifier-free way to select: a real button that appears on
+   card hover and STAYS visible once the card is selected. Clicking it toggles
+   the selection (stopPropagation → never opens the comp). Plain-click on the
+   thumb still opens. Good contrast (dark glass → accent when on) + a 24px hit
+   area even though the visual chip is 20px. */
+.selBox {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+  border-radius: var(--r-pill);
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--on-accent);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--dur-1) var(--ease), background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+/* generous invisible hit area around the 20px chip */
+.selBox::before { content: ''; position: absolute; inset: -6px; }
+.compCard:hover .selBox,
+.stackCard:hover .selBox,
+.selBox:focus-visible,
+.selBox[data-on] { opacity: 1; }
+.selBox:hover { border-color: #fff; background: rgba(0, 0, 0, 0.66); }
+.selBox[data-on] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.selBox[data-on]:hover { filter: brightness(1.06); }
+.selBoxSm { top: 4px; left: 4px; width: 18px; height: 18px; }
+
+/* stack cards carry a decorative A/B/C letter — it lived top-left, where the
+   checkbox now sits, and the ⋯ menu owns top-right. Drop the letter to the
+   bottom-left so it never overlaps either affordance. */
+.stackLetter { top: auto; bottom: 4px; }
+
+/* live selected count in the section head */
+.sectionCount[data-selcount] { color: var(--accent-ink); }
+
+/* rubber-band marquee rectangle (fixed overlay in client coords) */
+.marquee {
+  position: fixed;
+  z-index: 60;
+  border: 1px solid color-mix(in srgb, var(--accent) 80%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-radius: var(--r-xs);
+  pointer-events: none;
+}
+
+/* don't rubber-band the page's text while dragging the marquee */
+.section { user-select: none; }
+
+/* floating selection action bar — bottom-center, glass, above the note toast */
+.selBar {
+  position: fixed;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 6px 8px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+.selBarCount {
+  padding: 0 var(--space-2) 0 var(--space-3);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.selBarDiv { width: 1px; align-self: stretch; margin: 2px 2px; background: var(--line); }
+.selBarBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: none;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background var(--dur-1) var(--ease), color var(--dur-1) var(--ease);
+}
+.selBarBtn:hover:not(:disabled) { background: color-mix(in srgb, var(--ink) 9%, transparent); }
+.selBarBtn:disabled { opacity: 0.4; cursor: default; }
+.selBarDanger { color: #ff7b72; }
+.selBarDanger:hover:not(:disabled) { background: color-mix(in srgb, #ff7b72 14%, transparent); }
+.selBarClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: none;
+  color: var(--muted);
+}
+.selBarClose:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 9%, transparent); }

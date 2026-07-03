@@ -1,0 +1,70 @@
+/* AgentCursorOverlay.module.css — Figma-style fake collaborator cursor gliding across the
+   canvas while the agent runs. Percent offsets below mirror AgentCursorOverlay.tsx's
+   WAYPOINTS array 1:1 (keep them in sync if the waypoints ever change) — CSS keyframes can't
+   read the JS array directly, so the pattern is duplicated here deliberately. */
+
+.wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 11; /* above rendered layers + the shell's dimmed scrim content, below nothing extra */
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
+  animation: agentCursorGlide 9s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  will-change: transform;
+}
+
+.cursor svg {
+  flex: none;
+  transform: translate(-2px, -2px); /* tip of the pointer lands on the waypoint */
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: var(--r-pill, 999px);
+  background: var(--accent);
+  color: var(--on-accent, #fff);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* 9 waypoints (see WAYPOINTS in the .tsx) spread evenly across the loop's duration, then back
+   to the first point to close it — one continuous, heavily-eased glide per lap. Percent units
+   resolve against .wrap (inset:0 on the canvas box), matching how other overlays position. */
+@keyframes agentCursorGlide {
+  0%      { transform: translate(18%, 22%); }
+  11.11%  { transform: translate(62%, 14%); }
+  22.22%  { transform: translate(78%, 46%); }
+  33.33%  { transform: translate(50%, 52%); }
+  44.44%  { transform: translate(24%, 68%); }
+  55.55%  { transform: translate(42%, 84%); }
+  66.66%  { transform: translate(70%, 78%); }
+  77.77%  { transform: translate(86%, 60%); }
+  88.88%  { transform: translate(34%, 40%); }
+  100%    { transform: translate(18%, 22%); }
+}
+
+/* Respect both the OS-level media query and the app's own reduced-motion toggle: freeze at
+   the first resting position instead of animating (matches the pattern used across the app,
+   e.g. WorkingIndicator.module.css / StatusPill.module.css). */
+@media (prefers-reduced-motion: reduce) {
+  .cursor { animation: none; transform: translate(18%, 22%); }
+}
+:global([data-reduced-motion="true"]) .cursor {
+  animation: none;
+  transform: translate(18%, 22%);
+}

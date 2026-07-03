@@ -49,6 +49,21 @@
   white-space: nowrap;
 }
 
+/* Classified ad-type chip (ugc/native/offer/…) inline after the title. */
+.typeTag {
+  display: inline-block;
+  vertical-align: 2px;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  font: 600 9.5px/1.7 var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+}
+
 /* Muted metadata line: "type · N variations · N images". */
 .sub {
   margin: 0;

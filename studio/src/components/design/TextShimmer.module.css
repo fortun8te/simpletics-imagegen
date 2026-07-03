@@ -1,0 +1,46 @@
+/* TextShimmer — readable base color + a bright white band sweeping across the text.
+   The base (color-mix ink/muted) keeps the copy legible at all times; only the highlight moves. */
+.shimmer {
+  display: inline-block;
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 0%,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 42%,
+    var(--ink) 50%,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 58%,
+    color-mix(in srgb, var(--ink) 72%, var(--muted)) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: textShimmerSweep 2.2s linear infinite;
+}
+
+@keyframes textShimmerSweep {
+  0%   { background-position: 120% center; }
+  100% { background-position: -20% center; }
+}
+
+/* Reduced motion: no sweep, solid readable text. */
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: var(--ink);
+  }
+}
+:global([data-reduced-motion="true"]) .shimmer {
+  animation: none;
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: var(--ink);
+}

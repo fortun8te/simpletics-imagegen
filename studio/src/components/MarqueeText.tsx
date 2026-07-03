@@ -1,5 +1,7 @@
-// Truncated label that reveals the full string on hover via a gentle horizontal scroll.
-// Falls back to ellipsis + Radix tooltip when text overflows; no-op when it fits.
+// Truncated label that reveals the full string on hover: instantly via a Radix tooltip
+// (always available, so reading a truncated name never depends on a possibly-stale overflow
+// measurement racing web-font load), plus a gentle horizontal marquee scroll as a bonus when
+// the text actually overflows.
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import * as Tooltip from '@radix-ui/react-tooltip';
 import s from './MarqueeText.module.css';
@@ -34,6 +36,11 @@ export default function MarqueeText({ children, className, tip }: Props) {
     const ro = new ResizeObserver(measure);
     ro.observe(wrap);
     ro.observe(text);
+    // Re-measure once web fonts finish loading — Geist/Fraunces load async, and a measurement
+    // taken against the fallback system font (before swap) can under- or over-report overflow;
+    // ResizeObserver doesn't reliably refire for a font-swap that doesn't change the box's own
+    // dimensions, so without this the marquee scroll can silently stay off after font load.
+    document.fonts?.ready?.then(measure).catch(() => {});
     return () => ro.disconnect();
   }, [children]);
 
@@ -60,10 +67,14 @@ export default function MarqueeText({ children, className, tip }: Props) {
     </span>
   );
 
-  if (!overflow || !label) return body;
+  // Tooltip is unconditional (not gated on the `overflow` measurement) so hovering ALWAYS
+  // reveals the full name immediately — reading a name never depends on JS overflow detection
+  // having landed correctly. The marquee scroll above stays conditional (`overflow && hover`);
+  // it's a bonus animation, not the primary reveal mechanism.
+  if (!label) return body;
 
   return (
-    <Tooltip.Root delayDuration={500}>
+    <Tooltip.Root delayDuration={120}>
       <Tooltip.Trigger asChild>{body}</Tooltip.Trigger>
       <Tooltip.Portal>
         <Tooltip.Content className={s.tip} side="right" align="center" sideOffset={8}>

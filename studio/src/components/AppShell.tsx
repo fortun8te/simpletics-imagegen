@@ -16,8 +16,10 @@ import DetailDrawer from './DetailDrawer';
 import SettingsDialog from './SettingsDialog';
 import GenerateDialog from './GenerateDialog';
 import styles from './AppShell.module.css';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 
 export default function AppShell() {
+  useKeyboardShortcuts();
   return (
     <Tooltip.Provider delayDuration={500} skipDelayDuration={200}>
       {/* Live WebGL background behind the whole app — theme-aware (AppAura reads the theme and swaps

@@ -56,6 +56,11 @@
      as inline root styles on every pick, so this token always tracks whichever accent is active —
      not just a hardcoded white-preset special case. New code should prefer --accent-contrast. */
   --accent-contrast: var(--on-accent);
+  /* UsageChip ring — track + arc gradient tuned per theme (white-on-dark vs ink-on-light). */
+  --usage-track: color-mix(in srgb, white 16%, transparent);
+  --usage-track-inner: color-mix(in srgb, white 11%, transparent);
+  --usage-glow: color-mix(in srgb, var(--accent) 38%, transparent);
+  --usage-glow-inner: color-mix(in srgb, var(--accent-2) 32%, transparent);
   /* White sheen for primary button fills only — never a canvas or panel glow. */
   --grad-blue: radial-gradient(120% 140% at 50% -20%, color-mix(in srgb, #fff 16%, transparent), transparent 60%);
 
@@ -95,7 +100,9 @@
     0 0 0 1px var(--glass-border-strong),
     0 18px 44px -18px rgba(0,0,0,.62);
 
-  /* Type — Geist (UI grotesk) + Fraunces (editorial serif, loaded for display use). */
+  /* Type — Geist (UI grotesk). Fraunces is bundled/embedded separately for ad-canvas display
+     text (see lib/font-faces.mjs / src/lib/fontFaces.ts) — the studio app's OWN chrome below
+     deliberately stays on Geist for both sans and display (clean, bold headings, no serif). */
   --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   /* Display = the same grotesk (clean, bold headings — matches the sans reference UIs). */
   --font-display: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -111,6 +118,11 @@
   /* Motion — physical, never linear/ease-in-out */
   --ease: cubic-bezier(.32,.72,0,1);
   --dur-1: 120ms; --dur-2: 200ms; --dur-3: 320ms;
+
+  /* Live-work shimmer (ChatGPT/Cursor-style gradient text sweep). Rule: motion = in-progress,
+     static = terminal. Apply via background-clip:text on the CURRENT step label only. */
+  --shimmer: linear-gradient(100deg, var(--muted) 40%, var(--ink) 50%, var(--muted) 60%);
+  --dur-shimmer: 2s;
 
   color-scheme: dark;
 }
@@ -145,6 +157,11 @@
   --accent-soft: oklch(0.93 0.035 258);
   --accent-ink: oklch(0.47 0.20 258);
   --on-accent: oklch(0.99 0 0);
+
+  --usage-track: color-mix(in srgb, black 14%, transparent);
+  --usage-track-inner: color-mix(in srgb, black 10%, transparent);
+  --usage-glow: color-mix(in srgb, var(--accent) 28%, transparent);
+  --usage-glow-inner: color-mix(in srgb, var(--accent-2) 22%, transparent);
 
   --ok-soft: oklch(0.93 0.05 160);
   --warn-soft: oklch(0.93 0.06 68);
@@ -204,4 +221,23 @@ a:hover { color: var(--accent-ink); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
+html[data-reduced-motion="true"] *,
+html[data-reduced-motion="true"] *::before,
+html[data-reduced-motion="true"] *::after {
+  animation-duration: .001ms !important;
+  transition-duration: .001ms !important;
+}
+/* Idle/hidden power-saver — pause DECORATIVE animations only. Scoped to #root so
+   portal-rendered overlays (Radix dialogs, menus, tooltips animate from opacity 0 and
+   mount on <body>) never freeze on their invisible first frame while the app is idle. */
+html[data-app-idle="true"] #root *,
+html[data-app-idle="true"] #root *::before,
+html[data-app-idle="true"] #root *::after {
+  animation-play-state: paused !important;
+}
+html[data-tab-hidden="true"] #root *,
+html[data-tab-hidden="true"] #root *::before,
+html[data-tab-hidden="true"] #root *::after {
+  animation-play-state: paused !important;
 }

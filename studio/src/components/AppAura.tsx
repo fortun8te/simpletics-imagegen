@@ -12,7 +12,7 @@
 // Robustness: falls back to a static CSS gradient if WebGL2 is unavailable, pauses when
 // the tab is hidden, renders a single static frame under prefers-reduced-motion, caps DPR
 // + FBO scale for perf, and cleans up its GL resources on unmount.
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store';
 import s from './AppAura.module.css';
 
@@ -72,7 +72,7 @@ void main(){
   float wl=max(-vd.x,0.), wr=max(vd.x,0.), wu=max(vd.y,0.), wd=max(-vd.y,0.);
   float ws = wl+wr+wu+wd + 1e-4;
   vec3 inj = (LIGHTB()*wl + BLUE()*wr + HOTB()*wu + INDIGO()*wd)/ws;
-  float amt = blob * smoothstep(0.02,0.25,uSpeed);   // only paints while moving
+  float amt = blob * smoothstep(0.012,0.12,uSpeed);  // paints at normal speeds, full strength well below a flick
   float nInten = clamp(inten + amt, 0.0, 1.0);
   col = mix(col, inj, clamp(amt/max(nInten,1e-3),0.0,1.0));
   O = vec4(col, nInten);
@@ -210,6 +210,25 @@ export default function AppAura() {
   const lightRef = useRef(theme === 'light' ? 1 : 0);
   useEffect(() => { lightRef.current = theme === 'light' ? 1 : 0; }, [theme]);
 
+  // Reduce-motion gate — the user's in-app toggle OR the OS-level prefers-reduced-motion,
+  // tracked LIVE (not just read once at mount) so flipping the Settings switch actually
+  // stops the aura immediately instead of requiring a reload. When on, the canvas branch
+  // below unmounts entirely (no GL context, no static frame, no gradient at all) — just the
+  // flat app --bg shows through, matching what "reduce motion" should mean for a live
+  // full-screen background, not merely slower/paused decoration.
+  const reducedMotionPref = useStore((st) => st.ui.reducedMotion);
+  const [systemReduced, setSystemReduced] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const sync = () => setSystemReduced(mq.matches);
+    sync();
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+  const motionOff = reducedMotionPref || systemReduced;
+
   // Settings accent preset → uAccent uniform, same live-ref pattern as theme/lightRef above so
   // picking a new accent re-tints the background without tearing down and reinitializing GL.
   // Falls back to the shader's original royal-cobalt blue if no preset has been applied yet.
@@ -225,11 +244,12 @@ export default function AppAura() {
   }, [accentRGB]);
 
   useEffect(() => {
+    // motionOff unmounts the <canvas> below (see JSX), so canvasRef is null and this
+    // effect is a no-op until motion is re-enabled — no GL context ever spins up while off.
     const canvas = canvasRef.current;
     const wrap = wrapRef.current;
     if (!canvas || !wrap) return;
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const gl = canvas.getContext('webgl2', {
       antialias: false,
       premultipliedAlpha: false,
@@ -257,8 +277,8 @@ export default function AppAura() {
       gl.vertexAttribPointer(l, 2, gl.FLOAT, false, 0, 0);
     };
 
-    // ping-pong FBOs (rendered at full device resolution, matching the reference)
-    const SCALE = 0.85;  // render at 85% then upscale — cleaner (fewer upscale artifacts), still cheaper
+    // ping-pong FBOs (rendered below device resolution — the field is a soft glow, upscaling hides it)
+    const SCALE = 0.62;  // ~2.6x fewer shaded pixels than full res; still indistinguishable on the soft, blurred field
     let texA: WebGLTexture, texB: WebGLTexture, fboA: WebGLFramebuffer, fboB: WebGLFramebuffer;
     let W = 1, H = 1;
 
@@ -300,6 +320,9 @@ export default function AppAura() {
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(wrap);
+    // Belt-and-braces: RO can miss the initial tick if the tab mounts at 0×0 (background
+    // tab, restored session) — window resize catches the first real layout.
+    window.addEventListener('resize', resize);
 
     // pointer — tracked at the WINDOW level, viewport-relative (0..1), so the whole app
     // stays clickable while the effect responds to the cursor anywhere on screen.
@@ -311,8 +334,8 @@ export default function AppAura() {
     // intensity down to zero over IDLE_FADE_MS so the background settles back to idle
     // black instead of lingering on the last momentum-decayed frame. Purely additive:
     // does not alter the moving-cursor momentum/decay math above.
-    const IDLE_MS = 650;
-    const IDLE_FADE_MS = 1000;
+    const IDLE_MS = 1200;
+    const IDLE_FADE_MS = 2800;
     let lastMoveAt = (typeof performance !== 'undefined' ? performance.now() : Date.now());
     let idleFade = 1;   // 1 = full live intensity, 0 = fully settled to idle black
     let lastFrameT = 0; // previous rAF timestamp (ms), for framerate-independent idle fade
@@ -320,24 +343,43 @@ export default function AppAura() {
       tmx = e.clientX / Math.max(window.innerWidth, 1);
       tmy = 1.0 - e.clientY / Math.max(window.innerHeight, 1);
       lastMoveAt = (typeof performance !== 'undefined' ? performance.now() : Date.now());
+      if (settled && visible) {
+        settled = false;
+        raf = requestAnimationFrame(frame);
+      }
     };
-    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointermove', onMove, { passive: true });
 
     let raf = 0;
     let visible = true;
-    const onVis = () => { visible = !document.hidden; if (visible && !reduced) { raf = requestAnimationFrame(frame); } };
+    let settled = false;
+    const onVis = () => {
+      visible = !document.hidden;
+      if (visible && !raf) {
+        settled = false;
+        raf = requestAnimationFrame(frame);
+      }
+    };
     document.addEventListener('visibilitychange', onVis);
 
-    const u = (p: WebGLProgram, n: string) => gl.getUniformLocation(p, n);
+    // Uniform locations resolved ONCE per program — getUniformLocation every frame is a
+    // needless per-frame GL round-trip (10+ lookups × 60fps while the cursor moves).
+    const locs = (p: WebGLProgram, names: string[]) =>
+      Object.fromEntries(names.map((n) => [n, gl.getUniformLocation(p, n)]));
+    const uA = locs(pAccum, ['uPrev', 'uRes', 'uAccent', 'uMouse', 'uVel', 'uSpeed', 'uRadius', 'uDecay']);
+    const uF = locs(pFinal, ['uTrail', 'uRes', 'uAccent', 'uT', 'uLight']);
 
     const renderFrame = (t: number) => {
       // cursor position — smoother glide toward the pointer (more lag = silkier trail)
-      mx += (tmx - mx) * 0.08;
-      my += (tmy - my) * 0.08;
+      // Faster cursor-follow: 0.08 → 0.16 roughly halves the frames-to-catch-up, so the
+      // trail visibly tracks the pointer instead of trailing a beat behind on quick moves.
+      mx += (tmx - mx) * 0.16;
+      my += (tmy - my) * 0.16;
       const ivx = mx - pmx, ivy = my - pmy;
-      // momentum — heavier smoothing so the directional trail eases instead of snapping
-      vx = vx * 0.91 + ivx * 0.09;
-      vy = vy * 0.91 + ivy * 0.09;
+      // momentum — lighter smoothing (was 0.91/0.09) so direction changes register quicker,
+      // still eased rather than snapping.
+      vx = vx * 0.84 + ivx * 0.16;
+      vy = vy * 0.84 + ivy * 0.16;
       sp = Math.hypot(vx, vy) * 60.0;
       pmx = mx; pmy = my;
 
@@ -364,17 +406,20 @@ export default function AppAura() {
       bindQuad(pAccum);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texA);
-      gl.uniform1i(u(pAccum, 'uPrev'), 0);
-      gl.uniform2f(u(pAccum, 'uRes'), W, H);
-      gl.uniform3f(u(pAccum, 'uAccent'), accentRef.current[0], accentRef.current[1], accentRef.current[2]);
-      gl.uniform2f(u(pAccum, 'uMouse'), mx, my);
-      gl.uniform2f(u(pAccum, 'uVel'), vx, vy);
-      gl.uniform1f(u(pAccum, 'uSpeed'), sp);
-      gl.uniform1f(u(pAccum, 'uRadius'), 0.10);
-      // base momentum decay is untouched (0.90, "in motion" feel); idleFade only kicks in
-      // once the cursor has been idle past the threshold, actively driving the trail to 0.
-      const decay = 0.90 * idleFade;
-      gl.uniform1f(u(pAccum, 'uDecay'), decay);    // quick fade — trail stays local, never floods/lingers
+      gl.uniform1i(uA.uPrev, 0);
+      gl.uniform2f(uA.uRes, W, H);
+      gl.uniform3f(uA.uAccent, accentRef.current[0], accentRef.current[1], accentRef.current[2]);
+      gl.uniform2f(uA.uMouse, mx, my);
+      gl.uniform2f(uA.uVel, vx, vy);
+      gl.uniform1f(uA.uSpeed, sp);
+      gl.uniform1f(uA.uRadius, 0.10);
+      // Speed-dependent decay: at full speed the trail stays tight and local (0.90 — the
+      // "in motion" feel), but as the cursor slows the buffer holds its ink (up to 0.975)
+      // so stopping leaves a lingering wash that dissolves over seconds instead of
+      // blinking away. idleFade then drives it fully to 0 after the idle window.
+      const speedK = Math.min(1, sp * 6.0);
+      const decay = (0.975 - 0.075 * speedK) * idleFade;
+      gl.uniform1f(uA.uDecay, decay);    // quick fade — trail stays local, never floods/lingers
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
       // final pass: read B → screen
@@ -384,11 +429,11 @@ export default function AppAura() {
       bindQuad(pFinal);
       gl.activeTexture(gl.TEXTURE0);
       gl.bindTexture(gl.TEXTURE_2D, texB);
-      gl.uniform1i(u(pFinal, 'uTrail'), 0);
-      gl.uniform2f(u(pFinal, 'uRes'), W, H);
-      gl.uniform3f(u(pFinal, 'uAccent'), accentRef.current[0], accentRef.current[1], accentRef.current[2]);
-      gl.uniform1f(u(pFinal, 'uT'), t * 0.001);
-      gl.uniform1f(u(pFinal, 'uLight'), lightRef.current);
+      gl.uniform1i(uF.uTrail, 0);
+      gl.uniform2f(uF.uRes, W, H);
+      gl.uniform3f(uF.uAccent, accentRef.current[0], accentRef.current[1], accentRef.current[2]);
+      gl.uniform1f(uF.uT, t * 0.001);
+      gl.uniform1f(uF.uLight, lightRef.current);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
       // swap
@@ -397,20 +442,24 @@ export default function AppAura() {
     };
 
     const frame = (t: number) => {
-      if (!visible) return;
+      if (!visible) { raf = 0; return; }
       renderFrame(t);
+      const idleFor = t - lastMoveAt;
+      if (idleFade <= 0.001 && idleFor > IDLE_MS + IDLE_FADE_MS) {
+        settled = true;
+        raf = 0;
+        return;
+      }
+      settled = false;
       raf = requestAnimationFrame(frame);
     };
 
-    if (reduced) {
-      renderFrame(0); // one static frame, then stop
-    } else {
-      raf = requestAnimationFrame(frame);
-    }
+    raf = requestAnimationFrame(frame);
 
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      window.removeEventListener('resize', resize);
       window.removeEventListener('pointermove', onMove);
       document.removeEventListener('visibilitychange', onVis);
       gl.deleteProgram(pAccum);
@@ -421,7 +470,14 @@ export default function AppAura() {
       gl.deleteFramebuffer(fboA);
       gl.deleteFramebuffer(fboB);
     };
-  }, []);
+  }, [motionOff]);
+
+  // Motion fully off — no canvas, no GL, no static gradient frame either. Just the flat
+  // app --bg (set on <html> in theme.css) shows through, which is what "reduce motion"
+  // should mean for a live full-screen background rather than merely pausing decoration.
+  if (motionOff) {
+    return <div className={s.aura} aria-hidden="true" />;
+  }
 
   return (
     <div ref={wrapRef} className={s.aura} aria-hidden="true">

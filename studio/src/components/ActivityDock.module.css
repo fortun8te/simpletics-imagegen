@@ -168,8 +168,8 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  height: 30px;
-  padding: 0 var(--space-2);
+  min-height: 32px; /* 4px-grid rhythm; grows for the failed-row error line */
+  padding: 2px var(--space-2);
   border-radius: var(--r-sm);
   transition: background var(--dur-2) var(--ease);
 }
@@ -218,57 +218,60 @@
   .dragging { opacity: 0.6; }
 }
 
-/* ── Status dot ────────────────────────────────────────────────────── */
-.dot {
-  flex: 0 0 auto;
-  position: relative;
-  width: 7px;
-  height: 7px;
-  border-radius: var(--r-pill);
-  background: var(--faint);
-}
+/* ── Status dot — see WorkingIndicator (image-gen only) ───────────── */
 
-.d_generating { background: var(--accent); }
-.d_waiting    { background: color-mix(in srgb, var(--accent) 55%, var(--faint)); }
-.d_queued     { background: var(--faint); }
-.d_failed     { background: var(--err); }
-
-/* Quiet pulse on the running dot — a faint ring, never a panel glow. */
-.d_generating::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: var(--r-pill);
-  border: 1px solid var(--accent);
-  opacity: 0;
-  animation: ping var(--dur-3) var(--ease) infinite;
-}
-
-@keyframes ping {
-  0%   { transform: scale(.6); opacity: .5; }
-  70%  { transform: scale(1.5); opacity: 0; }
-  100% { transform: scale(1.5); opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .d_generating::after { animation: none; }
-}
-
-/* ── Label ─────────────────────────────────────────────────────────── */
+/* ── Label ───────────────────────────────────────────────────────── */
 .label {
   flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: var(--t-body);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.labelLine {
   min-width: 0;
   display: inline-flex;
   align-items: baseline;
   gap: var(--space-1);
-  font-size: var(--t-body);
-  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+/* failed rows: the error surfaces as a truncated second line (was buried in title=) */
+.errorLine {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10.5px;
+  color: color-mix(in srgb, var(--err) 80%, var(--muted));
+}
+
 .seg      { color: var(--ink); }
+
+/* motion = in-progress: the first label segment of a generating row shimmers */
+.seg[data-shimmer] {
+  background: var(--shimmer);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: dockShimmer var(--dur-shimmer) linear infinite;
+}
+@keyframes dockShimmer { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .seg[data-shimmer] { animation: none; color: var(--ink); background: none; }
+}
+:global([data-reduced-motion="true"]) .seg[data-shimmer] {
+  animation: none;
+  color: var(--ink);
+  background: none;
+}
 .segMute  { color: var(--muted); }
 .segFaint { color: var(--faint); }
 
@@ -281,6 +284,20 @@
   font-size: var(--t-label);
   color: var(--muted);
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Design-loop metadata — quiet inline mono suffix, not a bordered pill ──
+   Sits after the live message like the elapsed clock does; layers count ("6L") or "failed". */
+.metaSuffix {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: var(--t-label);
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.metaSuffix[data-failed] {
+  color: color-mix(in srgb, var(--err) 80%, var(--muted));
 }
 
 /* ── Row actions (quiet until hover/focus) ─────────────────────────── */

@@ -78,9 +78,8 @@ export function buildPromptRefs(
   const seen = new Set<string>();
 
   const push = (role: PromptRef['role'], name: string, url: string) => {
-    const key = `${role}:${url}`;
-    if (seen.has(key)) return;
-    seen.add(key);
+    if (seen.has(url)) return;
+    seen.add(url);
     refs.push({ role, name, url });
   };
 
@@ -100,8 +99,11 @@ export function buildPromptRefs(
   for (const key of ad.extraRefs ?? []) {
     push('extra', key, `/asset?name=${encodeURIComponent(key)}`);
   }
+  // Tube ref only when the prompt needs it AND we don't already have the same asset as product.
   if (isTubeShot(promptText)) {
-    push('tube', 'nanox', '/asset?name=nanox');
+    const tubeUrl = '/asset?name=nanox';
+    const hasProductTube = refs.some((r) => r.url === tubeUrl || r.name === 'nanox');
+    if (!hasProductTube) push('tube', 'nanox', tubeUrl);
   }
   return refs;
 }
@@ -209,7 +211,6 @@ export function filterPlan(plan: BatchPlan, query: string): BatchPlan {
           const vHit =
             adHit ||
             `${v.label} ${v.id} ${v.copy ?? ''} ${v.path}`.toLowerCase().includes(q);
-          if (!vHit) return null;
           const prompts = v.prompts.filter(
             (p) =>
               adHit ||

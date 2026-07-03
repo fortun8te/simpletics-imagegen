@@ -528,7 +528,7 @@
   text-align: left;
 }
 
-/* Avatar — uses the live accent gradient (tracks Settings accent picker). */
+/* Avatar — live accent gradient with a very subtle drift (honors reduced motion). */
 .userAvatar {
   position: relative;
   display: inline-flex;
@@ -538,16 +538,64 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
+  overflow: hidden;
+  isolation: isolate;
   background: linear-gradient(
-    150deg,
+    165deg,
     var(--accent-2) 0%,
-    var(--accent) 52%,
-    color-mix(in srgb, var(--accent) 68%, var(--accent-2)) 100%
+    var(--accent) 46%,
+    color-mix(in srgb, var(--accent) 62%, black) 100%
   );
-  box-shadow: var(--inset-hi), 0 2px 6px -2px color-mix(in srgb, var(--accent) 45%, transparent);
+  background-size: 220% 220%;
+  background-position: 18% 12%;
+  box-shadow:
+    var(--inset-hi),
+    0 2px 8px -2px color-mix(in srgb, var(--accent) 50%, transparent);
   color: var(--on-accent);
   font-size: 12px;
   font-weight: 600;
+  animation: userAvatarDrift 14s ease-in-out infinite;
+}
+.userAvatar::before {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  border-radius: inherit;
+  background: linear-gradient(
+    200deg,
+    color-mix(in srgb, var(--accent-2) 70%, white) 0%,
+    transparent 42%,
+    color-mix(in srgb, var(--accent) 55%, black) 100%
+  );
+  opacity: 0.55;
+  animation: userAvatarSheen 18s ease-in-out infinite;
+  pointer-events: none;
+}
+.userAvatar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 22%, transparent);
+  pointer-events: none;
+}
+@keyframes userAvatarDrift {
+  0%, 100% { background-position: 18% 14%; }
+  50% { background-position: 82% 86%; }
+}
+@keyframes userAvatarSheen {
+  0%, 100% { transform: translate3d(-4%, -3%, 0) rotate(0deg); opacity: 0.45; }
+  50% { transform: translate3d(4%, 3%, 0) rotate(6deg); opacity: 0.62; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .userAvatar,
+  .userAvatar::before {
+    animation: none;
+  }
+}
+:global([data-reduced-motion="true"]) .userAvatar,
+:global([data-reduced-motion="true"]) .userAvatar::before {
+  animation: none;
 }
 /* Name + plan stacked tightly as one compact text block, vertically centered against
    the avatar — top line is the name (normal weight, ink), bottom line is the plan
@@ -570,11 +618,21 @@
   white-space: nowrap;
 }
 .userTier {
-  font-size: 11px;
-  font-weight: 400;
-  line-height: 1.2;
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  margin-top: 2px;
+  padding: 0 5px;
+  height: 14px;
+  border-radius: 3px;
+  border: none;
+  background: none;
+  box-shadow: none;
+  font-size: 9px;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.08em;
+  line-height: 1;
   color: var(--faint);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }

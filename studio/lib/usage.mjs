@@ -117,6 +117,96 @@ export function updateSettings(patch = {}) {
   return getSettings();
 }
 
+// --- daily cap (1.5× fair daily share of the weekly window) --------------------------------------
+// "If we had 100 credits weekly we'd only be able to spend ~21/day" — the cap is 1.5 × (100/7)
+// ≈ 21.4 percentage POINTS of the weekly window per local day, measured against codex's own
+// weekly-remaining snapshot (readCodexRateLimits). When the cap is hit the worker holds spawns
+// (same mechanism as budget/pause) until the user explicitly Continues — each Continue grants
+// +10 more points, then the banner asks again at the next +10.
+//
+// Measurement is honest best-effort: the weekly% snapshot only refreshes when codex records a
+// turn, so spentToday can lag a little behind live spend. If codex has never recorded a weekly
+// snapshot we can't measure at all — the cap simply doesn't block (measurable:false).
+// State persists in .state/daily-cap.json: { day, baselineWeeklyLeft, bonusPts }. A new local
+// day re-baselines and clears the bonus; the weekly window resetting mid-day (remaining jumps
+// UP) also re-baselines so a reset never counts as negative spend.
+const DAILY_CAP_PATH = join(STATE_DIR, 'daily-cap.json');
+const DAILY_CAP_PTS = 150 / 7;   // 1.5 × (100 / 7) ≈ 21.4 pts of the weekly window per day
+const BONUS_STEP_PTS = 10;
+
+function localDay(ts = Date.now()) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+let dailyCapState = (() => {
+  try {
+    const raw = JSON.parse(readFileSync(DAILY_CAP_PATH, 'utf8'));
+    if (raw && raw.day) return { day: raw.day, baselineWeeklyLeft: raw.baselineWeeklyLeft ?? null, bonusPts: Number(raw.bonusPts) || 0 };
+  } catch { /* fresh state */ }
+  return { day: null, baselineWeeklyLeft: null, bonusPts: 0 };
+})();
+
+function persistDailyCapState() {
+  try {
+    mkdirSync(STATE_DIR, { recursive: true });
+    writeFileSync(DAILY_CAP_PATH, JSON.stringify(dailyCapState, null, 2), 'utf8');
+  } catch { /* best effort */ }
+}
+
+const round1 = (n) => Math.round(n * 10) / 10;
+
+/** Today's daily-cap readout: { measurable, blocked, spentToday, capPts, bonusPts, allowedPts,
+ *  weeklyLeft, asOf }. Points are percentage points of the WEEKLY codex window. */
+export function getDailyCap() {
+  const snap = readCodexRateLimits();
+  const weeklyLeft = snap && Number.isFinite(snap.weeklyLeft) ? snap.weeklyLeft : null;
+  const bonusPts = Number(dailyCapState.bonusPts) || 0;
+  if (weeklyLeft == null) {
+    return {
+      measurable: false, blocked: false, spentToday: 0,
+      capPts: round1(DAILY_CAP_PTS), bonusPts, allowedPts: round1(DAILY_CAP_PTS + bonusPts),
+      weeklyLeft: null, asOf: null,
+    };
+  }
+  const today = localDay();
+  if (dailyCapState.day !== today) {
+    dailyCapState = { day: today, baselineWeeklyLeft: weeklyLeft, bonusPts: 0 };
+    persistDailyCapState();
+  } else if (dailyCapState.baselineWeeklyLeft == null || weeklyLeft > dailyCapState.baselineWeeklyLeft) {
+    // First reading of the day, or the weekly window reset mid-day (remaining jumped up).
+    dailyCapState.baselineWeeklyLeft = weeklyLeft;
+    persistDailyCapState();
+  }
+  const spentToday = Math.max(0, dailyCapState.baselineWeeklyLeft - weeklyLeft);
+  const allowedPts = DAILY_CAP_PTS + (Number(dailyCapState.bonusPts) || 0);
+  return {
+    measurable: true,
+    blocked: spentToday >= allowedPts,
+    spentToday: round1(spentToday),
+    capPts: round1(DAILY_CAP_PTS),
+    bonusPts: Number(dailyCapState.bonusPts) || 0,
+    allowedPts: round1(allowedPts),
+    weeklyLeft,
+    asOf: snap.asOf ?? null,
+  };
+}
+
+/** Worker gate — true when today's spend is at/over the cap (+granted bonus). */
+export function isDailyCapReached() {
+  return getDailyCap().blocked;
+}
+
+/** User hit Continue on the daily-cap banner: allow BONUS_STEP_PTS more of the weekly window
+ *  today, then the cap asks again. Returns the fresh readout. */
+export function grantDailyBonus(pts = BONUS_STEP_PTS) {
+  getDailyCap(); // ensure today's baseline exists before bumping the bonus
+  dailyCapState.bonusPts = (Number(dailyCapState.bonusPts) || 0) + (Number(pts) > 0 ? Number(pts) : BONUS_STEP_PTS);
+  persistDailyCapState();
+  cache = null; // blockers readout changes immediately
+  return getDailyCap();
+}
+
 // --- cache ---------------------------------------------------------------------------------------
 let cache = null;                // { value:CodexUsage, at:number }
 
@@ -436,10 +526,13 @@ export function refreshCodexUsage() {
  */
 export function getBlockers() {
   const usage = getCodexUsage();
+  const daily = getDailyCap();
   return {
     auth: isAuthBlocked(),
     cooling: usage.cooling,
     budget: isLimitReached(),
+    // Full readout only while it's actually blocking — the banner needs the numbers.
+    dailyCap: daily.blocked ? daily : null,
   };
 }
 

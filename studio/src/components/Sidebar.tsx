@@ -12,6 +12,7 @@ import { Icon } from './Icon';
 import { BrandMark } from './BrandMark';
 import UsageChip from './UsageChip';
 import MarqueeText from './MarqueeText';
+import { pollIntervalMs } from '../lib/activity';
 import styles from './Sidebar.module.css';
 
 // First batch code of a brand, used as the landing batch when switching brands.
@@ -65,10 +66,27 @@ export default function Sidebar() {
   useEffect(() => {
     if (!brand) { setBatches([]); return; }
     let alive = true;
+    let timer: number | undefined;
     const load = () => api.getBatches(brand).then((b) => { if (alive) setBatches(b); });
-    load();
-    const t = window.setInterval(load, 10000);
-    return () => { alive = false; window.clearInterval(t); };
+    const schedule = () => {
+      if (!alive) return;
+      if (document.hidden) {
+        timer = window.setTimeout(schedule, 30_000);
+        return;
+      }
+      load().finally(() => {
+        if (!alive) return;
+        timer = window.setTimeout(schedule, pollIntervalMs('batches'));
+      });
+    };
+    load().finally(schedule);
+    const onVis = () => { if (!document.hidden) schedule(); };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      alive = false;
+      if (timer) window.clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVis);
+    };
   }, [brand]);
 
   // ⌘+K (mac) / Ctrl+K (other) focuses the batch search — the hint badge mirrors the real binding.
@@ -219,7 +237,7 @@ export default function Sidebar() {
             </span>
             <span className={styles.userText}>
               <span className={styles.userName}>{userName}</span>
-              <span className={styles.userTier}>Max Plan</span>
+              <span className={styles.userTier}>MAX</span>
             </span>
           </button>
           <UsageChip />
