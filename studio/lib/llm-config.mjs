@@ -14,15 +14,25 @@ import { fileURLToPath } from 'node:url';
 const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CONFIG_FILE = join(STUDIO, '.state', 'llm-config.json');
 
+// The RESOLVED fallback when nothing local is reachable stays DeepSeek (resolveLlm's contract:
+// runtime > env > this default — llm.mjs textConfig() auto-prefers LM Studio whenever it
+// responds to /models, so the DeepSeek default only ever serves when the local box is down).
 export const DEFAULT_BASE = 'https://api.deepseek.com';
 export const DEFAULT_MODEL = 'deepseek-v4-flash';
 
-/** Presets the config UI offers. `needsKey` drives the "key missing" hint client-side —
- *  saving without a key is still allowed (hasLlm() simply stays false for keyed providers). */
+/** The STATED default is vision-first: LM Studio with whatever gemma (or other VL model) is
+ *  loaded — the agent editor wants a model that can SEE the canvas. DeepSeek is the explicit
+ *  text-only fallback, not the headline default. */
+export const DEFAULT_PRESET_ID = 'lm-studio';
+
+/** Presets the config UI offers, vision-capable default first. `needsKey` drives the "key
+ *  missing" hint client-side — saving without a key is still allowed (hasLlm() simply stays
+ *  false for keyed providers). `vision` marks presets whose model can see renders; `isDefault`
+ *  marks the recommended default the UI should lead with. */
 export const PRESETS = [
-  { id: 'deepseek-v4-flash', label: 'DeepSeek v4 Flash', baseUrl: DEFAULT_BASE, model: 'deepseek-v4-flash', needsKey: true },
-  { id: 'deepseek-v4-pro', label: 'DeepSeek v4 Pro', baseUrl: DEFAULT_BASE, model: 'deepseek-v4-pro', needsKey: true },
-  { id: 'lm-studio', label: 'LM Studio (local)', baseUrl: 'http://localhost:1234', model: '', needsKey: false },
+  { id: 'lm-studio', label: 'LM Studio (local · vision: gemma-4-e4b / gemma-4-12b) — default', baseUrl: 'http://localhost:1234', model: '', needsKey: false, vision: true, isDefault: true },
+  { id: 'deepseek-v4-flash', label: 'DeepSeek v4 Flash (text-only fallback)', baseUrl: DEFAULT_BASE, model: 'deepseek-v4-flash', needsKey: true, vision: false },
+  { id: 'deepseek-v4-pro', label: 'DeepSeek v4 Pro (text-only)', baseUrl: DEFAULT_BASE, model: 'deepseek-v4-pro', needsKey: true, vision: false },
   { id: 'custom', label: 'Custom endpoint', baseUrl: '', model: '', needsKey: false },
 ];
 

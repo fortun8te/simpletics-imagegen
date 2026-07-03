@@ -16,6 +16,7 @@ import {
   type DesignDoc, type DesignReference, type Skeleton,
 } from '../../lib/sceneGraph';
 import SkeletonLoader from './SkeletonLoader';
+import AgentCursorOverlay from './AgentCursorOverlay';
 import styles from './NewCompFlow.module.css';
 
 // ── side-by-side "building comp" scaffold ──────────────────────────────────────────────────
@@ -174,6 +175,21 @@ export default function NewCompFlow({ onCreated, onCancel, presetSkeleton = null
   // Reference aspect ratio (w/h) — measured off the loaded <img> so the skeleton scaffold matches
   // the shape of the comp being built. Defaults to a 4:5 ad frame until the image loads.
   const [refAspect, setRefAspect] = useState(4 / 5);
+
+  // Same agent-cursor treatment as Stage during agent runs: the AgentCursorOverlay (cursor +
+  // dot-grid halo) glides over the building-comp pane while extraction runs, and — exactly like
+  // Stage.tsx — stays mounted ~280ms after the run ends so its 0.3s exit-fade can play.
+  const running = phase === 'running';
+  const [showCursor, setShowCursor] = useState(running);
+  const [cursorExiting, setCursorExiting] = useState(false);
+  useEffect(() => {
+    if (running) { setShowCursor(true); setCursorExiting(false); return; }
+    if (!showCursor) return;
+    setCursorExiting(true);
+    const t = window.setTimeout(() => { setShowCursor(false); setCursorExiting(false); }, 280);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [running]);
 
   const cachedAds = useCachedAds();
 
@@ -530,6 +546,11 @@ export default function NewCompFlow({ onCreated, onCancel, presetSkeleton = null
                         );
                       })}
                     </div>
+                    {/* The SAME agent cursor + dot-grid halo the Stage shows during agent edits —
+                        "the system is working on your canvas" reads identically in both flows.
+                        (paneFrame is position:relative + overflow:hidden, so the absolutely-
+                        positioned overlay clips to the building pane.) */}
+                    {showCursor ? <AgentCursorOverlay exiting={cursorExiting} /> : null}
                   </div>
                 </figure>
               </div>

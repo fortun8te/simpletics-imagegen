@@ -20,13 +20,12 @@ import { api } from '../../api';
 import { Icon } from '../Icon';
 import DiamondLoader from './DiamondLoader';
 import TextShimmer from './TextShimmer';
-import { PersonaIdentity, type PersonaState } from '../ai/Persona';
+import { PersonaIdentity } from '../ai/Persona';
 import {
   ChainOfThought, ChainOfThoughtHeader, ChainOfThoughtContent, ChainOfThoughtStep,
   type ChainStepStatus,
 } from '../ai/ChainOfThought';
 import { Reasoning, ReasoningTrigger, ReasoningContent } from '../ai/Reasoning';
-import { Task, TaskTrigger, TaskContent, TaskItem, TaskItemFile } from '../ai/Task';
 import { ModelSelector, type ModelOption } from '../ai/ModelSelector';
 import type { DesignDoc } from '../../lib/sceneGraph';
 import styles from './AgentPanel.module.css';
@@ -126,6 +125,12 @@ export default function AgentPanel({
   const fileInput = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  // "Stop" = abandon the wait client-side (there is no server abort for /api/design/agent):
+  // unlock the UI now; if the run still finishes, its result is applied as one undo step.
+  // runSeqRef guards the settled promise — after a stop the user can start a NEW run while
+  // the old one is still in flight, and the stale settle must not touch the new run's state.
+  const abandonedRef = useRef(false);
+  const runSeqRef = useRef(0);
 
   // ── history (tolerate both { messages } and { chat: { messages } } server shapes) ──
   const refreshChat = useCallback(async () => {
@@ -235,6 +240,9 @@ export default function AgentPanel({
     if (running) return;
     const text = (opts.instruction || '').trim();
     if (!text && !opts.mode) return;
+    abandonedRef.current = false;
+    const seq = ++runSeqRef.current;
+    const current = () => seq === runSeqRef.current; // false once a newer run superseded this one
     onRunStart();
     setRunning(true);
 
@@ -252,6 +260,10 @@ export default function AgentPanel({
     setActiveAtt(null);
     setRefs([]);
 
+    // Did the server store an agent line for this run? Failures/stops don't reach the server
+    // chat, so their local echoes must SURVIVE the post-run refresh (a failed run that leaves
+    // no trace in the chat reads as the UI swallowing the result).
+    let landed = false;
     try {
       if (!(await ensureSaved())) { flash('Save failed — agent not run'); return; }
       const r = await api.designAgentRun({
@@ -262,11 +274,21 @@ export default function AgentPanel({
         focusIds: focusIds.length ? focusIds : undefined,
       });
       if (r.ok && r.design) {
-        onApply(r.design);
-        setUndoneAt(0); // fresh applied run → undo becomes available again
+        landed = true;
+        if (current()) {
+          // Even after "stop" the server run completed and SAVED the doc — apply it (one undo
+          // step) so the canvas doesn't silently diverge from the persisted design. (A stale
+          // settle — the user stopped AND already started a newer run — skips the apply; the
+          // refreshed chat still shows its result line.)
+          onApply(r.design);
+          setUndoneAt(0); // fresh applied run → undo becomes available again
+          if (abandonedRef.current) flash('Agent finished after stop — applied (undo to revert)');
+          else {
+            const v = r.verify;
+            flash(v?.ready ? `Ready · layout ${v.layoutScore}` : `Applied (${r.source}) · ${v?.lintCount ?? 0} lint`);
+          }
+        }
         const applied = r.applied ?? (Array.isArray(r.steps) ? r.steps.length : undefined);
-        const v = r.verify;
-        flash(v?.ready ? `Ready · layout ${v.layoutScore}` : `Applied (${r.source}) · ${v?.lintCount ?? 0} lint`);
         // local agent line as a fallback in case the chat route isn't live yet
         setLocalEcho((l) => [...l, {
           role: 'agent',
@@ -275,17 +297,41 @@ export default function AgentPanel({
           result: { applied, source: r.source, verifyReady: r.verify?.ready },
         }]);
       } else {
-        flash(r.error || 'Agent failed');
+        if (current()) flash(r.error || 'Agent failed');
         setLocalEcho((l) => [...l, { role: 'agent', text: r.error || 'Agent run failed.', at: Date.now() }]);
       }
     } finally {
-      // keep this run's full step feed for the disclosure on its row
-      setLastSteps(liveStepsRef.current.slice());
-      setRunning(false);
-      onRunEnd();
-      // Server history is authoritative — drop the optimistic echoes once it responds.
-      if (await refreshChat()) setLocalEcho([]);
+      if (current()) {
+        // keep this run's full step feed for the disclosure on its row
+        setLastSteps(liveStepsRef.current.slice());
+        if (!abandonedRef.current) {
+          setRunning(false);
+          onRunEnd();
+        } // (abandoned → stopRun already unlocked the editor)
+        abandonedRef.current = false;
+      }
+      // Server history is authoritative for what it HAS: drop the optimistic user echo (the
+      // server appended it at run start) and, on a successful run, the agent echoes too (the
+      // server line replaces them). Failure/stop lines stay — the server never stored those.
+      if (await refreshChat()) {
+        setLocalEcho((l) => (landed ? [] : l.filter((m) => m.role !== 'user')));
+      }
     }
+  };
+
+  // "Stop": abandon the wait NOW (no server-side abort exists for /api/design/agent) — unlock
+  // the editor and say so in the chat; if the run still lands, it applies as one undoable step.
+  const stopRun = () => {
+    if (!running || abandonedRef.current) return;
+    abandonedRef.current = true;
+    setRunning(false);
+    onRunEnd();
+    setLocalEcho((l) => [...l, {
+      role: 'agent',
+      text: 'Stopped waiting. The run may still finish on the server — if it does, its result is applied as one undoable step.',
+      at: Date.now(),
+    }]);
+    flash('Stopped waiting — editor unlocked');
   };
 
   const clearChat = () => {
@@ -302,17 +348,22 @@ export default function AgentPanel({
     return `${total >= 1000 ? `${(total / 1000).toFixed(1)}k` : String(total)} tok`;
   };
 
-  // one muted line per run: "applied 5 ops · 2 parts · deepseek · 1.0k tok"
-  const resultLine = (m: ChatMessage) => {
+  // one muted line per run, split into an outcome ("applied 5 ops") and quiet trailing
+  // meta ("deepseek · 1.0k tok") so the part that matters reads first.
+  const resultLine = (m: ChatMessage): { head: string; meta: string } => {
     const r = m.result;
-    if (!r) return m.text.split('\n')[0] || 'no changes';
-    const parts: string[] = [];
-    if (r.applied != null) parts.push(`applied ${r.applied} op${r.applied === 1 ? '' : 's'}`);
-    if (r.parts != null && r.parts > 1) parts.push(`${r.parts} parts`);
-    if (r.model || r.source) parts.push(r.model || r.source || '');
+    if (!r) return { head: m.text.split('\n')[0] || 'no changes', meta: '' };
+    const head: string[] = [];
+    if (r.applied != null) head.push(`applied ${r.applied} op${r.applied === 1 ? '' : 's'}`);
+    if (r.parts != null && r.parts > 1) head.push(`${r.parts} parts`);
+    const meta: string[] = [];
+    if (r.model || r.source) meta.push(r.model || r.source || '');
     const tok = fmtTokens(r);
-    if (tok) parts.push(tok);
-    return parts.filter(Boolean).join(' · ') || m.text.split('\n')[0] || 'done';
+    if (tok) meta.push(tok);
+    return {
+      head: head.join(' · ') || m.text.split('\n')[0] || 'done',
+      meta: meta.filter(Boolean).join(' · '),
+    };
   };
 
   // the latest agent message that applied changes — its row gets undo + the step list
@@ -327,11 +378,10 @@ export default function AgentPanel({
 
   return (
     <div className={styles.panel}>
-      {/* ── header: title · clear (the model switcher lives in the composer footer, v2) ── */}
+      {/* ── header: persona · clear (the ONE model label lives in the composer footer) ── */}
       <div className={styles.header}>
         <PersonaIdentity
           name="Agent"
-          subtitle={currentModelLabel}
           variant="mana"
           state={running ? 'thinking' : 'idle'}
           size={18}
@@ -346,47 +396,17 @@ export default function AgentPanel({
         ) : null}
       </div>
 
-      {/* ── custom model form (Custom… in the model menu) ── */}
-      {customOpen ? (
-        <div className={styles.customForm}>
-          <input
-            className={styles.customInput} placeholder="Base URL (OpenAI-compatible)" spellCheck={false}
-            value={customBase} onChange={(e) => setCustomBase(e.target.value)}
-            onKeyDown={(e) => e.stopPropagation()}
-          />
-          <input
-            className={styles.customInput} placeholder="Model id" spellCheck={false}
-            value={customModel} onChange={(e) => setCustomModel(e.target.value)}
-            onKeyDown={(e) => e.stopPropagation()}
-          />
-          <input
-            className={styles.customInput} placeholder="API key (optional)" type="password" spellCheck={false}
-            value={customKey} onChange={(e) => setCustomKey(e.target.value)}
-            onKeyDown={(e) => e.stopPropagation()}
-          />
-          <div className={styles.customRow}>
-            <button type="button" className={styles.clearBtn} onClick={() => setCustomOpen(false)}>cancel</button>
-            <button
-              type="button" className={styles.customSave}
-              disabled={!customBase.trim() || !customModel.trim()}
-              onClick={() => void applyLlmConfig(
-                { baseUrl: customBase.trim(), model: customModel.trim(), ...(customKey.trim() ? { apiKey: customKey.trim() } : {}) },
-                customModel.trim(),
-              )}
-            >
-              save
-            </button>
-          </div>
-        </div>
-      ) : null}
-
       {/* ── message list ── */}
       <div className={styles.messages} ref={scrollRef}>
         {visible.length === 0 && !running ? (
-          <p className={styles.empty}>
-            Ask for layout changes or copy rewrites. Select layers on the canvas and press @ to
-            reference them; ＋ attaches images.
-          </p>
+          <div className={styles.empty}>
+            <p className={styles.emptyTitle}>Describe a change and the agent edits the canvas.</p>
+            <div className={styles.emptyHints}>
+              <span className={styles.emptyHint}><kbd className={styles.emptyKbd}>@</kbd>reference the selected layers</span>
+              <span className={styles.emptyHint}><kbd className={styles.emptyKbd}>＋</kbd>attach an image or run a preset pass</span>
+              <span className={styles.emptyHint}><kbd className={styles.emptyKbd}>⌘↵</kbd>send</span>
+            </div>
+          </div>
         ) : null}
         {visible.map((m, i) => (
           m.role === 'user' ? (
@@ -410,10 +430,12 @@ export default function AgentPanel({
                 <button
                   type="button" className={styles.agentLine}
                   data-open={openAt === m.at || undefined}
+                  title={[resultLine(m).head, resultLine(m).meta].filter(Boolean).join(' · ')}
                   onClick={() => setOpenAt((cur) => (cur === m.at ? null : m.at))}
                 >
                   <span className={styles.chev}><Icon name="chevron-right" size={9} /></span>
-                  <span className={styles.agentSummary}>{resultLine(m)}</span>
+                  <span className={styles.agentSummary}>{resultLine(m).head}</span>
+                  {resultLine(m).meta ? <span className={styles.agentMeta}>{resultLine(m).meta}</span> : null}
                 </button>
                 {m.at === lastAgentAt && m.at > undoneAt ? (
                   <button
@@ -429,22 +451,26 @@ export default function AgentPanel({
                 <div className={styles.agentDetail}>
                   {m.at === lastAgentAt && lastSteps.length ? (
                     <>
-                      {/* finished run: same three blocks as the live view, now all settled —
-                          ChainOfThought rail (every step "complete"), the Reasoning text, then
-                          the applied-ops Task list. Keeps the disclosure from collapsing back
-                          into a flat paragraph once the run is done. */}
-                      <ChainOfThought defaultOpen={false} className={styles.cot}>
-                        <ChainOfThoughtHeader>{`Reasoning · ${lastSteps.length} step${lastSteps.length === 1 ? '' : 's'}`}</ChainOfThoughtHeader>
+                      {/* finished run: ONE settled step rail (open — the user already asked for
+                          detail by expanding the row) + the plan text if the agent narrated one.
+                          The step list is the single source of truth for what happened; each
+                          step's description carries its kind and target layer. */}
+                      <ChainOfThought defaultOpen className={styles.cot}>
+                        <ChainOfThoughtHeader>{`${lastSteps.length} step${lastSteps.length === 1 ? '' : 's'}`}</ChainOfThoughtHeader>
                         <ChainOfThoughtContent>
-                          {lastSteps.map((st) => (
-                            <ChainOfThoughtStep
-                              key={`${st.at}-${st.i}`}
-                              icon={stepIcon(st.kind || st.tool)}
-                              label={st.summary}
-                              description={st.kind || st.tool}
-                              status="complete"
-                            />
-                          ))}
+                          {lastSteps.map((st) => {
+                            const target = (st.data as { name?: string; id?: string } | undefined)?.name
+                              || (st.data as { id?: string } | undefined)?.id;
+                            return (
+                              <ChainOfThoughtStep
+                                key={`${st.at}-${st.i}`}
+                                icon={stepIcon(st.kind || st.tool)}
+                                label={st.summary}
+                                description={[st.kind || st.tool, target].filter(Boolean).join(' · ')}
+                                status="complete"
+                              />
+                            );
+                          })}
                         </ChainOfThoughtContent>
                       </ChainOfThought>
                       {m.text ? (
@@ -453,24 +479,6 @@ export default function AgentPanel({
                           <ReasoningContent>{m.text}</ReasoningContent>
                         </Reasoning>
                       ) : null}
-                      <Task defaultOpen className={styles.opsTask}>
-                        <TaskTrigger
-                          icon="check"
-                          title={`Applied ${lastSteps.length} step${lastSteps.length === 1 ? '' : 's'}`}
-                        />
-                        <TaskContent>
-                          {lastSteps.map((st) => {
-                            const target = (st.data as { name?: string; id?: string } | undefined)?.name
-                              || (st.data as { id?: string } | undefined)?.id;
-                            return (
-                              <TaskItem key={`${st.at}-${st.i}`}>
-                                <span className={styles.opText} title={st.summary}>{st.summary}</span>
-                                {target ? <TaskItemFile icon="frame">{target}</TaskItemFile> : null}
-                              </TaskItem>
-                            );
-                          })}
-                        </TaskContent>
-                      </Task>
                     </>
                   ) : (
                     m.text ? <pre className={styles.agentText}>{m.text}</pre> : null
@@ -481,11 +489,12 @@ export default function AgentPanel({
           )
         ))}
         {running ? (
-          // Live run: a scanning diamond + the current step shimmering, then the ChainOfThought
-          // rail of steps and a Reasoning block (both fed from the store's live designEvents).
+          // Live run: a scanning diamond + the current step shimmering, then ONE ChainOfThought
+          // rail of the steps so far (fed from the store's live designEvents). The rail is the
+          // single progress view — no parallel "reasoning" transcript repeating the same steps.
           <div className={styles.runningCard}>
             <div className={styles.runningHead}>
-              <DiamondLoader size={22} />
+              <DiamondLoader size={26} />
               <div className={styles.runningLine}>
                 <TextShimmer className={styles.runningText}>
                   {steps.length ? steps[steps.length - 1].summary : 'thinking…'}
@@ -495,9 +504,9 @@ export default function AgentPanel({
                 ) : null}
               </div>
             </div>
-            {steps.length ? (
+            {steps.length > 1 ? (
               <ChainOfThought defaultOpen className={styles.cot}>
-                <ChainOfThoughtHeader>Reasoning steps</ChainOfThoughtHeader>
+                <ChainOfThoughtHeader>Steps</ChainOfThoughtHeader>
                 <ChainOfThoughtContent>
                   {steps.map((st, i) => {
                     const status: ChainStepStatus = i === steps.length - 1 ? 'active' : 'complete';
@@ -514,12 +523,6 @@ export default function AgentPanel({
                 </ChainOfThoughtContent>
               </ChainOfThought>
             ) : null}
-            <Reasoning isStreaming className={styles.reasoning}>
-              <ReasoningTrigger />
-              <ReasoningContent>
-                {steps.map((st) => `• ${st.summary}`).join('\n') || 'Working through the change…'}
-              </ReasoningContent>
-            </Reasoning>
           </div>
         ) : null}
       </div>
@@ -642,19 +645,65 @@ export default function AgentPanel({
             ref={fileInput} type="file" accept="image/*" multiple hidden
             onChange={(e) => { onFiles(e.target.files); e.target.value = ''; }}
           />
-          <button
-            type="button" className={styles.sendBtn}
-            disabled={!canSend}
-            title="Run the agent (⌘↵)"
-            onClick={() => void run({ instruction: input })}
-          >
-            {running ? 'running' : 'send'}
-            {!running ? <kbd className={styles.sendKbd}>⌘↵</kbd> : null}
-          </button>
+          {running ? (
+            <button
+              type="button" className={styles.stopBtn}
+              title="Stop waiting and unlock the editor (the run may still finish on the server)"
+              onClick={stopRun}
+            >
+              <span className={styles.stopSquare} aria-hidden />
+              stop
+            </button>
+          ) : (
+            <button
+              type="button" className={styles.sendBtn}
+              disabled={!canSend}
+              title="Run the agent (⌘↵)"
+              onClick={() => void run({ instruction: input })}
+            >
+              send
+              <kbd className={styles.sendKbd}>⌘↵</kbd>
+            </button>
+          )}
         </div>
+
+        {/* ── custom model form (Custom… in the model menu) — lives next to its trigger ── */}
+        {customOpen ? (
+          <div className={styles.customForm}>
+            <input
+              className={styles.customInput} placeholder="Base URL (OpenAI-compatible)" spellCheck={false}
+              value={customBase} onChange={(e) => setCustomBase(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+            <input
+              className={styles.customInput} placeholder="Model id" spellCheck={false}
+              value={customModel} onChange={(e) => setCustomModel(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+            <input
+              className={styles.customInput} placeholder="API key (optional)" type="password" spellCheck={false}
+              value={customKey} onChange={(e) => setCustomKey(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+            <div className={styles.customRow}>
+              <button type="button" className={styles.clearBtn} onClick={() => setCustomOpen(false)}>cancel</button>
+              <button
+                type="button" className={styles.customSave}
+                disabled={!customBase.trim() || !customModel.trim()}
+                onClick={() => void applyLlmConfig(
+                  { baseUrl: customBase.trim(), model: customModel.trim(), ...(customKey.trim() ? { apiKey: customKey.trim() } : {}) },
+                  customModel.trim(),
+                )}
+              >
+                save
+              </button>
+            </div>
+          </div>
+        ) : null}
 
         {/* ── model footer: the ported ModelSelector (searchable, provider-grouped) ── */}
         <div className={styles.modelFooter}>
+          <span className={styles.modelFooterLabel}>model</span>
           {llmCfg ? (
             <ModelSelector
               models={modelOptions}

@@ -161,7 +161,12 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  flex: none; /* rows never squish — stable 30px height at any layer count */
   height: 30px;
+  /* 100+ layers: skip layout/paint for rows scrolled out of the list's view — free
+     near-virtualization on long comps. Fixed intrinsic size = zero scrollbar jitter. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 30px;
   padding: 0 6px;
   border-radius: var(--r-sm);
   color: var(--muted);

@@ -1,70 +1,252 @@
-/* AgentCursorOverlay.module.css — Figma-style fake collaborator cursor gliding across the
-   canvas while the agent runs. Percent offsets below mirror AgentCursorOverlay.tsx's
-   WAYPOINTS array 1:1 (keep them in sync if the waypoints ever change) — CSS keyframes can't
-   read the JS array directly, so the pattern is duplicated here deliberately. */
+/* AgentCursorOverlay.module.css — Atlas-style agent cursor + radiating dot-grid halo.
+   One @keyframes loop animates two registered custom properties (--agent-cx / --agent-cy).
+   The cursor mover's transform and the lit grid's radial mask both consume the same vars,
+   so the halo rides the cursor with zero per-frame JS and no per-dot work: the browser
+   interpolates two percentages, everything else is plain paint. */
+
+/* Registered so the vars are *animatable* (unregistered custom props snap, not tween). */
+@property --agent-cx {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 30%;
+}
+@property --agent-cy {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 32%;
+}
 
 .wrap {
   position: absolute;
   inset: 0;
-  z-index: 11; /* above rendered layers + the shell's dimmed scrim content, below nothing extra */
+  z-index: 11; /* above rendered layers + the shell's dimmed scrim content */
   pointer-events: none;
   overflow: hidden;
+  --agent-cx: 22%;
+  --agent-cy: 24%;
+  /* Path: one long, heavily-eased lap with built-in holds (duplicated stops) so it reads
+     as "inspecting, then moving on". */
+  animation: agentPath 16s cubic-bezier(0.55, 0.05, 0.25, 1) 0.15s infinite;
+  /* Enter/exit fades are TRANSITIONS (from @starting-style / [data-exiting]), NOT keyframes.
+     Deliberate: theme.css's idle/tab power-saver pauses every animation under #root with
+     `animation-play-state: paused !important`, and a paused enter-keyframe with `fill: both`
+     froze this overlay on its invisible first frame (opacity 0) for entire agent runs — the
+     "missing cursor" bug. Transitions ignore animation-play-state, and the resting opacity
+     is 1, so the overlay now fails VISIBLE no matter what the pauser does. */
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.3s var(--ease), transform 0.3s var(--ease);
+}
+/* First-frame values the enter transition plays from (Chrome 117+; without support the
+   overlay simply appears instantly — still visible, never stuck). */
+@starting-style {
+  .wrap {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+/* Exit: Stage keeps this mounted ~280ms after `locked` clears so this transition can actually
+   play (a plain unmount would just vanish the element with no fade). */
+.wrap[data-exiting] {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+/* The idle/tab power-saver (theme.css) pauses all #root animations "when nothing is running" —
+   but its activity signal only knows about image-generation runs, not design-agent runs, so it
+   fires DURING agent work. This overlay only exists while an agent run is in flight, so an
+   agent run IS activity: keep the glide/halo/bob/shimmer running. Specificity (1,2,1) beats the
+   pauser's html[attr] #root * (1,1,1); both !important, higher specificity wins. */
+:global(html[data-app-idle='true'] #root) .wrap,
+:global(html[data-app-idle='true'] #root) .wrap *,
+:global(html[data-app-idle='true'] #root) .wrap *::after,
+:global(html[data-tab-hidden='true'] #root) .wrap,
+:global(html[data-tab-hidden='true'] #root) .wrap *,
+:global(html[data-tab-hidden='true'] #root) .wrap *::after {
+  animation-play-state: running !important;
+}
+/* Exit freeze must still beat the un-pause above (equal specificity → later order wins):
+   pause the path loop in place (not reset) while the fade-out transition plays. */
+:global(html #root) .wrap[data-exiting] {
+  animation-play-state: paused !important;
+}
+
+/* ---------- dot grid ---------- */
+
+/* Base grid: near-invisible resting dots across the whole canvas. */
+.gridBase,
+.gridLit {
+  position: absolute;
+  inset: 0;
+  background-repeat: repeat;
+  background-size: 26px 26px;
+  background-position: 13px 13px;
+}
+.gridBase {
+  background-image: radial-gradient(
+    circle 1.2px,
+    color-mix(in srgb, var(--ink, #fff) 14%, transparent) 99%,
+    transparent 100%
+  );
+  opacity: 0.5;
+}
+
+/* Lit grid: same lattice, larger + accent-saturated dots, revealed only through a soft
+   radial mask centered on the cursor point. Mask position = the same animated vars that
+   drive the cursor, so the "illumination" tracks the glide exactly. The two dot sizes
+   (1.2px base vs 2.6px lit) + the mask falloff produce the grow-and-brighten radial effect. */
+.gridLit {
+  background-image: radial-gradient(
+    circle 2.6px,
+    color-mix(in srgb, var(--accent) 90%, #fff) 99%,
+    transparent 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle 170px at var(--agent-cx) var(--agent-cy),
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.55) 42%,
+    rgba(0, 0, 0, 0.18) 72%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle 170px at var(--agent-cx) var(--agent-cy),
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.55) 42%,
+    rgba(0, 0, 0, 0.18) 72%,
+    transparent 100%
+  );
+}
+
+/* ---------- cursor ---------- */
+
+/* Full-size mover: translate percentages resolve against its OWN box (inset:0 == canvas box),
+   so translate(var(--agent-cx), var(--agent-cy)) lands the origin exactly where the mask
+   center is. (The old version translated the small cursor element by %, which barely moved.) */
+.mover {
+  position: absolute;
+  inset: 0;
+  transform: translate(var(--agent-cx), var(--agent-cy));
+  will-change: transform;
+}
+
+/* Soft accent bloom under the cursor — the "light source" the dots respond to. */
+.glow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 340px;
+  height: 340px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--accent) 14%, transparent) 0%,
+    color-mix(in srgb, var(--accent) 6%, transparent) 45%,
+    transparent 70%
+  );
 }
 
 .cursor {
   position: absolute;
   left: 0;
   top: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.35));
-  animation: agentCursorGlide 9s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-  will-change: transform;
+  animation: agentBob 2.8s ease-in-out infinite;
 }
 
-.cursor svg {
-  flex: none;
-  transform: translate(-2px, -2px); /* tip of the pointer lands on the waypoint */
+.arrow {
+  display: block;
+  /* The tip of the up-right-pointing glyph sits at (13.2, 1.6) in its viewBox — shift so
+     the tip lands exactly on the animated waypoint (glyph body trails down-left). */
+  transform: translate(-13.2px, -1.6px);
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
 }
 
+/* Name pill: below-right of the tip, accent bg, shimmer sweep = "actively working". */
 .label {
+  position: absolute;
+  left: 13px;
+  top: 17px;
   display: inline-flex;
   align-items: center;
-  padding: 2px 7px;
-  border-radius: var(--r-pill, 999px);
+  padding: 3px 9px 4px;
+  border-radius: var(--r-sm, 8px);
+  border-top-left-radius: 3px;
   background: var(--accent);
-  color: var(--on-accent, #fff);
-  font-size: 10px;
+  color: var(--accent-contrast, var(--on-accent, #fff));
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  line-height: 1.2;
   white-space: nowrap;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 3px 10px -2px rgba(0, 0, 0, 0.4),
+    0 0 0 1px color-mix(in srgb, var(--accent) 55%, #000 12%);
+}
+/* Shimmer sweep across the pill (same in-progress language as TextShimmer / --shimmer). */
+.label::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    100deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.38) 50%,
+    transparent 60%
+  );
+  background-size: 220% 100%;
+  animation: agentLabelShimmer var(--dur-shimmer, 2s) linear infinite;
 }
 
-/* 9 waypoints (see WAYPOINTS in the .tsx) spread evenly across the loop's duration, then back
-   to the first point to close it — one continuous, heavily-eased glide per lap. Percent units
-   resolve against .wrap (inset:0 on the canvas box), matching how other overlays position. */
-@keyframes agentCursorGlide {
-  0%      { transform: translate(18%, 22%); }
-  11.11%  { transform: translate(62%, 14%); }
-  22.22%  { transform: translate(78%, 46%); }
-  33.33%  { transform: translate(50%, 52%); }
-  44.44%  { transform: translate(24%, 68%); }
-  55.55%  { transform: translate(42%, 84%); }
-  66.66%  { transform: translate(70%, 78%); }
-  77.77%  { transform: translate(86%, 60%); }
-  88.88%  { transform: translate(34%, 40%); }
-  100%    { transform: translate(18%, 22%); }
+/* ---------- keyframes ---------- */
+
+/* 14 distinct waypoints over a 16s lap. Duplicated stops = brief holds ("inspecting a layer");
+   tight gaps between distant points = quick decisive glides. Coords roughly follow where work
+   happens in a comp: headline band, product area, CTA, edge sweeps, back to center. */
+@keyframes agentPath {
+  0%    { --agent-cx: 22%; --agent-cy: 24%; }
+  5%    { --agent-cx: 22%; --agent-cy: 24%; }  /* hold: reading the headline */
+  12%   { --agent-cx: 58%; --agent-cy: 13%; }  /* quick dash to the top band */
+  18%   { --agent-cx: 76%; --agent-cy: 28%; }
+  23%   { --agent-cx: 76%; --agent-cy: 28%; }  /* hold */
+  30%   { --agent-cx: 48%; --agent-cy: 42%; }
+  36%   { --agent-cx: 28%; --agent-cy: 56%; }
+  40%   { --agent-cx: 28%; --agent-cy: 56%; }  /* hold */
+  46%   { --agent-cx: 44%; --agent-cy: 74%; }
+  52%   { --agent-cx: 66%; --agent-cy: 84%; }  /* CTA corner */
+  57%   { --agent-cx: 66%; --agent-cy: 84%; }  /* hold */
+  64%   { --agent-cx: 85%; --agent-cy: 62%; }  /* fast right-edge sweep */
+  70%   { --agent-cx: 71%; --agent-cy: 47%; }
+  75%   { --agent-cx: 55%; --agent-cy: 60%; }
+  79%   { --agent-cx: 55%; --agent-cy: 60%; }  /* hold */
+  86%   { --agent-cx: 34%; --agent-cy: 38%; }
+  93%   { --agent-cx: 18%; --agent-cy: 46%; }
+  100%  { --agent-cx: 22%; --agent-cy: 24%; }  /* close the loop */
 }
 
-/* Respect both the OS-level media query and the app's own reduced-motion toggle: freeze at
-   the first resting position instead of animating (matches the pattern used across the app,
-   e.g. WorkingIndicator.module.css / StatusPill.module.css). */
+/* Tiny idle bob so the cursor never looks frozen during holds. */
+@keyframes agentBob {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(1.5px, 3px); }
+}
+
+@keyframes agentLabelShimmer {
+  0%   { background-position: 120% center; }
+  100% { background-position: -20% center; }
+}
+
+/* ---------- reduced motion ---------- */
+/* Static cursor at one position, static faint halo, no glide/bob/shimmer.
+   (Matches the app-wide pattern: OS media query + [data-reduced-motion="true"].) */
 @media (prefers-reduced-motion: reduce) {
-  .cursor { animation: none; transform: translate(18%, 22%); }
+  .wrap { animation: none; }
+  .cursor { animation: none; }
+  .label::after { animation: none; background: none; }
+  .gridLit { opacity: 0.4; }
 }
-:global([data-reduced-motion="true"]) .cursor {
-  animation: none;
-  transform: translate(18%, 22%);
-}
+:global([data-reduced-motion="true"]) .wrap { animation: none; }
+:global([data-reduced-motion="true"]) .cursor { animation: none; }
+:global([data-reduced-motion="true"]) .label::after { animation: none; background: none; }
+:global([data-reduced-motion="true"]) .gridLit { opacity: 0.4; }

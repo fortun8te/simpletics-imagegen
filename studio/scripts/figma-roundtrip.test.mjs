@@ -3,18 +3,35 @@
 // Never touches the system clipboard: uses the pure buildFigmaClipboardHtml payload builder.
 
 import assert from 'node:assert/strict';
-import {
+import { register } from 'node:module';
+
+// ── .woff2 loader shim ─────────────────────────────────────────────────────────
+// src/lib/fontFaces.ts imports woff2 assets via Vite's `?url` suffix, which plain Node/tsx
+// cannot load (ERR_UNKNOWN_FILE_EXTENSION). Register a hook that stubs any .woff2 module as
+// a default-exported URL string BEFORE loading the app modules (hence the dynamic imports
+// below — static imports would resolve before this hook exists).
+const woff2Hook = `
+export async function load(url, context, nextLoad) {
+  if (/\\.woff2(\\?[^#]*)?$/.test(url)) {
+    return { format: 'module', shortCircuit: true, source: 'export default ' + JSON.stringify(url) };
+  }
+  return nextLoad(url, context);
+}
+`;
+register(new URL(`data:text/javascript,${encodeURIComponent(woff2Hook)}`));
+
+const {
   buildFigmaClipboardHtml,
   gradientTransformFromAngle,
   FIGMA_PATH_PLUGIN_ID,
   FIGMA_PATH_PLUGIN_KEY,
-} from '../src/components/design/figmaClipboard.ts';
-import {
+} = await import('../src/components/design/figmaClipboard.ts');
+const {
   parseFigmaClipboard,
   sniffFigmaClipboard,
-} from '../src/components/design/figmaImport.ts';
-import { designToSvg } from '../src/components/design/designSvg.ts';
-import { decodeFigmaClipboardHtml, encodeFigmaClipboardHtml } from '../src/vendor/figma-kiwi/index.ts';
+} = await import('../src/components/design/figmaImport.ts');
+const { designToSvg } = await import('../src/components/design/designSvg.ts');
+const { decodeFigmaClipboardHtml, encodeFigmaClipboardHtml } = await import('../src/vendor/figma-kiwi/index.ts');
 
 // ── fixture: v3 doc — root text + group(text autoH + gradient shape + nested group(badge)) + vignette
 
@@ -74,8 +91,10 @@ const doc = {
       box: { x: 200, y: 950, w: 400, h: 80 },
       rotation: 15,
       // NOT Inter: Inter is now the export-side fallback family, so an explicit override must
-      // be a different family to be distinguishable on the wire.
-      style: { fontSize: 48, color: '#ffffff', fontFamily: 'Georgia' },
+      // be a different family to be distinguishable on the wire. Must also be a family Figma's
+      // own library HAS (Fraunces is a real Google Font in Figma's picker) — OS-only fonts like
+      // Georgia are intentionally remapped on export (see FIGMA_UNRESOLVABLE_FAMILY).
+      style: { fontSize: 48, color: '#ffffff', fontFamily: 'Fraunces' },
     },
     {
       id: 'rot-shape', type: 'shape', name: 'Rotated Shape',
@@ -394,9 +413,25 @@ check('glass card backdropBlur 24 exact', () => {
 
 check('custom fontFamily roundtrips (fallback stays implicit)', () => {
   const t = findByName(nodes, 'Tilted 15');
-  assert.equal(t.style.fontFamily, 'Georgia');
+  assert.equal(t.style.fontFamily, 'Fraunces');
   const headline = findByName(nodes, 'HELLO FIGMA');
   assert.equal(headline.style.fontFamily, undefined, 'Inter fallback must not materialize');
+});
+
+check('OS-only families remapped to Figma-library equivalents on the wire', () => {
+  // Georgia is never in Figma's curated library — exporting it verbatim silently substitutes a
+  // generic fallback face in Figma. The export intentionally remaps to the nearest real family.
+  const osDoc = {
+    id: 'comp_os', name: 'OS Fonts', canvas: { w: 400, h: 400 },
+    layers: [
+      { id: 'g', type: 'text', name: 'G', text: 'serif', box: { x: 0, y: 0, w: 200, h: 50 }, style: { fontSize: 30, color: '#fff', fontFamily: 'Georgia' } },
+      { id: 'm', type: 'text', name: 'M', text: 'mono', box: { x: 0, y: 60, w: 200, h: 50 }, style: { fontSize: 30, color: '#fff', fontFamily: 'Menlo' } },
+    ],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const texts = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(osDoc, new Map())).message.nodeChanges
+    .filter((c) => c.type === 'TEXT');
+  assert.deepEqual(texts.map((t) => t.fontName.family).sort(), ['Noto Serif', 'Roboto Mono']);
 });
 
 // ── effects/structure round: blend, layer blur, glass, corners, clip, mask, polyline, names ──
@@ -664,6 +699,62 @@ await checkAsync('designSvg: <path> geometry + <clipPath> masks (node-safe shape
   const closes = (svg.match(/<\/g>/g) || []).length;
   assert.equal(opens, closes, `unbalanced <g>: ${opens} opens vs ${closes} closes`);
 });
+
+// ── template coverage sweep: every archetype template + newer elements survives the wire ─────────
+// "Layers vanish on paste" regression net: for each template-built doc, every visible text leaf's
+// characters must appear in a wire TEXT node (pill captions may be split across per-line nodes),
+// every image layer must embed bytes, and the payload must import back ok with the same canvas.
+
+const { buildTemplate, TEMPLATES } = await import('../lib/templates.mjs');
+const { buildElement } = await import('../lib/elements.mjs');
+
+const walkNodes = function* (list) {
+  for (const n of list || []) {
+    if (!n || n.hidden) continue;
+    yield n;
+    if (n.type === 'group' && Array.isArray(n.children)) yield* walkNodes(n.children);
+  }
+};
+
+async function sweepDoc(label, sweep) {
+  const sweepImages = new Map();
+  for (const n of walkNodes(sweep.layers)) {
+    if (n.type === 'image') sweepImages.set(n.id, { bytes: TINY_PNG, hash: new Uint8Array(20).fill(3), width: 1, height: 1 });
+  }
+  await checkAsync(`sweep ${label}`, async () => {
+    const swHtml = buildFigmaClipboardHtml(sweep, sweepImages);
+    const wire = decodeFigmaClipboardHtml(swHtml).message;
+    const wireTexts = wire.nodeChanges.filter((c) => c.type === 'TEXT')
+      .map((c) => String(c.textData?.characters ?? ''));
+    const allText = wireTexts.join(' ').replace(/\s+/g, ' ');
+    for (const n of walkNodes(sweep.layers)) {
+      const raw = String(n.text || '');
+      if (!raw || !['text', 'badge', 'button'].includes(n.type)) continue;
+      const s = n.style || {};
+      // pills wrap per line (uppercased before wrapping) — check the flattened stream instead
+      const want = (s.pill && s.background && s.uppercase ? raw.toUpperCase() : raw).replace(/\s+/g, ' ').trim();
+      assert.ok(allText.includes(want), `text ${JSON.stringify(want.slice(0, 48))} missing from wire TEXT nodes`);
+    }
+    const srcImages = [...walkNodes(sweep.layers)].filter((n) => n.type === 'image').length;
+    const wireImages = wire.nodeChanges.filter((c) => (c.fillPaints || []).some((p) => p.type === 'IMAGE')).length;
+    assert.equal(wireImages, srcImages, `${wireImages} IMAGE-paint nodes for ${srcImages} image layers`);
+    for (const b of wire.blobs || []) assert.ok(b.bytes?.length > 0, 'empty image blob');
+    const back = await parseFigmaClipboard(swHtml);
+    assert.equal(back.ok, true, back.error);
+    assert.deepEqual(back.canvas, sweep.canvas, 'canvas drift on import');
+  });
+}
+
+for (const tpl of TEMPLATES) {
+  const sweep = { id: `comp_${tpl.id}`, name: tpl.id, canvas: { w: 1080, h: 1350 }, layers: [], createdAt: 0, updatedAt: 0, schemaVersion: 3 };
+  sweep.layers = buildTemplate(tpl.id, sweep).layers;
+  await sweepDoc(tpl.id, sweep);
+}
+for (const elId of ['starburst-sticker', 'wave-swoosh-bg', 'qa-sticker', 'blob-bg', 'leader-line-callout', 'reply-bubble-stack']) {
+  const base = { id: `comp_el_${elId}`, name: elId, canvas: { w: 1080, h: 1350 }, layers: [], createdAt: 0, updatedAt: 0, schemaVersion: 3 };
+  base.layers = buildElement(elId, base);
+  await sweepDoc(`element:${elId}`, base);
+}
 
 console.log(failures ? `\n${failures} failure(s)` : '\nall checks passed');
 process.exit(failures ? 1 : 0);

@@ -28,6 +28,7 @@ import { runPlan, getActiveRun, rankRefs } from './lib/planner.mjs';
 import { runDesignAgent } from './lib/design-agent.mjs';
 import { loadBrandSkill, saveBrandSkill } from './lib/brand-skills.mjs';
 import { readLlmUsage, hasLlm, llmInfo } from './lib/llm.mjs';
+import { setLlmConfig, DEFAULT_BASE, DEFAULT_MODEL } from './lib/llm-config.mjs';
 
 // ── Paths (injected into the lib modules) ────────────────────────────────────────────────────────
 const STUDIO = dirname(fileURLToPath(import.meta.url));            // .../NEUEGEN/studio
@@ -664,6 +665,53 @@ const server = http.createServer(async (req, res) => {
     // LLM usage rollups (.state/llm-usage.jsonl) + provider info.
     if (pathname === '/api/llm/usage' && method === 'GET') {
       sendJson(res, 200, { ok: true, ...readLlmUsage(), provider: llmInfo(), hasLlm: hasLlm() });
+      return;
+    }
+
+    // ── LLM provider config (ModelSelector in AgentPanel / DesignView) ──
+    // GET: current effective config (lib/llm.mjs's llmInfo() — runtime override > env > DeepSeek
+    // default) + a preset list to switch between. LM Studio's entry is detected live via its own
+    // /models — we don't own lib/llm.mjs so we replicate a minimal fetch here rather than adding
+    // an export there.
+    if (pathname === '/api/llm/config' && method === 'GET') {
+      const info = llmInfo(); // { base, model, provider, source, hasKey }
+      const presets = [
+        { label: 'DeepSeek', baseUrl: DEFAULT_BASE, model: DEFAULT_MODEL },
+      ];
+      const vbase = process.env.VISION_BASE_URL ? String(process.env.VISION_BASE_URL).replace(/\/$/, '') : null;
+      if (vbase) {
+        try {
+          const r = await fetch(`${vbase}/models`, { signal: AbortSignal.timeout(2500) });
+          const j = await r.json();
+          const ids = Array.isArray(j?.data) ? j.data.map((m) => String(m.id)) : [];
+          if (ids.length) {
+            const modelId = ids[0];
+            presets.push({ label: `LM Studio (${modelId})`, baseUrl: vbase, model: modelId });
+          }
+        } catch { /* LM Studio unreachable — omit its preset */ }
+      }
+      sendJson(res, 200, {
+        ok: true,
+        config: { baseUrl: info.base, model: info.model, label: `${info.provider} · ${info.model}` },
+        presets,
+      });
+      return;
+    }
+
+    if (pathname === '/api/llm/config' && method === 'POST') {
+      const body = await readBody(req);
+      try {
+        const saved = setLlmConfig({ baseUrl: body.baseUrl, model: body.model, apiKey: body.apiKey });
+        const info = llmInfo();
+        sendJson(res, 200, {
+          ok: true,
+          config: saved
+            ? { baseUrl: saved.baseUrl, model: saved.model || info.model, label: `${info.provider} · ${saved.model || info.model}` }
+            : { baseUrl: info.base, model: info.model, label: `${info.provider} · ${info.model}` },
+        });
+      } catch (e) {
+        sendJson(res, 400, { ok: false, error: String(e && e.message || e) });
+      }
       return;
     }
 

@@ -139,6 +139,12 @@ export async function runBatchAgent({
   // the model contributes nothing). Headroom is cheap: unused budget isn't billed.
   maxTokensPerTurn = 3000,
   maxApplied = null,
+  // Main-turn VISION (v6): when the active model can see (LM Studio serving a gemma VL model),
+  // SHOW it the canvas instead of only describing it. `imageForTurn(turnIndex)` returns a PNG
+  // path (or null to skip) and `visionCall(prompt, imagePath, opts)` shares llmText's contract.
+  // Failures fall back silently to the text-only call — vision is an upgrade, never a gate.
+  visionCall = null,
+  imageForTurn = null,
 } = {}) {
   const steps = [];
   const usage = { inTok: 0, outTok: 0, estTokens: 0 };
@@ -158,7 +164,13 @@ export async function runBatchAgent({
     return step;
   };
 
-  const callModel = async (extra) => {
+  // Retry cap bump: every observed harness call failure in .state/llm-usage.jsonl had outTok
+  // EXACTLY at the completion cap (220/300/700/2500/3000) — the model burned the whole budget
+  // thinking and the completion was truncated/empty. Retrying at the SAME cap just repeats the
+  // failure; the retry gets 1.5× headroom (≤4096). Unused budget isn't billed.
+  const bumpedCap = Math.min(Math.round(maxTokensPerTurn * 1.5), 4096);
+
+  const callModel = async (extra, { maxTokens = maxTokensPerTurn } = {}) => {
     const parts = [`CURRENT STATE:\n${buildObservation()}`];
     if (lastFeedback.length) parts.unshift(`LAST TURN RESULTS:\n${lastFeedback.map((s, i) => `${i + 1}. ${s}`).join('\n')}`);
     const findings = lint ? lint() : [];
@@ -167,11 +179,26 @@ export async function runBatchAgent({
     else lintShownTurns = findings.length ? 1 : 0;
     lastLintKey = lintKey;
     if (findings.length) parts.push(`LINT (fix before done):\n${findings.slice(0, 6).map((f, i) => `${i + 1}) ${f}`).join('\n')}`);
-    parts.push(extra || `Reply with ONE JSON object: {"plan":"…","ops":[…up to ${maxOpsPerTurn} ops…],"done":true|false}. No prose.`);
+    // degraded mode after a zero-applied turn: ask for ONE op — same code path, simpler reply
+    // (weak models recover from a wasted turn far more reliably with a single-op ask)
+    const opCap = zeroAppliedTurns > 0 ? 1 : maxOpsPerTurn;
+    parts.push(extra || `Reply with ONE JSON object: {"plan":"…","ops":[…up to ${opCap} op${opCap === 1 ? '' : 's'}…],"done":true|false}. No prose.`);
     const prompt = parts.join('\n\n');
     usage.estTokens += Math.ceil((prompt.length + (system || '').length) / 4);
     turns++;
-    const r = await llmCall(prompt, { system, timeoutMs: timeoutMsPerTurn, purpose, json: true, signal, maxTokens: maxTokensPerTurn });
+    let r = null;
+    if (visionCall && imageForTurn) {
+      // show the model the actual render for this turn (usually just turn 0 — see design-agent);
+      // any render/vision failure degrades to the plain text call below.
+      let img = null;
+      try { img = await imageForTurn(turns - 1); } catch { img = null; }
+      if (img) {
+        const vp = `The attached image is the CURRENT RENDER of the comp — trust your eyes for placement/contrast/overlap.\n\n${prompt}`;
+        try { r = await visionCall(vp, img, { system, timeoutMs: timeoutMsPerTurn, purpose, json: true, maxTokens }); } catch { r = null; }
+        if (r && !r.ok) r = null; // vision path failed → retry text-only, same turn
+      }
+    }
+    if (!r) r = await llmCall(prompt, { system, timeoutMs: timeoutMsPerTurn, purpose, json: true, signal, maxTokens });
     if (r.usage) { usage.inTok += r.usage.inTok || 0; usage.outTok += r.usage.outTok || 0; }
     return { r, findings };
   };
@@ -182,10 +209,11 @@ export async function runBatchAgent({
     let { r, findings } = await callModel();
     if (!r.ok) {
       // Reasoning models (deepseek-v4-flash) intermittently return an EMPTY completion after a
-      // long think in json_mode — a known transient. One retry recovers it; only a second
-      // consecutive failure ends the run (was: first failure killed it → silent no-op run).
-      emit('thinking', `model call failed (${r.error}) — retrying once`);
-      ({ r, findings } = await callModel('Reply with ONE JSON object {"plan":"…","ops":[…],"done":bool} only. No prose, no empty reply.'));
+      // long think in json_mode — a known transient. One retry (with a bumped completion cap —
+      // see bumpedCap above) recovers it; only a second consecutive failure ends the run
+      // (was: first failure killed it → silent no-op run).
+      emit('thinking', `model call failed (${r.error}) — retrying once with more headroom`);
+      ({ r, findings } = await callModel('Reply with ONE JSON object {"plan":"…","ops":[…],"done":bool} only. No prose, no empty reply.', { maxTokens: bumpedCap }));
       if (!r.ok) {
         emit('thinking', `model call failed again: ${r.error}`);
         stoppedBy = 'llm-error';
@@ -195,8 +223,13 @@ export async function runBatchAgent({
 
     let batch = parseBatch(r.text);
     if (batch.error) {
-      // one same-turn retry quoting the parse error
-      const retry = await callModel(`Your last reply was invalid: ${batch.error}. Reply with ONE JSON object {"plan":"…","ops":[…],"done":bool} only.`);
+      // one same-turn retry quoting the parse error; "unbalanced" JSON is the truncation
+      // signature (reply cut mid-object at the cap) → the retry also gets the bumped cap
+      const truncated = /unbalanced/.test(batch.error);
+      const retry = await callModel(
+        `Your last reply was invalid: ${batch.error}. Reply with ONE JSON object {"plan":"…","ops":[…],"done":bool} only.`,
+        truncated ? { maxTokens: bumpedCap } : {},
+      );
       if (!retry.r.ok) { emit('thinking', `model call failed: ${retry.r.error}`); stoppedBy = 'llm-error'; break; }
       batch = parseBatch(retry.r.text);
       if (batch.error) {

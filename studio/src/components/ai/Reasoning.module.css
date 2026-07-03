@@ -14,6 +14,7 @@
   color: var(--muted);
 }
 .trigger:hover { color: var(--ink); }
+.trigger:focus-visible { outline: 1px solid var(--line-strong); outline-offset: 1px; border-radius: var(--r-sm); }
 .chev {
   display: inline-flex;
   color: var(--faint);

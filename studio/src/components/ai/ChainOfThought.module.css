@@ -13,6 +13,7 @@
   color: var(--muted);
 }
 .header:hover { color: var(--ink); }
+.header:focus-visible { outline: 1px solid var(--line-strong); outline-offset: 1px; border-radius: var(--r-sm); }
 .chev {
   display: inline-flex;
   color: var(--faint);
@@ -67,7 +68,10 @@
 }
 .dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
 
-.step[data-status="complete"] .node { color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, var(--line)); }
+/* complete steps settle into the monochrome — accent stays reserved for the ACTIVE step, so a
+   long finished run doesn't read as a wall of colored badges */
+.step[data-status="complete"] .node { color: var(--faint); border-color: var(--line); }
+.step[data-status="complete"] .stepLabel { color: var(--muted); }
 .step[data-status="active"] .node {
   color: var(--accent-ink, var(--accent));
   border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
@@ -85,12 +89,16 @@
 :global([data-reduced-motion="true"]) .step[data-status="active"] .node { animation: none; }
 
 .stepBody { display: flex; flex-direction: column; gap: 1px; min-width: 0; padding-top: 1px; }
+/* clamp long raw op summaries to two lines so one verbose step can't blow up the rail's rhythm */
 .stepLabel {
   font-size: 11.5px;
   line-height: 1.5;
   color: var(--ink);
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-word;
 }
 .step[data-status="active"] .stepLabel { color: var(--ink); }
 .stepDesc {

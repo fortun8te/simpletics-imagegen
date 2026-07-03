@@ -185,6 +185,29 @@
   border-radius: var(--r-md);
   background: color-mix(in srgb, #000 35%, transparent);
   max-width: 100%;
+  /* Same ~0.3s enter fade as the agent-run cursor overlay — transition + @starting-style
+     (NOT keyframes) so the idle power-saver can never freeze it invisible (see below). */
+  opacity: 1;
+  transition: opacity 0.3s var(--ease);
+}
+@starting-style {
+  .compare {
+    opacity: 0;
+  }
+}
+
+/* theme.css's idle/tab power-saver pauses every #root animation, but its activity signal only
+   knows about image-generation runs — a design extraction doesn't count, so the scan line and
+   skeleton sweeps froze mid-run. The theater only renders while extraction work is in flight,
+   which IS activity: keep its animations running (same override as AgentCursorOverlay.module.css;
+   specificity (1,2,1) beats the pauser's (1,1,1), both !important). */
+:global(html[data-app-idle='true'] #root) .compare,
+:global(html[data-app-idle='true'] #root) .compare *,
+:global(html[data-app-idle='true'] #root) .compare *::after,
+:global(html[data-tab-hidden='true'] #root) .compare,
+:global(html[data-tab-hidden='true'] #root) .compare *,
+:global(html[data-tab-hidden='true'] #root) .compare *::after {
+  animation-play-state: running !important;
 }
 @media (max-width: 560px) {
   .compare { grid-template-columns: 1fr; }
@@ -242,7 +265,9 @@
    style. Tokens: --skel-base (grey fill), --skel-sheen (the moving highlight). */
 .scaffold {
   --skel-base: color-mix(in srgb, var(--muted) 20%, var(--surface-2));
-  --skel-sheen: color-mix(in srgb, var(--ink) 24%, transparent);
+  /* Accent-tinted sheen — the same "the agent is touching this" accent language as the
+     cursor overlay's lit dot grid and label pill, instead of a neutral ink highlight. */
+  --skel-sheen: color-mix(in srgb, var(--accent) 22%, color-mix(in srgb, var(--ink) 10%, transparent));
   position: absolute;
   inset: 0;
   display: flex;
@@ -298,7 +323,8 @@
 }
 .slot[data-active]::after {
   opacity: 1;
-  animation: skelSweep 1.6s linear infinite;
+  /* Same cadence as the app-wide in-progress shimmer (TextShimmer, the cursor's label pill). */
+  animation: skelSweep var(--dur-shimmer, 2s) linear infinite;
 }
 /* Hero is an image block → a touch darker base + a faint centered image glyph tint so it reads
    as media loading rather than text. Its sweep runs slightly slower for a heavier feel. */
@@ -311,7 +337,6 @@
     ),
     color-mix(in srgb, var(--muted) 26%, var(--surface-2));
 }
-.slot[data-kind='hero'][data-active]::after { animation-duration: 2s; }
 /* Stagger the sweep per row so the panel shimmers like content streaming in, not one flat pulse. */
 .slot[data-active]:nth-child(2)::after { animation-delay: 0.12s; }
 .slot[data-active]:nth-child(3)::after { animation-delay: 0.24s; }

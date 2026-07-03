@@ -23,6 +23,16 @@
 //     "earlier: …" lines injected into the system prompt (≤ ~90 est tokens)
 //   • element op accepts legacy alias ids (ELEMENT_ALIASES → canonical def + preset params)
 //
+// v6 additions:
+//   • FAST PATH: isTrivialEdit() routes short single-target edits ("make the headline bigger")
+//     into 1-2 turns with a minimal prompt + scoped 500-token observation, no lint gate — zero
+//     applied ops escalates to the untouched full loop
+//   • {"op":"center", id, axis:'x'|'y'|'both'} — first-class canvas centering (no pixel math)
+//   • deliberate text placement: added text snaps to canvas center or an existing column edge,
+//     with style.align kept consistent with the box; near-center moves snap exact
+//   • main-turn vision: when LM Studio serves the worker (a gemma VL model), turn 0 of each
+//     batch includes the actual render; visionRefine drops 2→1 rounds then
+//
 // Model priority: llmText (DeepSeek / any OpenAI-compatible endpoint) via the BATCHED
 // plan-act-verify harness (lib/agent-harness.mjs runBatchAgent, v5) → codex CLI single-shot
 // (legacy) → deterministic fallback. Lint runs IN the loop and gates "done"; generation mode
@@ -47,16 +57,13 @@
 //   { "op":"done",     "summary"? }
 
 import { codexText } from './codex-text.mjs';
-import { llmText, hasLlm, llmInfo } from './llm.mjs';
+import { llmText, llmVision, hasLlm, llmInfo } from './llm.mjs';
 import { runBatchAgent, parseBatch } from './agent-harness.mjs';
 import { exemplarBlock, aspectTag, indexLayout, docSkeleton } from './layout-library.mjs';
 import { ELEMENTS, ELEMENT_ALIASES, buildElement, elementCatalogLine, applyElementTextEdit } from './elements.mjs';
 import { buildTemplate, templateCatalog, detectTemplate, applyTemplateTextEdit } from './templates.mjs';
-import { lookAtComp } from './self-vision.mjs';
+import { lookAtComp, renderCompPng } from './self-vision.mjs';
 
-// One vision probe per process — the "look" op is only advertised when the configured
-// endpoint can actually see (DeepSeek's API is text-only → stays dormant there).
-let VISION_OK = null;
 import { lintDesign, parseColor, luminance } from './design-lint.mjs';
 import { getChat } from './designstore.mjs';
 import { autoLayoutDoc, layoutScore } from './layout-engine.mjs';
@@ -228,6 +235,30 @@ function snapGridNote(v, cw, key, notes) {
   const s = snapGrid(v, cw);
   if (s !== r) notes.push(`${key} ${r}→${s} (grid)`);
   return s;
+}
+
+/** Deliberate placement for agent-ADDED text ("text appears randomly placed"): a box whose
+ *  center lands within 6% of the canvas center snaps to the EXACT center (and gets
+ *  align:center so glyphs match the box); otherwise the left edge snaps to the nearest
+ *  existing text column edge within 24px (and gets align:left). Mutates box/style; logs notes. */
+function placeTextBox(doc, box, style, notes) {
+  const { w: cw } = doc.canvas;
+  const offCenter = box.x + box.w / 2 - cw / 2;
+  if (Math.abs(offCenter) <= cw * 0.06) {
+    const nx = Math.round((cw - box.w) / 2);
+    if (nx !== box.x) { notes.push(`x ${box.x}→${nx} (centered)`); box.x = nx; }
+    if (!style.align) style.align = 'center';
+    return;
+  }
+  let best = null;
+  let bestD = 25;
+  for (const n of leaves(doc.layers || [])) {
+    if (!n.box || n.text == null || n.hidden) continue;
+    const d = Math.abs(n.box.x - box.x);
+    if (d > 0 && d < bestD) { bestD = d; best = n.box.x; }
+  }
+  if (best != null) { notes.push(`x ${box.x}→${best} (column)`); box.x = best; }
+  if (!style.align) style.align = 'left';
 }
 
 const KIT_SNAP_DIST = 60; // Manhattan RGB tolerance for the brand-kit color soft-snap
@@ -499,15 +530,48 @@ export function applyOp(doc, op, ctx = {}) {
       return `align ${moved.join('+')} → ${[op.h, op.v].filter(Boolean).join('/')}`;
     }
 
+    case 'center': {
+      // first-class canvas centering — models were computing (cw-w)/2 pixel math by hand and
+      // getting it wrong ("text appears randomly placed"). {op:'center', id, axis:'x'|'y'|'both'}.
+      if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation (L1, g2) or a role`);
+      if (node.role === 'base') throw new Error('the base image cannot be moved');
+      if (node.locked) throw new Error(`${aliasOf(node.id)} is locked — pick another node`);
+      const axis = ['x', 'y', 'both'].includes(op.axis) ? op.axis : 'x';
+      let nx = node.box.x;
+      let ny = node.box.y;
+      if (axis !== 'y') nx = Math.round((cw - node.box.w) / 2);
+      if (axis !== 'x') ny = Math.round((ch - node.box.h) / 2);
+      translateNode(node, clamp(nx, 0, Math.max(0, cw - node.box.w)) - node.box.x, clamp(ny, 0, Math.max(0, ch - node.box.h)) - node.box.y);
+      // a centered text box with left-aligned glyphs still READS off-center — keep them consistent
+      const notes = [];
+      if (axis !== 'y' && node.type !== 'group' && node.text != null && !node.sizeLocked) {
+        node.style = node.style || {};
+        if (node.style.align !== 'center') { node.style.align = 'center'; notes.push('align→center (matches centered box)'); }
+      }
+      normalizeGroups(doc);
+      touch(node);
+      return `center ${aliasOf(node.id)} (${axis}) → ${node.box.x},${node.box.y}${noteStr(notes)}`;
+    }
+
     case 'move': {
       if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation (L1, g2) or a role`);
       if (node.role === 'base') throw new Error('the base image cannot be moved');
       if (node.locked) throw new Error(`${aliasOf(node.id)} is locked — pick another node`);
       const notes = [];
-      const nx = clamp(snapGridNote(clamp(repairNum(op.x, 'x', notes), 0, Math.max(0, cw - node.box.w)), cw, 'x', notes), 0, Math.max(0, cw - node.box.w));
+      let nx = clamp(snapGridNote(clamp(repairNum(op.x, 'x', notes), 0, Math.max(0, cw - node.box.w)), cw, 'x', notes), 0, Math.max(0, cw - node.box.w));
       // y is NOT grid-snapped: the 12-col unit is a WIDTH unit — snapping y to it drifts
       // careful vertical placements by up to 8px for no compositional gain.
       const ny = clamp(Math.round(repairNum(op.y, 'y', notes)), 0, Math.max(0, ch - node.box.h));
+      // near-center text snaps to EXACT center (models aiming for "centered" land ±15px off,
+      // which reads as sloppy) — deliberate off-center moves (>16px) are untouched.
+      if (node.type !== 'group' && node.text != null) {
+        const exact = Math.round((cw - node.box.w) / 2);
+        if (nx !== exact && Math.abs(nx + node.box.w / 2 - cw / 2) <= 16) { notes.push(`x ${nx}→${exact} (centered)`); nx = exact; }
+        if (nx === exact && !node.sizeLocked) {
+          node.style = node.style || {};
+          if (node.style.align !== 'center') { node.style.align = 'center'; notes.push('align→center'); }
+        }
+      }
       translateNode(node, nx - node.box.x, ny - node.box.y);
       normalizeGroups(doc);
       touch(node);
@@ -788,13 +852,20 @@ export function applyOp(doc, op, ctx = {}) {
       doc.layers.push(layer);
       if (ctx.aliases) ctx.aliases.sync(doc);
       if (type !== 'image' && type !== 'shape') touchText(layer, doc, notes);
+      // deliberate placement for new text-bearing layers (AFTER touchText re-measures the box):
+      // snap to canvas center or an existing column edge, and keep style.align consistent with
+      // the box (centered box + left-aligned glyphs is the "randomly placed" look).
+      if (['text', 'badge', 'button'].includes(type)) {
+        layer.style = layer.style || {};
+        placeTextBox(doc, layer.box, layer.style, notes);
+      }
       touch(layer);
       const note = placeholder ? ' (no src — added a gray shape placeholder instead of a real image)' : noteStr(notes);
       return `add ${layer.type} ${layer.role} → ${aliasOf(layer.id)} @ ${box.x},${box.y} ${box.w}×${box.h}${note}`;
     }
 
     default:
-      throw new Error(`unknown op "${op.op}" — expected one of: template, element, setParams, move, align, resize, setText, setStyle, draftText, look, order, duplicate, distribute, add, remove, group, ungroup, autolayout, done`);
+      throw new Error(`unknown op "${op.op}" — expected one of: template, element, setParams, move, center, align, resize, setText, setStyle, draftText, look, order, duplicate, distribute, add, remove, group, ungroup, autolayout, done`);
   }
 }
 
@@ -945,10 +1016,13 @@ export function buildRunMemory(docId, { chat = null } = {}) {
   return lines.slice(-3);
 }
 
-/** v2 system prompt: ops grammar + element catalog + design principles + context. ≤~1050 est tokens.
+/** v2 system prompt: ops grammar + element catalog + design principles + context. ≤~2600 est tokens
+ *  (measured — the ≤3k per-turn budget must hold with the observation added; see the v3 test).
  *  v3: also injects WORKSPACE NOTES (memory) and ATTACHED IMAGE lines (attachments with intent).
- *  v4: DESIGN PRINCIPLES block + runMemory ("earlier: …" continuity lines from buildRunMemory). */
-export function buildSystemPrompt(instruction, { brief, referenceText, kit, memory, attachments, runMemory, brandSkill, copyLock } = {}) {
+ *  v4: DESIGN PRINCIPLES block + runMemory ("earlier: …" continuity lines from buildRunMemory).
+ *  v5: the "look" op is only advertised when a vision endpoint is configured (opts.vision,
+ *  default VISION_BASE_URL) — advertising it on text-only DeepSeek burned ops on doomed calls. */
+export function buildSystemPrompt(instruction, { brief, referenceText, kit, memory, attachments, runMemory, brandSkill, copyLock, vision = !!process.env.VISION_BASE_URL } = {}) {
   const ctx = [];
   if (Array.isArray(runMemory)) for (const line of runMemory.slice(-3)) ctx.push(String(line).slice(0, 120));
   if (brief) ctx.push(`Brief/copy: ${String(brief).slice(0, 400)}`);
@@ -987,6 +1061,7 @@ OPS (exact shapes):
 {"op":"element","element":"cta","x":60,"y":1700,"w":400,"params":{"text":"SHOP NOW"}}
 {"op":"setParams","id":"g2","params":{"stars":4}}
 {"op":"move","id":"L3","x":60,"y":120}
+{"op":"center","id":"L3","axis":"x"}   (axis: x|y|both — exact canvas centering, never do the pixel math yourself)
 {"op":"align","id":"L3","h":"center","v":"bottom"}   (h: left|center|right · v: top|middle|bottom)
 {"op":"resize","id":"L3","w":400,"h":120}
 {"op":"setText","id":"L3","text":"…"}
@@ -998,8 +1073,7 @@ OPS (exact shapes):
 {"op":"order","id":"L3","to":"front"}   (front|back|forward|backward — paint order)
 {"op":"duplicate","id":"L3","x":60,"y":400}   (x/y optional — default offsets slightly)
 {"op":"distribute","ids":["L2","L3","L4"],"axis":"y"}   (3+ nodes, equal gaps)
-{"op":"draftText","ids":["L2","L3"]}   (asks the copywriter to rewrite those layers' text to fit their boxes — use for captions)
-{"op":"look"}   (render the comp and critique it with vision — use before done when a vision endpoint is configured)
+{"op":"draftText","ids":["L2","L3"]}   (asks the copywriter to rewrite those layers' text to fit their boxes — use for captions)${vision ? '\n{"op":"look"}   (render the comp and critique it with vision — use before done)' : ''}
 
 TEMPLATES — whole-ad archetypes; when the task matches one, start with {"op":"template"} then refine copy/positions:
 ${templateCatalog()}
@@ -1009,50 +1083,34 @@ ${catalog}
 Param notes: list params like items[] REPLACE the text param (ig-caption items[] = one pill per line); series = [{label,color,points:0..1}].
 
 DESIGN PRINCIPLES:
-- HIERARCHY is the whole game: read order must be headline > subhead > body/caption > cta > legal.
-  The headline is the ONE dominant size (≈2× the subhead); a reader must know where to look in one glance.
-- FONTS: a strong ad uses TWO faces max — a display face for the headline/offer and a clean face for
-  body/CTA. Elements ship this pairing by default; don't reset fontFamily to a generic sans. Match the
-  brand-kit fonts when a kit is given; otherwise leave the element defaults alone.
-- Compose on a 12-column grid with ~5% canvas margins; align every block's LEFT edge to the same column.
-- Max 2 fonts and 3 colors per comp — prefer the brand kit. Backgrounds: tasteful and on-brand, never a
-  muddy mid-gray; over a photo, add a scrim/pill rather than washing the whole frame.
-- Breathing room: generous, CONSISTENT spacing between blocks; never crowd edges or stack lines tight.
-- Text must contrast with what's behind it (add a scrim/pill if needed) — legibility beats prettiness.
-- CONTRAST PAIRS: before changing a "color" or "background" on a node, check what it's paired
-  against. If the node has BOTH a text color and its own background (a pill/badge/card — e.g. an
-  ig-caption), changing ONLY ONE of them can make the other collide (e.g. "make the caption black"
-  on a pill that already has a near-black background → invisible black-on-black text). When a
-  literal color instruction would break legibility this way, ALSO adjust the paired property (flip
-  the pill's background, or pick a contrasting text color) so the result reads — don't apply the
-  literal instruction blindly to whatever the most obvious target is. Say so in your plan/summary
-  (e.g. "made the caption text black and flipped its pill to white so it stays legible") so the
-  extra adjustment is never a silent surprise. The same logic applies when changing a background
-  under text that already has a color set (check the reverse pairing too).
-- DARK MODE ON PLATFORM-MIMICKING ELEMENTS is NEVER a naive color invert — it means that
-  PLATFORM'S actual documented dark theme. Identify the platform from the node's element id/tpl
-  or role name (e.g. "ig-caption"/"ig-dm"/"ig-feed" → Instagram, "apple-notes"/"notes" → Apple
-  Notes, "imessage"/"imessage-bubble" → iMessage, "x-post" → X/Twitter) and apply ITS real palette:
-    • Instagram (caption/feed/DM UI): bg #0C1014, primary text #F5F5F5, muted/secondary text #A8A8A8.
-    • Apple Notes: dark bg #000000 (or #1C1C1E for the card/window chrome) with white text; the
-      accent (checkbox/highlight/folder icon) shifts from light-mode #FFCC00 to dark-mode #FFD60A —
-      don't reuse the light-mode yellow.
-    • iMessage: LARGELY dark-mode-agnostic already — the sent bubble stays iOS blue #0A84FF in
-      both modes; only the received bubble darkens, to roughly #262626. Don't recolor the sent
-      bubble.
-    • X/Twitter: this app's default X post UI is already the dark "Lights out" theme (#000000) —
-      "make it dark mode" on an x-post is usually a no-op on colors; check before changing anything.
-  Apply the bg/text/accent triple for the matched platform as a set (don't invert only one channel),
-  and say which platform you matched in your plan (e.g. "Instagram dark mode: bg #0C1014, text
-  #F5F5F5"). For elements that DON'T mimic a known platform, dark mode still isn't a literal
-  invert — pick a genuine near-black/dark-neutral background (not inverted photo colors) and
-  light, high-contrast text/accents, following the CONTRAST PAIRS rule below.
-- Compose, don't scatter — every element relates to the grid and the hierarchy; don't sprinkle floating bits.
+- HIERARCHY: read order headline > subhead > body/caption > cta > legal. The headline is the ONE
+  dominant size (≈2× the subhead) — one glance must show where to look.
+- FONTS: TWO faces max (display for headline/offer, clean for body/CTA). Elements ship this pairing —
+  don't reset fontFamily; match brand-kit fonts when given, else leave element defaults alone.
+- 12-column grid, ~5% margins; align every block's LEFT edge to the same column. Max 2 fonts, 3 colors —
+  prefer the kit. Over a photo use a scrim/pill, never wash the whole frame or use muddy mid-gray.
+- PLACEMENT: never eyeball coordinates. To center something use {"op":"center"} or {"op":"align"} —
+  not hand-computed x/y. NEW text goes either exactly centered on the canvas OR left-aligned to an
+  existing column edge; vertically place it in the band its role belongs to (header top ~20%, body
+  middle, cta bottom ~15%). Keep style.align consistent with the box: centered box → "align":"center".
+- Breathing room: generous, CONSISTENT spacing; never crowd edges. Compose, don't scatter.
+- Text must contrast with what's behind it (scrim/pill if needed) — legibility beats prettiness.
+- CONTRAST PAIRS: when changing "color" OR "background" on a node that has BOTH set (pill/badge/card,
+  e.g. ig-caption), a literal one-property edit can leave the pair invisible (black text on a
+  near-black pill). ALSO adjust the paired property so it reads, and say so in your plan (e.g.
+  "caption text black, flipped its pill to white"). Same check in reverse when changing a background
+  under colored text.
+- DARK MODE on platform elements = that platform's REAL dark theme, never a naive invert. Match the
+  platform from element id/role and apply its bg/text/accent as a SET, naming it in your plan:
+  Instagram (ig-*): bg #0C1014, text #F5F5F5, muted #A8A8A8 · Apple Notes: bg #000000 (card #1C1C1E),
+  white text, accent #FFD60A (not #FFCC00) · iMessage: sent bubble STAYS #0A84FF, received → #262626 ·
+  X post: already dark (#000000) — usually a color no-op. Non-platform elements: true near-black bg +
+  light text (not inverted photo colors), per CONTRAST PAIRS.
 - If fsΔ shows in observation, fix that layer's fontSize toward the TYPE SIZES above.
 - VISUAL CONTEXT lines show what's under each layer (photo/solid) and warnings (wide-on-photo, tiny-type).
-- NEVER place wide text (>70% canvas) directly on a photo — use pill/scrim or narrow the box.
-- ONE archetype per comp: pick the single template that fits the brief and refine it — never stack two
-  archetypes or duplicate the same element in the same spot (duplicates are auto-suppressed).${attRule}
+- NEVER place wide text (>70% canvas) directly on a photo — pill/scrim or narrow the box.
+- ONE archetype per comp — never stack two archetypes or duplicate an element in the same spot
+  (duplicates are auto-suppressed).${attRule}
 
 EXAMPLE TURN (imitate this shape exactly):
 State shows: [2] L2 headline text 80,120 700x120 "BIG SALE" {fs:84,w:800,#ffffff} · [4] L4 cta button 80,900 320x90
@@ -1139,6 +1197,72 @@ export function isChitChat(s) {
   const question = /\?\s*$/.test(t);
   if (question && !editIntent.test(t)) return true;
   return false;
+}
+
+// ── FAST PATH (v6): trivial edits skip the full observe→plan→verify machinery ─────────────────
+// "make the headline bigger" was taking 30-60s through the 12-turn loop with full observations,
+// lint gating and post-passes. A trivial instruction = ONE turn, minimal prompt (~15% the size),
+// scoped observation, no lint gate, done in the same reply. Complex flows are untouched — this
+// is an additive routing decision at the top of edit mode.
+const FAST_VERB = /\b(make|set|change|move|nudge|center|centre|align|resize|rename|rewrite|remove|delete|hide|show|rotate|shrink|enlarge|bump|drop|raise|lower|bigger|smaller|larger|wider|taller|bolder|say|says)\b/;
+const FAST_TARGET = /\b(headline|title|subhead|subheading|subline|caption|body|cta|button|badge|logo|price|pill|label|tagline|offer|text|copy|word(?:ing)?|it|this|that|l\d+|g\d+)\b/;
+// anything that smells multi-part, generative, or structural stays on the full loop
+const FAST_BLOCK = /\b(generate|create|design|redesign|rebuild|redo|template|layout|autolayout|everything|whole|entire|all the|from scratch|then|also|after that|as well)\b|&|\bplus\b/;
+
+/** True when `instruction` is a single trivial edit (short + edit verb + identifiable target,
+ *  or any short edit ask when focusIds pin the target) that the fast path can run in 1-2 turns. */
+export function isTrivialEdit(instruction, opts = {}) {
+  if (opts.mode === 'improve' || opts.mode === 'generate') return false;
+  const t = String(instruction || '').trim().toLowerCase();
+  if (!t || t.length > 140 || isChitChat(t)) return false;
+  if (FAST_BLOCK.test(t)) return false;
+  if ((t.match(/,/g) || []).length >= 2) return false; // 2+ commas = a list of asks
+  const hasFocus = Array.isArray(opts.focusIds) && opts.focusIds.length > 0;
+  return FAST_VERB.test(t) && (FAST_TARGET.test(t) || hasFocus);
+}
+
+/** Best-effort focus for the fast path when the caller gave no focusIds: nodes whose role/name
+ *  (or a text fragment) is literally mentioned in the instruction. Keeps huge-doc observations
+ *  down to the relevant lines. Returns real ids ([] = observe everything). */
+export function deriveFocusIds(doc, instruction) {
+  const t = String(instruction || '').toLowerCase();
+  const ids = [];
+  walkNodes(doc.layers || [], (n) => {
+    if (!n || n.role === 'base') return;
+    const role = String(n.role || '').toLowerCase();
+    const name = String(n.name || '').toLowerCase();
+    if ((role && role.length > 2 && t.includes(role)) || (name && name.length > 2 && t.includes(name))) { ids.push(n.id); return; }
+    const words = String(n.text || '').toLowerCase().split(/\s+/).filter((w) => w.length > 3);
+    if (words.length && words.some((w) => t.includes(w))) ids.push(n.id);
+  });
+  return ids.slice(0, 8);
+}
+
+/** Minimal fast-path system prompt (~15% of the full one): the trivial-op subset, placement
+ *  rules, done-in-same-reply. No template/element catalogs, no design-principles essay. */
+export function buildFastPrompt(instruction, { copyLock = false } = {}) {
+  return `You edit an ad comp's scene graph. This is a SMALL edit — finish it in ONE reply.
+Reply with ONE JSON object: {"plan":"<one short sentence>","ops":[…1-3 ops…],"done":true}. No prose, no code fences.
+Address nodes by short id (L1, g2) or role. Coordinates are absolute px. Never touch role "base" or locked nodes.
+
+OPS (exact shapes):
+{"op":"move","id":"L3","x":60,"y":120}
+{"op":"center","id":"L3","axis":"x"}   (axis: x|y|both — exact canvas centering, never compute it yourself)
+{"op":"align","id":"L3","h":"center","v":"bottom"}   (h: left|center|right · v: top|middle|bottom)
+{"op":"resize","id":"L3","w":400,"h":120}
+{"op":"setText","id":"L3","text":"…"}
+{"op":"setStyle","id":"L3","style":{"fontSize":84,"fontWeight":800,"color":"#111111"}}   (plain text layers — the DEFAULT choice)
+{"op":"setParams","id":"g2","params":{"text":"…"}}   (ONLY for element instances — their state line shows "el:…"; everything else uses setStyle/setText)
+{"op":"remove","id":"L3"}
+
+RULES:
+- "bigger"/"smaller" on text ≈ ±25% fontSize via setStyle (setParams only when the line shows el:…).
+- Centered/moved text: use "center"/"align", and keep style.align consistent with the box.
+- Do exactly what was asked — nothing extra.${copyLock ? '\n- COPY LOCK: text is verbatim-locked — setText is disabled; edit position/size/color only.' : ''}
+
+TASK: ${instruction}
+
+Reply now with the ops AND "done":true in the SAME object.`;
 }
 
 export async function runDesignAgent(doc, instruction, onStep = () => {}, opts = {}) {
@@ -1261,10 +1385,12 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       }
       if (op && op.op === 'template') templateSeeded = true;
       if (op && op.op === 'look') {
-        // self-vision: render the current comp and critique it with the vision endpoint
+        // self-vision: render the current comp and critique it with the vision endpoint.
+        // Fast-fail without one — the usage log showed repeated instant (~7ms) failed calls
+        // when the op was attempted against a down/absent endpoint.
+        if (!process.env.VISION_BASE_URL) throw new Error('no vision endpoint configured — finish without "look"');
         const r = await lookAtComp(work);
         if (!r.ok) throw new Error(r.error || 'look failed');
-        VISION_OK = true;
         return `looked at the render → ${r.critique}`;
       }
       if (op && op.op === 'draftText') {
@@ -1294,20 +1420,39 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       return r;
     };
 
+    // Main-turn VISION (v6): when llmText routes through LM Studio (VISION_BASE_URL reachable),
+    // the worker model IS the vision model — so SHOW it the canvas render on the first turn of
+    // each batch instead of only describing the scene. Render/vision failures degrade silently
+    // to the text-only call inside the harness. Off for tests (opts.llmCall) and the fast path
+    // (a render costs more wall-clock than the whole trivial edit).
+    const mainTurnVision = !opts.llmCall && !!process.env.VISION_BASE_URL && opts.mainTurnVision !== false;
+
     // ONE batched loop, one global turn budget. Lint runs in-loop and gates "done".
-    const runBatch = async (goal, { maxTurns = MAX_TURNS, generate = false } = {}) => {
+    // fast: trivial-edit mode — minimal prompt, scoped low-budget observation, no lint gate.
+    const runBatch = async (goal, { maxTurns = MAX_TURNS, generate = false, fast = false } = {}) => {
       const promptCtx = { ...opts, kit, runMemory, brandSkill, exemplars, copyLock: keepCopy };
+      const fastFocus = fast
+        ? (Array.isArray(opts.focusIds) && opts.focusIds.length ? opts.focusIds : deriveFocusIds(work, goal))
+        : null;
       const run = await runBatchAgent({
-        system: generate ? buildGeneratePrompt(goal, promptCtx) : buildSystemPrompt(goal, promptCtx),
+        system: generate ? buildGeneratePrompt(goal, promptCtx)
+          : fast ? buildFastPrompt(goal, { copyLock: keepCopy })
+            : buildSystemPrompt(goal, promptCtx),
         buildObservation: () => observe(work, {
-          aliases, lastTarget: opCtx.lastTarget, focusIds: opts.focusIds || null,
+          aliases,
+          lastTarget: opCtx.lastTarget,
+          focusIds: fast ? (fastFocus && fastFocus.length ? fastFocus : null) : (opts.focusIds || null),
+          // fast path: don't ship a huge doc — only the focused/relevant nodes fit a 500-token cap
+          ...(fast ? { budgetTokens: 500 } : {}),
         }),
         applyOp: applyFn,
         // Lint gates "done". In generate/improve mode the whole ad is in scope, so completeness
         // findings (missing headline/cta) are fair. But a SCOPED EDIT ("rewrite the caption")
         // must not be blocked into building an entire ad it wasn't asked for — filter those two
         // completeness findings out of the edit-mode gate (quality findings still apply).
-        lint: () => {
+        // The FAST path drops the lint gate entirely — a verify pass on "make the headline
+        // bigger" is pure latency (the final deterministic repair/verify still run post-loop).
+        lint: fast ? null : () => {
           try {
             const findings = lintDesign(work, kit);
             // completeness findings (add headline/cta) apply to open-ended generates and
@@ -1318,13 +1463,18 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
           } catch { return []; }
         },
         maxTurns,
-        maxOpsPerTurn: opts.maxOpsPerTurn || MAX_OPS_PER_TURN,
+        maxOpsPerTurn: fast ? 3 : (opts.maxOpsPerTurn || MAX_OPS_PER_TURN),
         timeoutMsPerTurn: 60_000,
-        purpose: generate ? 'design-generate' : 'design-agent',
+        purpose: fast ? 'design-agent-fast' : generate ? 'design-generate' : 'design-agent',
         signal: opts.signal || null,
         llmCall: opts.llmCall || undefined,
         maxTokensPerTurn: opts.maxTokensPerTurn || 3000, // reasoning headroom (see agent-harness)
         maxApplied: opts.maxApplied || null,
+        // main-turn vision: render once (turn 0) per batch — later turns already have op feedback
+        ...(mainTurnVision && !fast ? {
+          visionCall: (p, img, o) => llmVision(p, img, o),
+          imageForTurn: (turn) => (turn === 0 ? renderCompPng(work) : null),
+        } : {}),
         // targetId: the REAL node id the op touched (aliases like L2 are per-run) — the UI
         // uses it to flash the edited element on the canvas.
         onStep: (s) => emit(s.kind, s.summary, { ...(s.data || {}), model: model.model, ...(s.kind === 'op' && opCtx.lastTarget ? { targetId: opCtx.lastTarget } : {}) }),
@@ -1422,7 +1572,9 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
         // own render and fixes what it sees — not just N blind samples. Render → critique →
         // one corrective turn, up to `visionRefine` rounds (default 2, off without vision or
         // when opts.visionRefine === 0). This is what makes "3× reads" become real iteration.
-        const refineRounds = opts.visionRefine != null ? opts.visionRefine : (process.env.VISION_BASE_URL ? 2 : 0);
+        // main-turn vision already showed the model its render each batch — one refine round
+        // is enough then (was 2); text-only workers keep the full 2-round critique loop.
+        const refineRounds = opts.visionRefine != null ? opts.visionRefine : (process.env.VISION_BASE_URL ? (mainTurnVision ? 1 : 2) : 0);
         for (let vr = 0; vr < refineRounds; vr++) {
           if (opts.signal && opts.signal.aborted) break;
           emit('thinking', `looking at the render (self-critique ${vr + 1}/${refineRounds})…`);
@@ -1436,7 +1588,22 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       }
     } else if (useHarness) {
       source = model.provider === 'deepseek' ? 'deepseek' : model.provider;
-      const run = await runBatch(instruction, { maxTurns: MAX_TURNS });
+      // FAST PATH routing: short single-target trivial edits run ONE focused turn (cap 2) with
+      // the minimal prompt and a scoped observation — no lint gate, no vision, no best-of.
+      // Zero applied ops escalates to the untouched full loop, so nothing is ever lost.
+      const fast = opts.fast !== false && isTrivialEdit(instruction, opts);
+      let run = null;
+      if (fast) {
+        emit('thinking', 'fast path: trivial edit — one focused turn, minimal context');
+        run = await runBatch(instruction, { maxTurns: 2, fast: true });
+        // ZERO applied ops = the fast turn changed nothing (even if the model said done) —
+        // escalate to the untouched full loop so the user's ask is never silently dropped.
+        if (run.applied === 0) {
+          emit('thinking', 'fast path produced no applied ops — escalating to the full loop');
+          run = null;
+        }
+      }
+      if (!run) run = await runBatch(instruction, { maxTurns: MAX_TURNS });
       if (!run.ok && run.applied === 0) {
         if (opts.noCodex) {
           emit('thinking', `${source} produced no applied ops (${run.stoppedBy}) — deterministic autolayout`);

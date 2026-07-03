@@ -12,6 +12,9 @@
 //     into a group (the shell tracks the entered-group stack; Esc exits). Shift-click toggles
 //     multi-select among siblings at the current level.
 //   • Drag on empty canvas = marquee select (nodes at the current level intersecting the rect).
+//     Holding SPACE while starting a drag ALWAYS marquees, no matter what's under the cursor —
+//     real comps are usually covered edge-to-edge by overlay layers (scrim/second photo/shape),
+//     so "empty canvas" is rare in practice; Space is the deliberate "lasso-select" affordance.
 //   • Drag / resize use pointer capture; geometry cached at pointer-down. Moves stream
 //     onChange(commit=false); pointer-up sends ONE commit=true. Multi-selection drags together.
 //   • Modifiers are read PER MOVE (Figma parity): resize ⇧ = aspect-lock on corner handles,
@@ -491,6 +494,54 @@ export default function Stage({
    *  (rather than beside its other usages below) so the lock effect can reach it. */
   const editTextRef = useRef('');
   const [box, setBox] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+  /** Deliberate "always marquee" affordance: real comps are usually covered edge-to-edge by
+   *  overlay layers (a scrim, a second full-bleed photo, a background shape), so plain
+   *  empty-canvas marquee rarely has anywhere to start from. Holding Space while pressing down
+   *  forces a marquee regardless of what's under the cursor — read from a ref (not state) so
+   *  the pointerdown handler sees the live value without re-subscribing. Mirrored into state
+   *  only for the cursor affordance below. */
+  const spaceHeld = useRef(false);
+  const [spaceDown, setSpaceDown] = useState(false);
+
+  // AgentCursorOverlay stays mounted ~280ms after `locked` clears so its CSS exit-fade can
+  // actually play — an instant unmount on `locked=false` would just vanish it with no transition.
+  const [showCursor, setShowCursor] = useState(locked);
+  const [cursorExiting, setCursorExiting] = useState(false);
+  useEffect(() => {
+    if (locked) { setShowCursor(true); setCursorExiting(false); return; }
+    if (!showCursor) return;
+    setCursorExiting(true);
+    const t = window.setTimeout(() => { setShowCursor(false); setCursorExiting(false); }, 280);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locked]);
+
+  useEffect(() => {
+    const isTypingTarget = (t: EventTarget | null) => {
+      const el = t as HTMLElement | null;
+      return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.code !== 'Space' || isTypingTarget(e.target)) return;
+      e.preventDefault(); // stop the page from scrolling on Space
+      spaceHeld.current = true;
+      setSpaceDown(true);
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+      if (e.code !== 'Space') return;
+      spaceHeld.current = false;
+      setSpaceDown(false);
+    };
+    const onBlur = () => { spaceHeld.current = false; setSpaceDown(false); };
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', onBlur);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('blur', onBlur);
+    };
+  }, []);
 
   useEffect(() => {
     const el = stageRef.current;
@@ -632,6 +683,14 @@ export default function Stage({
     // stops this before it fires; kept as defense in depth against any future overlay that
     // doesn't route through the locked wrapper).
     if (e.button !== 0) return;
+    // SPACE-drag ALWAYS marquees, even when the pointer lands directly on a leaf — leaves stop
+    // propagation, so without this check onStagePointerDown's own Space handling never runs and
+    // a drag starting on any overlay layer would always move it instead. See onStagePointerDown.
+    if (spaceHeld.current) {
+      const pt = clientToCanvas(e.clientX, e.clientY);
+      if (pt) startMarquee(e, pt);
+      return;
+    }
     // Trust GEOMETRY, not which DOM node caught the event: re-resolve the top-most selectable
     // leaf under the exact pointer position. A single click on any point inside a layer's box
     // now selects that layer's top hit — no fiddly "aim at the visible pixel" gesture, and big
@@ -672,18 +731,7 @@ export default function Stage({
     if (movable.length) startNodeDrag(e, movable, 'resize', handle);
   };
 
-  const onStagePointerDown = (e: ReactPointerEvent) => {
-    if (locked) return; // agent run in flight — read-only
-    if (e.button !== 0) return;
-    const pt = clientToCanvas(e.clientX, e.clientY);
-    if (!pt) { onSelect([]); return; }
-    // The event reaches the stage only when the DOM node under the cursor was click-through
-    // (an inert base/locked layer, a `pointer-events:none` overlay, or truly empty canvas).
-    // Geometrically re-test first so a click still lands on a real selectable layer sitting
-    // beneath that overlay — otherwise it falls through to marquee/deselect as before.
-    const hit = hitTest(doc, pt.x, pt.y);
-    if (hit) { onLeafPointerDown(e, hit); return; }
-    // empty canvas: start a marquee; click (no move) deselects on pointer-up
+  const startMarquee = (e: ReactPointerEvent, pt: { x: number; y: number }) => {
     drag.current = {
       mode: 'marquee', ids: [], handle: null,
       startClientX: e.clientX, startClientY: e.clientY,
@@ -696,6 +744,26 @@ export default function Stage({
     };
     setGesture('marquee');
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const onStagePointerDown = (e: ReactPointerEvent) => {
+    if (locked) return; // agent run in flight — read-only
+    if (e.button !== 0) return;
+    const pt = clientToCanvas(e.clientX, e.clientY);
+    if (!pt) { onSelect([]); return; }
+    // SPACE-drag ALWAYS marquees, regardless of what's under the cursor. Real ad comps are
+    // usually covered edge-to-edge by overlay layers (scrim, second full-bleed photo, shape),
+    // so the "click empty canvas" marquee below has nowhere to start from in practice — this
+    // is the deliberate lasso-select affordance for that case.
+    if (spaceHeld.current) { startMarquee(e, pt); return; }
+    // The event reaches the stage only when the DOM node under the cursor was click-through
+    // (an inert base/locked layer, a `pointer-events:none` overlay, or truly empty canvas).
+    // Geometrically re-test first so a click still lands on a real selectable layer sitting
+    // beneath that overlay — otherwise it falls through to marquee/deselect as before.
+    const hit = hitTest(doc, pt.x, pt.y);
+    if (hit) { onLeafPointerDown(e, hit); return; }
+    // empty canvas: start a marquee; click (no move) deselects on pointer-up
+    startMarquee(e, pt);
   };
 
   const onStagePointerMove = (e: ReactPointerEvent) => {
@@ -1178,6 +1246,7 @@ export default function Stage({
       ref={stageRef}
       className={styles.stage}
       data-locked={locked || undefined}
+      data-marquee-ready={spaceDown || undefined}
       onPointerDown={onStagePointerDown}
       onPointerMove={onStagePointerMove}
       onPointerUp={onStagePointerUp}
@@ -1187,7 +1256,7 @@ export default function Stage({
         <div className={styles.clip}>
           {renderNodes(doc.layers, 1)}
 
-          {locked ? <AgentCursorOverlay /> : null}
+          {showCursor ? <AgentCursorOverlay exiting={cursorExiting} /> : null}
 
           {underlay && underlay.mode === 'over' ? (
             <img

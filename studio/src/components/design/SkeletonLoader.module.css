@@ -9,6 +9,25 @@
   width: 100%;
   min-width: 0;
   padding: var(--space-2) 0;
+  /* Same ~0.3s enter fade as the agent-run overlays — transition + @starting-style, never an
+     opacity keyframe (the idle power-saver pauses #root animations and would freeze it unseen). */
+  opacity: 1;
+  transition: opacity 0.3s var(--ease);
+}
+@starting-style {
+  .loader {
+    opacity: 0;
+  }
+}
+
+/* Keep the diamond + text shimmer alive while extraction runs even when the app-idle/tab-hidden
+   power-saver pauses #root animations (its activity signal doesn't know about design runs —
+   same override as AgentCursorOverlay.module.css). */
+:global(html[data-app-idle='true'] #root) .loader,
+:global(html[data-app-idle='true'] #root) .loader *,
+:global(html[data-tab-hidden='true'] #root) .loader,
+:global(html[data-tab-hidden='true'] #root) .loader * {
+  animation-play-state: running !important;
 }
 
 /* The action line grows to fill and truncates; TextShimmer handles the sweep + legible base. */

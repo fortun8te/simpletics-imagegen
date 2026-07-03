@@ -17,6 +17,12 @@
       "port": 5173
     },
     {
+      "name": "studio-dev-layers",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "studio", "--", "--port", "5177", "--strictPort"],
+      "port": 5177
+    },
+    {
       "name": "studio-redesign",
       "runtimeExecutable": "npm",
       "runtimeArgs": [

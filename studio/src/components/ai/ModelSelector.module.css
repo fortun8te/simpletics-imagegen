@@ -1,21 +1,25 @@
-/* ModelSelector — quiet searchable model picker. Same menu family as the AgentPanel ⋯ menus. */
+/* ModelSelector — quiet searchable model picker. Same menu family as the AgentPanel ⋯ menus.
+   The trigger reads as a CONTROL (bordered chip + chevron), not a passive caption — a
+   transparent 10px faint label was invisible in practice. */
 .trigger {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  height: 20px;
-  padding: 0 6px;
-  border: 0;
+  gap: 5px;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--line-soft);
   border-radius: var(--r-sm);
-  background: transparent;
-  font: 500 9.5px/1 var(--font-mono);
-  color: var(--faint);
+  background: var(--surface-2);
+  font: 500 10.5px/1 var(--font-mono);
+  color: var(--muted);
   max-width: 100%;
+  min-width: 0;
   cursor: pointer;
 }
-.trigger:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
+.trigger:hover:not(:disabled) { color: var(--ink); border-color: var(--line); background: var(--surface-3); }
+.trigger:focus-visible { outline: 1px solid var(--line-strong); outline-offset: 1px; }
 .trigger:disabled { opacity: 0.5; cursor: default; }
-.triggerLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+.triggerLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
 
 .content {
   min-width: 220px;

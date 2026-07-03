@@ -24,6 +24,13 @@
   cursor: wait;
 }
 
+/* Space held: any drag will marquee-select regardless of what's under the cursor — crosshair
+   signals "about to lasso" the way it does in other design tools' marquee/select-all modes. */
+.stage[data-marquee-ready],
+.stage[data-marquee-ready] .layer {
+  cursor: crosshair;
+}
+
 /* The artboard: width set inline (fit → 100%, zoom → canvas.w * zoom px), height via
    aspect-ratio. container-type: inline-size makes cqw = canvas-px-proportional everywhere. */
 .artboard {

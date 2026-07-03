@@ -1028,6 +1028,18 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
     return out;
   }, [doc, collapsed]);
 
+  // 100+ layers: the list is a tall internal scroll region — when selection changes from the
+  // CANVAS (or agent), reveal the selected row. block:'nearest' makes this a no-op when the
+  // user clicked the row itself (already visible), so it never yanks the list around.
+  const layerListRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const id = selectedIds[0];
+    if (!id || !layerListRef.current) return;
+    layerListRef.current
+      .querySelector(`[data-node-id="${CSS.escape(id)}"]`)
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [selectedIds]);
+
   const onRowDrop = (targetId: string, mode: 'above' | 'into') => {
     const srcId = dragRowId.current;
     dragRowId.current = null;
@@ -1312,11 +1324,12 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
           </div>
-          <div className={styles.layerList}>
+          <div className={styles.layerList} ref={layerListRef}>
             {rows.map(({ n, depth }) => (
               <div
                 key={n.id}
                 className={styles.layerRow}
+                data-node-id={n.id}
                 data-active={selectedIds.includes(n.id) || undefined}
                 data-hidden={n.hidden || undefined}
                 data-drop={drop?.id === n.id ? drop.mode : undefined}

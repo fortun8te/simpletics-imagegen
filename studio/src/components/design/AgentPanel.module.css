@@ -19,42 +19,27 @@
   padding-bottom: var(--space-1);
   border-bottom: 1px solid var(--line-soft);
 }
-.title { font-size: 11px; font-weight: 600; color: var(--ink); }
+/* one shared keyboard-focus treatment for every interactive bit in the panel */
+.panel :is(button, textarea, input):focus-visible {
+  outline: 1px solid var(--line-strong);
+  outline-offset: 1px;
+}
+
 .model {
-  margin-left: auto;
-  font: 500 9.5px/1 var(--font-mono);
+  font: 500 10px/1 var(--font-mono);
   color: var(--faint);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 55%;
+  max-width: 100%;
 }
-.modelBtn {
-  margin-left: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: var(--r-sm);
-  border: 0;
-  background: transparent;
-  font: 500 9.5px/1 var(--font-mono);
-  color: var(--faint);
-  white-space: nowrap;
-  max-width: 55%;
-  overflow: hidden;
-  cursor: pointer;
-}
-.modelBtn:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
-.modelBtn:disabled { opacity: 0.5; cursor: default; }
 .clearBtn {
   flex: none;
   padding: 2px 6px;
   border: 0;
   border-radius: var(--r-sm);
   background: transparent;
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 500;
   color: var(--faint);
   cursor: pointer;
@@ -107,17 +92,64 @@
   flex-direction: column;
   padding: var(--space-1) 0;
 }
+/* empty state: a quiet left-aligned primer instead of a floaty centered paragraph */
 .empty {
-  margin: auto 0;
-  font-size: 11px;
-  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) 2px;
+}
+.emptyTitle {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.emptyHints { display: flex; flex-direction: column; gap: 5px; }
+.emptyHint {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10.5px;
+  line-height: 1.4;
   color: var(--faint);
-  text-align: center;
-  padding: 0 var(--space-3);
+}
+.emptyKbd {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 16px;
+  padding: 0 4px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  font: 500 9px/1 var(--font-mono);
+  color: var(--muted);
 }
 
-.msg { padding: 7px 2px; }
-.msg + .msg { border-top: 1px solid var(--line-soft); }
+/* Crisp landing: new lines fade-rise in instead of popping. TRANSITION from
+   @starting-style, NOT an enter keyframe — theme.css's idle/tab power-saver pauses every
+   animation under #root and a paused enter-keyframe freezes lines INVISIBLE at opacity 0
+   (the AgentCursorOverlay "missing cursor" trap). Transitions ignore the pauser, resting
+   opacity is 1 → messages fail VISIBLE no matter what. Reduced motion is handled centrally
+   (theme.css forces transition-duration to .001ms). */
+.msg {
+  padding: 7px 2px;
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+}
+@starting-style {
+  .msg {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+/* divide between EXCHANGES (each new prompt), not between a prompt and its own reply */
+.msg[data-role="user"]:not(:first-child) { border-top: 1px solid var(--line-soft); }
+.msg[data-role="agent"] { padding-top: 2px; }
 
 /* user line: "› text" */
 .msg[data-role="user"] { display: flex; gap: 7px; align-items: baseline; }
@@ -162,14 +194,25 @@
 }
 .agentLine[data-open] .chev { transform: rotate(90deg); }
 .agentSummary {
-  min-width: 0;
+  flex: none;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font: 500 10.5px/1.6 var(--font-mono);
   color: var(--muted);
 }
+/* trailing "model · 1.2k tok" — quieter than the outcome, truncates first */
+.agentMeta {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 400 10px/1.6 var(--font-mono);
+  color: var(--faint);
+}
 .agentLine:hover .agentSummary { color: var(--ink); }
+.agentLine:hover .agentMeta { color: var(--muted); }
 .undoBtn {
   flex: none;
   padding: 1px 7px;
@@ -177,7 +220,7 @@
   border-radius: var(--r-sm);
   background: transparent;
   color: var(--faint);
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 500;
   cursor: pointer;
 }
@@ -198,54 +241,6 @@
   color: var(--muted);
   white-space: pre-wrap;
   word-break: break-word;
-}
-.stepList { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.step { display: flex; gap: 7px; align-items: baseline; min-width: 0; }
-.stepKind {
-  flex: none;
-  min-width: 44px;
-  font: 600 9px/1.7 var(--font-mono);
-  color: var(--faint);
-  text-transform: lowercase;
-}
-/* single-line so a long summary can't blow up the calm step list — full text on hover (title) */
-.stepSummary {
-  flex: 1 1 auto;
-  min-width: 0;
-  font-size: 10.5px;
-  line-height: 1.5;
-  color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* running: mini-timeline of finished steps + shimmering CURRENT step (single motion source) */
-.runningBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 7px 2px;
-  border-top: 1px solid var(--line-soft);
-}
-.miniTimeline { display: flex; flex-direction: column; gap: 2px; }
-.miniStep {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--ok);
-  animation: stepRise var(--dur-2) var(--ease);
-}
-.miniStepText {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 500 10.5px/1.6 var(--font-mono);
-  color: var(--faint);
-}
-@keyframes stepRise {
-  from { opacity: 0; transform: translateY(3px); }
 }
 .runningLine {
   display: flex;
@@ -275,7 +270,6 @@
 @keyframes shimmer { to { background-position: -200% 0; } }
 @media (prefers-reduced-motion: reduce) {
   .runningText[data-shimmer] { animation: none; color: var(--muted); background: none; }
-  .miniStep { animation: none; }
 }
 :global([data-reduced-motion="true"]) .runningText[data-shimmer] {
   animation: none;
@@ -303,20 +297,6 @@
   padding-top: var(--space-2);
   border-top: 1px solid var(--line-soft);
 }
-.selHint {
-  font-size: 10px;
-  line-height: 1.4;
-  color: var(--faint);
-  padding: 2px;
-  border: 0;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-  border-radius: var(--r-sm);
-  transition: color var(--dur-1) var(--ease);
-}
-.selHint:hover { color: var(--accent-ink); }
-
 /* "@" reference chips */
 .refRow { display: flex; flex-wrap: wrap; gap: 4px; }
 .refChip {
@@ -401,7 +381,7 @@
   background: var(--glass-bg-2);
   font: 400 12px/1.55 var(--font-sans);
   color: var(--ink);
-  resize: vertical;
+  resize: none;
 }
 .inputBox:focus { outline: none; border-color: var(--line-strong); }
 .inputBox::placeholder { color: var(--faint); }
@@ -441,6 +421,32 @@
 .sendBtn:hover:not(:disabled) { background: var(--surface-3); }
 .sendBtn:disabled { opacity: 0.45; cursor: default; }
 .sendKbd { font: 500 9px/1 var(--font-mono); color: var(--faint); }
+/* stop — replaces send while a run is live. Always enabled: it abandons the wait client-side
+   (no server abort exists), so it must never look locked like the old disabled "running". */
+.stopBtn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.stopBtn:hover { background: var(--surface-3); border-color: var(--line-strong); }
+.stopSquare {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 1.5px;
+  background: currentColor;
+}
 
 /* ── quiet menu (＋ affordance, model switcher) — same family as the Layers ⋯ menu ── */
 .menu {
@@ -470,14 +476,24 @@
 .menuIcon { flex: none; width: 14px; display: inline-flex; justify-content: center; color: var(--faint); }
 .menuItem[data-highlighted] .menuIcon { color: var(--ink); }
 .menuHint { margin-left: auto; font: 500 9px/1 var(--font-mono); color: var(--faint); }
-.menuSep { height: 1px; margin: 4px 6px; background: var(--line-soft); }
 
-/* quiet model footer under the composer (v2) */
+/* model footer under the composer — the ONE model placement (opencode-style, bottom-left).
+   "model" caption + bordered picker chip; padded off the panel edge so it can't get clipped
+   flush against the viewport bottom. */
 .modelFooter {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding-top: 2px;
+  justify-content: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding: 2px 0 4px;
+}
+.modelFooterLabel {
+  flex: none;
+  font: 600 8.5px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
 }
 
 /* persona identity in the header (orb + name/model subtitle) */
@@ -493,20 +509,34 @@
   border-radius: var(--r-md);
   border: 1px solid var(--line-soft);
   background: var(--glass-bg-2);
+  /* same fail-visible entrance as .msg (see the comment there) */
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
+}
+@starting-style {
+  .runningCard {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+}
+/* The idle/tab power-saver (theme.css) pauses all #root animations, and its activity signal
+   doesn't know about design-agent runs — it fires DURING agent work and froze the diamond
+   loader at its 0.08-opacity resting frame (an invisible loader) + stopped the step shimmer.
+   The card only exists while a run is live, so a live run IS activity: keep its subtree
+   animating. Specificity (1,2,1) beats the pauser's html[attr] #root * (1,1,1); both
+   !important, higher specificity wins (same override as AgentCursorOverlay/SkeletonLoader). */
+:global(html[data-app-idle='true'] #root) .runningCard,
+:global(html[data-app-idle='true'] #root) .runningCard *,
+:global(html[data-tab-hidden='true'] #root) .runningCard,
+:global(html[data-tab-hidden='true'] #root) .runningCard * {
+  animation-play-state: running !important;
 }
 .runningHead { display: flex; flex-direction: row; align-items: center; gap: 11px; }
 .cot { border-top: 1px solid var(--line-soft); padding-top: 6px; }
 .reasoning { border-top: 1px solid var(--line-soft); padding-top: 4px; }
-
-/* applied-ops Task list inside a finished run's disclosure */
-.opsTask { margin-top: 2px; }
-.opText {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1 1 auto;
-}
+/* inside a run row's disclosure the rail border already frames the block — no extra hairline */
+.agentDetail .cot:first-child { border-top: 0; padding-top: 0; }
 .runningMeta {
   flex: none;
   font-size: 10px;

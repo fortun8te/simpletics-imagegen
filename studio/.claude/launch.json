@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 5173
+    },
+    {
+      "name": "studio-prod",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["studio-server.mjs"],
+      "port": 8788
     }
   ]
 }
