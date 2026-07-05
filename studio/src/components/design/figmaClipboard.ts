@@ -517,9 +517,36 @@ function emitPolyline(
 ): void {
   const s = (l.style || {}) as FxStyle;
   const pts = s.points || [];
-  const abs: Array<[number, number]> = [];
+  const raw: Array<[number, number]> = [];
   for (let i = 0; i + 1 < pts.length; i += 2) {
-    abs.push([l.box.x + pts[i] * l.box.w, l.box.y + pts[i + 1] * l.box.h]);
+    raw.push([l.box.x + pts[i] * l.box.w, l.box.y + pts[i + 1] * l.box.h]);
+  }
+  // Layer hygiene (research §3/#5): every point pair becomes a LINE node, so (a) drop duplicate
+  // and collinear-continuation midpoints (they add nodes without changing geometry — tolerance
+  // ~0.5px of perpendicular deviation, forward-direction only so genuine back-and-forth strokes
+  // survive), then (b) cap at MAX_POLYLINE_POINTS by uniform decimation (endpoints kept) so one
+  // agent-drawn squiggle can't paste hundreds of LINE nodes into Figma.
+  const abs: Array<[number, number]> = [];
+  for (const p of raw) {
+    const n = abs.length;
+    if (n >= 1 && abs[n - 1][0] === p[0] && abs[n - 1][1] === p[1]) continue; // exact duplicate
+    if (n >= 2) {
+      const [ax, ay] = abs[n - 2];
+      const [bx, by] = abs[n - 1];
+      const cross = (bx - ax) * (p[1] - ay) - (by - ay) * (p[0] - ax);
+      const dot = (bx - ax) * (p[0] - bx) + (by - ay) * (p[1] - by);
+      if (Math.abs(cross) < 0.5 && dot >= 0) { abs[n - 1] = p; continue; } // extend prior segment
+    }
+    abs.push(p);
+  }
+  const MAX_POLYLINE_POINTS = 64;
+  if (abs.length > MAX_POLYLINE_POINTS) {
+    const kept: Array<[number, number]> = [];
+    for (let i = 0; i < MAX_POLYLINE_POINTS; i++) {
+      kept.push(abs[Math.round((i * (abs.length - 1)) / (MAX_POLYLINE_POINTS - 1))]);
+    }
+    abs.length = 0;
+    abs.push(...kept);
   }
   const frameGuid = ctx.guid();
   const blend = blendOf(s);

@@ -1,8 +1,9 @@
-// nativeIcons.ts — curated REAL vector icon paths for native-UI chrome (X/Twitter, Instagram,
-// iOS), for use with shapeKind 'path' layers (see sceneGraph.ts LayerStyle.path and Stage.tsx's
-// path render case).
+// native-icons.mjs — curated REAL vector icon paths for native-UI chrome (X/Twitter, Instagram,
+// iOS) plus exact brand glyphs via simple-icons (CC0-1.0). Resurrected from
+// src/graveyard/nativeIcons.ts (2026-07-03 DOM-extraction pass) for use with shapeKind 'path'
+// layers (style.path — coordinates normalized 0..1 within the layer's box).
 //
-// SOURCE:
+// SOURCE / PROVENANCE (verbatim from the graveyard file header):
 //  - X/Twitter icons (reply, repost, likeOutline, bookmarkOutline, share, verifiedBadge, more) are
 //    the REAL paths X.com ships, extracted verbatim from a logged-in x.com/home session's live DOM
 //    (getComputedStyle/querySelector on real tweet articles) — not approximations. Source viewBox
@@ -20,31 +21,30 @@
 //    comes from Bootstrap Icons v1.13.1 (MIT licensed, https://github.com/twbs/bootstrap-icons) — a
 //    well-known, freely-usable open icon set — rather than hand-drawn/invented shapes. Each of
 //    those source glyphs ships as a 16x16 viewBox `<path d="...">`.
+//  - Brand glyphs (X logo, Instagram/Facebook/TikTok/WhatsApp marks, Trustpilot star) come from
+//    simple-icons 16.x (CC0-1.0 — public-domain-equivalent code; the trademarks themselves remain
+//    property of their owners, use only to reference the brand). Source viewBox is 24×24;
+//    normalized to the 0..1 box at module load by scalePath() below.
 //
 // NORMALIZATION: every d-string below has been rescaled by dividing all coordinate numbers by the
 // source glyph's OWN viewBox dimension (24, 22, or 16 — see above), so paths live in a 0..1 box
 // exactly like sceneGraph.ts documents: "style.path: an SVG path string ... coordinates normalized
 // 0..1 within the layer's box". This is the SAME convention raster.ts (pathGeometry:
-// translate(box.x,box.y)·scale(box.w,box.h)), designSvg.ts (pathGeomAttrs: transform="translate(x
-// y) scale(w h)"), and designstore.mjs (renderDesignHtml inline-svg branch: transform="translate(0
-// 0) scale(w h)") already assume — so a layer using any `d` below renders identically across the
-// live Stage editor, the raster PNG export, the SVG export, and the server-rendered HTML export.
+// translate(box.x,box.y)·scale(box.w,box.h)), designSvg.ts (pathGeomAttrs) and designstore.mjs
+// (renderDesignHtml inline-svg branch) already assume — so a layer using any `d` below renders
+// identically across the live Stage editor, the raster PNG export, the SVG export, and the
+// server-rendered HTML export.
 //
 // Some glyphs (e.g. the Bootstrap heart shapes) legitimately overshoot the 0..1 box slightly —
-// that's faithful to the source icon's own design (the glyph extends a hair past its own square
-// viewBox) and is expected, not a bug.
+// that's faithful to the source icon's own design and is expected, not a bug.
 
-/** A single normalized vector icon: `d` is an SVG path string with coordinates in 0..1 box
- *  space; `viewBox` records the source glyph's original [w, h] for reference/debugging only —
- *  renderers never need it since `d` is already normalized. */
-export interface NativeIconPath {
-  d: string;
-  viewBox: [number, number];
-}
+import {
+  siX, siInstagram, siFacebook, siTiktok, siTrustpilot, siWhatsapp,
+} from 'simple-icons';
 
-const VB16: [number, number] = [16, 16];
-const VB24: [number, number] = [24, 24];
-const VB22: [number, number] = [22, 22];
+const VB16 = [16, 16];
+const VB24 = [24, 24];
+const VB22 = [22, 22];
 
 // ── X / Twitter ─────────────────────────────────────────────────────────────────────────────
 // reply/repost/likeOutline/bookmarkOutline/share/verifiedBadge/more below are the REAL paths
@@ -103,7 +103,7 @@ export const TWITTER_ICONS = {
     d: 'M0.709625 0.102875a0.03125 0.03125 0 0 1 0 0.04425L0.356688 0.5l0.352938 0.352875a0.03125 0.03125 0 0 1 -0.04425 0.04425l-0.375 -0.375a0.03125 0.03125 0 0 1 0 -0.04425l0.375 -0.375a0.03125 0.03125 0 0 1 0.04425 0',
     viewBox: VB16,
   },
-} satisfies Record<string, NativeIconPath>;
+};
 
 // ── Instagram ───────────────────────────────────────────────────────────────────────────────
 
@@ -160,9 +160,10 @@ export const INSTAGRAM_ICONS = {
     d: 'M1 0.5A0.5 0.5 0 1 1 0 0.5a0.5 0.5 0 0 1 1 0m-0.248125 -0.189375a0.046875 0.046875 0 0 0 -0.0675 0.001375L0.467313 0.588563 0.3365 0.457688a0.046875 0.046875 0 0 0 -0.06625 0.06625L0.435625 0.689375a0.046875 0.046875 0 0 0 0.067438 -0.00125l0.2495 -0.311875a0.046875 0.046875 0 0 0 -0.000625 -0.065625z',
     viewBox: VB16,
   },
-} satisfies Record<string, NativeIconPath>;
+};
 
 // ── iOS ─────────────────────────────────────────────────────────────────────────────────────
+// SF Symbols are NOT redistributable — these stay as Bootstrap Icons (MIT) recreations.
 
 export const IOS_ICONS = {
   /** Back chevron (bootstrap "chevron-left"). */
@@ -180,36 +181,104 @@ export const IOS_ICONS = {
     d: 'M0.5 0.9375A0.4375 0.4375 0 1 1 0.5 0.0625a0.4375 0.4375 0 0 1 0 0.875m0 0.0625A0.5 0.5 0 1 0 0.5 0a0.5 0.5 0 0 0 0 1',
     viewBox: VB16,
   },
-} satisfies Record<string, NativeIconPath>;
+};
+
+// ── simple-icons brand adapter ──────────────────────────────────────────────────────────────
+// simple-icons ships each brand glyph as an absolute-coordinate `path` on a 24×24 viewBox.
+// scalePath() rescales every coordinate by 1/24 into our normalized 0..1 convention. Arc
+// commands need care: params 4 and 5 of each A/a argument group are the large-arc/sweep FLAGS
+// and param 3 is the x-axis-rotation ANGLE — none of those scale.
+
+/** Scale all coordinates of an SVG path `d` string by `k`, preserving arc flags/angles. */
+export function scalePath(d, k) {
+  const out = [];
+  const re = /([MmLlHhVvCcSsQqTtAaZz])|(-?\d*\.?\d+(?:e[+-]?\d+)?)/g;
+  let cmd = '';
+  let argIdx = 0;
+  let m;
+  while ((m = re.exec(d)) !== null) {
+    if (m[1]) {
+      cmd = m[1];
+      argIdx = 0;
+      out.push(cmd);
+      continue;
+    }
+    const n = parseFloat(m[2]);
+    let scaled;
+    if (cmd === 'A' || cmd === 'a') {
+      const pos = argIdx % 7; // rx ry angle large-arc sweep x y
+      scaled = (pos === 2 || pos === 3 || pos === 4) ? n : n * k;
+    } else {
+      scaled = n * k;
+    }
+    argIdx++;
+    // Trim float noise; 6 decimals matches the hand-normalized paths above.
+    out.push(String(Number(scaled.toFixed(6))));
+  }
+  return out.join(' ');
+}
+
+/** Wrap a simple-icons export into the registry shape (normalized to 0..1). */
+const brand = (si) => ({
+  d: scalePath(si.path, 1 / 24),
+  viewBox: VB24,
+  source: `simple-icons (CC0-1.0) — ${si.title}, brand color #${si.hex}`,
+  /** Official brand hex, straight from simple-icons. */
+  hex: `#${si.hex}`,
+});
+
+/** Exact brand marks (simple-icons, CC0-1.0). Trademark rules still apply to usage. */
+export const BRAND_ICONS = {
+  'brand-x': brand(siX),
+  'brand-instagram': brand(siInstagram),
+  'brand-facebook': brand(siFacebook),
+  'brand-tiktok': brand(siTiktok),
+  'brand-trustpilot': brand(siTrustpilot), // star glyph; official green #00B67A
+  'brand-whatsapp': brand(siWhatsapp),
+};
 
 // ── flat lookup ─────────────────────────────────────────────────────────────────────────────
 
+const src = (s) => (entry) => ({ ...entry, source: entry.source || s });
+const X_SRC = src('x.com live DOM (verbatim) or Bootstrap Icons v1.13.1 (MIT) — see per-icon JSDoc');
+const IG_SRC = src('instagram.com live DOM (verbatim) or Bootstrap Icons v1.13.1 (MIT) — see per-icon JSDoc');
+const IOS_SRC = src('Bootstrap Icons v1.13.1 (MIT) recreation — SF Symbols are not redistributable');
+
 /** Stable string keys for every icon above, addressable independent of platform grouping —
  *  e.g. `NATIVE_ICONS['x-like-filled']`, `NATIVE_ICONS['ig-heart-outline']`,
- *  `NATIVE_ICONS['ios-check']`. */
-export const NATIVE_ICONS: Record<string, NativeIconPath> = {
-  'x-reply': TWITTER_ICONS.reply,
-  'x-repost': TWITTER_ICONS.repost,
-  'x-like-outline': TWITTER_ICONS.likeOutline,
-  'x-like-filled': TWITTER_ICONS.likeFilled,
-  'x-bookmark-outline': TWITTER_ICONS.bookmarkOutline,
-  'x-bookmark-filled': TWITTER_ICONS.bookmarkFilled,
-  'x-share': TWITTER_ICONS.share,
-  'x-verified-badge': TWITTER_ICONS.verifiedBadge,
-  'x-more': TWITTER_ICONS.more,
-  'x-back': TWITTER_ICONS.back,
+ *  `NATIVE_ICONS['ios-check']`, `NATIVE_ICONS['brand-tiktok']`.
+ *  Entry shape: { id via key, viewBox: [w,h], d: normalized 0..1 path, source: provenance }. */
+export const NATIVE_ICONS = {
+  'x-reply': X_SRC(TWITTER_ICONS.reply),
+  'x-repost': X_SRC(TWITTER_ICONS.repost),
+  'x-like-outline': X_SRC(TWITTER_ICONS.likeOutline),
+  'x-like-filled': X_SRC(TWITTER_ICONS.likeFilled),
+  'x-bookmark-outline': X_SRC(TWITTER_ICONS.bookmarkOutline),
+  'x-bookmark-filled': X_SRC(TWITTER_ICONS.bookmarkFilled),
+  'x-share': X_SRC(TWITTER_ICONS.share),
+  'x-verified-badge': X_SRC(TWITTER_ICONS.verifiedBadge),
+  'x-more': X_SRC(TWITTER_ICONS.more),
+  'x-back': X_SRC(TWITTER_ICONS.back),
 
-  'ig-heart-outline': INSTAGRAM_ICONS.heartOutline,
-  'ig-heart-filled': INSTAGRAM_ICONS.heartFilled,
-  'ig-comment': INSTAGRAM_ICONS.comment,
-  'ig-repost': INSTAGRAM_ICONS.repost,
-  'ig-share': INSTAGRAM_ICONS.share,
-  'ig-bookmark-outline': INSTAGRAM_ICONS.bookmarkOutline,
-  'ig-bookmark-filled': INSTAGRAM_ICONS.bookmarkFilled,
-  'ig-more': INSTAGRAM_ICONS.more,
-  'ig-verified-badge': INSTAGRAM_ICONS.verifiedBadge,
+  'ig-heart-outline': IG_SRC(INSTAGRAM_ICONS.heartOutline),
+  'ig-heart-filled': IG_SRC(INSTAGRAM_ICONS.heartFilled),
+  'ig-comment': IG_SRC(INSTAGRAM_ICONS.comment),
+  'ig-repost': IG_SRC(INSTAGRAM_ICONS.repost),
+  'ig-share': IG_SRC(INSTAGRAM_ICONS.share),
+  'ig-bookmark-outline': IG_SRC(INSTAGRAM_ICONS.bookmarkOutline),
+  'ig-bookmark-filled': IG_SRC(INSTAGRAM_ICONS.bookmarkFilled),
+  'ig-more': IG_SRC(INSTAGRAM_ICONS.more),
+  'ig-verified-badge': IG_SRC(INSTAGRAM_ICONS.verifiedBadge),
 
-  'ios-back': IOS_ICONS.back,
-  'ios-check': IOS_ICONS.check,
-  'ios-circle-unchecked': IOS_ICONS.circleUnchecked,
+  'ios-back': IOS_SRC(IOS_ICONS.back),
+  'ios-check': IOS_SRC(IOS_ICONS.check),
+  'ios-circle-unchecked': IOS_SRC(IOS_ICONS.circleUnchecked),
+
+  ...BRAND_ICONS,
 };
+
+/** Look up a native icon by flat id (e.g. 'x-like-outline'). Returns
+ *  { d, viewBox, source, hex? } or null. */
+export function nativeIcon(id) {
+  return NATIVE_ICONS[id] || null;
+}

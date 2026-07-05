@@ -1,13 +1,13 @@
 {
-  "id": "harness_053_5fd4549c",
-  "name": "copy-harness harness_053_5fd4549c",
+  "id": "harness_053_434eb0a6",
+  "name": "copy-harness harness_053_434eb0a6",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base_mr6mjzdd",
+      "id": "base_mr7zo4f0",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,55 +23,47 @@
       }
     },
     {
-      "id": "rect-mr6mjzdd-2g",
+      "id": "rect-mr7zo4ez-7t",
       "type": "image",
       "role": "rect",
-      "name": "Cut-out · window view",
+      "name": "Cut-out · kitchen window background",
       "box": {
         "x": 0,
         "y": 0,
         "w": 1080,
         "h": 1920
       },
-      "style": {
-        "crop": {
-          "x": 0,
-          "y": 0,
-          "w": 1,
-          "h": 1
-        },
-        "radius": 38
-      },
-      "src": "/refasset?id=harness-053"
+      "style": {},
+      "src": "/refasset?id=harness-053md3cd974d"
     },
     {
-      "id": "group-mr6mjzdd-2h",
+      "id": "group-mr7zo4ez-7u",
       "type": "group",
       "name": "Body",
       "box": {
         "x": 173,
         "y": 787,
-        "w": 756,
-        "h": 345
+        "w": 778,
+        "h": 144
       },
       "children": [
         {
-          "id": "caption-mr6mjzdd-2i",
+          "id": "headline-mr7zo4ez-7v",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "role": "headline",
+          "name": "headline",
           "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
           "autoH": true,
           "box": {
             "x": 173,
             "y": 787,
-            "w": 756,
-            "h": 77
+            "w": 778,
+            "h": 167
           },
           "style": {
-            "color": "#d1c3b4",
+            "color": "#cdcac7",
             "background": "#000000",
-            "fontSize": 30,
+            "fontSize": 56,
             "fontWeight": 700,
             "align": "center",
             "uppercase": false,
@@ -80,122 +72,71 @@
           }
         },
         {
-          "id": "badge-mr6mjzdd-2j",
-          "type": "badge",
+          "id": "badge-mr7zo4ez-7w",
+          "type": "text",
           "role": "badge",
           "name": "badge",
           "text": "72,6 kg",
           "autoH": true,
           "box": {
-            "x": 216,
+            "x": 184,
             "y": 864,
-            "w": 205,
-            "h": 77
+            "w": 194,
+            "h": 67
           },
           "style": {
-            "color": "#c5bebb",
+            "color": "#d2c4c1",
             "background": "#000000",
             "fontSize": 28,
-            "fontWeight": 700,
+            "fontWeight": 800,
             "align": "center",
-            "radius": 108,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "badge-mr6mjzdd-2k",
-          "type": "badge",
+          "id": "badge-mr7zo4ez-7x",
+          "type": "text",
           "role": "badge",
           "name": "badge",
           "text": "68,2kg",
           "autoH": true,
           "box": {
-            "x": 443,
+            "x": 454,
             "y": 864,
-            "w": 205,
-            "h": 77
+            "w": 194,
+            "h": 67
           },
           "style": {
-            "color": "#c9ad9a",
+            "color": "#d5d0cc",
             "background": "#000000",
             "fontSize": 28,
-            "fontWeight": 700,
+            "fontWeight": 800,
             "align": "center",
-            "radius": 108,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "badge-mr6mjzdd-2l",
-          "type": "badge",
+          "id": "badge-mr7zo4ez-7y",
+          "type": "text",
           "role": "badge",
           "name": "badge",
           "text": "66,1kg",
           "autoH": true,
           "box": {
-            "x": 680,
+            "x": 724,
             "y": 864,
-            "w": 205,
-            "h": 77
+            "w": 194,
+            "h": 67
           },
           "style": {
-            "color": "#cd5457",
-            "background": "#ff6b6b",
+            "color": "#e84393",
+            "background": "#f8d7e8",
             "fontSize": 28,
-            "fontWeight": 700,
-            "align": "center",
-            "radius": 108,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "caption-mr6mjzdd-2m",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Ganz Ehrlich: ich habe null damit\ngerechnet 😂🙈",
-          "autoH": true,
-          "box": {
-            "x": 216,
-            "y": 960,
-            "w": 670,
-            "h": 115
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#000000",
-            "fontSize": 30,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "caption-mr6mjzdd-2n",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "@vitafant_natural",
-          "autoH": true,
-          "box": {
-            "x": 432,
-            "y": 1094,
-            "w": 259,
-            "h": 68
-          },
-          "style": {
-            "color": "#2a1d13",
-            "background": "#000000",
-            "fontSize": 30,
-            "fontWeight": 500,
+            "fontWeight": 800,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2,
@@ -205,6 +146,6 @@
       ]
     }
   ],
-  "skeletonId": "skel_mr6mjzdddkmo",
-  "updatedAt": 1783185414097
+  "skeletonId": "skel_mr7zo4ez0sv3",
+  "updatedAt": 1783267911370
 }

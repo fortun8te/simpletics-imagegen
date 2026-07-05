@@ -18,6 +18,9 @@ import {
   NOTES_CHECKLIST_DONE_CIRCLE, NOTES_CHECKLIST_DONE_CHECK, NOTES_CHECKLIST_DONE_CHECK_BOX,
   NOTES_REAL_COLORS,
 } from './notes-icons.mjs';
+// EXACT platform chrome: verbatim X.com / Instagram DOM paths (+ Bootstrap/simple-icons
+// fallbacks) from the resurrected registry — replaces text-glyph/polyline approximations below.
+import { NATIVE_ICONS } from './native-icons.mjs';
 
 const T = (over) => ({ id: layerId(over.role || 'text'), type: 'text', autoH: true, ...over });
 const S = (over) => ({ id: layerId(over.role || 'shape'), type: 'shape', ...over });
@@ -233,9 +236,11 @@ export const TEMPLATES = [
         T({ role: 'caption', name: 'Name', text: pct(p.name), sizeLocked: true, autoH: false,
           box: { x: tx, y: nameTop, w: Math.max(rx(0.1), nameW), h: Math.round(nameFs * 1.35) },
           style: { fontSize: nameFs, fontWeight: 800, color: NAME, align: 'left', lineHeight: 1.2, fontFamily: chirp } }),
-        p.verified && T({ role: 'badge', name: 'Verified', text: '✔', sizeLocked: true, autoH: false,
-          box: { x: checkX, y: nameTop + Math.round(nameFs * 0.06), w: checkS, h: checkS },
-          style: { fontSize: Math.round(checkS * 0.6), fontWeight: 900, color: WHITE, background: BLUE, radius: checkS, align: 'center', lineHeight: 1, fontFamily: chirp } }),
+        // REAL X verified rosette (verbatim x.com path — rosette + check baked as ONE glyph;
+        // the check reads as a hole because its subpath winds opposite under nonzero fill)
+        p.verified && iconShape({ role: 'badge', name: 'Verified',
+          box: { x: checkX, y: nameTop + Math.round(nameFs * 0.06), w: checkS, h: checkS } },
+          { d: NATIVE_ICONS['x-verified-badge'].d, color: BLUE }),
         T({ role: 'caption', name: 'Handle', text: pct(p.handle), sizeLocked: true, autoH: false,
           box: { x: tx, y: nameTop + Math.round(nameFs * 1.25), w: rx(0.5), h: Math.round(handleFs * 1.35) },
           style: { fontSize: handleFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1.2, fontFamily: chirp } }),
@@ -348,41 +353,32 @@ export const TEMPLATES = [
         }
       }
 
-      // ── Action row: reply · repost · like · bookmark (icon+count) + share ⬆ — all MONOCHROME
-      //    grey like the real X chrome. Color-emoji (🔁/🔖) get replaced: repost → a "⇄" text
-      //    glyph, bookmark → a drawn polyline ribbon outline (WebKit ignores the VS15 selector on
-      //    those two). reply/like/share are text glyphs that already render monochrome. ────────────
+      // ── Action row: reply · repost · like · bookmark (icon+count) + share ⬆ — the REAL X.com
+      //    icon paths (verbatim DOM extraction, lib/native-icons.mjs), all MONOCHROME grey like
+      //    the real chrome. Each icon is a shapeKind:'path' layer + a separate count text. ────────
       const actFs = fs(0.032);
       const slotDefs = [
-        { key: 'reply', glyph: '💬︎', count: pct(p.replies) },
-        { key: 'repost', glyph: '⇄', count: pct(p.reposts) },
-        { key: 'like', glyph: '♥', count: pct(p.likes) },
-        { key: 'bookmark', shape: true, count: pct(p.bookmarks) },
+        { key: 'reply', icon: 'x-reply', count: pct(p.replies) },
+        { key: 'repost', icon: 'x-repost', count: pct(p.reposts) },
+        { key: 'like', icon: 'x-like-outline', count: pct(p.likes) },
+        { key: 'bookmark', icon: 'x-bookmark-outline', count: pct(p.bookmarks) },
       ];
       const slotW = Math.round((w - pad * 2) / (slotDefs.length + 1)); // +1 slot for trailing share
       const actionNodes = [];
+      const actIconS = Math.round(actFs * 1.18); // X renders its 24px glyphs a hair over text size
+      const actIconY = rowY + Math.round((rowH - actIconS) / 2);
       slotDefs.forEach((s, i) => {
         const sx = pad + i * slotW;
-        if (s.shape) {
-          // bookmark ribbon outline (rounded rect with a bottom V-notch) as a monochrome polyline
-          const iw = Math.round(actFs * 0.78), ih = Math.round(actFs * 1.02);
-          const iy = rowY + Math.round((rowH - ih) / 2);
-          actionNodes.push(S({ role: 'decor', name: 'Bookmark icon', box: { x: sx, y: iy, w: iw, h: ih },
-            style: { shapeKind: 'polyline', background: MUTED,
-              points: [0.06, 0.04, 0.94, 0.04, 0.94, 0.96, 0.5, 0.6, 0.06, 0.96, 0.06, 0.04],
-              stroke: { color: MUTED, width: Math.max(2, Math.round(actFs * 0.09)) } } }));
-          actionNodes.push(T({ role: 'caption', name: 'Bookmark count', text: s.count, sizeLocked: true, autoH: false,
-            box: { x: sx + iw + Math.round(actFs * 0.45), y: rowY, w: slotW - iw, h: rowH },
-            style: { fontSize: actFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1, fontFamily: chirp } }));
-        } else {
-          actionNodes.push(T({ role: 'caption', name: `${s.key} count`, text: `${s.glyph}  ${s.count}`, sizeLocked: true, autoH: false,
-            box: { x: sx, y: rowY, w: slotW, h: rowH },
-            style: { fontSize: actFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1, fontFamily: chirp } }));
-        }
+        actionNodes.push(iconShape({ role: 'decor', name: `${s.key} icon`,
+          box: { x: sx, y: actIconY, w: actIconS, h: actIconS } },
+          { d: NATIVE_ICONS[s.icon].d, color: MUTED }));
+        actionNodes.push(T({ role: 'caption', name: `${s.key} count`, text: s.count, sizeLocked: true, autoH: false,
+          box: { x: sx + actIconS + Math.round(actFs * 0.45), y: rowY, w: slotW - actIconS, h: rowH },
+          style: { fontSize: actFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1, fontFamily: chirp } }));
       });
-      actionNodes.push(T({ role: 'caption', name: 'Share', text: '⬆', sizeLocked: true, autoH: false,
-        box: { x: w - pad - Math.round(actFs * 1.6), y: rowY, w: Math.round(actFs * 1.6), h: rowH },
-        style: { fontSize: actFs, fontWeight: 400, color: MUTED, align: 'right', lineHeight: 1, fontFamily: chirp } }));
+      actionNodes.push(iconShape({ role: 'decor', name: 'Share icon',
+        box: { x: w - pad - actIconS, y: actIconY, w: actIconS, h: actIconS } },
+        { d: NATIVE_ICONS['x-share'].d, color: MUTED }));
       const actions = showActions ? groupLayers('Actions', actionNodes) : null;
 
       // clean Figma export: bg, Nav group, Header group, then a Body/Media/Meta/Actions content group
@@ -902,9 +898,11 @@ export const TEMPLATES = [
         box: { x: utx, y: barY + Math.round((barH - nameFs * 1.3) / 2), w: unameW, h: Math.round(nameFs * 1.3) },
         style: { fontSize: nameFs, fontWeight: 700, color: INK, align: 'left', lineHeight: 1.2, fontFamily: ig } });
       const checkS = Math.round(nameFs * 0.95);
-      const uCheck = p.verified && T({ role: 'badge', name: 'Verified', text: '✔', sizeLocked: true, autoH: false,
-        box: { x: utx + unameW + rx(0.012), y: barY + Math.round((barH - checkS) / 2), w: checkS, h: checkS },
-        style: { fontSize: Math.round(checkS * 0.62), fontWeight: 900, color: '#ffffff', background: BLUE, radius: checkS, align: 'center', lineHeight: 1, fontFamily: ig } });
+      // IG verified: filled circle + check as ONE combined path (lib/native-icons.mjs) — the
+      // check reads as a hole under nonzero fill, matching IG's plain blue seal.
+      const uCheck = p.verified && iconShape({ role: 'badge', name: 'Verified',
+        box: { x: utx + unameW + rx(0.012), y: barY + Math.round((barH - checkS) / 2), w: checkS, h: checkS } },
+        { d: NATIVE_ICONS['ig-verified-badge'].d, color: BLUE });
       const more = T({ role: 'caption', name: 'More', text: '⋯', sizeLocked: true, autoH: false,
         box: { x: w - pad - rx(0.08), y: barY, w: rx(0.08), h: barH },
         style: { fontSize: fs(0.05), fontWeight: 700, color: INK, align: 'right', lineHeight: 1, fontFamily: ig } });
@@ -915,34 +913,40 @@ export const TEMPLATES = [
       const photoSide = Math.min(w, ry(0.5));
       const photo = imageSlot(pct(p.photo), { x: 0, y: photoY, w, h: photoSide }, 0);
 
-      // ── Action row: ♡ heart · ⬭ speech bubble · ➤ paper-plane (left) · ⌵ save ribbon (right) ──────
-      //    All drawn as MONOCHROME polylines (like the x-post-ad bookmark) so no color-emoji leaks
-      //    through — matching Instagram's thin outline icon set exactly. ─────────────────────────────
+      // ── Action row: heart · comment bubble · paper-plane share (left) · save ribbon (right) ─────
+      //    heart/comment/share are the REAL Instagram paths (verbatim DOM extraction,
+      //    lib/native-icons.mjs); save is a Bootstrap-Icons ribbon (no verbatim IG source was
+      //    captured for it). All monochrome INK, rendered as shapeKind:'path' layers. The old
+      //    hand-drawn polyIcon polylines below remain as documented fallback. ──────────────────────
       const rowY = photoY + photoSide + ry(0.012);
       const iconFs = fs(0.055);
       const iconRowH = Math.round(iconFs * 1.2);
       const iconStroke = Math.max(2, Math.round(iconFs * 0.055));
       const iconY = rowY + Math.round((iconRowH - iconFs) / 2);
       const gapI = rx(0.125);
+      // FALLBACK (kept, unused while verbatim paths exist): hand-drawn monochrome polylines —
+      // heart lobes, speech-bubble w/ tail, paper-plane triangle, ribbon w/ bottom V-notch.
+      // eslint-disable-next-line no-unused-vars
       const polyIcon = (name, gx, w0, h0, points) => S({ role: 'decor', name,
         box: { x: gx, y: iconY + Math.round((iconFs - h0) / 2), w: w0, h: h0 },
         style: { shapeKind: 'polyline', background: '#ffffff', points, stroke: { color: INK, width: iconStroke } } });
-      // heart outline (two lobes meeting at a bottom point), speech-bubble (rounded rect + tail),
-      // paper-plane (triangle), bookmark ribbon (rect w/ bottom V-notch) — all normalized 0..1.
+      // stroked=true → IG ships that glyph as a STROKE outline (single contour); canvas path
+      // fill can't be 'none', so fill card-white + stroke INK (same trick polyIcon used).
+      // stroked=false → the glyph is real filled outline geometry (double contour): fill INK.
+      const pathIcon = (name, iconId, gx, w0, h0, stroked = false) => iconShape({ role: 'decor', name,
+        box: { x: gx, y: iconY + Math.round((iconFs - h0) / 2), w: w0, h: h0 },
+        style: stroked ? { stroke: { color: INK, width: iconStroke } } : {} },
+        { d: NATIVE_ICONS[iconId].d, color: stroked ? '#ffffff' : INK });
       const heartW = Math.round(iconFs * 1.02);
       const bubbleW = Math.round(iconFs * 0.98);
       const planeW = Math.round(iconFs * 1.0);
-      const saveW = Math.round(iconFs * 0.66), saveH = Math.round(iconFs * 0.9);
+      const saveW = Math.round(iconFs * 0.9), saveH = Math.round(iconFs * 0.9);
       const actions = groupLayers('Actions', [
-        polyIcon('Like', pad, heartW, iconFs,
-          [0.5, 0.95, 0.06, 0.5, 0.06, 0.28, 0.25, 0.1, 0.5, 0.24, 0.75, 0.1, 0.94, 0.28, 0.94, 0.5, 0.5, 0.95]),
-        polyIcon('Comment', pad + gapI, bubbleW, iconFs,
-          [0.1, 0.08, 0.9, 0.08, 0.9, 0.72, 0.5, 0.72, 0.28, 0.92, 0.3, 0.72, 0.1, 0.72, 0.1, 0.08]),
-        polyIcon('Share', pad + gapI * 2, planeW, iconFs,
-          [0.94, 0.08, 0.06, 0.42, 0.44, 0.56, 0.5, 0.92, 0.94, 0.08, 0.44, 0.56]),
-        // bookmark/save ribbon far-right
-        polyIcon('Save', w - pad - saveW, saveW, saveH,
-          [0.08, 0.04, 0.92, 0.04, 0.92, 0.96, 0.5, 0.62, 0.08, 0.96, 0.08, 0.04]),
+        pathIcon('Like', 'ig-heart-outline', pad, heartW, iconFs),
+        pathIcon('Comment', 'ig-comment', pad + gapI, bubbleW, iconFs, true),
+        pathIcon('Share', 'ig-share', pad + gapI * 2, planeW, iconFs, true),
+        // bookmark/save ribbon far-right (Bootstrap approximation — see note above)
+        pathIcon('Save', 'ig-bookmark-outline', w - pad - saveW, saveW, saveH),
       ]);
 
       // ── Meta: "liked by X and N others" + caption (bold username · caption) ─────────────────────

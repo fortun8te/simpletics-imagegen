@@ -1,62 +1,35 @@
 {
-  "at": "2026-07-05T15:45:19.922Z",
-  "n": 2,
-  "okN": 2,
-  "avgScore": 93.1,
+  "at": "2026-07-05T16:02:01.546Z",
+  "n": 1,
+  "okN": 1,
+  "avgScore": 70.1,
   "results": [
     {
-      "id": "026",
-      "filename": "026_attached_84a042d29cdfff93.webp",
+      "id": "002",
+      "filename": "002_attached_5885519ba4359843.webp",
       "ok": true,
       "error": null,
       "ms": {
-        "extract": 37932,
-        "assemble": 3,
-        "total": 44844
+        "extract": 30083,
+        "assemble": 2861,
+        "total": 40839
       },
-      "archetype": "comparison",
+      "archetype": "offer-hero",
       "layerCountExtracted": 18,
       "parsePath": "loose",
-      "background": "#f4f4f4",
-      "cutoutCandidates": 2,
-      "layersApplied": 2,
+      "background": "#E2491A",
+      "cutoutCandidates": 3,
+      "layersApplied": 5,
       "leavesInResult": 19,
       "verify": {
         "ready": false
       },
       "pixelError": null,
-      "textPileOverlaps": 0,
-      "pixelScoreRaw": 94,
-      "pixelScore": 94,
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/026/side-by-side.png",
-      "attempts": 2
-    },
-    {
-      "id": "050",
-      "filename": "050_attached_0d40eff6fd3e3051.webp",
-      "ok": true,
-      "error": null,
-      "ms": {
-        "extract": 92110,
-        "assemble": 2,
-        "total": 99237
-      },
-      "archetype": "x-post",
-      "layerCountExtracted": 10,
-      "parsePath": "loose",
-      "background": "#121212",
-      "cutoutCandidates": 4,
-      "layersApplied": 3,
-      "leavesInResult": 11,
-      "verify": {
-        "ready": false
-      },
-      "pixelError": null,
-      "textPileOverlaps": 2,
-      "pixelScoreRaw": 98.1,
-      "pixelScore": 92.1,
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/050/side-by-side.png",
-      "attempts": 1
+      "textPileOverlaps": 7,
+      "pixelScoreRaw": 91.1,
+      "pixelScore": 70.1,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/002/side-by-side.png",
+      "attempts": 3
     }
   ]
 }

@@ -1,13 +1,13 @@
 {
-  "id": "harness_002_d24aa83f",
-  "name": "copy-harness harness_002_d24aa83f",
+  "id": "harness_002_89c89828",
+  "name": "copy-harness harness_002_89c89828",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr7yjai2-13",
+      "id": "base-mr7z97vs-l",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,55 +19,55 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#e65100"
+        "background": "#E2491A"
       }
     },
     {
-      "id": "group-mr7yjai2-j",
+      "id": "background-mr7z97vr-0",
+      "type": "shape",
+      "role": "background",
+      "name": "background",
+      "box": {
+        "x": 92,
+        "y": 86,
+        "w": 896,
+        "h": 1363
+      },
+      "style": {
+        "color": "#ffffff",
+        "background": "#ffffff",
+        "fontSize": 43,
+        "fontWeight": 600,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "opacity": 1,
+        "padding": 16,
+        "shapeKind": "rect"
+      }
+    },
+    {
+      "id": "group-mr7z97vr-1",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 1,
-        "y": 1,
-        "w": 992,
-        "h": 882
+        "x": 0,
+        "y": 2,
+        "w": 122,
+        "h": 264
       },
       "children": [
         {
-          "id": "card-mr7yjai2-k",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
-          "box": {
-            "x": 86,
-            "y": 77,
-            "w": 907,
-            "h": 806
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#111111",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "caption-mr7yjai2-l",
+          "id": "caption-mr7z97vr-2",
           "type": "text",
           "role": "caption",
           "name": "Product label",
           "autoH": true,
           "sizeLocked": true,
-          "text": "WHEY MILKSHAKE POUCH",
+          "text": "UPFRONT WHEY MILKSHAKE",
           "box": {
-            "x": 1,
-            "y": 193,
+            "x": 0,
+            "y": 194,
             "w": 40,
             "h": 32
           },
@@ -82,16 +82,16 @@
           }
         },
         {
-          "id": "caption-mr7yjai2-m",
+          "id": "caption-mr7z97vr-3",
           "type": "text",
           "role": "caption",
           "name": "Product label",
           "autoH": true,
           "sizeLocked": true,
-          "text": "PRE PRO 3.0 JAR",
+          "text": "UPFRONT PRE PRO 3.0",
           "box": {
             "x": 7,
-            "y": 153,
+            "y": 154,
             "w": 40,
             "h": 32
           },
@@ -106,16 +106,16 @@
           }
         },
         {
-          "id": "caption-mr7yjai2-n",
+          "id": "caption-mr7z97vr-4",
           "type": "text",
           "role": "caption",
           "name": "Product label",
           "autoH": true,
           "sizeLocked": true,
-          "text": "CREATINE JAR",
+          "text": "UPFRONT CREATINE",
           "box": {
             "x": 7,
-            "y": 309,
+            "y": 234,
             "w": 40,
             "h": 32
           },
@@ -130,7 +130,7 @@
           }
         },
         {
-          "id": "headline-mr7yjai2-o",
+          "id": "headline-mr7z97vr-5",
           "type": "text",
           "role": "headline",
           "name": "headline",
@@ -138,14 +138,14 @@
           "autoH": true,
           "box": {
             "x": 1,
-            "y": 1,
+            "y": 2,
             "w": 109,
             "h": 135
           },
           "style": {
-            "color": "#000000",
+            "color": "#1a1a1a",
             "fontSize": 56,
-            "fontWeight": 800,
+            "fontWeight": 900,
             "align": "center",
             "uppercase": true,
             "fontFamily": "-apple-system",
@@ -153,20 +153,20 @@
           }
         },
         {
-          "id": "subhead-mr7yjai2-p",
+          "id": "subhead-mr7z97vr-6",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
           "text": "KRACHTSPORT BUNDEL",
           "autoH": true,
           "box": {
-            "x": 1,
-            "y": 39,
+            "x": 2,
+            "y": 40,
             "w": 120,
             "h": 92
           },
           "style": {
-            "color": "#000000",
+            "color": "#1a1a1a",
             "fontSize": 38,
             "fontWeight": 800,
             "align": "center",
@@ -176,7 +176,7 @@
           }
         },
         {
-          "id": "price-mr7yjai2-q",
+          "id": "price-mr7z97vr-7",
           "type": "text",
           "role": "price",
           "name": "price",
@@ -184,12 +184,12 @@
           "autoH": true,
           "box": {
             "x": 3,
-            "y": 77,
+            "y": 78,
             "w": 40,
             "h": 144
           },
           "style": {
-            "color": "#000000",
+            "color": "#1a1a1a",
             "fontSize": 40,
             "fontWeight": 800,
             "align": "center",
@@ -199,70 +199,24 @@
           }
         },
         {
-          "id": "badge-mr7yjai2-r",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "VANILLE SMAAK 1kg",
-          "autoH": true,
-          "box": {
-            "x": 1,
-            "y": 271,
-            "w": 79,
-            "h": 94
-          },
-          "style": {
-            "color": "#000000",
-            "fontSize": 26,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "fontFamily": "-apple-system",
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "badge-mr7yjai2-s",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "CITRUS SMAAK 350g",
-          "autoH": true,
-          "box": {
-            "x": 7,
-            "y": 233,
-            "w": 40,
-            "h": 94
-          },
-          "style": {
-            "color": "#000000",
-            "fontSize": 26,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "fontFamily": "-apple-system",
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr7yjai2-t",
+          "id": "caption-mr7z97vr-8",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "per 5g\ncitriene monohydrat\ncitriene monohydrat",
+          "text": "KOOP NU VIA UPFRONT.NL",
           "autoH": true,
           "box": {
-            "x": 7,
-            "y": 349,
-            "w": 197,
-            "h": 180
+            "x": 3,
+            "y": 116,
+            "w": 103,
+            "h": 108
           },
           "style": {
-            "color": "#ffffff",
+            "color": "#1a1a1a",
             "fontSize": 30,
             "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
+            "align": "center",
+            "uppercase": true,
             "fontFamily": "-apple-system",
             "lineHeight": 1.2
           }
@@ -270,187 +224,248 @@
       ]
     },
     {
-      "id": "group-mr7yjai2-u",
+      "id": "group-mr7z97vr-9",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 648,
-        "y": 922,
-        "w": 378,
-        "h": 921
+        "x": 54,
+        "y": 998,
+        "w": 972,
+        "h": 845
       },
       "children": [
         {
-          "id": "rect-mr7yjai2-v",
+          "id": "rect-mr7z97vr-a",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · Pre Pro tub",
+          "name": "Cut-out · whey milkshake pouch",
           "box": {
-            "x": 648,
-            "y": 922,
-            "w": 378,
-            "h": 461
+            "x": 54,
+            "y": 998,
+            "w": 594,
+            "h": 845
           },
           "style": {
             "crop": {
-              "x": 0.6,
-              "y": 0.48,
-              "w": 0.35,
-              "h": 0.24
+              "x": 0.05,
+              "y": 0.52,
+              "w": 0.55,
+              "h": 0.44
             },
-            "radius": 13
+            "radius": 21
           },
           "src": "/refasset?id=harness-002"
         },
         {
-          "id": "rect-mr7yjai2-w",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · Creatine tub",
+          "id": "caption-mr7z97vr-b",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "PRE-WORKOUT TUB",
           "box": {
             "x": 648,
-            "y": 1382,
+            "y": 1167,
             "w": 378,
-            "h": 461
+            "h": 84
           },
           "style": {
-            "crop": {
-              "x": 0.6,
-              "y": 0.72,
-              "w": 0.35,
-              "h": 0.24
-            },
-            "radius": 13
-          },
-          "src": "/refasset?id=harness-002"
+            "fontSize": 32,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
         }
       ]
     },
     {
-      "id": "group-mr7yjai2-x",
+      "id": "group-mr7z97vs-c",
       "type": "group",
       "name": "Product",
       "box": {
-        "x": 1,
-        "y": 10,
-        "w": 604,
-        "h": 201
+        "x": 0,
+        "y": 1,
+        "w": 1026,
+        "h": 1843
       },
       "children": [
         {
-          "id": "product-mr7yjai2-y",
+          "id": "product-mr7z97vs-d",
           "type": "shape",
           "role": "product",
-          "name": "Product · Whey Milkshake Pouch",
+          "name": "Product · UPFRONT Whey Milkshake",
           "box": {
-            "x": 1,
-            "y": 11,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#e0e0e059",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
-            "stroke": {
-              "color": "#e0e0e0",
-              "width": 2
-            }
-          }
-        },
-        {
-          "id": "product-mr7yjai2-z",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Pre Pro 3.0 Jar",
-          "box": {
-            "x": 7,
+            "x": 0,
             "y": 10,
             "w": 40,
             "h": 30
           },
           "style": {
-            "background": "#c0c0c059",
+            "background": "#C0C0C059",
             "radius": 22,
             "shapeKind": "path",
-            "path": "M 0.5 0.09 C 0.625 0.09 0.7917 0.0567 0.875 0.125 C 0.9583 0.1933 0.9975 0.3725 1 0.5 C 1.0025 0.6275 0.9733 0.8192 0.89 0.89 C 0.8067 0.9608 0.63 0.925 0.5 0.925 C 0.37 0.925 0.1933 0.9608 0.11 0.89 C 0.0267 0.8192 -0.0025 0.6275 0 0.5 C 0.0025 0.3725 0.0417 0.1933 0.125 0.125 C 0.2083 0.0567 0.375 0.09 0.5 0.09 Z",
+            "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
             "stroke": {
-              "color": "#c0c0c0",
+              "color": "#C0C0C0",
               "width": 2
             }
           }
         },
         {
-          "id": "product-mr7yjai2-10",
+          "id": "product-mr7z97vs-e",
           "type": "shape",
           "role": "product",
-          "name": "Product · Creatine Jar",
+          "name": "Product · UPFRONT Pre Pro 3.0",
           "box": {
             "x": 7,
-            "y": 14,
+            "y": 9,
             "w": 40,
             "h": 30
           },
           "style": {
-            "background": "#c0c0c059",
+            "background": "#C0C0C059",
             "radius": 22,
             "shapeKind": "path",
-            "path": "M 0.5 0.09 C 0.625 0.09 0.7917 0.0567 0.875 0.125 C 0.9583 0.1933 0.9975 0.3725 1 0.5 C 1.0025 0.6275 0.9733 0.8192 0.89 0.89 C 0.8067 0.9608 0.63 0.925 0.5 0.925 C 0.37 0.925 0.1933 0.9608 0.11 0.89 C 0.0267 0.8192 -0.0025 0.6275 0 0.5 C 0.0025 0.3725 0.0417 0.1933 0.125 0.125 C 0.2083 0.0567 0.375 0.09 0.5 0.09 Z",
+            "path": "M 0.5 0.07 C 0.6333 0.07 0.8175 0.0283 0.9 0.1 C 0.9825 0.1717 1 0.3717 0.995 0.5 C 0.99 0.6283 0.9525 0.8033 0.87 0.87 C 0.7875 0.9367 0.6233 0.9 0.5 0.9 C 0.3767 0.9 0.2125 0.9367 0.13 0.87 C 0.0475 0.8033 0.01 0.6283 0.005 0.5 C 0 0.3717 0.0175 0.1717 0.1 0.1 C 0.1825 0.0283 0.3667 0.07 0.5 0.07 Z",
             "stroke": {
-              "color": "#c0c0c0",
+              "color": "#C0C0C0",
               "width": 2
             }
           }
         },
         {
-          "id": "logo-mr7yjai2-11",
+          "id": "product-mr7z97vs-f",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · UPFRONT Creatine",
+          "box": {
+            "x": 7,
+            "y": 13,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#C0C0C059",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.07 C 0.6333 0.07 0.8175 0.0283 0.9 0.1 C 0.9825 0.1717 1 0.3717 0.995 0.5 C 0.99 0.6283 0.9525 0.8033 0.87 0.87 C 0.7875 0.9367 0.6233 0.9 0.5 0.9 C 0.3767 0.9 0.2125 0.9367 0.13 0.87 C 0.0475 0.8033 0.01 0.6283 0.005 0.5 C 0 0.3717 0.0175 0.1717 0.1 0.1 C 0.1825 0.0283 0.3667 0.07 0.5 0.07 Z",
+            "stroke": {
+              "color": "#C0C0C0",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "logo-mr7z97vs-g",
           "type": "image",
           "role": "logo",
-          "name": "Logo · UPFRONT logo",
+          "name": "Logo · Upfront Logo",
           "box": {
-            "x": 475,
-            "y": 115,
-            "w": 130,
-            "h": 96
+            "x": 5,
+            "y": 1,
+            "w": 40,
+            "h": 30
           },
           "style": {
             "crop": {
-              "x": 0.44,
-              "y": 0.06,
-              "w": 0.12,
-              "h": 0.05
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0
             },
-            "radius": 12
+            "radius": 4
           },
           "src": "/refasset?id=harness-002"
+        },
+        {
+          "id": "logo-mr7z97vs-h",
+          "type": "image",
+          "role": "logo",
+          "name": "Logo · brand logo circle",
+          "box": {
+            "x": 464,
+            "y": 96,
+            "w": 151,
+            "h": 115
+          },
+          "style": {},
+          "src": "/refasset?id=harness-002mff89b2df"
+        },
+        {
+          "id": "product-mr7z97vs-i",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · pre-workout tub",
+          "box": {
+            "x": 648,
+            "y": 998,
+            "w": 378,
+            "h": 422
+          },
+          "style": {
+            "background": "#e0e0e059",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.07 C 0.6333 0.07 0.8175 0.0283 0.9 0.1 C 0.9825 0.1717 1 0.3717 0.995 0.5 C 0.99 0.6283 0.9525 0.8033 0.87 0.87 C 0.7875 0.9367 0.6233 0.9 0.5 0.9 C 0.3767 0.9 0.2125 0.9367 0.13 0.87 C 0.0475 0.8033 0.01 0.6283 0.005 0.5 C 0 0.3717 0.0175 0.1717 0.1 0.1 C 0.1825 0.0283 0.3667 0.07 0.5 0.07 Z",
+            "stroke": {
+              "color": "#e0e0e0",
+              "width": 3
+            }
+          }
+        },
+        {
+          "id": "product-mr7z97vs-j",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · creatine tub",
+          "box": {
+            "x": 648,
+            "y": 1450,
+            "w": 378,
+            "h": 394
+          },
+          "style": {
+            "background": "#f0f0f059",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.07 C 0.6333 0.07 0.8175 0.0283 0.9 0.1 C 0.9825 0.1717 1 0.3717 0.995 0.5 C 0.99 0.6283 0.9525 0.8033 0.87 0.87 C 0.7875 0.9367 0.6233 0.9 0.5 0.9 C 0.3767 0.9 0.2125 0.9367 0.13 0.87 C 0.0475 0.8033 0.01 0.6283 0.005 0.5 C 0 0.3717 0.0175 0.1717 0.1 0.1 C 0.1825 0.0283 0.3667 0.07 0.5 0.07 Z",
+            "stroke": {
+              "color": "#f0f0f0",
+              "width": 3
+            }
+          }
         }
       ]
     },
     {
-      "id": "cta-mr7yjai2-12",
-      "type": "button",
-      "role": "cta",
-      "name": "cta",
-      "text": "KOOP NU VIA UPFRONT.NL",
+      "id": "caption-mr7z97vs-k",
+      "type": "text",
+      "role": "caption",
+      "name": "Product label",
       "autoH": true,
+      "sizeLocked": true,
+      "text": "CREATINE TUB",
       "box": {
-        "x": 2,
-        "y": 115,
-        "w": 109,
-        "h": 154
+        "x": 648,
+        "y": 1605,
+        "w": 378,
+        "h": 84
       },
       "style": {
-        "color": "#000000",
         "fontSize": 32,
-        "fontWeight": 800,
+        "fontWeight": 700,
+        "color": "#ffffff",
         "align": "center",
         "uppercase": true,
-        "fontFamily": "-apple-system",
-        "lineHeight": 1.2
+        "lineHeight": 1,
+        "shadow": true
       }
     }
   ],
-  "skeletonId": "skel_mr7yjai2nvxc",
-  "updatedAt": 1783266003435
+  "skeletonId": "skel_mr7z97vrm6js",
+  "updatedAt": 1783267215955
 }

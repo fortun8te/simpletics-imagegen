@@ -34,6 +34,7 @@
 
 import { groupBounds, walkNodes, findNode } from './scene-tree.mjs';
 import { estimateTextBoxH, estimateLineCount } from './type-scale.mjs';
+import { NATIVE_ICONS } from './native-icons.mjs';
 
 // ── tiny local id helper (mirrors sceneGraph.ts layerId — same shape, independent counter) ──────
 let seq = 0;
@@ -344,6 +345,11 @@ export const ICONS = {
   'chat-bubble': 'M0.10 0.18 Q0.10 0.10 0.18 0.10 L0.82 0.10 Q0.90 0.10 0.90 0.18 L0.90 0.62 Q0.90 0.70 0.82 0.70 L0.38 0.70 L0.18 0.88 L0.18 0.70 Q0.10 0.70 0.10 0.62 Z',
   'play': 'M0.24 0.12 L0.88 0.5 L0.24 0.88 Z',
   'plus': 'M0.42 0.10 L0.58 0.10 L0.58 0.42 L0.90 0.42 L0.90 0.58 L0.58 0.58 L0.58 0.90 L0.42 0.90 L0.42 0.58 L0.10 0.58 L0.10 0.42 L0.10 0.42 Z',
+  // EXACT platform-chrome + brand glyphs from lib/native-icons.mjs (verbatim X.com / Instagram
+  // DOM-extracted paths, Bootstrap Icons (MIT) fallbacks, simple-icons (CC0) brand marks) —
+  // keys like 'x-like-outline', 'ig-comment', 'ios-check', 'brand-tiktok'. Same 0..1-normalized
+  // d-string contract as the hand-drawn set above, so they render/recolor identically.
+  ...Object.fromEntries(Object.entries(NATIVE_ICONS).map(([k, v]) => [k, v.d])),
 };
 
 // ── the registry ─────────────────────────────────────────────────────────────────────────────────

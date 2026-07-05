@@ -67,6 +67,14 @@ import { exemplarBlock, aspectTag, indexLayout, docSkeleton } from './layout-lib
 import { ELEMENTS, ELEMENT_ALIASES, buildElement, elementCatalogLine, applyElementTextEdit } from './elements.mjs';
 import { buildTemplate, templateCatalog, detectTemplate, applyTemplateTextEdit } from './templates.mjs';
 import { lookAtComp, renderCompPng, compareToReference } from './self-vision.mjs';
+import { matteCutout, matteCacheKey } from './matte.mjs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// .state dir (matte-upgraded cutout assets are written into .state/refs/ so the existing
+// /refasset?id= route serves them unchanged).
+const STATE_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', '.state');
 
 import { lintDesign, parseColor, luminance } from './design-lint.mjs';
 import { getChat } from './designstore.mjs';
@@ -2890,10 +2898,14 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
       prune(work.layers);
       if (dropped) emit('op', `dropped ${dropped} placeholder slab${dropped === 1 ? '' : 's'} occluding the reference photo`, { deterministic: true });
     }
+    // Two-phase because matteCutout is async and walkNodes is sync: collect candidates, then
+    // convert + (best-effort) matte each one.
+    const candidates = [];
+    walkNodes(work.layers, (n) => { if (n?.cutoutCandidate?.region) candidates.push(n); });
     let lifted = 0;
-    walkNodes(work.layers, (n) => {
-      const cc = n && n.cutoutCandidate;
-      if (!cc || !cc.region) return;
+    let matted = 0;
+    for (const n of candidates) {
+      const cc = n.cutoutCandidate;
       delete n.cutoutCandidate;
       n.type = 'image';
       n.src = refSrc;
@@ -2905,8 +2917,29 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
       n.style = style;
       n.name = n.name || (cc.shape === 'avatar' ? 'Avatar (cut out)' : 'Cut-out');
       lifted++;
-    });
-    if (lifted) emit('op', `cut ${lifted} region${lifted === 1 ? '' : 's'} out of the reference (real pixels, not placeholders)`, { deterministic: true });
+      // ALPHA-MATTE UPGRADE (research TOP-5 #2): a rect crop drags the photo's background along;
+      // for product/logo shapes, try a true subject matte of the same region (cached, ~1.5s cold,
+      // 1ms cached). A PASSING matte replaces the crop with a transparent-subject PNG served via
+      // the same /refasset route (written into .state/refs/). Avatars keep the ellipse crop —
+      // round chrome frames ARE the platform-accurate look. Any failure keeps today's rect crop.
+      if (cc.shape !== 'avatar' && !opts.signal?.aborted) {
+        try {
+          const srcPng = join(STATE_DIR, 'refs', `${reference.ref}.png`);
+          if (existsSync(srcPng)) {
+            const key = matteCacheKey(readFileSync(srcPng), cc.region).slice(0, 8);
+            const matteId = `${reference.ref}m${key}`;
+            const r = await matteCutout(srcPng, cc.region, join(STATE_DIR, 'refs', `${matteId}.png`));
+            if (r.ok) {
+              n.src = `/refasset?id=${matteId}`;
+              delete n.style.crop;
+              delete n.style.radius;
+              matted++;
+            }
+          }
+        } catch { /* matte is an upgrade, never a gate */ }
+      }
+    }
+    if (lifted) emit('op', `cut ${lifted} region${lifted === 1 ? '' : 's'} out of the reference (real pixels, not placeholders)${matted ? ` · ${matted} upgraded to true subject matte${matted === 1 ? '' : 's'} (background removed)` : ''}`, { deterministic: true });
   }
 
   // FINAL contrast repair (same as the edit path) so copied text stays legible on the new base.

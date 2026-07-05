@@ -4,21 +4,23 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 13904,
-    "assemble": 1,
-    "total": 22716
+    "extract": 10725,
+    "assemble": 2927,
+    "total": 22068
   },
   "archetype": "story-native",
-  "layerCountExtracted": 7,
+  "layerCountExtracted": 5,
   "parsePath": "loose",
   "background": "photo",
   "cutoutCandidates": 1,
   "layersApplied": 2,
-  "leavesInResult": 8,
+  "leavesInResult": 6,
   "verify": {
     "ready": false
   },
-  "pixelScore": 97.1,
   "pixelError": null,
+  "textPileOverlaps": 3,
+  "pixelScoreRaw": 98,
+  "pixelScore": 89,
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/053/side-by-side.png"
 }

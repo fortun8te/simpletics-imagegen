@@ -2,10 +2,10 @@
   "ok": true,
   "layers": [
     {
-      "id": "ext-mr6mjz60-0",
+      "id": "ext-mr7zo4eg-0",
       "type": "shape",
       "role": "rect",
-      "name": "Cut-out · window view",
+      "name": "Cut-out · kitchen window background",
       "box": {
         "x": 0,
         "y": 0,
@@ -13,10 +13,10 @@
         "h": 1920
       },
       "style": {
-        "background": "#6b8f6a59",
+        "background": "#6b7a5c59",
         "radius": 22,
         "stroke": {
-          "color": "#6b8f6a",
+          "color": "#6b7a5c",
           "width": 9
         }
       },
@@ -31,130 +31,31 @@
       }
     },
     {
-      "id": "grp-mr6mjzcr-6",
+      "id": "grp-mr7zo4eh-m",
       "type": "group",
       "name": "Body",
       "box": {
         "x": 173,
         "y": 787,
-        "w": 756,
-        "h": 345
+        "w": 778,
+        "h": 144
       },
       "children": [
         {
-          "id": "ext-mr6mjz60-1",
+          "id": "ext-mr7zo4eg-1",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "role": "headline",
+          "name": "headline",
           "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
           "autoH": true,
           "box": {
             "x": 173,
             "y": 787,
-            "w": 756,
-            "h": 77
+            "w": 778,
+            "h": 61
           },
           "style": {
-            "color": "#d1c3b4",
-            "background": "#000000",
-            "fontSize": 28,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr6mjzcm-2",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "72,6 kg",
-          "autoH": true,
-          "box": {
-            "x": 216,
-            "y": 864,
-            "w": 205,
-            "h": 77
-          },
-          "style": {
-            "color": "#c5bebb",
-            "background": "#000000",
-            "fontSize": 28,
-            "fontWeight": 700,
-            "align": "center",
-            "radius": 108,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr6mjzco-3",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "68,2kg",
-          "autoH": true,
-          "box": {
-            "x": 443,
-            "y": 864,
-            "w": 205,
-            "h": 77
-          },
-          "style": {
-            "color": "#c9ad9a",
-            "background": "#000000",
-            "fontSize": 28,
-            "fontWeight": 700,
-            "align": "center",
-            "radius": 108,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr6mjzcp-4",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "66,1kg",
-          "autoH": true,
-          "box": {
-            "x": 680,
-            "y": 864,
-            "w": 205,
-            "h": 77
-          },
-          "style": {
-            "color": "#cd5457",
-            "background": "#ff6b6b",
-            "fontSize": 28,
-            "fontWeight": 700,
-            "align": "center",
-            "radius": 108,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr6mjzcr-5",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Ganz Ehrlich: ich habe null damit\ngerechnet 😂🙈",
-          "autoH": true,
-          "box": {
-            "x": 216,
-            "y": 960,
-            "w": 670,
-            "h": 115
-          },
-          "style": {
-            "color": "#ffffff",
+            "color": "#cdcac7",
             "background": "#000000",
             "fontSize": 26,
             "fontWeight": 700,
@@ -165,23 +66,71 @@
           }
         },
         {
-          "id": "ext-mr6mjzcr-6",
+          "id": "ext-mr7zo4eg-2",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "@vitafant_natural",
+          "role": "badge",
+          "name": "badge",
+          "text": "72,6 kg",
           "autoH": true,
           "box": {
-            "x": 432,
-            "y": 1094,
-            "w": 259,
-            "h": 38
+            "x": 184,
+            "y": 864,
+            "w": 194,
+            "h": 67
           },
           "style": {
-            "color": "#2a1d13",
+            "color": "#d2c4c1",
             "background": "#000000",
-            "fontSize": 18,
-            "fontWeight": 500,
+            "fontSize": 28,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr7zo4eh-3",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "68,2kg",
+          "autoH": true,
+          "box": {
+            "x": 454,
+            "y": 864,
+            "w": 194,
+            "h": 67
+          },
+          "style": {
+            "color": "#d5d0cc",
+            "background": "#000000",
+            "fontSize": 28,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr7zo4eh-4",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "66,1kg",
+          "autoH": true,
+          "box": {
+            "x": 724,
+            "y": 864,
+            "w": 194,
+            "h": 67
+          },
+          "style": {
+            "color": "#e84393",
+            "background": "#f8d7e8",
+            "fontSize": 28,
+            "fontWeight": 800,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2,
@@ -199,7 +148,7 @@
   "background": null,
   "backgroundIsPhoto": true,
   "backgroundConfidence": "normal",
-  "theme": "dark",
+  "theme": "light",
   "dominantPalette": [
     {
       "hex": "#56533c",
