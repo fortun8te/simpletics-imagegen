@@ -1,13 +1,13 @@
 {
-  "id": "harness_009_bd433a80",
-  "name": "copy-harness harness_009_bd433a80",
+  "id": "harness_009_d98ed887",
+  "name": "copy-harness harness_009_d98ed887",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr83zhhn-3x",
+      "id": "base-mr87qgbk-2s",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,683 +23,279 @@
       }
     },
     {
-      "id": "card-mr83zhhn-33",
-      "type": "shape",
-      "role": "card",
-      "name": "Post bg",
+      "id": "group-mr87qgbk-2f",
+      "type": "group",
+      "name": "Header",
       "box": {
         "x": 0,
         "y": 0,
         "w": 1080,
-        "h": 1080
-      },
-      "style": {
-        "background": "#000000"
-      },
-      "tpl": "x-post-ad",
-      "template": {
-        "id": "x-post-ad",
-        "params": {
-          "name": "UPFRONT",
-          "handle": "@UpfrontFood",
-          "body": "LAATSTE SITE WIDE SALE VAN 2026 ⏳\n\nDe Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.\n\nDaarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.\n\nSchrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
-          "followLabel": "Volgend",
-          "timestamp": "20:00",
-          "views": "121K",
-          "viewsLabel": "views",
-          "replies": " ",
-          "reposts": " ",
-          "likes": " ",
-          "bookmarks": " ",
-          "verified": true,
-          "blurAvatar": false,
-          "avatarEffect": "none",
-          "showActions": true,
-          "theme": "dark",
-          "media": "",
-          "photo": "attached photo",
-          "quoteName": "Simpletics",
-          "quoteHandle": "@simpletics",
-          "quoteText": "the texture powder is genuinely the only thing that gave my flat hair volume"
-        }
-      }
-    },
-    {
-      "id": "group-mr83zhhn-34",
-      "type": "group",
-      "name": "Nav",
-      "box": {
-        "x": 54,
-        "y": 23,
-        "w": 972,
-        "h": 78
+        "h": 367
       },
       "children": [
         {
-          "id": "caption-mr83zhhn-35",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Back",
-          "text": "←",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 30,
-            "w": 108,
-            "h": 71
-          },
-          "style": {
-            "fontSize": 59,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "left",
-            "lineHeight": 1,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr83zhhn-36",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Nav title",
-          "text": "Post",
-          "sizeLocked": true,
-          "box": {
-            "x": 216,
-            "y": 30,
-            "w": 648,
-            "h": 71
-          },
-          "style": {
-            "fontSize": 54,
-            "fontWeight": 800,
-            "color": "#ffffff",
-            "align": "center",
-            "lineHeight": 1.15,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr83zhhn-37",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "More",
-          "text": "⋯",
-          "sizeLocked": true,
-          "box": {
-            "x": 918,
-            "y": 23,
-            "w": 108,
-            "h": 71
-          },
-          "style": {
-            "fontSize": 59,
-            "fontWeight": 800,
-            "color": "#ffffff",
-            "align": "right",
-            "lineHeight": 1,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        }
-      ],
-      "tpl": "x-post-ad"
-    },
-    {
-      "id": "group-mr83zhhn-38",
-      "type": "group",
-      "name": "Header",
-      "box": {
-        "x": 54,
-        "y": 133,
-        "w": 972,
-        "h": 140
-      },
-      "children": [
-        {
-          "id": "avatar-mr83zhhn-39",
-          "type": "image",
-          "role": "avatar",
-          "name": "Avatar",
-          "box": {
-            "x": 54,
-            "y": 133,
-            "w": 140,
-            "h": 140
-          },
-          "style": {
-            "crop": {
-              "x": 0.02,
-              "y": 0.1,
-              "w": 0.1,
-              "h": 0.15
-            },
-            "shapeKind": "ellipse"
-          },
-          "tpl": "x-post-ad",
-          "src": "/refasset?id=harness-009"
-        },
-        {
-          "id": "caption-mr83zhhn-3a",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Name",
-          "text": "UPFRONT",
-          "sizeLocked": true,
-          "box": {
-            "x": 226,
-            "y": 152,
-            "w": 227,
-            "h": 61
-          },
-          "style": {
-            "fontSize": 45,
-            "fontWeight": 800,
-            "color": "#e7e9ea",
-            "align": "left",
-            "lineHeight": 1.2,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad",
-          "tplRef": {
-            "key": "name"
-          }
-        },
-        {
-          "id": "badge-mr83zhhn-3b",
+          "id": "card-mr87qgbk-2g",
           "type": "shape",
-          "role": "badge",
-          "name": "Verified",
+          "role": "card",
+          "name": "card",
           "box": {
-            "x": 463,
-            "y": 155,
-            "w": 45,
-            "h": 45
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 130
           },
           "style": {
-            "shapeKind": "path",
-            "path": "M0.927091 0.5c-0.000818 -0.029364 -0.009773 -0.057955 -0.025909 -0.082545 -0.016091 -0.024545 -0.038727 -0.044182 -0.065364 -0.056636 0.010136 -0.027591 0.012273 -0.057455 0.006364 -0.086227 -0.005955 -0.028818 -0.019864 -0.055364 -0.040091 -0.076682 -0.021364 -0.020227 -0.047864 -0.034091 -0.076682 -0.040091 -0.028773 -0.005909 -0.058636 -0.003773 -0.086227 0.006364 -0.012409 -0.026682 -0.032 -0.049364 -0.056591 -0.065455S0.529409 0.073636 0.5 0.072909c-0.029364 0.000773 -0.057864 0.009682 -0.082409 0.025818s-0.044045 0.038818 -0.056364 0.065455c-0.027636 -0.010136 -0.057591 -0.012364 -0.086455 -0.006364 -0.028864 0.005909 -0.055455 0.019818 -0.076818 0.040091 -0.020227 0.021364 -0.034045 0.047955 -0.039909 0.076727 -0.005909 0.028773 -0.003636 0.058636 0.006545 0.086182 -0.026682 0.012455 -0.049409 0.032045 -0.065591 0.056591 -0.016182 0.024545 -0.025227 0.053182 -0.026091 0.082591 0.000909 0.029409 0.009909 0.058 0.026091 0.082591 0.016182 0.024545 0.038909 0.044182 0.065591 0.056591 -0.010182 0.027545 -0.012455 0.057409 -0.006545 0.086182 0.005909 0.028818 0.019682 0.055364 0.039864 0.076727 0.021364 0.020136 0.047909 0.033955 0.076682 0.039909 0.028773 0.006 0.058636 0.003818 0.086227 -0.006182 0.012455 0.026636 0.032045 0.049273 0.056636 0.065409 0.024545 0.016091 0.053182 0.025045 0.082545 0.025864 0.029409 -0.000727 0.058 -0.009682 0.082591 -0.025773s0.044182 -0.038818 0.056591 -0.065455c0.027455 0.010864 0.057545 0.013455 0.0865 0.007455 0.028909 -0.006 0.055455 -0.020318 0.076364 -0.041227 0.020909 -0.020909 0.035273 -0.047455 0.041273 -0.076409s0.003409 -0.059045 -0.0075 -0.0865c0.026636 -0.012455 0.049273 -0.032045 0.065409 -0.056636 0.016091 -0.024545 0.025045 -0.053182 0.025864 -0.082545zM0.439182 0.675l-0.155864 -0.155818 0.058773 -0.059182 0.094182 0.094182 0.2 -0.217909 0.061227 0.056636z",
-            "background": "#1d9bf0"
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr83zhhn-3c",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Handle",
-          "text": "@UpfrontFood",
-          "sizeLocked": true,
-          "box": {
-            "x": 226,
-            "y": 208,
-            "w": 540,
-            "h": 53
-          },
-          "style": {
-            "fontSize": 39,
-            "fontWeight": 400,
-            "color": "#71767b",
+            "color": "#000000",
+            "background": "#000000",
+            "fontSize": 43,
+            "fontWeight": 600,
             "align": "left",
+            "uppercase": false,
             "lineHeight": 1.2,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad",
-          "tplRef": {
-            "key": "handle"
+            "opacity": 1,
+            "padding": 16,
+            "shapeKind": "rect"
           }
         },
         {
-          "id": "cta-mr83zhhn-3d",
+          "id": "headline-mr87qgbk-2h",
           "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Post",
           "autoH": true,
-          "role": "cta",
-          "name": "Following",
-          "text": "Volgend",
-          "sizeLocked": true,
           "box": {
-            "x": 728,
-            "y": 158,
-            "w": 298,
-            "h": 90
+            "x": 475,
+            "y": 22,
+            "w": 130,
+            "h": 68
           },
           "style": {
-            "fontSize": 39,
+            "color": "#bebebe",
+            "fontSize": 56,
             "fontWeight": 700,
-            "color": "#0f1419",
-            "background": "#ffffff",
-            "radius": 90,
             "align": "center",
-            "lineHeight": 1,
-            "fontFamily": ""
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr87qgbk-2i",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "UPFRONT",
+          "autoH": true,
+          "box": {
+            "x": 151,
+            "y": 151,
+            "w": 216,
+            "h": 68
           },
-          "tpl": "x-post-ad",
-          "tplRef": {
-            "key": "followLabel"
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr87qgbk-2j",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@UpfrontFood",
+          "autoH": true,
+          "box": {
+            "x": 151,
+            "y": 194,
+            "w": 216,
+            "h": 36
+          },
+          "style": {
+            "color": "#71767b",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr87qgbk-2k",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Volgend",
+          "autoH": true,
+          "box": {
+            "x": 832,
+            "y": 130,
+            "w": 216,
+            "h": 66
+          },
+          "style": {
+            "color": "#191a1b",
+            "background": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 216,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "headline-mr87qgbk-2l",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "LAATSTE SITE WIDE SALE VAN 2026 ⌛",
+          "autoH": true,
+          "box": {
+            "x": 43,
+            "y": 302,
+            "w": 886,
+            "h": 135
+          },
+          "style": {
+            "color": "#c5c3c1",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
           }
         }
-      ],
-      "tpl": "x-post-ad"
+      ]
     },
     {
-      "id": "group-mr83zhhn-3e",
+      "id": "group-mr87qgbk-2m",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 54,
-        "y": 311,
-        "w": 972,
-        "h": 715
+        "x": 43,
+        "y": 410,
+        "w": 994,
+        "h": 411
       },
       "children": [
         {
-          "id": "headline-mr83zhhn-3f",
+          "id": "caption-mr87qgbk-2n",
           "type": "text",
-          "autoH": true,
-          "role": "headline",
-          "name": "Body ¶1",
-          "text": "LAATSTE SITE WIDE SALE VAN 2026 ⏳",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 311,
-            "w": 972,
-            "h": 60
-          },
-          "style": {
-            "fontSize": 42,
-            "fontWeight": 400,
-            "color": "#ffffff",
-            "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr83zhhn-3g",
-          "type": "text",
-          "autoH": true,
           "role": "caption",
-          "name": "Body ¶2",
+          "name": "caption",
           "text": "De Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.",
-          "sizeLocked": true,
+          "autoH": true,
           "box": {
-            "x": 54,
-            "y": 411,
-            "w": 972,
-            "h": 119
+            "x": 43,
+            "y": 410,
+            "w": 734,
+            "h": 130
           },
           "style": {
-            "fontSize": 42,
+            "color": "#e1e8ed",
+            "fontSize": 32,
             "fontWeight": 400,
-            "color": "#ffffff",
             "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
         },
         {
-          "id": "caption-mr83zhhn-3h",
+          "id": "caption-mr87qgbk-2o",
           "type": "text",
-          "autoH": true,
           "role": "caption",
-          "name": "Body ¶3",
+          "name": "caption",
           "text": "Daarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 570,
-            "w": 972,
-            "h": 119
-          },
-          "style": {
-            "fontSize": 42,
-            "fontWeight": 400,
-            "color": "#ffffff",
-            "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr83zhhn-3i",
-          "type": "text",
           "autoH": true,
-          "role": "caption",
-          "name": "Body ¶4",
-          "text": "Schrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
-          "sizeLocked": true,
           "box": {
-            "x": 54,
-            "y": 729,
-            "w": 972,
-            "h": 119
+            "x": 43,
+            "y": 562,
+            "w": 734,
+            "h": 108
           },
           "style": {
-            "fontSize": 42,
+            "color": "#e1e8ed",
+            "fontSize": 32,
             "fontWeight": 400,
-            "color": "#ffffff",
             "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
         },
         {
-          "id": "group-mr83zhhn-3j",
-          "type": "group",
-          "name": "Meta",
+          "id": "caption-mr87qgbk-2p",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Schrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
+          "autoH": true,
           "box": {
-            "x": 54,
-            "y": 887,
-            "w": 683,
-            "h": 52
+            "x": 43,
+            "y": 691,
+            "w": 734,
+            "h": 130
           },
-          "children": [
-            {
-              "id": "caption-mr83zhhn-3k",
-              "type": "text",
-              "autoH": true,
-              "role": "caption",
-              "name": "Meta time",
-              "text": "20:00 · ",
-              "sizeLocked": true,
-              "box": {
-                "x": 54,
-                "y": 887,
-                "w": 148,
-                "h": 52
-              },
-              "style": {
-                "fontSize": 37,
-                "fontWeight": 400,
-                "color": "#71767b",
-                "align": "left",
-                "lineHeight": 1.2,
-                "fontFamily": ""
-              },
-              "tpl": "x-post-ad"
-            },
-            {
-              "id": "caption-mr83zhhn-3l",
-              "type": "text",
-              "autoH": true,
-              "role": "caption",
-              "name": "Viewcount",
-              "text": "121K",
-              "sizeLocked": true,
-              "box": {
-                "x": 202,
-                "y": 887,
-                "w": 92,
-                "h": 52
-              },
-              "style": {
-                "fontSize": 37,
-                "fontWeight": 800,
-                "color": "#ffffff",
-                "align": "left",
-                "lineHeight": 1.2,
-                "fontFamily": ""
-              },
-              "tpl": "x-post-ad",
-              "tplRef": {
-                "key": "views"
-              }
-            },
-            {
-              "id": "caption-mr83zhhn-3m",
-              "type": "text",
-              "autoH": true,
-              "role": "caption",
-              "name": "Meta views label",
-              "text": " views",
-              "sizeLocked": true,
-              "box": {
-                "x": 305,
-                "y": 887,
-                "w": 432,
-                "h": 52
-              },
-              "style": {
-                "fontSize": 37,
-                "fontWeight": 400,
-                "color": "#71767b",
-                "align": "left",
-                "lineHeight": 1.2,
-                "fontFamily": ""
-              },
-              "tpl": "x-post-ad"
-            }
-          ],
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "group-mr83zhhn-3n",
-          "type": "group",
-          "name": "Actions",
-          "box": {
-            "x": 54,
-            "y": 961,
-            "w": 972,
-            "h": 65
-          },
-          "children": [
-            {
-              "id": "decor-mr83zhhn-3o",
-              "type": "shape",
-              "role": "decor",
-              "name": "reply icon",
-              "box": {
-                "x": 54,
-                "y": 973,
-                "w": 41,
-                "h": 41
-              },
-              "style": {
-                "shapeKind": "path",
-                "path": "M0.072958 0.416667c0 -0.184167 0.149333 -0.333333 0.333542 -0.333333h0.181917c0.187083 0 0.338708 0.151667 0.338708 0.33875 0 0.123333 -0.066958 0.236667 -0.174833 0.29625l-0.335583 0.185833v-0.15375h-0.002792c-0.187083 0.004167 -0.340958 -0.14625 -0.340958 -0.33375zm0.333542 -0.25c-0.138208 0 -0.250208 0.112083 -0.250208 0.25 0 0.140417 0.115417 0.253333 0.25575 0.250417l0.014625 -0.000417h0.073375v0.095833l0.211958 -0.117083c0.081292 -0.045 0.131792 -0.130417 0.131792 -0.223333 0 -0.14125 -0.114333 -0.255417 -0.255375 -0.255417H0.4065z",
-                "background": "#71767b"
-              },
-              "tpl": "x-post-ad"
-            },
-            {
-              "id": "caption-mr83zhhn-3p",
-              "type": "text",
-              "autoH": true,
-              "role": "caption",
-              "name": "reply count",
-              "text": " ",
-              "sizeLocked": true,
-              "box": {
-                "x": 111,
-                "y": 961,
-                "w": 153,
-                "h": 65
-              },
-              "style": {
-                "fontSize": 35,
-                "fontWeight": 400,
-                "color": "#71767b",
-                "align": "left",
-                "lineHeight": 1,
-                "fontFamily": ""
-              },
-              "tpl": "x-post-ad",
-              "tplRef": {
-                "key": "replies"
-              }
-            },
-            {
-              "id": "decor-mr83zhhn-3q",
-              "type": "shape",
-              "role": "decor",
-              "name": "repost icon",
-              "box": {
-                "x": 248,
-                "y": 973,
-                "w": 41,
-                "h": 41
-              },
-              "style": {
-                "shapeKind": "path",
-                "path": "M0.1875 0.161667l0.184667 0.1725 -0.056833 0.060833L0.229167 0.314583V0.666667c0 0.045833 0.037333 0.083333 0.083333 0.083333H0.541667v0.083333H0.3125c-0.092042 0 -0.166667 -0.074583 -0.166667 -0.166667V0.314583L0.059667 0.395 0.002833 0.334167 0.1875 0.161667zM0.6875 0.25H0.458333V0.166667h0.229167c0.092042 0 0.166667 0.074583 0.166667 0.166667v0.352083l0.086167 -0.080417 0.056833 0.060833 -0.184667 0.1725 -0.184667 -0.1725 0.056833 -0.060833 0.086167 0.080417V0.333333c0 -0.045833 -0.037333 -0.083333 -0.083333 -0.083333z",
-                "background": "#71767b"
-              },
-              "tpl": "x-post-ad"
-            },
-            {
-              "id": "caption-mr83zhhn-3r",
-              "type": "text",
-              "autoH": true,
-              "role": "caption",
-              "name": "repost count",
-              "text": " ",
-              "sizeLocked": true,
-              "box": {
-                "x": 305,
-                "y": 961,
-                "w": 153,
-                "h": 65
-              },
-              "style": {
-                "fontSize": 35,
-                "fontWeight": 400,
-                "color": "#71767b",
-                "align": "left",
-                "lineHeight": 1,
-                "fontFamily": ""
-              },
-              "tpl": "x-post-ad",
-              "tplRef": {
-                "key": "replies"
-              }
-            },
-            {
-              "id": "decor-mr83zhhn-3s",
-              "type": "shape",
-              "role": "decor",
-              "name": "like icon",
-              "box": {
-                "x": 442,
-                "y": 973,
-                "w": 41,
-                "h": 41
-              },
-              "style": {
-                "shapeKind": "path",
-                "path": "M0.695708 0.229167c-0.050917 -0.0025 -0.111625 0.02125 -0.162083 0.09l-0.033542 0.045417 -0.033583 -0.045417C0.416 0.250417 0.35525 0.226667 0.304333 0.229167c-0.051792 0.002917 -0.097875 0.0325 -0.12125 0.079583 -0.023 0.046667 -0.026375 0.115833 0.019958 0.200833 0.04475 0.082083 0.135708 0.177917 0.297042 0.275417 0.16125 -0.0975 0.252167 -0.193333 0.296917 -0.275417 0.046292 -0.085 0.042917 -0.154167 0.019875 -0.200833 -0.023375 -0.047083 -0.069417 -0.076667 -0.121167 -0.079583zm0.174458 0.320417c-0.056292 0.103333 -0.166708 0.213333 -0.349125 0.319583l-0.020958 0.0125 -0.021 -0.0125c-0.182458 -0.10625 -0.292875 -0.21625 -0.34925 -0.319583 -0.056667 -0.104167 -0.05875 -0.2025 -0.021417 -0.277917 0.036958 -0.074583 0.110292 -0.12125 0.191708 -0.125417 0.068792 -0.00375 0.140333 0.023333 0.199917 0.08375 0.059542 -0.060417 0.131083 -0.0875 0.199833 -0.08375 0.081417 0.004167 0.15475 0.050833 0.191708 0.125417 0.037333 0.075417 0.03525 0.17375 -0.021417 0.277917z",
-                "background": "#71767b"
-              },
-              "tpl": "x-post-ad"
-            },
-            {
-              "id": "caption-mr83zhhn-3t",
-              "type": "text",
-              "autoH": true,
-              "role": "caption",
-              "name": "like count",
-              "text": " ",
-              "sizeLocked": true,
-              "box": {
-                "x": 499,
-                "y": 961,
-                "w": 153,
-                "h": 65
-              },
-              "style": {
-                "fontSize": 35,
-                "fontWeight": 400,
-                "color": "#71767b",
-                "align": "left",
-                "lineHeight": 1,
-                "fontFamily": ""
-              },
-              "tpl": "x-post-ad",
-              "tplRef": {
-                "key": "replies"
-              }
-            },
-            {
-              "id": "decor-mr83zhhn-3u",
-              "type": "shape",
-              "role": "decor",
-              "name": "bookmark icon",
-              "box": {
-                "x": 636,
-                "y": 973,
-                "w": 41,
-                "h": 41
-              },
-              "style": {
-                "shapeKind": "path",
-                "path": "M0.166667 0.1875C0.166667 0.13 0.213292 0.083333 0.270833 0.083333h0.458333C0.786708 0.083333 0.833333 0.13 0.833333 0.1875v0.768333l-0.333333 -0.237917 -0.333333 0.237917V0.1875zM0.270833 0.166667c-0.0115 0 -0.020833 0.009167 -0.020833 0.020833v0.606667l0.25 -0.17875 0.25 0.17875V0.1875c0 -0.011667 -0.009333 -0.020833 -0.020833 -0.020833h-0.458333z",
-                "background": "#71767b"
-              },
-              "tpl": "x-post-ad"
-            },
-            {
-              "id": "caption-mr83zhhn-3v",
-              "type": "text",
-              "autoH": true,
-              "role": "caption",
-              "name": "bookmark count",
-              "text": " ",
-              "sizeLocked": true,
-              "box": {
-                "x": 693,
-                "y": 961,
-                "w": 153,
-                "h": 65
-              },
-              "style": {
-                "fontSize": 35,
-                "fontWeight": 400,
-                "color": "#71767b",
-                "align": "left",
-                "lineHeight": 1,
-                "fontFamily": ""
-              },
-              "tpl": "x-post-ad",
-              "tplRef": {
-                "key": "replies"
-              }
-            },
-            {
-              "id": "decor-mr83zhhn-3w",
-              "type": "shape",
-              "role": "decor",
-              "name": "Share icon",
-              "box": {
-                "x": 985,
-                "y": 973,
-                "w": 41,
-                "h": 41
-              },
-              "style": {
-                "shapeKind": "path",
-                "path": "M0.5 0.107917l0.2375 0.2375 -0.05875 0.059167L0.541667 0.267083V0.666667h-0.083333V0.267083l-0.1375 0.1375 -0.05875 -0.059167L0.5 0.107917zM0.875 0.625l-0.000833 0.14625c0 0.0575 -0.046667 0.10375 -0.104167 0.10375H0.229167C0.17125 0.875 0.125 0.828333 0.125 0.770833V0.625h0.083333v0.145833c0 0.011667 0.009167 0.020833 0.020833 0.020833h0.540833c0.011667 0 0.020833 -0.009167 0.020833 -0.020833L0.791667 0.625h0.083333z",
-                "background": "#71767b"
-              },
-              "tpl": "x-post-ad"
-            }
-          ],
-          "tpl": "x-post-ad"
+          "style": {
+            "color": "#e1e8ed",
+            "fontSize": 32,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
         }
-      ],
-      "tpl": "x-post-ad"
+      ]
+    },
+    {
+      "id": "avatar-mr87qgbk-2q",
+      "type": "image",
+      "role": "avatar",
+      "name": "Avatar · UPFRONT logo",
+      "box": {
+        "x": 22,
+        "y": 140,
+        "w": 108,
+        "h": 108
+      },
+      "style": {
+        "crop": {
+          "x": 0.02,
+          "y": 0.13,
+          "w": 0.1,
+          "h": 0.1
+        },
+        "shapeKind": "ellipse"
+      },
+      "src": "/refasset?id=harness-009"
+    },
+    {
+      "id": "caption-mr87qgbk-2r",
+      "type": "text",
+      "role": "caption",
+      "name": "caption",
+      "text": "05:00 PM · 12-05-2026 · 121K weergaven",
+      "autoH": true,
+      "box": {
+        "x": 43,
+        "y": 886,
+        "w": 540,
+        "h": 72
+      },
+      "style": {
+        "color": "#71767b",
+        "fontSize": 30,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
     }
   ],
-  "skeletonId": "skel_mr83zhhm4ate",
-  "updatedAt": 1783275157073
+  "skeletonId": "skel_mr87qgbj7c40",
+  "updatedAt": 1783281454112
 }

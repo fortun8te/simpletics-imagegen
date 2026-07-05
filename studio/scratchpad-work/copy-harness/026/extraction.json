@@ -2,58 +2,79 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr846k6x-a",
+      "id": "grp-mr889tg4-r",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 162,
+        "x": 0,
         "y": 0,
-        "w": 896,
+        "w": 1080,
         "h": 1920
       },
       "children": [
         {
-          "id": "ext-mr846k6t-0",
+          "id": "ext-mr889tfy-0",
           "type": "shape",
-          "role": "divider",
-          "name": "divider",
+          "role": "panel",
+          "name": "panel",
           "box": {
-            "x": 530,
+            "x": 0,
             "y": 0,
-            "w": 60,
+            "w": 540,
             "h": 1920
           },
           "style": {
-            "color": "#d0d0d0",
-            "background": "#d0d0d0",
+            "color": "#f7f7f7",
+            "background": "#f7f7f7",
             "fontSize": 43,
             "fontWeight": 600,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
             "opacity": 1,
-            "shapeKind": "line",
-            "stroke": {
-              "color": "#d0d0d0",
-              "width": 154
-            }
+            "padding": 16,
+            "shapeKind": "rect"
           }
         },
         {
-          "id": "ext-mr846k6v-5",
+          "id": "ext-mr889tg2-1",
+          "type": "shape",
+          "role": "panel",
+          "name": "panel",
+          "box": {
+            "x": 540,
+            "y": 0,
+            "w": 540,
+            "h": 1920
+          },
+          "style": {
+            "color": "#f0f0f0",
+            "background": "#f0f0f0",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "padding": 16,
+            "shapeKind": "rect"
+          }
+        },
+        {
+          "id": "ext-mr889tg3-8",
           "type": "shape",
           "role": "badge",
           "name": "badge",
           "box": {
-            "x": 497,
-            "y": 221,
-            "w": 81,
-            "h": 67
+            "x": 454,
+            "y": 192,
+            "w": 173,
+            "h": 77
           },
           "style": {
-            "color": "#6a85a0",
-            "background": "#6a85a0",
-            "fontSize": 18,
+            "color": "#ffffff",
+            "background": "#ffffff",
+            "fontSize": 22,
             "fontWeight": 700,
             "align": "center",
             "uppercase": false,
@@ -64,21 +85,43 @@
           }
         },
         {
-          "id": "ext-mr846k6t-1",
+          "id": "ext-mr889tg3-2",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
+          "role": "badge",
+          "name": "badge",
           "text": "DORE & ROSE",
           "autoH": true,
           "box": {
-            "x": 162,
-            "y": 134,
-            "w": 389,
+            "x": 108,
+            "y": 124,
+            "w": 324,
             "h": 27
           },
           "style": {
-            "color": "#2f2f2f",
+            "color": "#1a1a1a",
             "fontSize": 19,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr889tg3-3",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "Silk",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 154,
+            "w": 216,
+            "h": 96
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 43,
             "fontWeight": 700,
             "align": "center",
             "uppercase": false,
@@ -86,66 +129,88 @@
           }
         },
         {
-          "id": "ext-mr846k6v-2",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Silk",
+          "id": "ext-mr889tg3-4",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "✓",
           "autoH": true,
           "box": {
-            "x": 184,
-            "y": 211,
-            "w": 346,
-            "h": 96
+            "x": 238,
+            "y": 58,
+            "w": 65,
+            "h": 58
           },
           "style": {
-            "color": "#252d3c",
-            "fontSize": 49,
-            "fontWeight": 800,
+            "color": "#4a6a8a",
+            "fontSize": 27,
+            "fontWeight": 400,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr846k6v-3",
+          "id": "ext-mr889tg3-5",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
+          "role": "badge",
+          "name": "badge",
           "text": "OTHERS'",
           "autoH": true,
           "box": {
             "x": 648,
-            "y": 144,
-            "w": 410,
+            "y": 124,
+            "w": 324,
             "h": 27
           },
           "style": {
-            "color": "#363636",
+            "color": "#1a1a1a",
             "fontSize": 19,
-            "fontWeight": 700,
+            "fontWeight": 400,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr846k6v-4",
+          "id": "ext-mr889tg3-6",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
+          "role": "badge",
+          "name": "badge",
           "text": "Satin",
           "autoH": true,
           "box": {
-            "x": 713,
-            "y": 221,
-            "w": 281,
+            "x": 702,
+            "y": 154,
+            "w": 216,
             "h": 96
           },
           "style": {
-            "color": "#000000",
-            "fontSize": 49,
-            "fontWeight": 800,
+            "color": "#1a1a1a",
+            "fontSize": 43,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr889tg3-7",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "✗",
+          "autoH": true,
+          "box": {
+            "x": 778,
+            "y": 58,
+            "w": 65,
+            "h": 58
+          },
+          "style": {
+            "color": "#c44a4a",
+            "fontSize": 27,
+            "fontWeight": 400,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
@@ -154,112 +219,112 @@
       ]
     },
     {
-      "id": "grp-mr846k6x-b",
+      "id": "grp-mr889tg4-s",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 76,
-        "y": 413,
-        "w": 961,
-        "h": 1063
+        "x": 54,
+        "y": 384,
+        "w": 1004,
+        "h": 1107
       },
       "children": [
         {
-          "id": "ext-mr846k6v-6",
+          "id": "ext-mr889tg3-9",
           "type": "shape",
           "role": "rect",
-          "name": "Cut-out · silky pillowcase",
+          "name": "Cut-out · silk pillowcase",
           "box": {
-            "x": 76,
-            "y": 432,
-            "w": 470,
-            "h": 586
+            "x": 54,
+            "y": 422,
+            "w": 432,
+            "h": 672
           },
           "style": {
-            "background": "#7a776f59",
+            "background": "#8a7a6a59",
             "radius": 22,
             "stroke": {
-              "color": "#7a776f",
-              "width": 4
+              "color": "#8a7a6a",
+              "width": 3
             }
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0.07,
-              "y": 0.23,
-              "w": 0.44,
-              "h": 0.31
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr846k6v-7",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · pillowcase with mites",
-          "box": {
-            "x": 545,
-            "y": 413,
-            "w": 459,
-            "h": 614
-          },
-          "style": {
-            "background": "#86827e59",
-            "radius": 22,
-            "stroke": {
-              "color": "#86827e",
-              "width": 4
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.51,
+              "x": 0.05,
               "y": 0.22,
-              "w": 0.43,
-              "h": 0.32
+              "w": 0.4,
+              "h": 0.35
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr846k6v-8",
+          "id": "ext-mr889tg3-a",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · satin pillowcase",
+          "box": {
+            "x": 540,
+            "y": 384,
+            "w": 518,
+            "h": 730
+          },
+          "style": {
+            "background": "#8a8a8a59",
+            "radius": 22,
+            "stroke": {
+              "color": "#8a8a8a",
+              "width": 4
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.5,
+              "y": 0.2,
+              "w": 0.48,
+              "h": 0.38
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr889tg3-b",
           "type": "text",
-          "role": "headline",
-          "name": "headline",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Premium Silk",
           "autoH": true,
           "box": {
-            "x": 108,
-            "y": 1066,
-            "w": 410,
-            "h": 67
+            "x": 86,
+            "y": 1152,
+            "w": 378,
+            "h": 77
           },
           "style": {
-            "color": "#222222",
+            "color": "#1a1a1a",
             "fontSize": 35,
-            "fontWeight": 800,
+            "fontWeight": 700,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr846k6w-9",
+          "id": "ext-mr889tg4-c",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
           "text": "Pillowcase",
           "autoH": true,
           "box": {
-            "x": 108,
-            "y": 1133,
-            "w": 270,
-            "h": 26
+            "x": 86,
+            "y": 1229,
+            "w": 216,
+            "h": 27
           },
           "style": {
-            "color": "#666666",
-            "fontSize": 18,
+            "color": "#6a6a6a",
+            "fontSize": 19,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -267,43 +332,43 @@
           }
         },
         {
-          "id": "ext-mr846k6w-a",
+          "id": "ext-mr889tg4-d",
           "type": "text",
-          "role": "headline",
-          "name": "headline",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Satin",
           "autoH": true,
           "box": {
-            "x": 842,
-            "y": 1066,
-            "w": 162,
-            "h": 67
+            "x": 648,
+            "y": 1152,
+            "w": 378,
+            "h": 77
           },
           "style": {
-            "color": "#383838",
+            "color": "#1a1a1a",
             "fontSize": 35,
-            "fontWeight": 800,
+            "fontWeight": 700,
             "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr846k6w-b",
+          "id": "ext-mr889tg4-e",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
           "text": "Pillowcase",
           "autoH": true,
           "box": {
-            "x": 805,
-            "y": 1133,
-            "w": 232,
-            "h": 26
+            "x": 702,
+            "y": 1229,
+            "w": 324,
+            "h": 27
           },
           "style": {
-            "color": "#666666",
-            "fontSize": 18,
+            "color": "#6a6a6a",
+            "fontSize": 19,
             "fontWeight": 400,
             "align": "right",
             "uppercase": false,
@@ -311,21 +376,21 @@
           }
         },
         {
-          "id": "ext-mr846k6w-c",
+          "id": "ext-mr889tg4-f",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "Synthetic fabrics ✗",
+          "text": "✗ Synthetic fabrics",
           "autoH": true,
           "box": {
-            "x": 616,
-            "y": 1200,
-            "w": 410,
-            "h": 26
+            "x": 594,
+            "y": 1344,
+            "w": 432,
+            "h": 32
           },
           "style": {
-            "color": "#000000",
-            "fontSize": 18,
+            "color": "#1a1a1a",
+            "fontSize": 22,
             "fontWeight": 400,
             "align": "right",
             "uppercase": false,
@@ -333,21 +398,21 @@
           }
         },
         {
-          "id": "ext-mr846k6w-d",
+          "id": "ext-mr889tg4-g",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "✓ Antibacterial",
           "autoH": true,
           "box": {
-            "x": 108,
-            "y": 1315,
-            "w": 410,
-            "h": 26
+            "x": 86,
+            "y": 1459,
+            "w": 378,
+            "h": 32
           },
           "style": {
-            "color": "#000000",
-            "fontSize": 18,
+            "color": "#1a1a1a",
+            "fontSize": 22,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -355,65 +420,21 @@
           }
         },
         {
-          "id": "ext-mr846k6w-e",
+          "id": "ext-mr889tg4-h",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "Bacterial breeding ground ✗",
+          "text": "✗ Bacterial breeding ground",
           "autoH": true,
           "box": {
-            "x": 556,
-            "y": 1315,
-            "w": 470,
-            "h": 26
+            "x": 594,
+            "y": 1421,
+            "w": 432,
+            "h": 32
           },
           "style": {
-            "color": "#000000",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "right",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr846k6w-f",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "✓ Protects skin & hair",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 1450,
-            "w": 410,
-            "h": 26
-          },
-          "style": {
-            "color": "#000000",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr846k6w-g",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Causes friction with skin & hair ✗",
-          "autoH": true,
-          "box": {
-            "x": 556,
-            "y": 1450,
-            "w": 470,
-            "h": 26
-          },
-          "style": {
-            "color": "#000000",
-            "fontSize": 18,
+            "color": "#1a1a1a",
+            "fontSize": 22,
             "fontWeight": 400,
             "align": "right",
             "uppercase": false,
@@ -421,31 +442,6 @@
           }
         }
       ]
-    },
-    {
-      "id": "ext-mr846k6w-h",
-      "type": "button",
-      "role": "cta",
-      "name": "cta",
-      "text": "100 Nights Risk Free Trial",
-      "autoH": true,
-      "box": {
-        "x": 265,
-        "y": 1661,
-        "w": 551,
-        "h": 92
-      },
-      "style": {
-        "color": "#ffffff",
-        "background": "#000000",
-        "fontSize": 23,
-        "fontWeight": 700,
-        "align": "center",
-        "radius": 43,
-        "uppercase": false,
-        "lineHeight": 1.2,
-        "padding": 16
-      }
     }
   ],
   "canvas": {
@@ -453,7 +449,7 @@
     "h": 1920
   },
   "archetype": "comparison",
-  "background": "#f2f2f2",
+  "background": "#f7f7f7",
   "backgroundIsPhoto": false,
   "backgroundConfidence": "high",
   "theme": "light",
@@ -481,9 +477,9 @@
   ],
   "selfCheck": {
     "matched": false,
-    "score": 45,
+    "score": 35,
     "corrections": [],
-    "applied": 1,
+    "applied": 0,
     "iterations": 3,
     "totalCorrections": 15
   },

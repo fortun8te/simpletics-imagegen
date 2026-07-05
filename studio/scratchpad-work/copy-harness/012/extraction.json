@@ -2,21 +2,21 @@
   "ok": true,
   "layers": [
     {
-      "id": "ext-mr6nm4t3-0",
+      "id": "ext-mr87vkps-0",
       "type": "text",
       "role": "headline",
       "name": "headline",
       "text": "Poop More While On a GLP-1",
       "autoH": true,
       "box": {
-        "x": 54,
-        "y": 288,
-        "w": 810,
-        "h": 230
+        "x": 194.39999999999998,
+        "y": 354.5,
+        "w": 691.2,
+        "h": 68
       },
       "style": {
-        "color": "#0d2a1a",
-        "fontSize": 63,
+        "color": "#1a2e1a",
+        "fontSize": 47,
         "fontWeight": 800,
         "align": "left",
         "uppercase": false,
@@ -24,184 +24,190 @@
       }
     },
     {
-      "id": "grp-mr6nm4xl-i",
+      "id": "grp-mr87vku5-e",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 54,
-        "y": 480,
-        "w": 1005,
-        "h": 1152
+        "x": 108,
+        "y": 634,
+        "w": 896,
+        "h": 864
       },
       "children": [
         {
-          "id": "ext-mr6nm4t3-1",
+          "id": "ext-mr87vkps-1",
           "type": "shape",
           "role": "rect",
           "name": "Cut-out · green gummy bear",
           "box": {
-            "x": 454,
-            "y": 480,
-            "w": 605,
-            "h": 1152
+            "x": 518,
+            "y": 634,
+            "w": 486,
+            "h": 864
           },
           "style": {
-            "background": "#2a5e3a59",
+            "background": "#3d6e3d59",
             "radius": 22,
             "stroke": {
-              "color": "#2a5e3a",
-              "width": 5
+              "color": "#3d6e3d",
+              "width": 4
             }
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0.42,
-              "y": 0.25,
-              "w": 0.56,
-              "h": 0.6
+              "x": 0.48,
+              "y": 0.33,
+              "w": 0.45,
+              "h": 0.45
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr6nm4t3-2",
+          "id": "ext-mr87vkps-2",
           "type": "badge",
           "role": "badge",
           "name": "badge",
           "text": "More Fiber Than 2 cups of Broccoli",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 576,
-            "w": 518,
+            "x": 108,
+            "y": 634,
+            "w": 648,
             "h": 96
           },
           "style": {
-            "color": "#10824b",
-            "background": "#1b7340",
-            "fontSize": 23,
-            "fontWeight": 700,
+            "color": "#b1d0bd",
+            "background": "#2e7d32",
+            "fontSize": 22,
+            "fontWeight": 600,
             "align": "left",
+            "radius": 540,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "ext-mr6nm4xg-3",
+          "id": "ext-mr87vktz-3",
           "type": "badge",
           "role": "badge",
           "name": "badge",
           "text": "20+ Vitamins & Minerals",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 710,
-            "w": 518,
+            "x": 108,
+            "y": 768,
+            "w": 648,
             "h": 96
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#1b7340",
-            "fontSize": 23,
-            "fontWeight": 700,
+            "color": "#b3d9c5",
+            "background": "#2e7d32",
+            "fontSize": 22,
+            "fontWeight": 600,
             "align": "left",
+            "radius": 540,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "ext-mr6nm4xh-4",
+          "id": "ext-mr87vku0-4",
           "type": "badge",
           "role": "badge",
           "name": "badge",
           "text": "Organic Fruits & Veggies",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 845,
-            "w": 518,
+            "x": 108,
+            "y": 902,
+            "w": 648,
             "h": 96
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#1b7340",
-            "fontSize": 23,
-            "fontWeight": 700,
+            "color": "#cfe8db",
+            "background": "#2e7d32",
+            "fontSize": 22,
+            "fontWeight": 600,
             "align": "left",
+            "radius": 540,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "ext-mr6nm4xj-5",
+          "id": "ext-mr87vku2-5",
           "type": "badge",
           "role": "badge",
           "name": "badge",
           "text": "Prebiotics",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 979,
-            "w": 518,
+            "x": 108,
+            "y": 1037,
+            "w": 648,
             "h": 96
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#1b7340",
-            "fontSize": 23,
-            "fontWeight": 700,
+            "color": "#d2e6db",
+            "background": "#2e7d32",
+            "fontSize": 22,
+            "fontWeight": 600,
             "align": "left",
+            "radius": 540,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "ext-mr6nm4xj-6",
+          "id": "ext-mr87vku4-6",
           "type": "badge",
           "role": "badge",
           "name": "badge",
           "text": "Adaptogens",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 1114,
-            "w": 518,
+            "x": 108,
+            "y": 1171,
+            "w": 648,
             "h": 96
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#1b7340",
-            "fontSize": 23,
-            "fontWeight": 700,
+            "color": "#d6e7dd",
+            "background": "#2e7d32",
+            "fontSize": 22,
+            "fontWeight": 600,
             "align": "left",
+            "radius": 540,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "ext-mr6nm4xk-7",
+          "id": "ext-mr87vku5-7",
           "type": "badge",
           "role": "badge",
           "name": "badge",
           "text": "0 Sugar",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 1248,
-            "w": 518,
+            "x": 108,
+            "y": 1306,
+            "w": 648,
             "h": 96
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#1b7340",
-            "fontSize": 23,
-            "fontWeight": 700,
+            "color": "#2c8b5b",
+            "background": "#2e7d32",
+            "fontSize": 22,
+            "fontWeight": 600,
             "align": "left",
+            "radius": 540,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
@@ -210,24 +216,25 @@
       ]
     },
     {
-      "id": "ext-mr6nm4xl-8",
-      "type": "badge",
-      "role": "badge",
-      "name": "badge",
-      "text": "55,000+ ⭐⭐⭐⭐⭐ reviews",
+      "id": "ext-mr87vku5-8",
+      "type": "button",
+      "role": "cta",
+      "name": "cta",
+      "text": "55,000+ ★★★★★ reviews",
       "autoH": true,
       "box": {
-        "x": 194,
-        "y": 1613,
-        "w": 691,
-        "h": 96
+        "x": 280.8,
+        "y": 1430.3999999999999,
+        "w": 518.4,
+        "h": 76.80000000000001
       },
       "style": {
-        "color": "#0d2a1a",
-        "background": "#f4d04d",
-        "fontSize": 27,
+        "color": "#1a2e1a",
+        "background": "#f0c040",
+        "fontSize": 24,
         "fontWeight": 700,
         "align": "center",
+        "radius": 540,
         "uppercase": false,
         "lineHeight": 1.2,
         "padding": 16
@@ -239,7 +246,7 @@
     "h": 1920
   },
   "archetype": "offer-hero",
-  "background": "#dce8e3",
+  "background": "#d4e4d4",
   "backgroundIsPhoto": false,
   "backgroundConfidence": "high",
   "theme": "light",
@@ -265,7 +272,14 @@
       "share": 0.125
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": false,
+    "score": 45,
+    "corrections": [],
+    "applied": 3,
+    "iterations": 3,
+    "totalCorrections": 15
+  },
   "error": null,
   "passes": 2
 }

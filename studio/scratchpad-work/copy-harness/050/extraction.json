@@ -2,61 +2,32 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr84856f-c",
+      "id": "grp-mr86vmmx-0",
       "type": "group",
       "name": "Header",
       "box": {
         "x": 1,
         "y": 1,
-        "w": 505,
-        "h": 144
+        "w": 337,
+        "h": 182
       },
       "children": [
         {
-          "id": "ext-mr84856f-1",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · Hair Result",
-          "box": {
-            "x": 1,
-            "y": 3,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#2c242059",
-            "radius": 22,
-            "stroke": {
-              "color": "#2c2420",
-              "width": 2
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0,
-              "y": 0,
-              "w": 0.01,
-              "h": 0.01
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr84856f-2",
+          "id": "ext-mr86vmmv-2",
           "type": "text",
-          "role": "headline",
-          "name": "headline",
+          "role": "caption",
+          "name": "caption",
           "text": "Anthony",
           "autoH": true,
           "box": {
-            "x": 1,
+            "x": 2,
             "y": 1,
-            "w": 114,
+            "w": 76,
             "h": 30
           },
           "style": {
             "color": "#e0e0e0",
-            "fontSize": 27,
+            "fontSize": 18,
             "fontWeight": 700,
             "align": "left",
             "uppercase": false,
@@ -64,21 +35,21 @@
           }
         },
         {
-          "id": "ext-mr84856f-3",
+          "id": "ext-mr86vmmw-3",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "@anthony23",
           "autoH": true,
           "box": {
-            "x": 1,
+            "x": 2,
             "y": 39,
-            "w": 109,
+            "w": 103,
             "h": 30
           },
           "style": {
-            "color": "#7a7a7a",
-            "fontSize": 19,
+            "color": "#888888",
+            "fontSize": 18,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -86,21 +57,43 @@
           }
         },
         {
-          "id": "ext-mr84856f-4",
+          "id": "ext-mr86vmmw-4",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+          "text": "X.com",
           "autoH": true,
           "box": {
-            "x": 1,
+            "x": 9,
             "y": 77,
-            "w": 505,
+            "w": 40,
             "h": 30
           },
           "style": {
             "color": "#e0e0e0",
-            "fontSize": 17,
+            "fontSize": 18,
+            "fontWeight": 700,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86vmmw-5",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 115,
+            "w": 337,
+            "h": 30
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 18,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -108,7 +101,7 @@
           }
         },
         {
-          "id": "ext-mr84856f-5",
+          "id": "ext-mr86vmmw-6",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -116,13 +109,13 @@
           "autoH": true,
           "box": {
             "x": 1,
-            "y": 115,
-            "w": 128,
+            "y": 153,
+            "w": 122,
             "h": 30
           },
           "style": {
-            "color": "#7a7a7a",
-            "fontSize": 17,
+            "color": "#888888",
+            "fontSize": 18,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -132,133 +125,26 @@
       ]
     },
     {
-      "id": "ext-mr84856f-7",
+      "id": "media_mr86vmmw",
       "type": "shape",
-      "role": "rect",
-      "name": "Cut-out · Man with curly hair",
-      "box": {
-        "x": 54,
-        "y": 302,
-        "w": 950,
-        "h": 616
-      },
-      "style": {
-        "background": "#4b3a2d59",
-        "radius": 22,
-        "stroke": {
-          "color": "#4b3a2d",
-          "width": 8
-        }
-      },
-      "cutoutCandidate": {
-        "region": {
-          "x": 0.05,
-          "y": 0.28,
-          "w": 0.88,
-          "h": 0.57
-        },
-        "shape": "rect"
-      }
-    },
-    {
-      "id": "grp-mr84856f-d",
-      "type": "group",
-      "name": "Product",
+      "role": "product",
+      "name": "Media photo (cut out)",
       "box": {
         "x": 1,
         "y": 0,
-        "w": 1025,
-        "h": 129
+        "w": 1036,
+        "h": 928
       },
-      "children": [
-        {
-          "id": "ext-mr84856f-0",
-          "type": "shape",
-          "role": "avatar",
-          "name": "Avatar · Profile Picture",
-          "box": {
-            "x": 1,
-            "y": 0,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#8b6e4e59",
-            "shapeKind": "ellipse",
-            "stroke": {
-              "color": "#8b6e4e",
-              "width": 2
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0,
-              "y": 0,
-              "w": 0,
-              "h": 0
-            },
-            "shape": "avatar"
-          }
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 0.9750000000000001,
+          "h": 0.875
         },
-        {
-          "id": "ext-mr84856f-6",
-          "type": "shape",
-          "role": "avatar",
-          "name": "Avatar · Anthony profile picture",
-          "box": {
-            "x": 54,
-            "y": 43,
-            "w": 76,
-            "h": 86
-          },
-          "style": {
-            "background": "#3a3a3a59",
-            "shapeKind": "ellipse",
-            "stroke": {
-              "color": "#3a3a3a",
-              "width": 2
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.05,
-              "y": 0.04,
-              "w": 0.07,
-              "h": 0.08
-            },
-            "shape": "avatar"
-          }
-        },
-        {
-          "id": "ext-mr84856f-8",
-          "type": "shape",
-          "role": "logo",
-          "name": "Logo · X logo",
-          "box": {
-            "x": 961,
-            "y": 59,
-            "w": 65,
-            "h": 30
-          },
-          "style": {
-            "background": "#e8e8e859",
-            "radius": 22,
-            "stroke": {
-              "color": "#e8e8e8",
-              "width": 2
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.89,
-              "y": 0.06,
-              "w": 0.06,
-              "h": 0.03
-            },
-            "shape": "logo"
-          }
-        }
-      ]
+        "shape": "media"
+      }
     }
   ],
   "canvas": {
@@ -294,11 +180,11 @@
   ],
   "selfCheck": {
     "matched": false,
-    "score": 42,
+    "score": 0,
     "corrections": [],
     "applied": 0,
-    "iterations": 2,
-    "totalCorrections": 5
+    "iterations": 3,
+    "totalCorrections": 11
   },
   "error": null,
   "passes": 2

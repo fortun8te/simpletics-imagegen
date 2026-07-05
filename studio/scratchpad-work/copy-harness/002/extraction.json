@@ -2,153 +2,171 @@
   "ok": true,
   "layers": [
     {
-      "id": "ext-mr83rw7i-4",
-      "type": "text",
-      "role": "headline",
-      "name": "headline",
-      "text": "ALLE ESSENTIALS",
-      "autoH": true,
-      "box": {
-        "x": 237.59999999999997,
-        "y": 222.5,
-        "w": 604.8000000000001,
-        "h": 92
-      },
-      "style": {
-        "color": "#000000",
-        "fontSize": 65,
-        "fontWeight": 800,
-        "align": "center",
-        "uppercase": true,
-        "lineHeight": 1.2
-      }
-    },
-    {
-      "id": "grp-mr83rw7p-0",
+      "id": "grp-mr87my14-6",
       "type": "group",
-      "name": "Body",
+      "name": "Header",
       "box": {
-        "x": 86,
-        "y": 422,
-        "w": 929,
-        "h": 1402
+        "x": 0,
+        "y": 96,
+        "w": 1080,
+        "h": 1248
       },
       "children": [
         {
-          "id": "ext-mr83rw32-1",
+          "id": "ext-mr87my13-7",
           "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · Whey Milkshake Bag",
+          "role": "card",
+          "name": "card",
           "box": {
-            "x": 86,
-            "y": 979,
-            "w": 626,
-            "h": 845
+            "x": 0,
+            "y": 96,
+            "w": 1080,
+            "h": 1248
           },
           "style": {
-            "background": "#E0E0E059",
-            "radius": 22,
-            "stroke": {
-              "color": "#E0E0E0",
-              "width": 5
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.08,
-              "y": 0.51,
-              "w": 0.58,
-              "h": 0.44
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr83rw7i-2-lb",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": false,
-          "sizeLocked": true,
-          "text": "PRE WORKOUT TUB",
-          "box": {
-            "x": 684.7,
-            "y": 1149,
-            "w": 293.6,
-            "h": 64
-          },
-          "style": {
-            "fontSize": 26,
-            "fontWeight": 700,
             "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
+            "background": "#dccfca",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "padding": 16,
+            "shapeKind": "rect"
           }
         },
         {
-          "id": "ext-mr83rw7i-3-lb",
+          "id": "ext-mr87my0y-3",
           "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": false,
-          "sizeLocked": true,
-          "text": "CREATINE TUB",
-          "box": {
-            "x": 684.7,
-            "y": 1571,
-            "w": 293.6,
-            "h": 64
-          },
-          "style": {
-            "fontSize": 26,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
-          }
-        },
-        {
-          "id": "ext-mr83rw7m-5",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "KRACHTSPORT BUNDEL",
+          "role": "headline",
+          "name": "headline",
+          "text": "ALLE ESSENTIALS",
           "autoH": true,
           "box": {
-            "x": 162,
-            "y": 422,
-            "w": 756,
-            "h": 77
+            "x": 0,
+            "y": 108.15625,
+            "w": 1080,
+            "h": 204.6875
           },
           "style": {
             "color": "#000000",
-            "fontSize": 54,
-            "fontWeight": 800,
+            "fontSize": 144,
+            "fontWeight": 900,
             "align": "center",
             "uppercase": true,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr83rw7m-6",
+          "id": "ext-mr87my11-4",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "KRACHTSPORT BUNDEL",
+          "autoH": true,
+          "box": {
+            "x": 200,
+            "y": 290,
+            "w": 744,
+            "h": 83
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 59,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr87my14-7",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 64,
+        "y": 394,
+        "w": 1016,
+        "h": 1526
+      },
+      "children": [
+        {
+          "id": "ext-mr87my0y-0",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Whey Milkshake Pouch",
+          "box": {
+            "x": 64,
+            "y": 741,
+            "w": 664,
+            "h": 1179
+          },
+          "style": {
+            "background": "#d1d1d159",
+            "radius": 22,
+            "stroke": {
+              "color": "#d1d1d1",
+              "width": 5
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.06,
+              "y": 0.39,
+              "w": 0.62,
+              "h": 0.61
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr87my0y-1",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Pre-Workout Jar",
+          "box": {
+            "x": 670,
+            "y": 741,
+            "w": 410,
+            "h": 773
+          },
+          "style": {
+            "background": "#c0c0c059",
+            "radius": 22,
+            "stroke": {
+              "color": "#c0c0c0",
+              "width": 3
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.62,
+              "y": 0.39,
+              "w": 0.38,
+              "h": 0.4
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr87my12-5",
           "type": "text",
           "role": "price",
           "name": "price",
           "text": "€63 → €49",
           "autoH": true,
           "box": {
-            "x": 302,
-            "y": 538,
-            "w": 475,
-            "h": 77
+            "x": 292,
+            "y": 394,
+            "w": 561,
+            "h": 95
           },
           "style": {
-            "color": "#2b1d18",
-            "fontSize": 65,
+            "color": "#000000",
+            "fontSize": 76,
             "fontWeight": 800,
             "align": "center",
             "uppercase": false,
@@ -156,21 +174,21 @@
           }
         },
         {
-          "id": "ext-mr83rw7n-7",
+          "id": "ext-mr87my13-6",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "KOOP NU VIA UPFRONT.NL",
           "autoH": true,
           "box": {
-            "x": 216,
-            "y": 826,
-            "w": 648,
-            "h": 58
+            "x": 235,
+            "y": 581,
+            "w": 676,
+            "h": 62
           },
           "style": {
-            "color": "#383838",
-            "fontSize": 27,
+            "color": "#4f332a",
+            "fontSize": 41,
             "fontWeight": 400,
             "align": "center",
             "uppercase": true,
@@ -180,26 +198,26 @@
       ]
     },
     {
-      "id": "grp-mr83rw7p-1",
+      "id": "grp-mr87my14-8",
       "type": "group",
       "name": "Product",
       "box": {
-        "x": 459,
-        "y": 86,
-        "w": 556,
-        "h": 1738
+        "x": 454,
+        "y": 73,
+        "w": 233,
+        "h": 234
       },
       "children": [
         {
-          "id": "ext-mr83rw32-0",
+          "id": "ext-mr87my0y-2",
           "type": "shape",
           "role": "logo",
-          "name": "Logo · Brand Logo",
+          "name": "Logo · Upfront Logo",
           "box": {
-            "x": 459,
-            "y": 86,
-            "w": 162,
-            "h": 134
+            "x": 504,
+            "y": 73,
+            "w": 183,
+            "h": 97
           },
           "style": {
             "background": "#00000059",
@@ -211,56 +229,41 @@
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0.43,
-              "y": 0.05,
-              "w": 0.15,
-              "h": 0.07
+              "x": 0.47,
+              "y": 0.04,
+              "w": 0.17,
+              "h": 0.05
             },
             "shape": "logo"
           }
         },
         {
-          "id": "ext-mr83rw7i-2",
+          "id": "ext-mr87my13-8",
           "type": "shape",
-          "role": "product",
-          "name": "Product · pre workout tub",
+          "role": "logo",
+          "name": "Logo · brand logo",
           "box": {
-            "x": 684.7,
-            "y": 1019.3,
-            "w": 293.6,
-            "h": 322.40000000000003
+            "x": 454,
+            "y": 115,
+            "w": 173,
+            "h": 192
           },
           "style": {
-            "background": "#d9d9d959",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.07 C 0.6333 0.07 0.8175 0.0283 0.9 0.1 C 0.9825 0.1717 1 0.3717 0.995 0.5 C 0.99 0.6283 0.9525 0.8033 0.87 0.87 C 0.7875 0.9367 0.6233 0.9 0.5 0.9 C 0.3767 0.9 0.2125 0.9367 0.13 0.87 C 0.0475 0.8033 0.01 0.6283 0.005 0.5 C 0 0.3717 0.0175 0.1717 0.1 0.1 C 0.1825 0.0283 0.3667 0.07 0.5 0.07 Z",
+            "background": "#ffffff59",
+            "shapeKind": "ellipse",
             "stroke": {
-              "color": "#d9d9d9",
-              "width": 3
+              "color": "#ffffff",
+              "width": 2
             }
-          }
-        },
-        {
-          "id": "ext-mr83rw7i-3",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · creatine tub",
-          "box": {
-            "x": 684.7,
-            "y": 1426.2,
-            "w": 293.6,
-            "h": 353.6
           },
-          "style": {
-            "background": "#d9d9d959",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.07 C 0.6333 0.07 0.8175 0.0283 0.9 0.1 C 0.9825 0.1717 1 0.3717 0.995 0.5 C 0.99 0.6283 0.9525 0.8033 0.87 0.87 C 0.7875 0.9367 0.6233 0.9 0.5 0.9 C 0.3767 0.9 0.2125 0.9367 0.13 0.87 C 0.0475 0.8033 0.01 0.6283 0.005 0.5 C 0 0.3717 0.0175 0.1717 0.1 0.1 C 0.1825 0.0283 0.3667 0.07 0.5 0.07 Z",
-            "stroke": {
-              "color": "#d9d9d9",
-              "width": 3
-            }
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.42,
+              "y": 0.06,
+              "w": 0.16,
+              "h": 0.1
+            },
+            "shape": "logo"
           }
         }
       ]
@@ -271,10 +274,14 @@
     "h": 1920
   },
   "archetype": "offer-hero",
-  "background": "#FF5A23",
+  "background": {
+    "from": "#f4f4f4",
+    "to": "#f4f4f4",
+    "angle": 180
+  },
   "backgroundIsPhoto": false,
   "backgroundConfidence": "normal",
-  "theme": "dark",
+  "theme": "light",
   "dominantPalette": [
     {
       "hex": "#c5c4c3",
@@ -299,9 +306,9 @@
   ],
   "selfCheck": {
     "matched": false,
-    "score": 38,
+    "score": 45,
     "corrections": [],
-    "applied": 5,
+    "applied": 4,
     "iterations": 3,
     "totalCorrections": 15
   },

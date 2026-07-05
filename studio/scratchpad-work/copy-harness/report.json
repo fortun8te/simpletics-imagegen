@@ -1,34 +1,61 @@
 {
-  "at": "2026-07-05T19:27:49.753Z",
-  "n": 1,
-  "okN": 1,
-  "avgScore": 91.6,
+  "at": "2026-07-05T19:37:31.378Z",
+  "n": 2,
+  "okN": 2,
+  "avgScore": 91,
   "results": [
     {
-      "id": "103",
-      "filename": "103_attached_056bb15bf6d6c82e.webp",
+      "id": "050",
+      "filename": "050_attached_0d40eff6fd3e3051.webp",
       "ok": true,
       "error": null,
       "ms": {
-        "extract": 58727,
-        "assemble": 3,
-        "total": 67631
+        "extract": 47989,
+        "assemble": 4,
+        "total": 55269
       },
       "archetype": "x-post",
-      "layerCountExtracted": 5,
+      "layerCountExtracted": 6,
       "parsePath": "loose",
-      "background": "#000000",
+      "background": "#1a1a1a",
       "cutoutCandidates": 1,
       "layersApplied": 2,
-      "leavesInResult": 6,
+      "leavesInResult": 7,
       "verify": {
         "ready": false
       },
       "pixelError": null,
       "textPileOverlaps": 1,
-      "pixelScoreRaw": 94.6,
-      "pixelScore": 91.6,
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/103/side-by-side.png",
+      "pixelScoreRaw": 95.6,
+      "pixelScore": 92.6,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/050/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "078",
+      "filename": "078_attached_efa4c7170a656935.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 61843,
+        "assemble": 2005,
+        "total": 71779
+      },
+      "archetype": "offer-hero",
+      "layerCountExtracted": 9,
+      "parsePath": "loose",
+      "background": "#f4f4f4",
+      "cutoutCandidates": 2,
+      "layersApplied": 4,
+      "leavesInResult": 10,
+      "verify": {
+        "ready": true
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 89.4,
+      "pixelScore": 89.4,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/078/side-by-side.png",
       "attempts": 3
     }
   ]

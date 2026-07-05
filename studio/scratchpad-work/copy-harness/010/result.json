@@ -4,17 +4,17 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 54378,
+    "extract": 60277,
     "assemble": 1,
-    "total": 63536
+    "total": 67075
   },
   "archetype": "x-post",
-  "layerCountExtracted": 12,
+  "layerCountExtracted": 13,
   "parsePath": "loose",
   "background": "#ffffff",
   "cutoutCandidates": 1,
   "layersApplied": 4,
-  "leavesInResult": 13,
+  "leavesInResult": 14,
   "verify": {
     "ready": false
   },

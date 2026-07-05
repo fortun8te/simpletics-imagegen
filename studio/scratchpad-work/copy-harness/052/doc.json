@@ -1,13 +1,13 @@
 {
-  "id": "harness_052_0ae999cd",
-  "name": "copy-harness harness_052_0ae999cd",
+  "id": "harness_052_c53f7ce4",
+  "name": "copy-harness harness_052_c53f7ce4",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base_mr84d2yt",
+      "id": "base_mr88pchh",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,141 +23,76 @@
       }
     },
     {
-      "id": "group-mr84d2yt-75",
+      "id": "group-mr88pchg-8v",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 86,
-        "y": 32,
-        "w": 907,
-        "h": 292
+        "x": 1,
+        "y": 1,
+        "w": 679,
+        "h": 217
       },
       "children": [
         {
-          "id": "headline-mr84d2yt-76",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "No need to ruin your hair to have perfect curls",
-          "autoH": true,
-          "box": {
-            "x": 86,
-            "y": 32,
-            "w": 886,
-            "h": 130
-          },
-          "style": {
-            "color": "#f4f3ef",
-            "fontSize": 55,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "badge-mr84d2yt-77",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "Before",
-          "autoH": true,
-          "box": {
-            "x": 227,
-            "y": 270,
-            "w": 238,
-            "h": 54
-          },
-          "style": {
-            "color": "#5f8372",
-            "fontSize": 27,
-            "fontWeight": 600,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "badge-mr84d2yt-78",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "After",
-          "autoH": true,
-          "box": {
-            "x": 648,
-            "y": 270,
-            "w": 216,
-            "h": 54
-          },
-          "style": {
-            "color": "#5f8372",
-            "fontSize": 27,
-            "fontWeight": 600,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "group-mr84d2yt-79",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 140,
-        "y": 324,
-        "w": 843,
-        "h": 589
-      },
-      "children": [
-        {
-          "id": "rect-mr84d2yt-7a",
+          "id": "rect-mr88pchg-8w",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · Before hair",
+          "name": "Cut-out · Before photo",
           "box": {
-            "x": 140,
-            "y": 324,
-            "w": 427,
-            "h": 589
+            "x": 1,
+            "y": 4,
+            "w": 40,
+            "h": 30
           },
-          "style": {},
-          "src": "/refasset?id=harness-052m6ac641b7"
+          "style": {
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0.01
+            },
+            "radius": 8
+          },
+          "src": "/refasset?id=harness-052"
         },
         {
-          "id": "rect-mr84d2yt-7b",
+          "id": "rect-mr88pchg-8x",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · After hair",
+          "name": "Cut-out · After photo",
           "box": {
-            "x": 540,
-            "y": 324,
-            "w": 443,
-            "h": 589
+            "x": 5,
+            "y": 4,
+            "w": 40,
+            "h": 30
           },
-          "style": {},
-          "src": "/refasset?id=harness-052m4a8761af"
+          "style": {
+            "crop": {
+              "x": 0.01,
+              "y": 0,
+              "w": 0,
+              "h": 0.01
+            },
+            "radius": 8
+          },
+          "src": "/refasset?id=harness-052"
         },
         {
-          "id": "caption-mr84d2yt-7c",
+          "id": "caption-mr88pchg-8y",
           "type": "text",
           "role": "caption",
           "name": "Product label",
           "autoH": true,
           "sizeLocked": true,
-          "text": "GREEN CURL CREAM TUBE",
+          "text": "CURL CREAM TUBE",
           "box": {
-            "x": 443,
-            "y": 695,
-            "w": 194,
-            "h": 42
+            "x": 5,
+            "y": 186,
+            "w": 40,
+            "h": 32
           },
           "style": {
-            "fontSize": 21,
+            "fontSize": 16,
             "fontWeight": 700,
             "color": "#ffffff",
             "align": "center",
@@ -167,22 +102,68 @@
           }
         },
         {
-          "id": "caption-mr84d2yt-7d",
+          "id": "headline-mr88pchg-8z",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "wavy",
+          "role": "headline",
+          "name": "headline",
+          "text": "No need to ruin your hair to have perfect curls",
           "autoH": true,
           "box": {
-            "x": 497,
-            "y": 572,
-            "w": 108,
-            "h": 65
+            "x": 1,
+            "y": 1,
+            "w": 679,
+            "h": 202
           },
           "style": {
-            "color": "#f4f3ef",
-            "fontSize": 54,
-            "fontWeight": 400,
+            "color": "#FFFFFF",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "badge-mr88pchg-90",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "Before",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 90,
+            "w": 116,
+            "h": 40
+          },
+          "style": {
+            "color": "#7C9A73",
+            "fontSize": 32,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "badge-mr88pchg-91",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "After",
+          "autoH": true,
+          "box": {
+            "x": 7,
+            "y": 138,
+            "w": 97,
+            "h": 40
+          },
+          "style": {
+            "color": "#7C9A73",
+            "fontSize": 32,
+            "fontWeight": 800,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
@@ -191,78 +172,101 @@
       ]
     },
     {
-      "id": "product-mr84d2yt-7e",
-      "type": "shape",
-      "role": "product",
-      "name": "Product · Green curl cream tube",
-      "box": {
-        "x": 443,
-        "y": 486,
-        "w": 194,
-        "h": 459
-      },
-      "style": {
-        "background": "#2f5e4e59",
-        "radius": 22,
-        "shapeKind": "path",
-        "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
-        "stroke": {
-          "color": "#2f5e4e",
-          "width": 2
-        }
-      }
-    },
-    {
-      "id": "group-mr84d2yt-7f",
+      "id": "group-mr88pchg-92",
       "type": "group",
-      "name": "CTA",
+      "name": "Body",
       "box": {
-        "x": 0,
-        "y": 900,
-        "w": 1080,
-        "h": 180
+        "x": 1,
+        "y": 226,
+        "w": 378,
+        "h": 219
       },
       "children": [
         {
-          "id": "card-mr84d2yt-7g",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
+          "id": "subhead-mr88pchg-93",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Everyday Curl Crème",
+          "autoH": true,
           "box": {
-            "x": 0,
-            "y": 900,
-            "w": 1080,
-            "h": 180
+            "x": 5,
+            "y": 226,
+            "w": 89,
+            "h": 137
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
+            "color": "#FFFFFF",
+            "fontSize": 38,
+            "fontWeight": 800,
+            "align": "center",
             "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 0.8,
-            "padding": 16
+            "lineHeight": 1.2
           }
         },
         {
-          "id": "caption-mr84d2yt-7h",
+          "id": "subhead-mr88pchg-94",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "wavy",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 264,
+            "w": 157,
+            "h": 81
+          },
+          "style": {
+            "color": "#FFFFFF",
+            "fontSize": 65,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr88pchg-95",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "125ML e 4.22 US FL.OZ",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 353,
+            "w": 40,
+            "h": 180
+          },
+          "style": {
+            "color": "#FFFFFF",
+            "fontSize": 30,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr88pchg-96",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "This natural curl cream is all you need",
           "autoH": true,
           "box": {
-            "x": 162,
-            "y": 972,
-            "w": 756,
-            "h": 65
+            "x": 1,
+            "y": 391,
+            "w": 378,
+            "h": 72
           },
           "style": {
-            "color": "#5f8372",
-            "fontSize": 35,
-            "fontWeight": 400,
+            "color": "#7C9A73",
+            "fontSize": 30,
+            "fontWeight": 800,
             "align": "center",
             "uppercase": false,
             "fontFamily": "Georgia",
@@ -271,8 +275,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "product-mr88pchg-97",
+      "type": "shape",
+      "role": "product",
+      "name": "Product · Curl cream tube",
+      "box": {
+        "x": 5,
+        "y": 5,
+        "w": 40,
+        "h": 30
+      },
+      "style": {
+        "background": "#426B4F59",
+        "radius": 22,
+        "shapeKind": "path",
+        "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
+        "stroke": {
+          "color": "#426B4F",
+          "width": 2
+        }
+      }
+    },
+    {
+      "id": "card-mr88pchg-98",
+      "type": "shape",
+      "role": "card",
+      "name": "card",
+      "box": {
+        "x": 0,
+        "y": 900,
+        "w": 1080,
+        "h": 180
+      },
+      "style": {
+        "color": "#ffffff",
+        "background": "#ffffff",
+        "fontSize": 43,
+        "fontWeight": 600,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "opacity": 0.8,
+        "padding": 16
+      }
     }
   ],
-  "skeletonId": "skel_mr84d2yskib9",
-  "updatedAt": 1783275796900
+  "skeletonId": "skel_mr88pchgkroc",
+  "updatedAt": 1783283082104
 }

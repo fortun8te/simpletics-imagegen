@@ -2,168 +2,122 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr6nrap3-w",
+      "id": "grp-mr883pup-k",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 108,
-        "y": 54,
-        "w": 864,
-        "h": 864
+        "x": 46,
+        "y": 140,
+        "w": 1034,
+        "h": 940
       },
       "children": [
         {
-          "id": "ext-mr6nralg-1",
+          "id": "ext-mr883pum-0",
           "type": "shape",
           "role": "rect",
-          "name": "Cut-out · stack of magazines",
+          "name": "Cut-out · magazine cover",
           "box": {
-            "x": 216,
-            "y": 162,
-            "w": 648,
-            "h": 756
+            "x": 238,
+            "y": 140,
+            "w": 842,
+            "h": 940
           },
           "style": {
-            "background": "#8b5e3c59",
+            "background": "#3B5D2A59",
             "radius": 22,
             "stroke": {
-              "color": "#8b5e3c",
-              "width": 5
+              "color": "#3B5D2A",
+              "width": 7
             }
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0.2,
-              "y": 0.15,
-              "w": 0.6,
-              "h": 0.7
+              "x": 0.22,
+              "y": 0.13,
+              "w": 0.78,
+              "h": 0.87
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr6nralg-0",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "BLACK FRIDAY",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 54,
-            "w": 864,
-            "h": 216
-          },
-          "style": {
-            "color": "#3333ff",
-            "fontSize": 128,
-            "fontWeight": 800,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr6nralh-2",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "DEC 2024 / JAN 2025",
-          "autoH": true,
-          "box": {
-            "x": 238,
-            "y": 278,
-            "w": 162,
-            "h": 30
-          },
-          "style": {
-            "color": "#c9c5c9",
-            "background": "#8b5e3c",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        }
-      ]
-    },
-    {
-      "id": "grp-mr6nrap3-x",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 238,
-        "y": 316,
-        "w": 626,
-        "h": 610
-      },
-      "children": [
-        {
-          "id": "ext-mr6nrap0-3",
+          "id": "ext-mr883pun-2",
           "type": "text",
           "role": "headline",
           "name": "headline",
           "text": "House Beautiful",
           "autoH": true,
           "box": {
-            "x": 270,
-            "y": 316,
-            "w": 540,
-            "h": 108
+            "x": 46,
+            "y": 214,
+            "w": 638,
+            "h": 88
           },
           "style": {
-            "color": "#807756",
-            "fontSize": 65,
-            "fontWeight": 700,
-            "align": "center",
+            "color": "#f5f5f5",
+            "fontSize": 70,
+            "fontWeight": 800,
+            "align": "left",
             "uppercase": false,
             "fontFamily": "Georgia",
             "serif": true,
             "lineHeight": 1.2
           }
-        },
+        }
+      ]
+    },
+    {
+      "id": "grp-mr883pup-l",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 173,
+        "y": 335,
+        "w": 907,
+        "h": 417
+      },
+      "children": [
         {
-          "id": "ext-mr6nrap1-4",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "MODERN LIVING / AFFORDABLE STYLE",
-          "autoH": true,
-          "box": {
-            "x": 594,
-            "y": 432,
-            "w": 270,
-            "h": 30
-          },
-          "style": {
-            "color": "#988c6b",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr6nrap1-5",
+          "id": "ext-mr883pum-1",
           "type": "text",
           "role": "headline",
           "name": "headline",
+          "text": "BLACK FRIDAY",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 335,
+            "w": 907,
+            "h": 270
+          },
+          "style": {
+            "color": "#1a1aff",
+            "fontSize": 132,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr883pun-3",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Your loveliest Christmas ever!",
           "autoH": true,
           "box": {
-            "x": 270,
-            "y": 470,
-            "w": 594,
-            "h": 162
+            "x": 343,
+            "y": 613,
+            "w": 612,
+            "h": 65
           },
           "style": {
-            "color": "#8b8964",
-            "fontSize": 54,
-            "fontWeight": 700,
-            "align": "center",
+            "color": "#b2aa93",
+            "fontSize": 37,
+            "fontWeight": 800,
+            "align": "left",
             "uppercase": false,
             "fontFamily": "Georgia",
             "serif": true,
@@ -171,92 +125,24 @@
           }
         },
         {
-          "id": "ext-mr6nrap2-6",
+          "id": "ext-mr883puo-4",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "ZERO-STRESS TABLESCAPES SHARING PLATTERS PLANTS TO GIVE AND GROW MEANINGFUL GIFTS WINTER GARDENS + SO MUCH MORE (EVEN COCKTAILS!)",
-          "autoH": true,
-          "box": {
-            "x": 324,
-            "y": 640,
-            "w": 486,
-            "h": 130
-          },
-          "style": {
-            "color": "#908a5d",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr6nrap2-7",
-          "type": "badge",
           "role": "badge",
           "name": "badge",
-          "text": "DRENCHED IN JOY",
-          "autoH": true,
-          "box": {
-            "x": 238,
-            "y": 778,
-            "w": 162,
-            "h": 32
-          },
-          "style": {
-            "color": "#b4ac9b",
-            "background": "#8b5e3c",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr6nrap2-8",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
           "text": "60 REAL HOMES DRESSED FOR THE HOLIDAYS",
           "autoH": true,
           "box": {
-            "x": 238,
-            "y": 818,
-            "w": 162,
-            "h": 108
+            "x": 424,
+            "y": 686,
+            "w": 247,
+            "h": 66
           },
           "style": {
-            "color": "#3c2910",
-            "fontSize": 18,
-            "fontWeight": 700,
+            "color": "#f5f5f5",
+            "fontSize": 21,
+            "fontWeight": 800,
             "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr6nrap3-9",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "THE BEST CRACKERS • BAUBLES • GARLANDS • WREATHS • PARTY FOOD • TABLEWARE",
-          "autoH": true,
-          "box": {
-            "x": 238,
-            "y": 842,
-            "w": 594,
-            "h": 30
-          },
-          "style": {
-            "color": "#503826",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
+            "uppercase": true,
             "lineHeight": 1.2
           }
         }
@@ -268,7 +154,7 @@
     "h": 1080
   },
   "archetype": "offer-hero",
-  "background": "#f0f0f0",
+  "background": "#e0e0e0",
   "backgroundIsPhoto": false,
   "backgroundConfidence": "high",
   "theme": "light",
@@ -294,7 +180,14 @@
       "share": 0.125
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": false,
+    "score": 55,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 3,
+    "totalCorrections": 15
+  },
   "error": null,
   "passes": 2
 }

@@ -1,0 +1,162 @@
+{
+  "id": "harness_042_2b9b2c25",
+  "name": "copy-harness harness_042_2b9b2c25",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr88lp5x-8b",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#000000"
+      }
+    },
+    {
+      "id": "group-mr88lp5x-84",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 192,
+        "w": 994,
+        "h": 346
+      },
+      "children": [
+        {
+          "id": "caption-mr88lp5x-85",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 346,
+            "w": 734,
+            "h": 192
+          },
+          "style": {
+            "color": "#EAEAEA",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "badge-mr88lp5x-86",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "X .com",
+          "autoH": true,
+          "box": {
+            "x": 918,
+            "y": 230,
+            "w": 130,
+            "h": 58
+          },
+          "style": {
+            "color": "#EAEAEA",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr88lp5x-87",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Wavy",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 192,
+            "w": 432,
+            "h": 68
+          },
+          "style": {
+            "color": "#757575",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "blur": 11
+          }
+        },
+        {
+          "id": "caption-mr88lp5x-88",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@wavyhair",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 250,
+            "w": 432,
+            "h": 36
+          },
+          "style": {
+            "color": "#71767b",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "blur": 11
+          }
+        }
+      ]
+    },
+    {
+      "id": "rect-mr88lp5x-89",
+      "type": "image",
+      "role": "rect",
+      "name": "Cut-out · man in office",
+      "box": {
+        "x": 32,
+        "y": 480,
+        "w": 1015,
+        "h": 1421
+      },
+      "style": {},
+      "src": "/refasset?id=harness-042m14c4ad3b"
+    },
+    {
+      "id": "avatar-mr88lp5x-8a",
+      "type": "shape",
+      "role": "avatar",
+      "name": "Blurred · profile picture",
+      "box": {
+        "x": 32,
+        "y": 192,
+        "w": 130,
+        "h": 192
+      },
+      "style": {
+        "background": "#8a9baebf",
+        "shapeKind": "ellipse",
+        "blur": 8
+      }
+    }
+  ],
+  "skeletonId": "skel_mr88lp5wosub",
+  "updatedAt": 1783282914619
+}

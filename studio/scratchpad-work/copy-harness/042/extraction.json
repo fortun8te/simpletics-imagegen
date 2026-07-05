@@ -1,0 +1,195 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr88jvtu-y",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 192,
+        "w": 994,
+        "h": 346
+      },
+      "children": [
+        {
+          "id": "ext-mr88jvpb-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 346,
+            "w": 972,
+            "h": 192
+          },
+          "style": {
+            "color": "#EAEAEA",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr88jvpb-3",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "X .com",
+          "autoH": true,
+          "box": {
+            "x": 918,
+            "y": 230,
+            "w": 130,
+            "h": 58
+          },
+          "style": {
+            "color": "#EAEAEA",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr88jvpb-4",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Wavy",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 192,
+            "w": 432,
+            "h": 35
+          },
+          "style": {
+            "color": "#757575",
+            "fontSize": 24,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "blur": 11
+          }
+        },
+        {
+          "id": "ext-mr88jvtu-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@wavyhair",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 250,
+            "w": 432,
+            "h": 27
+          },
+          "style": {
+            "color": "#71767b",
+            "fontSize": 19,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "blur": 11
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr88jvpb-0",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · man in office",
+      "box": {
+        "x": 32,
+        "y": 480,
+        "w": 1015,
+        "h": 1421
+      },
+      "style": {
+        "background": "#8e96a059",
+        "radius": 22,
+        "stroke": {
+          "color": "#8e96a0",
+          "width": 8
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.03,
+          "y": 0.25,
+          "w": 0.94,
+          "h": 0.74
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "ext-mr88jvpb-1",
+      "type": "shape",
+      "role": "avatar",
+      "name": "Blurred · profile picture",
+      "box": {
+        "x": 32,
+        "y": 192,
+        "w": 130,
+        "h": 192
+      },
+      "style": {
+        "background": "#8a9baebf",
+        "shapeKind": "ellipse",
+        "blur": 8
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "x-post",
+  "background": "#000000",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "normal",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#b8b7ba",
+      "share": 0.5
+    },
+    {
+      "hex": "#000000",
+      "share": 0.25
+    },
+    {
+      "hex": "#000000",
+      "share": 0.125
+    },
+    {
+      "hex": "#010101",
+      "share": 0.063
+    },
+    {
+      "hex": "#343941",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": {
+    "matched": null,
+    "score": null,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 2,
+    "totalCorrections": 2
+  },
+  "error": null,
+  "passes": 2
+}
