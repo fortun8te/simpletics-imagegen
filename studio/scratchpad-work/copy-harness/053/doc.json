@@ -1,13 +1,13 @@
 {
-  "id": "harness_053_434eb0a6",
-  "name": "copy-harness harness_053_434eb0a6",
+  "id": "harness_053_d7f7a84d",
+  "name": "copy-harness harness_053_d7f7a84d",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base_mr7zo4f0",
+      "id": "base_mr8017m4",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,10 +23,10 @@
       }
     },
     {
-      "id": "rect-mr7zo4ez-7t",
+      "id": "rect-mr8017m2-0",
       "type": "image",
       "role": "rect",
-      "name": "Cut-out · kitchen window background",
+      "name": "Cut-out · glass green juice",
       "box": {
         "x": 0,
         "y": 0,
@@ -34,37 +34,37 @@
         "h": 1920
       },
       "style": {},
-      "src": "/refasset?id=harness-053md3cd974d"
+      "src": "/refasset?id=harness-053mf0c56060"
     },
     {
-      "id": "group-mr7zo4ez-7u",
+      "id": "group-mr8017m2-1",
       "type": "group",
       "name": "Body",
       "box": {
         "x": 173,
-        "y": 787,
-        "w": 778,
-        "h": 144
+        "y": 778,
+        "w": 745,
+        "h": 288
       },
       "children": [
         {
-          "id": "headline-mr7zo4ez-7v",
+          "id": "caption-mr8017m2-2",
           "type": "text",
-          "role": "headline",
-          "name": "headline",
+          "role": "caption",
+          "name": "caption",
           "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
           "autoH": true,
           "box": {
             "x": 173,
-            "y": 787,
-            "w": 778,
-            "h": 167
+            "y": 778,
+            "w": 724,
+            "h": 116
           },
           "style": {
-            "color": "#cdcac7",
+            "color": "#d0c1b2",
             "background": "#000000",
-            "fontSize": 56,
-            "fontWeight": 700,
+            "fontSize": 35,
+            "fontWeight": 800,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2,
@@ -72,22 +72,22 @@
           }
         },
         {
-          "id": "badge-mr7zo4ez-7w",
+          "id": "price-mr8017m2-3",
           "type": "text",
-          "role": "badge",
-          "name": "badge",
+          "role": "price",
+          "name": "price",
           "text": "72,6 kg",
           "autoH": true,
           "box": {
-            "x": 184,
-            "y": 864,
-            "w": 194,
-            "h": 67
+            "x": 173,
+            "y": 874,
+            "w": 227,
+            "h": 86
           },
           "style": {
-            "color": "#d2c4c1",
-            "background": "#000000",
-            "fontSize": 28,
+            "color": "#c8b6b0",
+            "background": "#1a1a1a",
+            "fontSize": 41,
             "fontWeight": 800,
             "align": "center",
             "uppercase": false,
@@ -96,22 +96,22 @@
           }
         },
         {
-          "id": "badge-mr7zo4ez-7x",
+          "id": "price-mr8017m2-4",
           "type": "text",
-          "role": "badge",
-          "name": "badge",
+          "role": "price",
+          "name": "price",
           "text": "68,2kg",
           "autoH": true,
           "box": {
-            "x": 454,
-            "y": 864,
-            "w": 194,
-            "h": 67
+            "x": 443,
+            "y": 874,
+            "w": 227,
+            "h": 86
           },
           "style": {
-            "color": "#d5d0cc",
-            "background": "#000000",
-            "fontSize": 28,
+            "color": "#c48459",
+            "background": "#1a1a1a",
+            "fontSize": 41,
             "fontWeight": 800,
             "align": "center",
             "uppercase": false,
@@ -120,22 +120,46 @@
           }
         },
         {
-          "id": "badge-mr7zo4ez-7y",
+          "id": "price-mr8017m2-5",
           "type": "text",
-          "role": "badge",
-          "name": "badge",
+          "role": "price",
+          "name": "price",
           "text": "66,1kg",
           "autoH": true,
           "box": {
-            "x": 724,
-            "y": 864,
-            "w": 194,
-            "h": 67
+            "x": 713,
+            "y": 874,
+            "w": 205,
+            "h": 86
           },
           "style": {
-            "color": "#e84393",
-            "background": "#f8d7e8",
-            "fontSize": 28,
+            "color": "#dd7080",
+            "background": "#ff6b7d",
+            "fontSize": 41,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr8017m2-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Ganz Ehrlich: ich habe null damit gerechnet 😂🤯",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 970,
+            "w": 724,
+            "h": 102
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#000000",
+            "fontSize": 29,
             "fontWeight": 800,
             "align": "center",
             "uppercase": false,
@@ -146,6 +170,6 @@
       ]
     }
   ],
-  "skeletonId": "skel_mr7zo4ez0sv3",
-  "updatedAt": 1783267911370
+  "skeletonId": "skel_mr8017m23agd",
+  "updatedAt": 1783268522220
 }

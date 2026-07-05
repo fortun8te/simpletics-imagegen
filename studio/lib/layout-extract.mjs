@@ -1397,6 +1397,16 @@ export function toSkeletonLayers(raw, canvas, repairLog = null, opts = {}) {
       while (style.fontSize > 18 && wrap(style.fontSize) > box.h * 1.15 && guard++ < 24) {
         style.fontSize = Math.round(style.fontSize * 0.92);
       }
+      // BOX-FIT clamp (ad 053, the inverse defect): the model sometimes boxes a whole text
+      // CLUSTER for one line — a single-line header arrives with a 3-line-tall box that then
+      // physically overlaps the layers laid out beneath it. Pixels look fine (glyphs render at
+      // the top) but the layer geometry is dirty: Figma import gets overlapping boxes and the
+      // pile metric rightly flags it. When the rendered-height estimate says the box is >1.8×
+      // taller than the text needs, shrink the box to the estimate (+15% breathing room).
+      {
+        const estH = wrap(style.fontSize);
+        if (estH > 0 && box.h > estH * 1.8) box.h = Math.round(estH * 1.15);
+      }
     }
     const shapeLayer = {
       id,
@@ -3157,6 +3167,14 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
       best.layers = (best.layers || []).filter((l) => {
         if (l?.type !== 'text' || !l?.box) return true;
         const text = String(l.text || '');
+        // (a0) EMPTY text is pure geometry pollution — nothing renders, but the box overlaps
+        // real layers and dirties the Figma import (observed: an empty text spanning 68% of the
+        // canvas on ad 052).
+        if (!text.trim()) { dropped.push(l); return false; }
+        // (a1) PRODUCT-DESCRIPTOR captions ("CURL CRÈME TUBE", "CREATINE JAR") are the model
+        // NAMING a product region, not design copy — when any photo region exists they duplicate
+        // what the cutout already shows, usually at fabricated coordinates.
+        if (photoRegions.length && /^[\p{Lu}0-9 &'’.\-]{3,40}\s(TUBE|JAR|POUCH|BAG|TUB|BOTTLE|CAN|PACK|PACKSHOT)$/u.test(text.trim())) { dropped.push(l); return false; }
         // (a) CONTENT: unmistakable nutrition/ingredient copy is packaging regardless of role/box
         if (nutritionHits(text) >= 2 || (nutritionHits(text) >= 1 && text.length > 60)) { dropped.push(l); return false; }
         if (OVERLAY_ROLES.test(String(l.role || ''))) return true;

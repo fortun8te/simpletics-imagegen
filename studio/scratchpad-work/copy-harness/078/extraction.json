@@ -2,111 +2,54 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr7zp66a-n",
-      "type": "group",
-      "name": "Header",
+      "id": "ext-mr7zs6ye-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Nature’s Energy Gel\n2 ingredients",
+      "autoH": true,
       "box": {
-        "x": 54,
+        "x": 32,
         "y": 54,
-        "w": 972,
-        "h": 975
+        "w": 1026,
+        "h": 194
       },
-      "children": [
-        {
-          "id": "ext-mr7zp63y-0",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "Nature’s Energy Gel",
-          "autoH": true,
-          "box": {
-            "x": 54,
-            "y": 54,
-            "w": 972,
-            "h": 130
-          },
-          "style": {
-            "color": "#111111",
-            "fontSize": 81,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr7zp63y-1",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "2 ingredients",
-          "autoH": true,
-          "box": {
-            "x": 54,
-            "y": 184,
-            "w": 972,
-            "h": 130
-          },
-          "style": {
-            "color": "#111111",
-            "fontSize": 81,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr7zp66a-e",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "",
-          "autoH": true,
-          "box": {
-            "x": 69,
-            "y": 66,
-            "w": 957,
-            "h": 963
-          },
-          "style": {
-            "color": "#81693f",
-            "fontSize": 674,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
+      "style": {
+        "color": "#111111",
+        "fontSize": 81,
+        "fontWeight": 900,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
     },
     {
-      "id": "grp-mr7zp66a-o",
+      "id": "grp-mr7zs6yg-t",
       "type": "group",
       "name": "Body",
       "box": {
         "x": 108,
-        "y": 270,
-        "w": 918,
-        "h": 648
+        "y": 302,
+        "w": 940,
+        "h": 594
       },
       "children": [
         {
-          "id": "ext-mr7zp63y-4",
+          "id": "ext-mr7zs6yf-8",
           "type": "shape",
-          "role": "decor",
-          "name": "decor",
+          "role": "arrow",
+          "name": "arrow",
           "box": {
-            "x": 324,
+            "x": 302,
             "y": 421,
-            "w": 54,
-            "h": 54
+            "w": 108,
+            "h": 108
           },
           "style": {
             "color": "#111111",
             "background": "#111111",
             "fontSize": 43,
-            "fontWeight": 400,
+            "fontWeight": 600,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
@@ -115,21 +58,21 @@
           }
         },
         {
-          "id": "ext-mr7zp63y-6",
+          "id": "ext-mr7zs6yf-9",
           "type": "shape",
-          "role": "decor",
-          "name": "decor",
+          "role": "arrow",
+          "name": "arrow",
           "box": {
-            "x": 648,
+            "x": 734,
             "y": 421,
-            "w": 54,
-            "h": 54
+            "w": 108,
+            "h": 108
           },
           "style": {
             "color": "#111111",
             "background": "#111111",
             "fontSize": 43,
-            "fontWeight": 400,
+            "fontWeight": 600,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
@@ -138,21 +81,21 @@
           }
         },
         {
-          "id": "ext-mr7zp63y-8",
+          "id": "ext-mr7zs6yf-a",
           "type": "shape",
-          "role": "decor",
-          "name": "decor",
+          "role": "arrow",
+          "name": "arrow",
           "box": {
-            "x": 324,
-            "y": 680,
-            "w": 54,
-            "h": 54
+            "x": 302,
+            "y": 605,
+            "w": 108,
+            "h": 108
           },
           "style": {
             "color": "#111111",
             "background": "#111111",
             "fontSize": 43,
-            "fontWeight": 400,
+            "fontWeight": 600,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
@@ -161,21 +104,21 @@
           }
         },
         {
-          "id": "ext-mr7zp63y-a",
+          "id": "ext-mr7zs6yf-b",
           "type": "shape",
-          "role": "decor",
-          "name": "decor",
+          "role": "arrow",
+          "name": "arrow",
           "box": {
-            "x": 648,
-            "y": 680,
-            "w": 54,
-            "h": 54
+            "x": 734,
+            "y": 626,
+            "w": 108,
+            "h": 108
           },
           "style": {
             "color": "#111111",
             "background": "#111111",
             "fontSize": 43,
-            "fontWeight": 400,
+            "fontWeight": 600,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
@@ -184,118 +127,118 @@
           }
         },
         {
-          "id": "ext-mr7zp63y-2",
+          "id": "ext-mr7zs6ye-7",
           "type": "shape",
           "role": "rect",
-          "name": "Cut-out · Honey gel packet",
+          "name": "Cut-out · energy gel pouch",
           "box": {
             "x": 378,
-            "y": 270,
-            "w": 324,
-            "h": 648
+            "y": 302,
+            "w": 346,
+            "h": 594
           },
           "style": {
-            "background": "#f5c54259",
+            "background": "#f5a62359",
             "radius": 22,
             "stroke": {
-              "color": "#f5c542",
+              "color": "#f5a623",
               "width": 3
             }
           },
           "cutoutCandidate": {
             "region": {
               "x": 0.35,
-              "y": 0.25,
-              "w": 0.3,
-              "h": 0.6
+              "y": 0.28,
+              "w": 0.32,
+              "h": 0.55
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr7zp63y-3",
+          "id": "ext-mr7zs6ye-1",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Pure Honey",
           "autoH": true,
           "box": {
-            "x": 108,
+            "x": 162,
             "y": 378,
-            "w": 324,
-            "h": 54
+            "w": 270,
+            "h": 43
           },
           "style": {
             "color": "#111111",
-            "fontSize": 30,
+            "fontSize": 38,
             "fontWeight": 500,
-            "align": "left",
+            "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zp63y-5",
+          "id": "ext-mr7zs6ye-2",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Pink Salt",
           "autoH": true,
           "box": {
             "x": 810,
             "y": 378,
-            "w": 216,
-            "h": 54
+            "w": 238,
+            "h": 43
           },
           "style": {
             "color": "#111111",
-            "fontSize": 30,
+            "fontSize": 38,
             "fontWeight": 500,
-            "align": "right",
+            "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zp63y-7",
+          "id": "ext-mr7zs6ye-3",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "role": "subhead",
+          "name": "subhead",
           "text": "100% Natural",
           "autoH": true,
           "box": {
             "x": 108,
-            "y": 648,
-            "w": 324,
-            "h": 54
+            "y": 626,
+            "w": 302,
+            "h": 43
           },
           "style": {
             "color": "#111111",
-            "fontSize": 30,
+            "fontSize": 38,
             "fontWeight": 500,
-            "align": "left",
+            "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zp63y-9",
+          "id": "ext-mr7zs6ye-4",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "stomach friendly",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "stomach\nfriendly",
           "autoH": true,
           "box": {
             "x": 810,
-            "y": 648,
-            "w": 216,
-            "h": 54
+            "y": 626,
+            "w": 238,
+            "h": 65
           },
           "style": {
             "color": "#111111",
-            "fontSize": 24,
+            "fontSize": 29,
             "fontWeight": 500,
-            "align": "right",
+            "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
@@ -303,19 +246,19 @@
       ]
     },
     {
-      "id": "ext-mr7zp66a-d",
+      "id": "ext-mr7zs6yf-c",
       "type": "shape",
       "role": "logo",
-      "name": "Logo · Hornet logo",
+      "name": "Logo · hornet logo",
       "box": {
         "x": 886,
         "y": 950,
-        "w": 108,
-        "h": 86
+        "w": 130,
+        "h": 108
       },
       "style": {
         "background": "#11111159",
-        "radius": 22,
+        "shapeKind": "ellipse",
         "stroke": {
           "color": "#111111",
           "width": 2
@@ -325,67 +268,89 @@
         "region": {
           "x": 0.82,
           "y": 0.88,
-          "w": 0.1,
-          "h": 0.08
+          "w": 0.12,
+          "h": 0.1
         },
         "shape": "logo"
       }
     },
     {
-      "id": "grp-mr7zp66a-p",
+      "id": "grp-mr7zs6yg-u",
       "type": "group",
       "name": "CTA",
       "box": {
-        "x": 54,
-        "y": 896,
-        "w": 540,
-        "h": 145
+        "x": 108,
+        "y": 929,
+        "w": 929,
+        "h": 140
       },
       "children": [
         {
-          "id": "ext-mr7zp63y-b",
+          "id": "ext-mr7zs6ye-5",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
           "text": "24 servings for",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 896,
-            "w": 540,
+            "x": 108,
+            "y": 929,
+            "w": 432,
             "h": 54
           },
           "style": {
             "color": "#111111",
-            "fontSize": 38,
-            "fontWeight": 700,
+            "fontSize": 43,
+            "fontWeight": 800,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zp63y-c",
+          "id": "ext-mr7zs6ye-6",
           "type": "badge",
           "role": "price",
           "name": "price",
           "text": "$1.99 per serve",
           "autoH": true,
           "box": {
-            "x": 54,
-            "y": 961,
-            "w": 454,
-            "h": 80
+            "x": 108,
+            "y": 983,
+            "w": 432,
+            "h": 86
           },
           "style": {
-            "color": "#0f0f10",
+            "color": "#0f0f0f",
             "background": "#111111",
-            "fontSize": 38,
-            "fontWeight": 700,
-            "align": "left",
+            "fontSize": 43,
+            "fontWeight": 800,
+            "align": "center",
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr7zs6yf-d",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "HORNET ENERGY",
+          "autoH": true,
+          "box": {
+            "x": 864,
+            "y": 994,
+            "w": 173,
+            "h": 65
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 18,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
           }
         }
       ]
@@ -396,7 +361,7 @@
     "h": 1080
   },
   "archetype": "offer-hero",
-  "background": "#f4f4f4",
+  "background": "#f5f5f5",
   "backgroundIsPhoto": false,
   "backgroundConfidence": "high",
   "theme": "light",
@@ -422,7 +387,14 @@
       "share": 0.063
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": false,
+    "score": 25,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 3,
+    "totalCorrections": 14
+  },
   "error": null,
   "passes": 2
 }

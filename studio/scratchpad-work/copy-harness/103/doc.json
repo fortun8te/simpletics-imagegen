@@ -1,13 +1,13 @@
 {
-  "id": "harness_103_7e862ab7",
-  "name": "copy-harness harness_103_7e862ab7",
+  "id": "harness_103_3543fe40",
+  "name": "copy-harness harness_103_3543fe40",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr6ml7tw-3k",
+      "id": "base-mr7zvqvv-a9",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,21 +23,21 @@
       }
     },
     {
-      "id": "group-mr6ml7tw-37",
+      "id": "group-mr7zvqvv-9z",
       "type": "group",
       "name": "Header",
       "box": {
         "x": 0,
-        "y": 3,
-        "w": 1059,
-        "h": 247
+        "y": 2,
+        "w": 515,
+        "h": 106
       },
       "children": [
         {
-          "id": "rect-mr6ml7tw-38",
+          "id": "rect-mr7zvqvv-a0",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · User photo",
+          "name": "Cut-out · Ad Photo",
           "box": {
             "x": 0,
             "y": 5,
@@ -56,7 +56,7 @@
           "src": "/refasset?id=harness-103"
         },
         {
-          "id": "caption-mr6ml7tw-39",
+          "id": "caption-mr7zvqvv-a1",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -64,155 +64,62 @@
           "autoH": true,
           "box": {
             "x": 0,
-            "y": 3,
-            "w": 40,
-            "h": 900
+            "y": 40,
+            "w": 515,
+            "h": 180
           },
           "style": {
-            "color": "#ffffff",
+            "color": "#e0e0e0",
             "fontSize": 30,
             "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "badge-mr7zvqvv-a2",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "x.com",
+          "autoH": true,
+          "box": {
+            "x": 9,
+            "y": 2,
+            "w": 40,
+            "h": 39
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 26,
+            "fontWeight": 700,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
             "pill": true,
             "background": "rgba(0,0,0,0.62)",
-            "padding": 17
+            "padding": 14
           }
         },
         {
-          "id": "caption-mr6ml7tw-3a",
+          "id": "caption-mr7zvqvv-a3",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "14:07 · 26/09/2025 · 6.9K Views",
+          "text": "14:07 - 26/09/2025 - 6.9K Views",
           "autoH": true,
           "box": {
             "x": 0,
-            "y": 193,
-            "w": 40,
-            "h": 216
+            "y": 78,
+            "w": 122,
+            "h": 144
           },
           "style": {
-            "color": "#6e767d",
+            "color": "#808080",
             "fontSize": 30,
             "fontWeight": 400,
             "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr6ml7tw-3b",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Cadence",
-          "autoH": true,
-          "box": {
-            "x": 6,
-            "y": 117,
-            "w": 40,
-            "h": 36
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 30,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": false,
-            "fontFamily": "-apple-system",
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr6ml7tw-3c",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "RECOVER\nSLEEP\nPotassium\nMagnesium\nL-Glycine\nCherry",
-          "autoH": true,
-          "box": {
-            "x": 7,
-            "y": 155,
-            "w": 40,
-            "h": 216
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 30,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": true,
-            "fontFamily": "-apple-system",
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr6ml7tw-3d",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Sampele",
-          "autoH": true,
-          "box": {
-            "x": 6,
-            "y": 79,
-            "w": 40,
-            "h": 36
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 30,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": false,
-            "fontFamily": "-apple-system",
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr6ml7tw-3e",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Heaths & Son",
-          "autoH": true,
-          "box": {
-            "x": 2,
-            "y": 41,
-            "w": 40,
-            "h": 108
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 30,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "fontFamily": "-apple-system",
-            "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr6ml7tw-3f",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "X.com",
-          "autoH": true,
-          "box": {
-            "x": 886,
-            "y": 192,
-            "w": 173,
-            "h": 58
-          },
-          "style": {
-            "color": "#cdcdcd",
-            "fontSize": 30,
-            "fontWeight": 700,
-            "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
@@ -220,46 +127,38 @@
       ]
     },
     {
-      "id": "rect-mr6ml7tw-3g",
+      "id": "rect-mr7zvqvv-a4",
       "type": "image",
       "role": "rect",
-      "name": "Cut-out · candle and bottle",
+      "name": "Cut-out · wine bottle and candle",
       "box": {
-        "x": 43,
-        "y": 538,
-        "w": 994,
-        "h": 1056
+        "x": 0,
+        "y": 499,
+        "w": 1080,
+        "h": 1075
       },
-      "style": {
-        "crop": {
-          "x": 0.04,
-          "y": 0.28,
-          "w": 0.92,
-          "h": 0.55
-        },
-        "radius": 35
-      },
-      "src": "/refasset?id=harness-103"
+      "style": {},
+      "src": "/refasset?id=harness-103m9d60b609"
     },
     {
-      "id": "group-mr6ml7tw-3h",
+      "id": "group-mr7zvqvv-a5",
       "type": "group",
       "name": "Product",
       "box": {
         "x": 0,
-        "y": 1,
-        "w": 49,
-        "h": 30
+        "y": 2,
+        "w": 129,
+        "h": 257
       },
       "children": [
         {
-          "id": "avatar-mr6ml7tw-3i",
+          "id": "avatar-mr7zvqvv-a6",
           "type": "image",
           "role": "avatar",
-          "name": "Avatar · User avatar",
+          "name": "Avatar · User Avatar",
           "box": {
             "x": 0,
-            "y": 1,
+            "y": 2,
             "w": 40,
             "h": 30
           },
@@ -275,13 +174,13 @@
           "src": "/refasset?id=harness-103"
         },
         {
-          "id": "logo-mr6ml7tw-3j",
+          "id": "logo-mr7zvqvv-a7",
           "type": "image",
           "role": "logo",
-          "name": "Logo · Platform logo",
+          "name": "Logo · Platform Logo",
           "box": {
             "x": 9,
-            "y": 1,
+            "y": 2,
             "w": 40,
             "h": 30
           },
@@ -295,10 +194,27 @@
             "radius": 4
           },
           "src": "/refasset?id=harness-103"
+        },
+        {
+          "id": "avatar-mr7zvqvv-a8",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Blurred · profile avatar",
+          "box": {
+            "x": 43,
+            "y": 173,
+            "w": 86,
+            "h": 86
+          },
+          "style": {
+            "background": "#b0b0b0bf",
+            "shapeKind": "ellipse",
+            "blur": 6
+          }
         }
       ]
     }
   ],
-  "skeletonId": "skel_mr6ml7tw4ubq",
-  "updatedAt": 1783185471717
+  "skeletonId": "skel_mr7zvqvvt1bx",
+  "updatedAt": 1783268267472
 }

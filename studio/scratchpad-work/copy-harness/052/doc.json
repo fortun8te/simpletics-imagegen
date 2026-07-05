@@ -1,13 +1,13 @@
 {
-  "id": "harness_052_b50c4219",
-  "name": "copy-harness harness_052_b50c4219",
+  "id": "harness_052_f657b615",
+  "name": "copy-harness harness_052_f657b615",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base_mr7zmn8v",
+      "id": "base_mr805w2a",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,24 +23,24 @@
       }
     },
     {
-      "id": "group-mr7zmn8u-6r",
+      "id": "group-mr805w28-d",
       "type": "group",
       "name": "Header",
       "box": {
         "x": 1,
         "y": 1,
-        "w": 771,
-        "h": 242
+        "w": 658,
+        "h": 233
       },
       "children": [
         {
-          "id": "rect-mr7zmn8u-6s",
+          "id": "rect-mr805w28-e",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · Before photo",
+          "name": "Cut-out · Before Hair Photo",
           "box": {
             "x": 1,
-            "y": 3,
+            "y": 4,
             "w": 40,
             "h": 30
           },
@@ -56,13 +56,13 @@
           "src": "/refasset?id=harness-052"
         },
         {
-          "id": "rect-mr7zmn8u-6t",
+          "id": "rect-mr805w28-f",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · After photo",
+          "name": "Cut-out · After Hair Photo",
           "box": {
             "x": 6,
-            "y": 3,
+            "y": 4,
             "w": 40,
             "h": 30
           },
@@ -78,7 +78,7 @@
           "src": "/refasset?id=harness-052"
         },
         {
-          "id": "caption-mr7zmn8u-6u",
+          "id": "caption-mr805w28-g",
           "type": "text",
           "role": "caption",
           "name": "Product label",
@@ -87,7 +87,7 @@
           "text": "CURL CREAM TUBE",
           "box": {
             "x": 5,
-            "y": 211,
+            "y": 164,
             "w": 40,
             "h": 32
           },
@@ -102,7 +102,7 @@
           }
         },
         {
-          "id": "headline-mr7zmn8u-6v",
+          "id": "headline-mr805w28-h",
           "type": "text",
           "role": "headline",
           "name": "headline",
@@ -111,181 +111,129 @@
           "box": {
             "x": 1,
             "y": 1,
-            "w": 771,
-            "h": 135
+            "w": 658,
+            "h": 202
           },
           "style": {
             "color": "#ffffff",
             "fontSize": 56,
-            "fontWeight": 400,
+            "fontWeight": 700,
             "align": "center",
             "uppercase": false,
-            "fontFamily": "-apple-system",
+            "fontFamily": "Georgia",
             "serif": true,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "caption-mr7zmn8u-6w",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "id": "badge-mr805w28-i",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "Before",
           "autoH": true,
           "box": {
-            "x": 2,
-            "y": 107,
-            "w": 120,
-            "h": 44
+            "x": 3,
+            "y": 88,
+            "w": 91,
+            "h": 30
           },
           "style": {
-            "color": "#3d5444",
-            "fontSize": 35,
-            "fontWeight": 600,
+            "color": "#6B8E7B",
+            "fontSize": 25,
+            "fontWeight": 700,
             "align": "center",
             "uppercase": false,
-            "fontFamily": "-apple-system",
             "lineHeight": 1.2
           }
         },
         {
-          "id": "caption-mr7zmn8u-6x",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "id": "badge-mr805w28-j",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "After",
           "autoH": true,
           "box": {
             "x": 7,
-            "y": 159,
-            "w": 100,
-            "h": 44
+            "y": 126,
+            "w": 76,
+            "h": 30
           },
           "style": {
-            "color": "#3d5444",
-            "fontSize": 35,
-            "fontWeight": 600,
+            "color": "#6B8E7B",
+            "fontSize": 25,
+            "fontWeight": 700,
             "align": "center",
             "uppercase": false,
-            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr805w28-k",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Everyday Curl Crème",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 204,
+            "w": 84,
+            "h": 137
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 38,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": false,
             "lineHeight": 1.2
           }
         }
       ]
     },
     {
-      "id": "group-mr7zmn8u-6y",
+      "id": "group-mr805w28-l",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 2,
-        "y": 251,
-        "w": 981,
-        "h": 624
+        "x": 1,
+        "y": 242,
+        "w": 939,
+        "h": 654
       },
       "children": [
         {
-          "id": "card-mr7zmn8u-6z",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
-          "box": {
-            "x": 130,
-            "y": 292,
-            "w": 432,
-            "h": 583
-          },
-          "style": {
-            "color": "#8e8680",
-            "background": "#8e8680",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "card-mr7zmn8u-70",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
-          "box": {
-            "x": 551,
-            "y": 292,
-            "w": 432,
-            "h": 583
-          },
-          "style": {
-            "color": "#c8bfb1",
-            "background": "#989185",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "rect-mr7zmn8u-71",
+          "id": "rect-mr805w28-m",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · Before hair photo",
+          "name": "Cut-out · man before photo",
           "box": {
-            "x": 130,
-            "y": 292,
-            "w": 432,
-            "h": 583
+            "x": 140,
+            "y": 356,
+            "w": 410,
+            "h": 540
           },
           "style": {},
-          "src": "/refasset?id=harness-052m8129977c"
+          "src": "/refasset?id=harness-052m4df15548"
         },
         {
-          "id": "rect-mr7zmn8u-72",
+          "id": "rect-mr805w28-n",
           "type": "image",
           "role": "rect",
-          "name": "Cut-out · After hair photo",
+          "name": "Cut-out · man after photo",
           "box": {
             "x": 551,
-            "y": 292,
-            "w": 432,
-            "h": 583
+            "y": 356,
+            "w": 389,
+            "h": 540
           },
           "style": {},
-          "src": "/refasset?id=harness-052m7e976ff8"
+          "src": "/refasset?id=harness-052m0355c823"
         },
         {
-          "id": "caption-mr7zmn8u-73",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Everyday Curl Crème",
-          "autoH": true,
-          "box": {
-            "x": 5,
-            "y": 251,
-            "w": 84,
-            "h": 108
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 30,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "fontFamily": "-apple-system",
-            "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr7zmn8u-74",
+          "id": "caption-mr805w28-o",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -293,151 +241,95 @@
           "autoH": true,
           "box": {
             "x": 5,
-            "y": 289,
-            "w": 210,
-            "h": 115
+            "y": 242,
+            "w": 143,
+            "h": 74
           },
           "style": {
             "color": "#ffffff",
-            "fontSize": 92,
-            "fontWeight": 400,
+            "fontSize": 59,
+            "fontWeight": 800,
             "align": "center",
             "uppercase": false,
-            "fontFamily": "-apple-system",
+            "fontFamily": "Georgia",
+            "serif": true,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "caption-mr7zmn8u-75",
+          "id": "caption-mr805w28-p",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "125ML ℮ 4.22 US FL.OZ",
+          "text": "125ML e 4.22 US FL OZ",
           "autoH": true,
           "box": {
             "x": 5,
-            "y": 412,
+            "y": 324,
             "w": 40,
-            "h": 180
+            "h": 216
           },
           "style": {
             "color": "#ffffff",
             "fontSize": 30,
             "fontWeight": 400,
             "align": "center",
-            "uppercase": false,
-            "fontFamily": "-apple-system",
+            "uppercase": true,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "subhead-mr7zmn8u-76",
+          "id": "subhead-mr805w28-q",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
           "text": "This natural curl cream is all you need",
           "autoH": true,
           "box": {
-            "x": 2,
-            "y": 450,
-            "w": 449,
-            "h": 92
+            "x": 1,
+            "y": 362,
+            "w": 408,
+            "h": 171
           },
           "style": {
-            "color": "#3d5444",
+            "color": "#ffffff",
             "fontSize": 38,
-            "fontWeight": 400,
+            "fontWeight": 600,
             "align": "center",
             "uppercase": false,
-            "fontFamily": "-apple-system",
+            "fontFamily": "Georgia",
             "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr7zmn8u-77",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": true,
-          "sizeLocked": true,
-          "text": "WAVY CURL CREAM TUBE",
-          "box": {
-            "x": 464,
-            "y": 669,
-            "w": 151,
-            "h": 34
-          },
-          "style": {
-            "fontSize": 17,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 21
           }
         }
       ]
     },
     {
-      "id": "group-mr7zmn8u-78",
-      "type": "group",
-      "name": "Product",
+      "id": "product-mr805w28-r",
+      "type": "shape",
+      "role": "product",
+      "name": "Product · Curl Cream Tube",
       "box": {
         "x": 5,
         "y": 5,
-        "w": 610,
-        "h": 870
+        "w": 40,
+        "h": 30
       },
-      "children": [
-        {
-          "id": "product-mr7zmn8u-79",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Curl cream tube",
-          "box": {
-            "x": 5,
-            "y": 5,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#3e6b5659",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
-            "stroke": {
-              "color": "#3e6b56",
-              "width": 2
-            }
-          }
-        },
-        {
-          "id": "product-mr7zmn8u-7a",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Wavy curl cream tube",
-          "box": {
-            "x": 464,
-            "y": 497,
-            "w": 151,
-            "h": 378
-          },
-          "style": {
-            "background": "#1f5e4359",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
-            "stroke": {
-              "color": "#1f5e43",
-              "width": 2
-            }
-          }
+      "style": {
+        "background": "#2D5A3D59",
+        "radius": 22,
+        "shapeKind": "path",
+        "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
+        "stroke": {
+          "color": "#2D5A3D",
+          "width": 2
         }
-      ]
+      }
     }
   ],
-  "skeletonId": "skel_mr7zmn8u5vt0",
-  "updatedAt": 1783267842361
+  "skeletonId": "skel_mr805w286zsv",
+  "updatedAt": 1783268740324
 }
