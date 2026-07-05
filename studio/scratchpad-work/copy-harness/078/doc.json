@@ -1,13 +1,13 @@
 {
-  "id": "harness_078_a0f2c490",
-  "name": "copy-harness harness_078_a0f2c490",
+  "id": "harness_078_879fb24e",
+  "name": "copy-harness harness_078_879fb24e",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr7zt1ek-9g",
+      "id": "base-mr85wjea-1r",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,287 +19,59 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#f5f5f5"
+        "background": "#f0f2f5"
       }
     },
     {
-      "id": "headline-mr7zt1ek-90",
-      "type": "text",
-      "role": "headline",
-      "name": "headline",
-      "text": "Nature’s Energy Gel\n2 ingredients",
-      "autoH": true,
-      "box": {
-        "x": 32,
-        "y": 54,
-        "w": 886,
-        "h": 292
-      },
-      "style": {
-        "color": "#111111",
-        "fontSize": 81,
-        "fontWeight": 900,
-        "align": "left",
-        "uppercase": false,
-        "lineHeight": 1.2
-      }
-    },
-    {
-      "id": "group-mr7zt1ek-91",
+      "id": "group-mr85wjea-19",
       "type": "group",
-      "name": "Body",
+      "name": "Header",
       "box": {
-        "x": 108,
-        "y": 302,
-        "w": 940,
-        "h": 594
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
       },
       "children": [
         {
-          "id": "arrow-mr7zt1ek-92",
+          "id": "card-mr85wjea-1a",
           "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
+          "role": "card",
+          "name": "card",
           "box": {
-            "x": 302,
-            "y": 421,
-            "w": 108,
-            "h": 108
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 1080
           },
           "style": {
-            "color": "#111111",
-            "background": "#111111",
+            "color": "#ffffff",
+            "background": "#ffffff",
             "fontSize": 43,
             "fontWeight": 600,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
+            "opacity": 0.8,
+            "padding": 16
           }
         },
         {
-          "id": "arrow-mr7zt1ek-93",
-          "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
-          "box": {
-            "x": 734,
-            "y": 421,
-            "w": 108,
-            "h": 108
-          },
-          "style": {
-            "color": "#111111",
-            "background": "#111111",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
-          }
-        },
-        {
-          "id": "arrow-mr7zt1ek-94",
-          "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
-          "box": {
-            "x": 302,
-            "y": 605,
-            "w": 108,
-            "h": 108
-          },
-          "style": {
-            "color": "#111111",
-            "background": "#111111",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
-          }
-        },
-        {
-          "id": "arrow-mr7zt1ek-95",
-          "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
-          "box": {
-            "x": 734,
-            "y": 626,
-            "w": 108,
-            "h": 108
-          },
-          "style": {
-            "color": "#111111",
-            "background": "#111111",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
-          }
-        },
-        {
-          "id": "rect-mr7zt1ek-96",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · energy gel pouch",
-          "box": {
-            "x": 378,
-            "y": 302,
-            "w": 346,
-            "h": 594
-          },
-          "style": {},
-          "src": "/refasset?id=harness-078m772bb32f"
-        },
-        {
-          "id": "subhead-mr7zt1ek-97",
+          "id": "headline-mr85wjea-1b",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Pure Honey",
+          "role": "headline",
+          "name": "headline",
+          "text": "Nature’s Energy Gel",
           "autoH": true,
           "box": {
-            "x": 162,
-            "y": 378,
-            "w": 270,
-            "h": 46
+            "x": 43,
+            "y": 32,
+            "w": 886,
+            "h": 221
           },
           "style": {
-            "color": "#111111",
-            "fontSize": 38,
-            "fontWeight": 500,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "subhead-mr7zt1ek-98",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Pink Salt",
-          "autoH": true,
-          "box": {
-            "x": 810,
-            "y": 378,
-            "w": 238,
-            "h": 46
-          },
-          "style": {
-            "color": "#111111",
-            "fontSize": 38,
-            "fontWeight": 500,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "subhead-mr7zt1ek-99",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "100% Natural",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 626,
-            "w": 302,
-            "h": 46
-          },
-          "style": {
-            "color": "#111111",
-            "fontSize": 38,
-            "fontWeight": 500,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "subhead-mr7zt1ek-9a",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "stomach\nfriendly",
-          "autoH": true,
-          "box": {
-            "x": 810,
-            "y": 626,
-            "w": 238,
-            "h": 92
-          },
-          "style": {
-            "color": "#111111",
-            "fontSize": 38,
-            "fontWeight": 500,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "logo-mr7zt1ek-9b",
-      "type": "image",
-      "role": "logo",
-      "name": "Logo · hornet logo",
-      "box": {
-        "x": 886,
-        "y": 950,
-        "w": 130,
-        "h": 108
-      },
-      "style": {
-        "crop": {
-          "x": 0.82,
-          "y": 0.88,
-          "w": 0.12,
-          "h": 0.1
-        },
-        "radius": 13
-      },
-      "src": "/refasset?id=harness-078"
-    },
-    {
-      "id": "group-mr7zt1ek-9c",
-      "type": "group",
-      "name": "CTA",
-      "box": {
-        "x": 108,
-        "y": 929,
-        "w": 929,
-        "h": 140
-      },
-      "children": [
-        {
-          "id": "subhead-mr7zt1ek-9d",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "24 servings for",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 929,
-            "w": 432,
-            "h": 54
-          },
-          "style": {
-            "color": "#111111",
-            "fontSize": 43,
+            "color": "#1a1a1a",
+            "fontSize": 92,
             "fontWeight": 800,
             "align": "left",
             "uppercase": false,
@@ -307,54 +79,314 @@
           }
         },
         {
-          "id": "price-mr7zt1ek-9e",
-          "type": "badge",
+          "id": "headline-mr85wjea-1c",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "2 ingredients",
+          "autoH": true,
+          "box": {
+            "x": 43,
+            "y": 162,
+            "w": 518,
+            "h": 173
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 72,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr85wjea-1d",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 86,
+        "y": 281,
+        "w": 994,
+        "h": 583
+      },
+      "children": [
+        {
+          "id": "separator-mr85wjea-1e",
+          "type": "shape",
+          "role": "separator",
+          "name": "separator",
+          "box": {
+            "x": 367,
+            "y": 410,
+            "w": 151,
+            "h": 32
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#1a1a1a",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "shapeKind": "arrow"
+          }
+        },
+        {
+          "id": "separator-mr85wjea-1f",
+          "type": "shape",
+          "role": "separator",
+          "name": "separator",
+          "box": {
+            "x": 691,
+            "y": 410,
+            "w": 151,
+            "h": 32
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#1a1a1a",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "shapeKind": "arrow"
+          }
+        },
+        {
+          "id": "separator-mr85wjea-1g",
+          "type": "shape",
+          "role": "separator",
+          "name": "separator",
+          "box": {
+            "x": 324,
+            "y": 616,
+            "w": 194,
+            "h": 32
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#1a1a1a",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "shapeKind": "arrow"
+          }
+        },
+        {
+          "id": "separator-mr85wjea-1h",
+          "type": "shape",
+          "role": "separator",
+          "name": "separator",
+          "box": {
+            "x": 713,
+            "y": 616,
+            "w": 130,
+            "h": 32
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#1a1a1a",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "shapeKind": "arrow"
+          }
+        },
+        {
+          "id": "rect-mr85wjea-1i",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · Honey Shot pouch",
+          "box": {
+            "x": 454,
+            "y": 281,
+            "w": 216,
+            "h": 583
+          },
+          "style": {},
+          "src": "/refasset?id=harness-078medaec5f4"
+        },
+        {
+          "id": "caption-mr85wjea-1j",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pure Honey",
+          "autoH": true,
+          "box": {
+            "x": 130,
+            "y": 378,
+            "w": 238,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 30,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr85wjea-1k",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pink Salt",
+          "autoH": true,
+          "box": {
+            "x": 842,
+            "y": 378,
+            "w": 216,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 30,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr85wjea-1l",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "100% Natural",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 637,
+            "w": 238,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 30,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr85wjea-1m",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "stomach friendly",
+          "autoH": true,
+          "box": {
+            "x": 842,
+            "y": 626,
+            "w": 238,
+            "h": 72
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 30,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "logo-mr85wjea-1n",
+      "type": "shape",
+      "role": "logo",
+      "name": "Logo · Hornet logo",
+      "box": {
+        "x": 886,
+        "y": 972,
+        "w": 130,
+        "h": 86
+      },
+      "style": {
+        "shapeKind": "path",
+        "path": "M 0.65 0.0271 L 0.6615 0.0368 Q 0.6644 0.053 0.6538 0.0465 Q 0.6564 0.0349 0.6487 0.0388 L 0.6538 0.0523 L 0.6538 0.064 L 0.65 0.0698 L 0.6346 0.0736 L 0.6295 0.0814 Q 0.6212 0.0746 0.6308 0.0678 Q 0.634 0.0455 0.6256 0.0407 L 0.6372 0.031 L 0.6449 0.0349 L 0.65 0.0271 Z M 0.6538 0.0698 Q 0.6654 0.064 0.6615 0.0814 Q 0.65 0.0872 0.6538 0.0698 Z M 0.6359 0.0853 L 0.6513 0.0872 Q 0.6477 0.0979 0.6359 0.093 L 0.6359 0.0853 Z M 0 0.1047 Q 0.0176 0.1008 0.0256 0.1085 Q 0.0286 0.1392 0.0205 0.157 L 0.0244 0.1628 L 0.0449 0.1628 L 0.0513 0.1492 L 0.0538 0.1143 L 0.0603 0.1047 L 0.0654 0.1085 Q 0.0692 0.0988 0.0833 0.1047 L 0.0923 0.1143 Q 0.0849 0.1323 0.0872 0.1647 L 0.0795 0.188 L 0.0795 0.2229 L 0.0718 0.2597 L 0.05 0.2597 L 0.0474 0.2636 L 0.0385 0.2597 L 0.0385 0.2229 L 0.041 0.2151 L 0.0321 0.2054 L 0.0269 0.2054 L 0.0128 0.2151 Q 0.0068 0.2274 0.0103 0.2539 L 0.0064 0.2597 L 0 0.2578 L 0 0.1047 Z M 0.1397 0.1047 L 0.1756 0.1047 L 0.1949 0.1221 Q 0.1929 0.1308 0.1987 0.1279 L 0.2103 0.157 L 0.2103 0.1957 L 0.2 0.2267 L 0.1833 0.2519 L 0.1577 0.2674 L 0.1346 0.2674 L 0.1141 0.2558 L 0.1 0.2345 Q 0.088 0.2197 0.0923 0.1802 L 0.1077 0.1318 L 0.1179 0.1221 Q 0.1158 0.1119 0.1244 0.1163 L 0.1397 0.1047 Z M 0.1513 0.1512 L 0.1436 0.155 L 0.1333 0.1705 Q 0.1359 0.186 0.1308 0.1938 L 0.1333 0.2093 L 0.1462 0.2209 L 0.1538 0.2209 L 0.1667 0.2093 L 0.1718 0.1899 L 0.1692 0.155 L 0.1513 0.1512 Z M 0.2372 0.1047 L 0.2936 0.1085 L 0.3103 0.1221 L 0.3179 0.1376 L 0.3179 0.1802 L 0.309 0.2016 Q 0.3032 0.1986 0.3051 0.2074 L 0.2949 0.2132 L 0.2949 0.2267 Q 0.3074 0.2352 0.3051 0.2597 L 0.2808 0.2597 L 0.2782 0.2636 L 0.2692 0.2597 L 0.2551 0.2248 L 0.2487 0.2306 Q 0.2526 0.2539 0.2449 0.2597 L 0.2218 0.2636 L 0.2103 0.2539 Q 0.218 0.2287 0.2179 0.1919 L 0.2231 0.1764 L 0.2231 0.1415 Q 0.2327 0.1308 0.2308 0.1085 L 0.2372 0.1047 Z M 0.2692 0.1512 L 0.2641 0.155 Q 0.2564 0.1589 0.259 0.1783 Q 0.2615 0.186 0.2744 0.1822 Q 0.2846 0.1822 0.2821 0.1628 L 0.2692 0.1512 Z M 0.3423 0.1047 Q 0.3635 0.0998 0.3718 0.1143 L 0.3718 0.1221 L 0.391 0.1628 L 0.3974 0.157 L 0.4026 0.1085 Q 0.4114 0.1019 0.4295 0.1047 L 0.4385 0.1085 Q 0.4415 0.1317 0.4333 0.1415 L 0.4333 0.1686 L 0.4256 0.1996 L 0.4256 0.2306 L 0.4179 0.2597 L 0.3885 0.2597 L 0.3846 0.2539 L 0.3654 0.2054 L 0.359 0.2151 L 0.3564 0.2539 L 0.3526 0.2597 L 0.3295 0.2636 L 0.3179 0.2539 L 0.3231 0.2345 L 0.3231 0.1996 L 0.3308 0.1725 L 0.3308 0.1453 L 0.3423 0.1047 Z M 0.4603 0.1047 L 0.5295 0.1047 L 0.5423 0.1163 L 0.5526 0.1047 L 0.6321 0.1047 L 0.6385 0.1085 L 0.6385 0.126 L 0.6269 0.155 L 0.6026 0.155 L 0.6026 0.1802 L 0.5949 0.219 L 0.5949 0.2461 L 0.5885 0.2597 L 0.5782 0.2636 L 0.5705 0.2597 L 0.5603 0.2636 Q 0.5519 0.2607 0.5538 0.2422 L 0.5615 0.2112 L 0.5615 0.1802 L 0.5667 0.155 L 0.55 0.1512 L 0.5449 0.155 Q 0.5359 0.1492 0.5372 0.1279 L 0.5308 0.1512 L 0.491 0.1512 L 0.4846 0.155 L 0.4859 0.1628 L 0.5192 0.1628 L 0.5256 0.1667 Q 0.5274 0.192 0.5167 0.2016 L 0.509 0.2054 L 0.5038 0.2054 L 0.4833 0.2016 L 0.4795 0.2151 L 0.4833 0.2209 L 0.5218 0.2209 L 0.5256 0.2267 Q 0.5271 0.2522 0.5167 0.2597 L 0.5115 0.2636 L 0.509 0.2597 L 0.4474 0.2597 L 0.4423 0.2597 L 0.4359 0.2539 L 0.4385 0.2112 L 0.4462 0.1919 L 0.4462 0.1531 L 0.4538 0.1143 L 0.4603 0.1047 Z M 0.2731 0.3333 L 0.2795 0.3372 L 0.2756 0.3527 L 0.2577 0.3527 L 0.2564 0.3605 Q 0.2682 0.3556 0.2718 0.3663 L 0.2679 0.376 L 0.2513 0.376 L 0.2513 0.3857 L 0.2718 0.3973 L 0.2679 0.4109 L 0.2423 0.4109 L 0.2385 0.405 L 0.2385 0.3779 L 0.2462 0.3372 L 0.2705 0.3372 L 0.2731 0.3333 Z M 0.0718 0.3372 L 0.1038 0.3372 L 0.1077 0.343 Q 0.1096 0.3517 0.1038 0.3488 L 0.1013 0.3527 L 0.0795 0.3527 Q 0.0759 0.3682 0.0936 0.3605 L 0.1 0.3643 L 0.0962 0.376 L 0.0795 0.376 L 0.0795 0.3857 L 0.1 0.3973 Q 0.1029 0.4102 0.0962 0.407 L 0.0936 0.4109 L 0.0705 0.4109 L 0.0641 0.407 L 0.0641 0.3818 L 0.0692 0.3702 Q 0.0673 0.3464 0.0718 0.3372 Z M 0.1538 0.3372 Q 0.1659 0.3333 0.1692 0.3469 L 0.1756 0.3643 L 0.1808 0.3682 L 0.1885 0.3372 L 0.1949 0.3391 L 0.1949 0.3702 L 0.1872 0.407 L 0.1769 0.4012 L 0.1692 0.3857 L 0.1692 0.376 Q 0.1596 0.3702 0.1615 0.3818 L 0.1526 0.407 L 0.1462 0.407 L 0.1462 0.3818 Q 0.1572 0.3683 0.1538 0.3372 Z M 0.3321 0.3372 L 0.3603 0.3372 L 0.3641 0.343 L 0.3641 0.3702 Q 0.3538 0.374 0.3564 0.3973 Q 0.3622 0.4021 0.3551 0.407 L 0.3462 0.4012 L 0.3423 0.3876 Q 0.3288 0.3808 0.3333 0.4012 L 0.3231 0.407 L 0.3231 0.3585 L 0.3321 0.3372 Z M 0.3436 0.3527 L 0.3385 0.3643 Q 0.3333 0.3682 0.341 0.3721 Q 0.3513 0.376 0.3538 0.3682 Q 0.359 0.345 0.3436 0.3527 Z M 0.4218 0.3372 L 0.45 0.3372 L 0.4538 0.343 L 0.4538 0.3527 L 0.4269 0.3527 L 0.4256 0.3585 L 0.4179 0.3643 L 0.4179 0.3837 L 0.4218 0.3837 L 0.4346 0.3915 L 0.4423 0.3721 Q 0.4508 0.3677 0.4487 0.3779 L 0.4513 0.3857 L 0.4487 0.3992 L 0.4372 0.4109 L 0.4244 0.4109 L 0.4077 0.3895 L 0.4077 0.3624 L 0.4154 0.3411 L 0.4218 0.3372 Z M 0.5 0.3372 L 0.5103 0.343 L 0.5167 0.3566 Q 0.5252 0.361 0.5231 0.3508 Q 0.5244 0.3353 0.5372 0.3372 L 0.541 0.3469 L 0.5205 0.3818 L 0.5179 0.407 L 0.5077 0.407 L 0.5077 0.3702 Q 0.4973 0.3613 0.5 0.3372 Z",
+        "background": "#000101"
+      }
+    },
+    {
+      "id": "group-mr85wjea-1o",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 65,
+        "y": 950,
+        "w": 432,
+        "h": 124
+      },
+      "children": [
+        {
+          "id": "caption-mr85wjea-1p",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "24 servings for",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 950,
+            "w": 432,
+            "h": 46
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "price-mr85wjea-1q",
+          "type": "button",
           "role": "price",
           "name": "price",
           "text": "$1.99 per serve",
           "autoH": true,
           "box": {
-            "x": 108,
-            "y": 983,
+            "x": 65,
+            "y": 994,
             "w": 432,
-            "h": 86
+            "h": 80
           },
           "style": {
-            "color": "#0f0f0f",
-            "background": "#111111",
-            "fontSize": 43,
-            "fontWeight": 800,
-            "align": "center",
+            "color": "#0c0c0c",
+            "background": "#1a1a1a",
+            "fontSize": 40,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 54,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
-          }
-        },
-        {
-          "id": "caption-mr7zt1ek-9f",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "HORNET ENERGY",
-          "autoH": true,
-          "box": {
-            "x": 864,
-            "y": 994,
-            "w": 173,
-            "h": 72
-          },
-          "style": {
-            "color": "#111111",
-            "fontSize": 30,
-            "fontWeight": 800,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
           }
         }
       ]
     }
   ],
-  "skeletonId": "skel_mr7zt1ek2zb5",
-  "updatedAt": 1783268140748
+  "skeletonId": "skel_mr85wjea7x0f",
+  "updatedAt": 1783278381550
 }

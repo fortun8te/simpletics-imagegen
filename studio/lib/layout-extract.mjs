@@ -3530,6 +3530,44 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
   });
   if (repairLog.length) progress(`⚠ ${repairLog.length} layer${repairLog.length === 1 ? '' : 's'} auto-repaired (missing box fields): ${repairLog.slice(0, 3).map((r) => `${r.layer}[${r.fields.join(',')}]`).join(' · ')}`);
   if (cutoutMarked) progress(`${cutoutMarked} region${cutoutMarked === 1 ? '' : 's'} marked for cut-out from the reference`);
+  // MEDIA-PHOTO MERGE (ad 103): on POST archetypes (x-post/ig/fb) the media slot holds ONE
+  // photograph — decomposing it into per-object cutouts throws the photo's own background (the
+  // wooden table) away and leaves objects floating on black. When ≥2 cutout candidates cluster
+  // inside a plausible media area, replace them with a SINGLE rect crop spanning their union
+  // (padded to the photo's natural edges); per-object mattes remain for DESIGN-background ads.
+  if (/^(x-post|ig-feed-post|fb-post|ig-dm)$/.test(String(archetype || '')) ) {
+    const cands = flat.filter((l) => l?.cutoutCandidate?.region);
+    if (cands.length >= 2) {
+      const rx0 = Math.min(...cands.map((l) => l.cutoutCandidate.region.x));
+      const ry0 = Math.min(...cands.map((l) => l.cutoutCandidate.region.y));
+      const rx1 = Math.max(...cands.map((l) => l.cutoutCandidate.region.x + l.cutoutCandidate.region.w));
+      const ry1 = Math.max(...cands.map((l) => l.cutoutCandidate.region.y + l.cutoutCandidate.region.h));
+      const unionArea = (rx1 - rx0) * (ry1 - ry0);
+      const sumArea = cands.reduce((s, l) => s + l.cutoutCandidate.region.w * l.cutoutCandidate.region.h, 0);
+      if (unionArea >= 0.12 && unionArea <= 0.85 && sumArea / unionArea >= 0.2) {
+        const pad = 0.015;
+        const region = {
+          x: Math.max(0, rx0 - pad), y: Math.max(0, ry0 - pad),
+          w: Math.min(1, rx1 + pad) - Math.max(0, rx0 - pad),
+          h: Math.min(1, ry1 + pad) - Math.max(0, ry0 - pad),
+        };
+        const bx0 = Math.min(...cands.map((l) => l.box.x));
+        const by0 = Math.min(...cands.map((l) => l.box.y));
+        const bx1 = Math.max(...cands.map((l) => l.box.x + l.box.w));
+        const by1 = Math.max(...cands.map((l) => l.box.y + l.box.h));
+        const media = {
+          id: `media_${Date.now().toString(36)}`, type: 'shape', role: 'product',
+          name: 'Media photo (cut out)',
+          box: { x: bx0, y: by0, w: bx1 - bx0, h: by1 - by0 },
+          style: {},
+          cutoutCandidate: { region, shape: 'media' }, // 'media': rect crop, NEVER matted
+        };
+        for (const c of cands) flat.splice(flat.indexOf(c), 1);
+        flat.push(media);
+        progress(`media-photo merge: ${cands.length} per-object cutouts → one rect crop of the post's photo (keeps the photo's own background)`);
+      }
+    }
+  }
   if (!flat.length) { progress('failed: extraction found no design layers'); return { ok: false, error: 'extraction found no design layers' }; }
   // GEOMETRY SANITY: clamp on-canvas and separate overlapping text before grouping so the tree isn't
   // a pile of stacked/off-canvas boxes.

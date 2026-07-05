@@ -2,10 +2,10 @@
   "ok": true,
   "layers": [
     {
-      "id": "ext-mr8017et-0",
+      "id": "ext-mr85r5mo-0",
       "type": "shape",
       "role": "rect",
-      "name": "Cut-out · glass green juice",
+      "name": "Cut-out · green juice window",
       "box": {
         "x": 0,
         "y": 0,
@@ -13,10 +13,10 @@
         "h": 1920
       },
       "style": {
-        "background": "#8a9a7b59",
+        "background": "#4a6b5a59",
         "radius": 22,
         "stroke": {
-          "color": "#8a9a7b",
+          "color": "#4a6b5a",
           "width": 9
         }
       },
@@ -31,131 +31,142 @@
       }
     },
     {
-      "id": "grp-mr8017ll-0",
+      "id": "grp-mr85r5tv-0",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 173,
-        "y": 778,
-        "w": 745,
-        "h": 288
+        "x": 162,
+        "y": 768,
+        "w": 756,
+        "h": 384
       },
       "children": [
         {
-          "id": "ext-mr8017eu-1",
+          "id": "ext-mr85r5mo-1",
+          "type": "shape",
+          "role": "scrim",
+          "name": "scrim",
+          "box": {
+            "x": 162,
+            "y": 768,
+            "w": 756,
+            "h": 384
+          },
+          "style": {
+            "color": "rgba(0,0,0,0.5)",
+            "background": "rgba(0,0,0,0.5)",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "radius": 54,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "padding": 16,
+            "shapeKind": "rect"
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.15,
+              "y": 0.4,
+              "w": 0.7,
+              "h": 0.2
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr85r5tp-2",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
           "autoH": true,
           "box": {
-            "x": 173,
-            "y": 778,
-            "w": 724,
-            "h": 86
+            "x": 81.25,
+            "y": 777.375,
+            "w": 917.5,
+            "h": 96.25
           },
           "style": {
-            "color": "#d0c1b2",
-            "background": "#000000",
-            "fontSize": 35,
-            "fontWeight": 800,
+            "color": "#d3c5b5",
+            "fontSize": 44,
+            "fontWeight": 700,
             "align": "center",
             "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
+            "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr8017le-2",
-          "type": "text",
-          "role": "price",
-          "name": "price",
+          "id": "ext-mr85r5tr-3",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "72,6 kg",
           "autoH": true,
           "box": {
-            "x": 173,
-            "y": 874,
-            "w": 227,
-            "h": 86
+            "x": 194,
+            "y": 883,
+            "w": 216,
+            "h": 77
           },
           "style": {
-            "color": "#c8b6b0",
-            "background": "#1a1a1a",
-            "fontSize": 41,
-            "fontWeight": 800,
+            "color": "#b6a8a5",
+            "background": "#000000",
+            "fontSize": 38,
+            "fontWeight": 700,
             "align": "center",
+            "radius": 54,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "ext-mr8017lg-3",
-          "type": "text",
-          "role": "price",
-          "name": "price",
+          "id": "ext-mr85r5ts-4",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "68,2kg",
           "autoH": true,
           "box": {
             "x": 443,
-            "y": 874,
-            "w": 227,
-            "h": 86
+            "y": 883,
+            "w": 216,
+            "h": 77
           },
           "style": {
-            "color": "#c48459",
-            "background": "#1a1a1a",
-            "fontSize": 41,
-            "fontWeight": 800,
+            "color": "#be7a4f",
+            "background": "#000000",
+            "fontSize": 38,
+            "fontWeight": 700,
             "align": "center",
+            "radius": 54,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "ext-mr8017lh-4",
-          "type": "text",
-          "role": "price",
-          "name": "price",
+          "id": "ext-mr85r5tt-5",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "66,1kg",
           "autoH": true,
           "box": {
-            "x": 713,
-            "y": 874,
-            "w": 205,
-            "h": 86
+            "x": 702,
+            "y": 883,
+            "w": 216,
+            "h": 77
           },
           "style": {
-            "color": "#dd7080",
-            "background": "#ff6b7d",
-            "fontSize": 41,
-            "fontWeight": 800,
+            "color": "#ce717b",
+            "background": "#f54291",
+            "fontSize": 38,
+            "fontWeight": 700,
             "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr8017ll-5",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Ganz Ehrlich: ich habe null damit gerechnet 😂🤯",
-          "autoH": true,
-          "box": {
-            "x": 173,
-            "y": 970,
-            "w": 724,
-            "h": 96
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#000000",
-            "fontSize": 29,
-            "fontWeight": 800,
-            "align": "center",
+            "radius": 54,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
@@ -195,7 +206,14 @@
       "share": 0.125
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": true,
+    "score": 85,
+    "corrections": [],
+    "applied": 1,
+    "iterations": 1,
+    "totalCorrections": 4
+  },
   "error": null,
   "passes": 2
 }

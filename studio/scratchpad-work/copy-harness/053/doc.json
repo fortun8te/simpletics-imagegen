@@ -1,13 +1,13 @@
 {
-  "id": "harness_053_d7f7a84d",
-  "name": "copy-harness harness_053_d7f7a84d",
+  "id": "harness_053_a5278b1b",
+  "name": "copy-harness harness_053_a5278b1b",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base_mr8017m4",
+      "id": "base_mr85rg0b",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,10 +23,10 @@
       }
     },
     {
-      "id": "rect-mr8017m2-0",
+      "id": "rect-mr85rg09-0",
       "type": "image",
       "role": "rect",
-      "name": "Cut-out · glass green juice",
+      "name": "Cut-out · green juice window",
       "box": {
         "x": 0,
         "y": 0,
@@ -34,134 +34,128 @@
         "h": 1920
       },
       "style": {},
-      "src": "/refasset?id=harness-053mf0c56060"
+      "src": "/refasset?id=harness-053m4d9b8193"
     },
     {
-      "id": "group-mr8017m2-1",
+      "id": "group-mr85rg09-1",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 173,
-        "y": 778,
-        "w": 745,
-        "h": 288
+        "x": 81,
+        "y": 768,
+        "w": 918,
+        "h": 384
       },
       "children": [
         {
-          "id": "caption-mr8017m2-2",
+          "id": "scrim-mr85rg09-2",
+          "type": "image",
+          "role": "scrim",
+          "name": "scrim",
+          "box": {
+            "x": 162,
+            "y": 768,
+            "w": 756,
+            "h": 384
+          },
+          "style": {},
+          "src": "/refasset?id=harness-053m6a9edfe5"
+        },
+        {
+          "id": "caption-mr85rg09-3",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
           "autoH": true,
           "box": {
-            "x": 173,
-            "y": 778,
-            "w": 724,
-            "h": 116
+            "x": 81,
+            "y": 777,
+            "w": 734,
+            "h": 132
           },
           "style": {
-            "color": "#d0c1b2",
-            "background": "#000000",
-            "fontSize": 35,
-            "fontWeight": 800,
+            "color": "#d3c5b5",
+            "fontSize": 44,
+            "fontWeight": 700,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2,
-            "padding": 16
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 24
           }
         },
         {
-          "id": "price-mr8017m2-3",
-          "type": "text",
-          "role": "price",
-          "name": "price",
+          "id": "badge-mr85rg09-4",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "72,6 kg",
           "autoH": true,
           "box": {
-            "x": 173,
-            "y": 874,
-            "w": 227,
-            "h": 86
+            "x": 194,
+            "y": 883,
+            "w": 216,
+            "h": 77
           },
           "style": {
-            "color": "#c8b6b0",
-            "background": "#1a1a1a",
-            "fontSize": 41,
-            "fontWeight": 800,
+            "color": "#b6a8a5",
+            "background": "#000000",
+            "fontSize": 38,
+            "fontWeight": 700,
             "align": "center",
+            "radius": 54,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "price-mr8017m2-4",
-          "type": "text",
-          "role": "price",
-          "name": "price",
+          "id": "badge-mr85rg09-5",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "68,2kg",
           "autoH": true,
           "box": {
             "x": 443,
-            "y": 874,
-            "w": 227,
-            "h": 86
+            "y": 883,
+            "w": 216,
+            "h": 77
           },
           "style": {
-            "color": "#c48459",
-            "background": "#1a1a1a",
-            "fontSize": 41,
-            "fontWeight": 800,
+            "color": "#be7a4f",
+            "background": "#000000",
+            "fontSize": 38,
+            "fontWeight": 700,
             "align": "center",
+            "radius": 54,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
           }
         },
         {
-          "id": "price-mr8017m2-5",
-          "type": "text",
-          "role": "price",
-          "name": "price",
+          "id": "badge-mr85rg09-6",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
           "text": "66,1kg",
           "autoH": true,
           "box": {
-            "x": 713,
-            "y": 874,
-            "w": 205,
-            "h": 86
+            "x": 702,
+            "y": 883,
+            "w": 216,
+            "h": 77
           },
           "style": {
-            "color": "#dd7080",
-            "background": "#ff6b7d",
-            "fontSize": 41,
-            "fontWeight": 800,
+            "color": "#ce717b",
+            "background": "#f54291",
+            "fontSize": 38,
+            "fontWeight": 700,
             "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "caption-mr8017m2-6",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Ganz Ehrlich: ich habe null damit gerechnet 😂🤯",
-          "autoH": true,
-          "box": {
-            "x": 173,
-            "y": 970,
-            "w": 724,
-            "h": 102
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#000000",
-            "fontSize": 29,
-            "fontWeight": 800,
-            "align": "center",
+            "radius": 54,
             "uppercase": false,
             "lineHeight": 1.2,
             "padding": 16
@@ -170,6 +164,6 @@
       ]
     }
   ],
-  "skeletonId": "skel_mr8017m23agd",
-  "updatedAt": 1783268522220
+  "skeletonId": "skel_mr85rg09qrja",
+  "updatedAt": 1783278146542
 }

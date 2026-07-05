@@ -2957,7 +2957,9 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
       // 1ms cached). A PASSING matte replaces the crop with a transparent-subject PNG served via
       // the same /refasset route (written into .state/refs/). Avatars keep the ellipse crop —
       // round chrome frames ARE the platform-accurate look. Any failure keeps today's rect crop.
-      if (cc.shape !== 'avatar' && !opts.signal?.aborted) {
+      if (cc.shape !== 'avatar' && cc.shape !== 'media' && !opts.signal?.aborted) {
+        // 'media' = a post's photograph merged into one rect crop — matting it would strip the
+        // photo's own background (the whole point of the merge); 'avatar' keeps its round frame.
         try {
           const srcPng = join(STATE_DIR, 'refs', `${reference.ref}.png`);
           if (existsSync(srcPng)) {
