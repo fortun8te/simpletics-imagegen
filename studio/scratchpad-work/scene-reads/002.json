@@ -1,9 +1,6 @@
 {
   "ok": true,
-  "canvas": {
-    "w": 1080,
-    "h": 1920
-  },
+  "canvas": { "w": 1080, "h": 1920 },
   "archetype": "offer-hero",
   "background": "#E4490E",
   "backgroundIsPhoto": false,
@@ -13,34 +10,17 @@
       "id": "poster-card",
       "type": "shape",
       "role": "card",
-      "box": {
-        "x": 95,
-        "y": 90,
-        "w": 890,
-        "h": 1570
-      },
-      "style": {
-        "background": "#FFFFFF"
-      }
+      "box": { "x": 95, "y": 90, "w": 890, "h": 1570 },
+      "style": { "background": "#FFFFFF" }
     },
     {
       "id": "seal-emblem",
       "type": "shape",
       "role": "logo",
-      "box": {
-        "x": 482,
-        "y": 118,
-        "w": 116,
-        "h": 116
-      },
+      "box": { "x": 482, "y": 118, "w": 116, "h": 116 },
       "style": {},
       "cutoutCandidate": {
-        "region": {
-          "x": 0.446,
-          "y": 0.061,
-          "w": 0.107,
-          "h": 0.061
-        },
+        "region": { "x": 0.446, "y": 0.061, "w": 0.107, "h": 0.061 },
         "shape": "logo"
       }
     },
@@ -49,12 +29,7 @@
       "type": "text",
       "role": "headline",
       "text": "ALLE ESSENTIALS",
-      "box": {
-        "x": 115,
-        "y": 252,
-        "w": 850,
-        "h": 85
-      },
+      "box": { "x": 115, "y": 252, "w": 850, "h": 85 },
       "style": {
         "fontSize": 72,
         "fontWeight": 900,
@@ -69,12 +44,7 @@
       "type": "text",
       "role": "subhead",
       "text": "KRACHTSPORT BUNDEL",
-      "box": {
-        "x": 160,
-        "y": 448,
-        "w": 760,
-        "h": 55
-      },
+      "box": { "x": 160, "y": 448, "w": 760, "h": 55 },
       "style": {
         "fontSize": 46,
         "fontWeight": 800,
@@ -89,12 +59,7 @@
       "type": "text",
       "role": "price",
       "text": "€63",
-      "box": {
-        "x": 330,
-        "y": 540,
-        "w": 150,
-        "h": 65
-      },
+      "box": { "x": 330, "y": 540, "w": 150, "h": 65 },
       "style": {
         "fontSize": 54,
         "fontWeight": 700,
@@ -108,42 +73,22 @@
       "id": "price-old-strike",
       "type": "shape",
       "role": "decor",
-      "box": {
-        "x": 322,
-        "y": 566,
-        "w": 165,
-        "h": 7
-      },
-      "style": {
-        "background": "#E4490E"
-      }
+      "box": { "x": 322, "y": 566, "w": 165, "h": 7 },
+      "style": { "background": "#E4490E" }
     },
     {
       "id": "price-arrow",
       "type": "shape",
       "role": "decor",
-      "box": {
-        "x": 502,
-        "y": 552,
-        "w": 68,
-        "h": 42
-      },
-      "style": {
-        "shapeKind": "arrow",
-        "background": "#111111"
-      }
+      "box": { "x": 502, "y": 552, "w": 68, "h": 42 },
+      "style": { "shapeKind": "arrow", "background": "#111111" }
     },
     {
       "id": "price-new",
       "type": "text",
       "role": "price",
       "text": "€49",
-      "box": {
-        "x": 580,
-        "y": 535,
-        "w": 160,
-        "h": 70
-      },
+      "box": { "x": 580, "y": 535, "w": 160, "h": 70 },
       "style": {
         "fontSize": 58,
         "fontWeight": 900,
@@ -157,27 +102,15 @@
       "id": "price-new-underline",
       "type": "shape",
       "role": "decor",
-      "box": {
-        "x": 580,
-        "y": 610,
-        "w": 160,
-        "h": 7
-      },
-      "style": {
-        "background": "#E4490E"
-      }
+      "box": { "x": 580, "y": 610, "w": 160, "h": 7 },
+      "style": { "background": "#E4490E" }
     },
     {
       "id": "cta-caption",
       "type": "text",
       "role": "caption",
       "text": "KOOP NU VIA UPFRONT.NL",
-      "box": {
-        "x": 280,
-        "y": 832,
-        "w": 520,
-        "h": 48
-      },
+      "box": { "x": 280, "y": 832, "w": 520, "h": 48 },
       "style": {
         "fontSize": 36,
         "fontWeight": 500,
@@ -191,20 +124,10 @@
       "id": "product-cluster",
       "type": "shape",
       "role": "product",
-      "box": {
-        "x": 55,
-        "y": 905,
-        "w": 975,
-        "h": 760
-      },
+      "box": { "x": 55, "y": 905, "w": 975, "h": 760 },
       "style": {},
       "cutoutCandidate": {
-        "region": {
-          "x": 0.051,
-          "y": 0.471,
-          "w": 0.903,
-          "h": 0.396
-        },
+        "region": { "x": 0.051, "y": 0.471, "w": 0.903, "h": 0.396 },
         "shape": "media"
       }
     }

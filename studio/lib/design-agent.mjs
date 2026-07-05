@@ -2910,7 +2910,10 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
       // VECTOR-FIRST for small logos/emblems (inverse-design principle: a mark the designer drew
       // as a graphic should be a crisp scalable vector, not a fuzzy raster crop). Gated hard in
       // traceRegion — photos/gradients fail and fall through to the crop→matte path below.
-      if (cc.shape === 'logo' && n.box && (n.box.w * n.box.h) / (work.canvas.w * work.canvas.h) <= 0.12 && !opts.signal?.aborted) {
+      // !n.text guard: a layer that carries TEXT is typography, never a traceable mark — pool
+      // reads sometimes label wordmark headlines role:"logo", and tracing them produced the
+      // broken uneditable vector-text the owner flagged. Text stays text, always.
+      if (cc.shape === 'logo' && !String(n.text || '').trim() && n.box && (n.box.w * n.box.h) / (work.canvas.w * work.canvas.h) <= 0.12 && !opts.signal?.aborted) {
         try {
           const srcPng = join(STATE_DIR, 'refs', `${reference.ref}.png`);
           if (existsSync(srcPng)) {

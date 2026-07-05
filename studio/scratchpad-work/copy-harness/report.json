@@ -1,62 +1,36 @@
 {
-  "at": "2026-07-05T19:37:31.378Z",
-  "n": 2,
-  "okN": 2,
-  "avgScore": 91,
+  "at": "2026-07-05T20:44:33.104Z",
+  "n": 1,
+  "okN": 1,
+  "avgScore": 96.2,
   "results": [
     {
-      "id": "050",
-      "filename": "050_attached_0d40eff6fd3e3051.webp",
+      "id": "052",
+      "filename": "052_attached_6e7a2d035eee1c7e.webp",
       "ok": true,
       "error": null,
       "ms": {
-        "extract": 47989,
-        "assemble": 4,
-        "total": 55269
+        "extract": 0,
+        "assemble": 1799,
+        "total": 9655
       },
-      "archetype": "x-post",
-      "layerCountExtracted": 6,
+      "readSource": "scene-file",
+      "archetype": "before-after",
+      "layerCountExtracted": 8,
       "parsePath": "loose",
-      "background": "#1a1a1a",
-      "cutoutCandidates": 1,
-      "layersApplied": 2,
-      "leavesInResult": 7,
+      "background": "#8CA084",
+      "cutoutCandidates": 3,
+      "layersApplied": 8,
+      "leavesInResult": 9,
       "verify": {
         "ready": false
       },
       "pixelError": null,
-      "textPileOverlaps": 1,
-      "pixelScoreRaw": 95.6,
-      "pixelScore": 92.6,
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/050/side-by-side.png",
-      "attempts": 1
-    },
-    {
-      "id": "078",
-      "filename": "078_attached_efa4c7170a656935.webp",
-      "ok": true,
-      "error": null,
-      "ms": {
-        "extract": 61843,
-        "assemble": 2005,
-        "total": 71779
-      },
-      "archetype": "offer-hero",
-      "layerCountExtracted": 9,
-      "parsePath": "loose",
-      "background": "#f4f4f4",
-      "cutoutCandidates": 2,
-      "layersApplied": 4,
-      "leavesInResult": 10,
-      "verify": {
-        "ready": true
-      },
-      "pixelError": null,
       "textPileOverlaps": 0,
-      "pixelScoreRaw": 89.4,
-      "pixelScore": 89.4,
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/078/side-by-side.png",
-      "attempts": 3
+      "pixelScoreRaw": 96.2,
+      "pixelScore": 96.2,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/052/side-by-side.png",
+      "attempts": 1
     }
   ]
 }

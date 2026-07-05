@@ -161,9 +161,23 @@ async function runOne(filename) {
   try {
     // this machine's ornith is slow (~1.5-4 min per vision call) — the default 120s budget with
     // 90s per-pass times out on dense/dark ads. 360s total keeps the two-step fallback viable.
-    // selfCheck: true — ALWAYS run the iterative render→compare→correct rounds (up to 3), not
-    // only on weak reads. The owner's bar is 1:1; checking your own work is not optional.
-    ext = await extractLayout(srcPath, { passes: 2, timeoutMs: 600_000, selfCheck: true });
+    // SCENE-READ INJECTION (harness v2 architecture): when a pre-computed scene graph exists for
+    // this ad (written by an external READER — e.g. a Claude/Sonnet vision agent, which is far
+    // more reliable at localization than the free pool), assemble from IT instead of running the
+    // pool extraction. This cuts the pipeline at the read/assembly seam so each half is testable
+    // alone: bad output with a known-good scene = assembly bug; good output = the read was the
+    // problem all along. Drop scene JSONs in scratchpad-work/scene-reads/<adId>.json.
+    const sceneFile = join(STUDIO, 'scratchpad-work', 'scene-reads', `${adId(filename)}.json`);
+    if (existsSync(sceneFile)) {
+      ext = JSON.parse(readFileSync(sceneFile, 'utf8'));
+      ext.ok = ext.ok !== false;
+      result.readSource = 'scene-file';
+    } else {
+      // selfCheck: true — ALWAYS run the iterative render→compare→correct rounds (up to 3), not
+      // only on weak reads. The owner's bar is 1:1; checking your own work is not optional.
+      ext = await extractLayout(srcPath, { passes: 2, timeoutMs: 600_000, selfCheck: true });
+      result.readSource = 'pool-extraction';
+    }
   } catch (e) {
     ext = { ok: false, error: String(e?.message || e) };
   }
