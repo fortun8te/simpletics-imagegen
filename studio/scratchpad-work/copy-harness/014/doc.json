@@ -1,13 +1,13 @@
 {
-  "id": "harness_014_34dea422",
-  "name": "copy-harness harness_014_34dea422",
+  "id": "harness_014_0a04b620",
+  "name": "copy-harness harness_014_0a04b620",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base_mr8aq4kw",
+      "id": "base_mr8cw2l1",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "decor-mr8aq4kw-y",
+      "id": "decor-mr8cw2l0-0",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "headline-mr8aq4kw-z",
+      "id": "headline-mr8cw2l0-1",
       "type": "text",
       "role": "headline",
       "text": "NUTRITIONAL\nSUPPORT DURING\nPERIMENOPAUSE",
@@ -59,7 +59,7 @@
       "sizeLocked": true
     },
     {
-      "id": "caption-mr8aq4kw-10",
+      "id": "caption-mr8cw2l0-2",
       "type": "text",
       "role": "caption",
       "text": "Vitamin D3\nand K2 support\nbone health*",
@@ -75,13 +75,14 @@
         "color": "#EFE289",
         "align": "center",
         "lineHeight": 1.15,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Menlo"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8aq4kw-11",
+      "id": "decor-mr8cw2l0-3",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -96,7 +97,7 @@
       }
     },
     {
-      "id": "caption-mr8aq4kw-12",
+      "id": "caption-mr8cw2l0-4",
       "type": "text",
       "role": "caption",
       "text": "B vitamins support\ncognitive health,\nmood and energy*",
@@ -118,7 +119,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8aq4kw-13",
+      "id": "decor-mr8cw2l0-5",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -133,7 +134,7 @@
       }
     },
     {
-      "id": "decor-mr8aq4kw-14",
+      "id": "decor-mr8cw2l0-6",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -148,7 +149,7 @@
       }
     },
     {
-      "id": "caption-mr8aq4kw-15",
+      "id": "caption-mr8cw2l0-7",
       "type": "text",
       "role": "caption",
       "text": "Fiber supports\ngut health*",
@@ -170,7 +171,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8aq4kw-16",
+      "id": "decor-mr8cw2l0-8",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -185,7 +186,7 @@
       }
     },
     {
-      "id": "caption-mr8aq4kw-17",
+      "id": "caption-mr8cw2l0-9",
       "type": "text",
       "role": "caption",
       "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
@@ -201,13 +202,14 @@
         "color": "#EFE289",
         "align": "center",
         "lineHeight": 1.15,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Arial Narrow"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "legal-mr8aq4kw-18",
+      "id": "legal-mr8cw2l0-a",
       "type": "text",
       "role": "legal",
       "text": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
@@ -230,6 +232,6 @@
       "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr8aq4kwyc45",
-  "updatedAt": 1783286477745
+  "skeletonId": "skel_mr8cw2kzmb0k",
+  "updatedAt": 1783290114326
 }

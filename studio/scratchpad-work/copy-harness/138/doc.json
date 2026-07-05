@@ -1,13 +1,13 @@
 {
-  "id": "harness_138_180a84ab",
-  "name": "copy-harness harness_138_180a84ab",
+  "id": "harness_138_558905be",
+  "name": "copy-harness harness_138_558905be",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr8as4u9-4s",
+      "id": "base-mr8cw7aq-6",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,9 +23,10 @@
       }
     },
     {
-      "id": "decor-mr8as4u9-4n",
+      "id": "decor-mr8cw7ap-0",
       "type": "shape",
       "role": "decor",
+      "name": "Radial blob (red-orange core)",
       "box": {
         "x": 0,
         "y": 0,
@@ -34,27 +35,34 @@
       },
       "style": {
         "gradient": {
-          "type": "linear",
-          "angle": 90,
+          "type": "radial",
+          "cx": 0.28,
+          "cy": 0.505,
+          "r": 0.6,
+          "ry": 0.225,
           "stops": [
             {
-              "color": "#FEFCF8",
+              "color": "#EE4238",
               "pos": 0
             },
             {
-              "color": "#EA5226",
-              "pos": 0.3
+              "color": "#EE4238",
+              "pos": 0.45
             },
             {
-              "color": "#F29B27",
-              "pos": 0.55
+              "color": "#ED6A2B",
+              "pos": 0.62
             },
             {
-              "color": "#F7D44C",
-              "pos": 0.8
+              "color": "#F0964D",
+              "pos": 0.78
             },
             {
-              "color": "#FEF8EC",
+              "color": "#FCDED4",
+              "pos": 0.92
+            },
+            {
+              "color": "#FFFFFF",
               "pos": 1
             }
           ]
@@ -62,7 +70,42 @@
       }
     },
     {
-      "id": "product-mr8as4u9-4o",
+      "id": "decor-mr8cw7ap-1",
+      "type": "shape",
+      "role": "decor",
+      "name": "Radial blob (yellow, right edge)",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "gradient": {
+          "type": "radial",
+          "cx": 0.926,
+          "cy": 0.513,
+          "r": 0.25,
+          "ry": 0.161,
+          "stops": [
+            {
+              "color": "#EBA81C",
+              "pos": 0
+            },
+            {
+              "color": "#EEC23D",
+              "pos": 0.5
+            },
+            {
+              "color": "rgba(238,194,61,0)",
+              "pos": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "product-mr8cw7ap-2",
       "type": "image",
       "role": "product",
       "box": {
@@ -71,20 +114,12 @@
         "w": 400,
         "h": 1035
       },
-      "style": {
-        "crop": {
-          "x": 0.137,
-          "y": 0.241,
-          "w": 0.37,
-          "h": 0.539
-        },
-        "radius": 14
-      },
-      "src": "/refasset?id=harness-138",
+      "style": {},
+      "src": "/refasset?id=harness-138m3779eaa4",
       "name": "Cut-out"
     },
     {
-      "id": "headline-mr8as4u9-4p",
+      "id": "headline-mr8cw7ap-3",
       "type": "text",
       "role": "headline",
       "text": "Consistency",
@@ -100,13 +135,14 @@
         "color": "#FFFFFF",
         "align": "center",
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Arial Rounded MT Bold"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "subhead-mr8as4u9-4q",
+      "id": "subhead-mr8cw7ap-4",
       "type": "text",
       "role": "subhead",
       "text": "Starts With The Right Inputs",
@@ -122,13 +158,14 @@
         "color": "#FFFFFF",
         "align": "center",
         "lineHeight": 1.2,
-        "uppercase": false
+        "uppercase": false,
+        "starStyle": "rounded"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "logo-mr8as4u9-4r",
+      "id": "logo-mr8cw7aq-5",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -145,6 +182,6 @@
       "name": "Logo (vectorized)"
     }
   ],
-  "skeletonId": "skel_mr8as4u9bc4a",
-  "updatedAt": 1783286573546
+  "skeletonId": "skel_mr8cw7apw1ar",
+  "updatedAt": 1783290140122
 }

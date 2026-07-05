@@ -60,7 +60,8 @@
         "color": "#EFE289",
         "align": "center",
         "lineHeight": 1.15,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Menlo"
       }
     },
     {
@@ -180,7 +181,8 @@
         "color": "#EFE289",
         "align": "center",
         "lineHeight": 1.15,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Arial Narrow"
       }
     },
     {
@@ -205,5 +207,68 @@
       }
     }
   ],
-  "measuredBoxes": true
+  "measuredBoxes": true,
+  "_occlusionPlan": [
+    {
+      "layerId": "__photoBase",
+      "name": "Background (reference photo)",
+      "shape": "photo-base",
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1
+      },
+      "rects": [
+        {
+          "x": 0.13425925925925927,
+          "y": 0.071875,
+          "w": 0.7314814814814815,
+          "h": 0.15625,
+          "overlayId": "headline",
+          "overlayRole": "headline"
+        },
+        {
+          "x": 0.05092592592592592,
+          "y": 0.275,
+          "w": 0.25462962962962965,
+          "h": 0.05625000000000002,
+          "overlayId": "callout-1",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.6342592592592593,
+          "y": 0.3046875,
+          "w": 0.32407407407407407,
+          "h": 0.057291666666666685,
+          "overlayId": "callout-2",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.05555555555555555,
+          "y": 0.5791666666666667,
+          "w": 0.23611111111111108,
+          "h": 0.04427083333333337,
+          "overlayId": "callout-3",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.5601851851851852,
+          "y": 0.6302083333333334,
+          "w": 0.4027777777777778,
+          "h": 0.05989583333333337,
+          "overlayId": "callout-4",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.06666666666666667,
+          "y": 0.6989583333333333,
+          "w": 0.8703703703703703,
+          "h": 0.034375000000000044,
+          "overlayId": "disclaimer",
+          "overlayRole": "legal"
+        }
+      ]
+    }
+  ]
 }

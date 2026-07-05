@@ -1,0 +1,175 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "offer-hero",
+  "background": "#CFDFF4",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "bg-gradient",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 0, "y": 0, "w": 1080, "h": 1920 },
+      "style": {
+        "gradient": {
+          "type": "linear",
+          "angle": 180,
+          "stops": [
+            { "color": "#DCE7F8", "pos": 0 },
+            { "color": "#BDD3F0", "pos": 1 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "brand-logo",
+      "type": "shape",
+      "role": "logo",
+      "box": { "x": 318, "y": 143, "w": 44, "h": 42 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.294, "y": 0.074, "w": 0.041, "h": 0.022 },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "brand-name",
+      "type": "text",
+      "role": "meta",
+      "text": "Hears Earplugs®",
+      "box": { "x": 375, "y": 140, "w": 390, "h": 50 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 700,
+        "color": "#1E2A38",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "Black Friday\nSuper Deal",
+      "box": { "x": 240, "y": 255, "w": 600, "h": 185 },
+      "style": {
+        "fontSize": 76,
+        "fontWeight": 700,
+        "color": "#33455C",
+        "align": "center",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "offer-line",
+      "type": "text",
+      "role": "headline",
+      "text": "Up to 40% OFF",
+      "box": { "x": 120, "y": 465, "w": 840, "h": 110 },
+      "style": {
+        "fontSize": 96,
+        "fontWeight": 700,
+        "color": "#3A4E68",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "bubble-circle",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 105, "y": 620, "w": 770, "h": 770 },
+      "style": {
+        "shapeKind": "ellipse",
+        "gradient": {
+          "type": "radial",
+          "stops": [
+            { "color": "rgba(255,255,255,0.55)", "pos": 0 },
+            { "color": "rgba(214,229,247,0.25)", "pos": 1 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "product-case",
+      "type": "shape",
+      "role": "product",
+      "box": { "x": 160, "y": 665, "w": 740, "h": 670 },
+      "style": { "shadow": true },
+      "cutoutCandidate": {
+        "region": { "x": 0.148, "y": 0.346, "w": 0.685, "h": 0.349 },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "decline-circle",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 115, "y": 1435, "w": 225, "h": 225 },
+      "style": { "shapeKind": "ellipse", "background": "#F2453D" }
+    },
+    {
+      "id": "decline-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": { "x": 185, "y": 1520, "w": 85, "h": 60 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.171, "y": 0.792, "w": 0.079, "h": 0.031 },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "accept-circle",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 745, "y": 1435, "w": 225, "h": 225 },
+      "style": { "shapeKind": "ellipse", "background": "#34C759" }
+    },
+    {
+      "id": "accept-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": { "x": 815, "y": 1500, "w": 85, "h": 95 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.755, "y": 0.781, "w": 0.079, "h": 0.05 },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "decline-label",
+      "type": "text",
+      "role": "caption",
+      "text": "Decline Offer",
+      "box": { "x": 105, "y": 1698, "w": 250, "h": 44 },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 400,
+        "color": "#2E3B4E",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "accept-label",
+      "type": "text",
+      "role": "caption",
+      "text": "Accept Offer",
+      "box": { "x": 740, "y": 1698, "w": 240, "h": 44 },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 400,
+        "color": "#2E3B4E",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    }
+  ]
+}

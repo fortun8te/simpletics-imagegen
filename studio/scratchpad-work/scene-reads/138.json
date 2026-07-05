@@ -28,12 +28,30 @@
           "r": 0.6,
           "ry": 0.225,
           "stops": [
-            { "color": "#EE4238", "pos": 0 },
-            { "color": "#EE4238", "pos": 0.45 },
-            { "color": "#ED6A2B", "pos": 0.62 },
-            { "color": "#F0964D", "pos": 0.78 },
-            { "color": "#FCDED4", "pos": 0.92 },
-            { "color": "#FFFFFF", "pos": 1 }
+            {
+              "color": "#EE4238",
+              "pos": 0
+            },
+            {
+              "color": "#EE4238",
+              "pos": 0.45
+            },
+            {
+              "color": "#ED6A2B",
+              "pos": 0.62
+            },
+            {
+              "color": "#F0964D",
+              "pos": 0.78
+            },
+            {
+              "color": "#FCDED4",
+              "pos": 0.92
+            },
+            {
+              "color": "#FFFFFF",
+              "pos": 1
+            }
           ]
         }
       }
@@ -57,9 +75,18 @@
           "r": 0.25,
           "ry": 0.161,
           "stops": [
-            { "color": "#EBA81C", "pos": 0 },
-            { "color": "#EEC23D", "pos": 0.5 },
-            { "color": "rgba(238,194,61,0)", "pos": 1 }
+            {
+              "color": "#EBA81C",
+              "pos": 0
+            },
+            {
+              "color": "#EEC23D",
+              "pos": 0.5
+            },
+            {
+              "color": "rgba(238,194,61,0)",
+              "pos": 1
+            }
           ]
         }
       }
@@ -104,7 +131,8 @@
         "color": "#FFFFFF",
         "align": "center",
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Arial Rounded MT Bold"
       }
     },
     {

@@ -4,11 +4,337 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 1,
-    "assemble": 2,
-    "total": 10447
+    "extract": 1614624,
+    "assemble": 6,
+    "total": 1631203
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/014.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-014.png",
+    "patched": 2,
+    "layers": [
+      {
+        "id": "headline",
+        "role": "headline",
+        "text": "NUTRITIONAL\nSUPPORT DURING\nPERIMENOPAUSE",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0192,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Arial Narrow",
+            "score": 0.4033,
+            "fontSize": 95
+          },
+          {
+            "family": "Impact",
+            "score": 0.3841,
+            "fontSize": 93
+          },
+          {
+            "family": "Menlo",
+            "score": 0.1986,
+            "fontSize": 131
+          },
+          {
+            "family": "",
+            "score": 0.1663,
+            "fontSize": 109
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.1544,
+            "fontSize": 117
+          },
+          {
+            "family": "Georgia",
+            "score": 0.15,
+            "fontSize": 96
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.1485,
+            "fontSize": 109
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.131,
+            "fontSize": 96
+          }
+        ]
+      },
+      {
+        "id": "callout-1",
+        "role": "caption",
+        "text": "Vitamin D3\nand K2 support\nbone health*",
+        "previous": null,
+        "fontFamily": "Menlo",
+        "confidence": 0.0483,
+        "patched": true,
+        "tried": [
+          {
+            "family": "Menlo",
+            "score": 0.3164,
+            "fontSize": 33
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.2681,
+            "fontSize": 40
+          },
+          {
+            "family": "Impact",
+            "score": 0.2606,
+            "fontSize": 44
+          },
+          {
+            "family": "Georgia",
+            "score": 0.2484,
+            "fontSize": 36
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.2419,
+            "fontSize": 40
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.2396,
+            "fontSize": 43
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.2372,
+            "fontSize": 36
+          },
+          {
+            "family": "",
+            "score": 0.2338,
+            "fontSize": 36
+          }
+        ]
+      },
+      {
+        "id": "callout-2",
+        "role": "caption",
+        "text": "B vitamins support\ncognitive health,\nmood and energy*",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0058,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.3612,
+            "fontSize": 33
+          },
+          {
+            "family": "",
+            "score": 0.3554,
+            "fontSize": 33
+          },
+          {
+            "family": "Impact",
+            "score": 0.3348,
+            "fontSize": 64
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.2493,
+            "fontSize": 80
+          },
+          {
+            "family": "Georgia",
+            "score": 0.2175,
+            "fontSize": 34
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.2131,
+            "fontSize": 66
+          },
+          {
+            "family": "Menlo",
+            "score": 0.1972,
+            "fontSize": 71
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.1815,
+            "fontSize": 34
+          }
+        ]
+      },
+      {
+        "id": "callout-3",
+        "role": "caption",
+        "text": "Fiber supports\ngut health*",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0058,
+        "patched": false,
+        "tried": [
+          {
+            "family": "",
+            "score": 0.5789,
+            "fontSize": 33
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.5731,
+            "fontSize": 33
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.4348,
+            "fontSize": 33
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.4145,
+            "fontSize": 34
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.4074,
+            "fontSize": 34
+          },
+          {
+            "family": "Impact",
+            "score": 0.359,
+            "fontSize": 34
+          },
+          {
+            "family": "Georgia",
+            "score": 0.3332,
+            "fontSize": 84
+          },
+          {
+            "family": "Menlo",
+            "score": 0.3189,
+            "fontSize": 84
+          }
+        ]
+      },
+      {
+        "id": "callout-4",
+        "role": "caption",
+        "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
+        "previous": null,
+        "fontFamily": "Arial Narrow",
+        "confidence": 0.0325,
+        "patched": true,
+        "tried": [
+          {
+            "family": "Arial Narrow",
+            "score": 0.4231,
+            "fontSize": 34
+          },
+          {
+            "family": "Impact",
+            "score": 0.3906,
+            "fontSize": 34
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.269,
+            "fontSize": 66
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.2539,
+            "fontSize": 71
+          },
+          {
+            "family": "Menlo",
+            "score": 0.2334,
+            "fontSize": 66
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.2219,
+            "fontSize": 34
+          },
+          {
+            "family": "",
+            "score": 0.1982,
+            "fontSize": 34
+          },
+          {
+            "family": "Georgia",
+            "score": 0.1743,
+            "fontSize": 34
+          }
+        ]
+      }
+    ]
   },
   "readSource": "scene-file",
+  "occlusionPlan": [
+    {
+      "layerId": "__photoBase",
+      "name": "Background (reference photo)",
+      "shape": "photo-base",
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1
+      },
+      "rects": [
+        {
+          "x": 0.13425925925925927,
+          "y": 0.071875,
+          "w": 0.7314814814814815,
+          "h": 0.15625,
+          "overlayId": "headline",
+          "overlayRole": "headline"
+        },
+        {
+          "x": 0.05092592592592592,
+          "y": 0.275,
+          "w": 0.25462962962962965,
+          "h": 0.05625000000000002,
+          "overlayId": "callout-1",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.6342592592592593,
+          "y": 0.3046875,
+          "w": 0.32407407407407407,
+          "h": 0.057291666666666685,
+          "overlayId": "callout-2",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.05555555555555555,
+          "y": 0.5791666666666667,
+          "w": 0.23611111111111108,
+          "h": 0.04427083333333337,
+          "overlayId": "callout-3",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.5601851851851852,
+          "y": 0.6302083333333334,
+          "w": 0.4027777777777778,
+          "h": 0.05989583333333337,
+          "overlayId": "callout-4",
+          "overlayRole": "caption"
+        },
+        {
+          "x": 0.06666666666666667,
+          "y": 0.6989583333333333,
+          "w": 0.8703703703703703,
+          "h": 0.034375000000000044,
+          "overlayId": "disclaimer",
+          "overlayRole": "legal"
+        }
+      ]
+    }
+  ],
   "sceneTruthCorrections": [
     "headline color: #F3E9C9 → #1775b6 (glyph sample, contrast 0.53)",
     "headline fontSize: 96 → 154 (1 ink line, block 300px)",
@@ -37,7 +363,11 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 97.1,
-  "pixelScore": 97.1,
+  "pixelScoreRaw": 97.2,
+  "pixelScore": 97.2,
+  "refine": {
+    "ran": false,
+    "reason": "score ≥ 97"
+  },
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/014/side-by-side.png"
 }

@@ -1,0 +1,91 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "offer-hero",
+  "background": "#F2F6DC",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "brand-name",
+      "type": "text",
+      "role": "meta",
+      "text": "DORE & ROSE",
+      "box": { "x": 395, "y": 255, "w": 290, "h": 42 },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 600,
+        "color": "#1A1A1A",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "EARLY BLACK\nFRIDAY DEAL",
+      "box": { "x": 150, "y": 390, "w": 780, "h": 220 },
+      "style": {
+        "fontSize": 96,
+        "fontWeight": 800,
+        "color": "#1F1F1B",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "brush-stroke",
+      "type": "shape",
+      "role": "card",
+      "box": { "x": 175, "y": 625, "w": 745, "h": 95 },
+      "style": { "background": "#8A9A3B" }
+    },
+    {
+      "id": "sold-out-line",
+      "type": "text",
+      "role": "subhead",
+      "text": "ALMOST SOLD OUT...",
+      "box": { "x": 230, "y": 640, "w": 640, "h": 60 },
+      "style": {
+        "fontSize": 52,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "model-photo",
+      "type": "shape",
+      "role": "product",
+      "box": { "x": 0, "y": 770, "w": 1080, "h": 1150 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0, "y": 0.401, "w": 1, "h": 0.599 },
+        "shape": "media"
+      }
+    },
+    {
+      "id": "starburst-badge",
+      "type": "badge",
+      "role": "badge",
+      "text": "LIMITED\nTIME\nOFFER",
+      "box": { "x": 755, "y": 1385, "w": 210, "h": 210 },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#8A9A3B",
+        "align": "center",
+        "radius": 105,
+        "lineHeight": 1.2,
+        "uppercase": true,
+        "rotation": -10
+      }
+    }
+  ]
+}

@@ -4,30 +4,148 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 1,
-    "assemble": 2154,
-    "total": 9722
+    "extract": 5204,
+    "assemble": 19690,
+    "total": 35167
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/138.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-138.png",
+    "patched": 0,
+    "layers": [
+      {
+        "id": "headline",
+        "role": "headline",
+        "text": "Consistency",
+        "previous": "Arial Rounded MT Bold",
+        "fontFamily": "Arial Rounded MT Bold",
+        "confidence": 0.1862,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.7848,
+            "fontSize": 71
+          },
+          {
+            "family": "",
+            "score": 0.5986,
+            "fontSize": 71
+          },
+          {
+            "family": "Georgia",
+            "score": 0.5684,
+            "fontSize": 77
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.5097,
+            "fontSize": 74
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.4982,
+            "fontSize": 74
+          },
+          {
+            "family": "Impact",
+            "score": 0.4777,
+            "fontSize": 74
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.455,
+            "fontSize": 74
+          },
+          {
+            "family": "Menlo",
+            "score": 0.4485,
+            "fontSize": 74
+          }
+        ]
+      },
+      {
+        "id": "subhead",
+        "role": "subhead",
+        "text": "Starts With The Right Inputs",
+        "previous": null,
+        "fontFamily": "",
+        "confidence": 0.1511,
+        "patched": false,
+        "tried": [
+          {
+            "family": "",
+            "score": 0.6667,
+            "fontSize": 47
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.5156,
+            "fontSize": 62
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.5109,
+            "fontSize": 47
+          },
+          {
+            "family": "Georgia",
+            "score": 0.4284,
+            "fontSize": 46
+          },
+          {
+            "family": "Impact",
+            "score": 0.3839,
+            "fontSize": 46
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.3753,
+            "fontSize": 46
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.3372,
+            "fontSize": 46
+          },
+          {
+            "family": "Menlo",
+            "score": 0.1321,
+            "fontSize": 72
+          }
+        ]
+      }
+    ]
   },
   "readSource": "scene-file",
+  "occlusionPlan": [],
   "sceneTruthCorrections": [
     "headline fontSize: 74 → 57 (1 ink line, block 41px)",
     "headline box: y920 h78 → y942 h53 (tight ink rows + 6px pad)",
     "subhead fontSize: 46 → 52 (2 ink lines, block 96px)",
     "subhead box: y1002 h110 → y995 h124 (tight ink rows + 14px pad)"
   ],
+  "typoTruthCorrections": [
+    "stars \"Starts With The Right In\": rounded tips (21 glyphs, tip mass 0.162)"
+  ],
   "archetype": "product-hero",
-  "layerCountExtracted": 5,
+  "layerCountExtracted": 6,
   "parsePath": "loose",
   "background": "#FFFFFF",
   "cutoutCandidates": 2,
-  "layersApplied": 5,
-  "leavesInResult": 6,
+  "layersApplied": 6,
+  "leavesInResult": 7,
   "verify": {
     "ready": false
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 81,
-  "pixelScore": 81,
+  "pixelScoreRaw": 97.6,
+  "pixelScore": 97.6,
+  "refine": {
+    "ran": false,
+    "reason": "score ≥ 97"
+  },
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/138/side-by-side.png"
 }

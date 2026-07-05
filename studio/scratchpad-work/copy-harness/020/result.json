@@ -4,31 +4,170 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 0,
-    "assemble": 3864,
-    "total": 12074
+    "extract": 2408,
+    "assemble": 10109,
+    "total": 69881
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/020.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-020.png",
+    "patched": 0,
+    "layers": [
+      {
+        "id": "row-1-black-fill",
+        "role": "headline",
+        "text": "BLACK",
+        "previous": null,
+        "fontFamily": "",
+        "confidence": 0.0887,
+        "patched": false,
+        "tried": [
+          {
+            "family": "",
+            "score": 0.8698,
+            "fontSize": 199
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.7811,
+            "fontSize": 193
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.7019,
+            "fontSize": 236
+          },
+          {
+            "family": "Menlo",
+            "score": 0.5947,
+            "fontSize": 229
+          },
+          {
+            "family": "Impact",
+            "score": 0.5664,
+            "fontSize": 256
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.48,
+            "fontSize": 202
+          },
+          {
+            "family": "Georgia",
+            "score": 0.4229,
+            "fontSize": 170
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.3964,
+            "fontSize": 202
+          }
+        ]
+      },
+      {
+        "id": "row-2-friday-fill",
+        "role": "headline",
+        "text": "FRIDAY",
+        "previous": "Impact",
+        "fontFamily": "Impact",
+        "confidence": 0.0644,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Impact",
+            "score": 0.5463,
+            "fontSize": 190
+          },
+          {
+            "family": "",
+            "score": 0.4819,
+            "fontSize": 202
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.4619,
+            "fontSize": 202
+          },
+          {
+            "family": "Menlo",
+            "score": 0.4101,
+            "fontSize": 208
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.4016,
+            "fontSize": 196
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.3696,
+            "fontSize": 170
+          },
+          {
+            "family": "Georgia",
+            "score": 0.3624,
+            "fontSize": 170
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.3065,
+            "fontSize": 196
+          }
+        ]
+      }
+    ]
   },
   "readSource": "scene-file",
-  "sceneTruthCorrections": [
-    "row-1-black-fill color: #2B3BEB → #f1f1f3 (glyph sample, contrast 0.67)",
-    "row-2-friday-fill color: #2B3BEB → #c9c4bf (glyph sample, contrast 0.36)",
-    "row-3-black-outline color: #2B3BEB → #d9d9ce (glyph sample, contrast 0.35)",
-    "row-4-friday-outline color: #2B3BEB → #eae8e5 (glyph sample, contrast 0.51)",
-    "row-5-black-outline color: #2B3BEB → #cec2b3 (glyph sample, contrast 0.42)",
-    "row-6-friday-outline color: #2B3BEB → #6863b7 (glyph sample, contrast 0.31)",
-    "row-1-black-fill fontSize: 170 → 229 (1 ink line, block 165px)",
-    "row-1-black-fill box: y52 h165 → y27 h215 (tight ink rows + 25px pad)",
-    "row-2-friday-fill fontSize: 170 → 208 (1 ink line, block 150px)",
-    "row-2-friday-fill box: y218 h150 → y195 h196 (tight ink rows + 23px pad)",
-    "row-3-black-outline fontSize: 170 → 208 (1 ink line, block 150px)",
-    "row-3-black-outline box: y390 h150 → y367 h196 (tight ink rows + 23px pad)",
-    "row-4-friday-outline fontSize: 170 → 208 (1 ink line, block 150px)",
-    "row-4-friday-outline box: y558 h150 → y535 h196 (tight ink rows + 23px pad)",
-    "row-5-black-outline fontSize: 170 → 208 (1 ink line, block 150px)",
-    "row-5-black-outline box: y728 h150 → y705 h196 (tight ink rows + 23px pad)",
-    "row-6-friday-outline fontSize: 170 → 102 (2 ink lines, block 54px)",
-    "row-6-friday-outline box: y898 h155 → y890 h70 (tight ink rows + 8px pad)"
+  "occlusionPlan": [
+    {
+      "layerId": "magazine-stack",
+      "name": "product",
+      "shape": "rect",
+      "region": {
+        "x": 0.208,
+        "y": 0.148,
+        "w": 0.611,
+        "h": 0.694
+      },
+      "rects": [
+        {
+          "x": 0,
+          "y": 0.07733333333333337,
+          "w": 1,
+          "h": 0.20000000000000007,
+          "overlayId": "row-2-friday-fill",
+          "overlayRole": "headline"
+        },
+        {
+          "x": 0,
+          "y": 0.3066666666666667,
+          "w": 1,
+          "h": 0.2,
+          "overlayId": "row-3-black-outline",
+          "overlayRole": "decor"
+        },
+        {
+          "x": 0,
+          "y": 0.5306666666666667,
+          "w": 1,
+          "h": 0.2000000000000001,
+          "overlayId": "row-4-friday-outline",
+          "overlayRole": "decor"
+        },
+        {
+          "x": 0,
+          "y": 0.7573333333333333,
+          "w": 1,
+          "h": 0.19999999999999993,
+          "overlayId": "row-5-black-outline",
+          "overlayRole": "decor"
+        }
+      ]
+    }
   ],
+  "sceneTruthCorrections": [],
+  "typoTruthCorrections": [],
   "archetype": "type-stack-promo",
   "layerCountExtracted": 7,
   "parsePath": "loose",
@@ -41,7 +180,41 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 87.6,
-  "pixelScore": 87.6,
+  "pixelScoreRaw": 91.7,
+  "pixelScore": 91.7,
+  "refine": {
+    "ran": true,
+    "scoreBefore": 91.4,
+    "scoreAfter": 91.7,
+    "rounds": 2,
+    "renders": 9,
+    "capped": "time",
+    "ms": 47535,
+    "applied": [
+      {
+        "round": 1,
+        "layerId": "headline-mr8d3g5q-1",
+        "layerName": "headline",
+        "kind": "font",
+        "detail": "fontSize ×1.08",
+        "localMae": {
+          "before": 0.113,
+          "after": 0.112
+        }
+      },
+      {
+        "round": 1,
+        "layerId": "headline-mr8d3g5p-0",
+        "layerName": "headline",
+        "kind": "nudge",
+        "detail": "nudge dx=0 dy=-17",
+        "localMae": {
+          "before": 0.243,
+          "after": 0.221
+        }
+      }
+    ],
+    "error": null
+  },
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/020/side-by-side.png"
 }

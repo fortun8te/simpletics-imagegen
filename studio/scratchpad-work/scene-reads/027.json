@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "offer-hero",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "theme": "dark",
+  "layers": [
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "OUR SUMMER SALE\nIS ENDING SOON",
+      "box": { "x": 205, "y": 1090, "w": 670, "h": 150 },
+      "style": {
+        "fontSize": 62,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "subhead",
+      "type": "text",
+      "role": "subhead",
+      "text": "Take our best sleep\nduo with the biggest discount!",
+      "box": { "x": 220, "y": 1248, "w": 640, "h": 105 },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "cta-pill",
+      "type": "badge",
+      "role": "cta",
+      "text": "Up To 50% OFF",
+      "box": { "x": 355, "y": 1375, "w": 370, "h": 78 },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#7DA3F2",
+        "align": "center",
+        "radius": 39,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "urgency-line",
+      "type": "text",
+      "role": "caption",
+      "text": "ALMOST SOLD OUT!",
+      "box": { "x": 370, "y": 1490, "w": 340, "h": 44 },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 800,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    }
+  ]
+}

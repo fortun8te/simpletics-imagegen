@@ -1,6 +1,9 @@
 {
   "ok": true,
-  "canvas": { "w": 1080, "h": 1080 },
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
   "archetype": "type-stack-promo",
   "background": "#F5F5F3",
   "backgroundIsPhoto": false,
@@ -11,13 +14,18 @@
       "type": "text",
       "role": "headline",
       "text": "BLACK",
-      "box": { "x": 190, "y": 52, "w": 700, "h": 165 },
+      "box": {
+        "x": 190,
+        "y": 52,
+        "w": 700,
+        "h": 165
+      },
       "style": {
         "fontSize": 170,
         "fontWeight": 900,
         "color": "#2B3BEB",
         "align": "center",
-        "lineHeight": 1.0,
+        "lineHeight": 1,
         "uppercase": true
       }
     },
@@ -26,14 +34,20 @@
       "type": "text",
       "role": "headline",
       "text": "FRIDAY",
-      "box": { "x": 150, "y": 218, "w": 780, "h": 150 },
+      "box": {
+        "x": 150,
+        "y": 218,
+        "w": 780,
+        "h": 150
+      },
       "style": {
         "fontSize": 170,
         "fontWeight": 900,
         "color": "#2B3BEB",
         "align": "center",
-        "lineHeight": 1.0,
-        "uppercase": true
+        "lineHeight": 1,
+        "uppercase": true,
+        "fontFamily": "Impact"
       }
     },
     {
@@ -41,15 +55,23 @@
       "type": "text",
       "role": "decor",
       "text": "BLACK",
-      "box": { "x": 190, "y": 390, "w": 700, "h": 150 },
+      "box": {
+        "x": 190,
+        "y": 390,
+        "w": 700,
+        "h": 150
+      },
       "style": {
         "fontSize": 170,
         "fontWeight": 900,
         "color": "#2B3BEB",
         "align": "center",
-        "lineHeight": 1.0,
+        "lineHeight": 1,
         "uppercase": true,
-        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
         "textFillTransparent": true
       }
     },
@@ -58,15 +80,23 @@
       "type": "text",
       "role": "decor",
       "text": "FRIDAY",
-      "box": { "x": 150, "y": 558, "w": 780, "h": 150 },
+      "box": {
+        "x": 150,
+        "y": 558,
+        "w": 780,
+        "h": 150
+      },
       "style": {
         "fontSize": 170,
         "fontWeight": 900,
         "color": "#2B3BEB",
         "align": "center",
-        "lineHeight": 1.0,
+        "lineHeight": 1,
         "uppercase": true,
-        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
         "textFillTransparent": true
       }
     },
@@ -75,15 +105,23 @@
       "type": "text",
       "role": "decor",
       "text": "BLACK",
-      "box": { "x": 190, "y": 728, "w": 700, "h": 150 },
+      "box": {
+        "x": 190,
+        "y": 728,
+        "w": 700,
+        "h": 150
+      },
       "style": {
         "fontSize": 170,
         "fontWeight": 900,
         "color": "#2B3BEB",
         "align": "center",
-        "lineHeight": 1.0,
+        "lineHeight": 1,
         "uppercase": true,
-        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
         "textFillTransparent": true
       }
     },
@@ -92,15 +130,23 @@
       "type": "text",
       "role": "decor",
       "text": "FRIDAY",
-      "box": { "x": 150, "y": 898, "w": 780, "h": 155 },
+      "box": {
+        "x": 150,
+        "y": 898,
+        "w": 780,
+        "h": 155
+      },
       "style": {
         "fontSize": 170,
         "fontWeight": 900,
         "color": "#2B3BEB",
         "align": "center",
-        "lineHeight": 1.0,
+        "lineHeight": 1,
         "uppercase": true,
-        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
         "textFillTransparent": true
       }
     },
@@ -108,10 +154,22 @@
       "id": "magazine-stack",
       "type": "shape",
       "role": "product",
-      "box": { "x": 225, "y": 160, "w": 660, "h": 750 },
-      "style": { "shadow": true },
+      "box": {
+        "x": 225,
+        "y": 160,
+        "w": 660,
+        "h": 750
+      },
+      "style": {
+        "shadow": true
+      },
       "cutoutCandidate": {
-        "region": { "x": 0.208, "y": 0.148, "w": 0.611, "h": 0.694 },
+        "region": {
+          "x": 0.208,
+          "y": 0.148,
+          "w": 0.611,
+          "h": 0.694
+        },
         "shape": "rect"
       }
     }

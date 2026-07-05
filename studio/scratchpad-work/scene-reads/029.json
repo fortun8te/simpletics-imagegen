@@ -1,0 +1,121 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "offer-hero",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "The Chocolate\nCollection",
+      "box": { "x": 195, "y": 285, "w": 820, "h": 235 },
+      "style": {
+        "fontSize": 96,
+        "fontWeight": 400,
+        "color": "#F2E1CE",
+        "align": "right",
+        "lineHeight": 1.15,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "tick-line-top",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 938, "y": 595, "w": 2, "h": 110 },
+      "style": { "background": "#E8D9C8", "shapeKind": "line" }
+    },
+    {
+      "id": "limited-edition-seal",
+      "type": "badge",
+      "role": "badge",
+      "text": "Limited\nEdition",
+      "box": { "x": 150, "y": 565, "w": 240, "h": 245 },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 400,
+        "color": "#7A4A2B",
+        "align": "center",
+        "radius": 120,
+        "lineHeight": 1.2,
+        "uppercase": false,
+        "fontFamily": "Georgia",
+        "rotation": -12,
+        "gradient": {
+          "type": "linear",
+          "angle": 135,
+          "stops": [
+            { "color": "#F7D9A8", "pos": 0 },
+            { "color": "#EFA95C", "pos": 1 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "tick-line-bottom",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 938, "y": 1245, "w": 2, "h": 65 },
+      "style": { "background": "#E8D9C8", "shapeKind": "line" }
+    },
+    {
+      "id": "silk-pj-line",
+      "type": "text",
+      "role": "subhead",
+      "text": "Silk PJ Sets",
+      "box": { "x": 605, "y": 1345, "w": 345, "h": 65 },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 400,
+        "color": "#8A6A55",
+        "align": "right",
+        "lineHeight": 1.1,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "cta-pill",
+      "type": "badge",
+      "role": "cta",
+      "text": "BLACK FRIDAY: 40% OFF",
+      "box": { "x": 215, "y": 1490, "w": 650, "h": 100 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 700,
+        "color": "#3A2A1A",
+        "align": "center",
+        "radius": 50,
+        "lineHeight": 1.1,
+        "uppercase": true,
+        "gradient": {
+          "type": "linear",
+          "angle": 90,
+          "stops": [
+            { "color": "#F8D9AC", "pos": 0 },
+            { "color": "#F0B06E", "pos": 1 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "brand-name",
+      "type": "text",
+      "role": "meta",
+      "text": "DORE & ROSE",
+      "box": { "x": 385, "y": 1645, "w": 310, "h": 45 },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 600,
+        "color": "#1F1F1F",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    }
+  ]
+}

@@ -16,14 +16,14 @@
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 27,
+        "y": 52,
         "w": 700,
-        "h": 215
+        "h": 165
       },
       "style": {
-        "fontSize": 229,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#f1f1f3",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true
@@ -36,18 +36,18 @@
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 195,
+        "y": 218,
         "w": 780,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#c9c4bf",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "shadow": true
+        "fontFamily": "Impact"
       }
     },
     {
@@ -57,19 +57,22 @@
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 367,
+        "y": 390,
         "w": 700,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#d9d9ce",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       }
     },
     {
@@ -79,19 +82,22 @@
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 535,
+        "y": 558,
         "w": 780,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#eae8e5",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       }
     },
     {
@@ -101,19 +107,22 @@
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 705,
+        "y": 728,
         "w": 700,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#cec2b3",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       }
     },
     {
@@ -123,18 +132,22 @@
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 890,
+        "y": 898,
         "w": 780,
-        "h": 70
+        "h": 155
       },
       "style": {
-        "fontSize": 102,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#6863b7",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       }
     },
     {
@@ -157,9 +170,90 @@
           "w": 0.611,
           "h": 0.694
         },
-        "shape": "rect"
+        "shape": "rect",
+        "occluders": [
+          {
+            "x": 0,
+            "y": 0.07733333333333337,
+            "w": 1,
+            "h": 0.20000000000000007,
+            "overlayId": "row-2-friday-fill",
+            "overlayRole": "headline"
+          },
+          {
+            "x": 0,
+            "y": 0.3066666666666667,
+            "w": 1,
+            "h": 0.2,
+            "overlayId": "row-3-black-outline",
+            "overlayRole": "decor"
+          },
+          {
+            "x": 0,
+            "y": 0.5306666666666667,
+            "w": 1,
+            "h": 0.2000000000000001,
+            "overlayId": "row-4-friday-outline",
+            "overlayRole": "decor"
+          },
+          {
+            "x": 0,
+            "y": 0.7573333333333333,
+            "w": 1,
+            "h": 0.19999999999999993,
+            "overlayId": "row-5-black-outline",
+            "overlayRole": "decor"
+          }
+        ]
       }
     }
   ],
-  "measuredBoxes": true
+  "measuredBoxes": true,
+  "_occlusionPlan": [
+    {
+      "layerId": "magazine-stack",
+      "name": "product",
+      "shape": "rect",
+      "region": {
+        "x": 0.208,
+        "y": 0.148,
+        "w": 0.611,
+        "h": 0.694
+      },
+      "rects": [
+        {
+          "x": 0,
+          "y": 0.07733333333333337,
+          "w": 1,
+          "h": 0.20000000000000007,
+          "overlayId": "row-2-friday-fill",
+          "overlayRole": "headline"
+        },
+        {
+          "x": 0,
+          "y": 0.3066666666666667,
+          "w": 1,
+          "h": 0.2,
+          "overlayId": "row-3-black-outline",
+          "overlayRole": "decor"
+        },
+        {
+          "x": 0,
+          "y": 0.5306666666666667,
+          "w": 1,
+          "h": 0.2000000000000001,
+          "overlayId": "row-4-friday-outline",
+          "overlayRole": "decor"
+        },
+        {
+          "x": 0,
+          "y": 0.7573333333333333,
+          "w": 1,
+          "h": 0.19999999999999993,
+          "overlayId": "row-5-black-outline",
+          "overlayRole": "decor"
+        }
+      ]
+    }
+  ]
 }

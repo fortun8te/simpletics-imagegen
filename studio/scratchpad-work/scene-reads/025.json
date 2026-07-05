@@ -1,0 +1,106 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "before-after",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "theme": "dark",
+  "layers": [
+    {
+      "id": "split-divider",
+      "type": "shape",
+      "role": "divider",
+      "box": { "x": 538, "y": 0, "w": 4, "h": 1920 },
+      "style": { "background": "rgba(255,255,255,0.5)", "shapeKind": "line" }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "Why Everyone’s\nSwitching to Hears",
+      "box": { "x": 180, "y": 275, "w": 720, "h": 170 },
+      "style": {
+        "fontSize": 68,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "before-card",
+      "type": "shape",
+      "role": "card",
+      "box": { "x": 48, "y": 815, "w": 452, "h": 450 },
+      "style": { "background": "rgba(60,40,25,0.45)", "radius": 40 }
+    },
+    {
+      "id": "before-title",
+      "type": "text",
+      "role": "subhead",
+      "text": "BEFORE",
+      "box": { "x": 80, "y": 850, "w": 390, "h": 60 },
+      "style": {
+        "fontSize": 46,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "before-list",
+      "type": "text",
+      "role": "body",
+      "text": "🔊 Blocks everything\n🙉 Cuts you off\n⚠️ Ear pressure\n🗑️ Single-use, disposable\n🏭 Industrial-grade design",
+      "box": { "x": 52, "y": 925, "w": 445, "h": 320 },
+      "style": {
+        "fontSize": 33,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.9,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "after-card",
+      "type": "shape",
+      "role": "card",
+      "box": { "x": 580, "y": 815, "w": 452, "h": 450 },
+      "style": { "background": "rgba(60,40,25,0.45)", "radius": 40 }
+    },
+    {
+      "id": "after-title",
+      "type": "text",
+      "role": "subhead",
+      "text": "AFTER",
+      "box": { "x": 612, "y": 850, "w": 390, "h": 60 },
+      "style": {
+        "fontSize": 46,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "after-list",
+      "type": "text",
+      "role": "body",
+      "text": "🔊 Filters sound, not life\n🗣️ Clear conversations\n😌 All-day comfort\n♻️ Reusable for years\n🏅 Award-winning design",
+      "box": { "x": 584, "y": 925, "w": 445, "h": 320 },
+      "style": {
+        "fontSize": 33,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.9,
+        "uppercase": false
+      }
+    }
+  ]
+}

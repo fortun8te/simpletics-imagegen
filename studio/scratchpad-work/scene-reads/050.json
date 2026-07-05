@@ -1,0 +1,118 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1080 },
+  "archetype": "x-post",
+  "background": "#080808",
+  "backgroundIsPhoto": false,
+  "theme": "dark",
+  "layers": [
+    {
+      "id": "avatar",
+      "type": "shape",
+      "role": "avatar",
+      "box": { "x": 122, "y": 57, "w": 86, "h": 86 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.113, "y": 0.053, "w": 0.08, "h": 0.08 },
+        "shape": "avatar"
+      }
+    },
+    {
+      "id": "display-name",
+      "type": "text",
+      "role": "meta",
+      "text": "Anthony",
+      "box": { "x": 222, "y": 68, "w": 180, "h": 40 },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "handle",
+      "type": "text",
+      "role": "meta",
+      "text": "@anthony23",
+      "box": { "x": 222, "y": 110, "w": 200, "h": 34 },
+      "style": {
+        "fontSize": 26,
+        "fontWeight": 400,
+        "color": "#8B8B8B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "x-logo",
+      "type": "shape",
+      "role": "icon",
+      "box": { "x": 874, "y": 84, "w": 36, "h": 34 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.809, "y": 0.078, "w": 0.033, "h": 0.031 },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "x-com-text",
+      "type": "text",
+      "role": "meta",
+      "text": ".com",
+      "box": { "x": 912, "y": 88, "w": 66, "h": 30 },
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 600,
+        "color": "#FFFFFF",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "post-body",
+      "type": "text",
+      "role": "body",
+      "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+      "box": { "x": 120, "y": 162, "w": 860, "h": 80 },
+      "style": {
+        "fontSize": 33,
+        "fontWeight": 400,
+        "color": "#E7E9EA",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "post-photo",
+      "type": "shape",
+      "role": "product",
+      "box": { "x": 118, "y": 265, "w": 845, "h": 712 },
+      "style": { "radius": 24 },
+      "cutoutCandidate": {
+        "region": { "x": 0.109, "y": 0.245, "w": 0.782, "h": 0.659 },
+        "shape": "media"
+      }
+    },
+    {
+      "id": "timestamp",
+      "type": "text",
+      "role": "meta",
+      "text": "10:44 -04/10/2026 -647 Views",
+      "box": { "x": 120, "y": 995, "w": 440, "h": 38 },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#71767B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    }
+  ]
+}

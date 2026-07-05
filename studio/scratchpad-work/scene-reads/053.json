@@ -1,0 +1,117 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "story-native",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "timeline-pill",
+      "type": "badge",
+      "role": "headline",
+      "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+      "box": { "x": 171, "y": 785, "w": 734, "h": 58 },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#000000",
+        "align": "center",
+        "radius": 6,
+        "lineHeight": 1.15,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "weight-pill-1",
+      "type": "badge",
+      "role": "badge",
+      "text": "72,6 kg",
+      "box": { "x": 216, "y": 863, "w": 189, "h": 56 },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#000000",
+        "align": "center",
+        "radius": 6,
+        "lineHeight": 1.15,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "weight-pill-2",
+      "type": "badge",
+      "role": "badge",
+      "text": "68,2kg",
+      "box": { "x": 458, "y": 863, "w": 176, "h": 56 },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#000000",
+        "align": "center",
+        "radius": 6,
+        "lineHeight": 1.15,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "weight-pill-3",
+      "type": "badge",
+      "role": "badge",
+      "text": "66,1kg",
+      "box": { "x": 701, "y": 863, "w": 178, "h": 56 },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 700,
+        "color": "#E0505A",
+        "background": "#FBD9DC",
+        "align": "center",
+        "radius": 6,
+        "lineHeight": 1.15,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "caption-pill",
+      "type": "badge",
+      "role": "body",
+      "text": "Ganz Ehrlich: ich habe null damit\ngerechnet 🤣🤯",
+      "box": { "x": 230, "y": 965, "w": 620, "h": 99 },
+      "style": {
+        "fontSize": 40,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#000000",
+        "align": "center",
+        "radius": 6,
+        "lineHeight": 1.25,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "mention-pill",
+      "type": "badge",
+      "role": "meta",
+      "text": "@vitafant_natural",
+      "box": { "x": 459, "y": 1078, "w": 165, "h": 36 },
+      "style": {
+        "fontSize": 25,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "background": "#000000",
+        "align": "center",
+        "radius": 4,
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    }
+  ]
+}

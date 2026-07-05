@@ -1,13 +1,13 @@
 {
-  "id": "harness_020_3c1e555e",
-  "name": "copy-harness harness_020_3c1e555e",
+  "id": "harness_020_d0545bd0",
+  "name": "copy-harness harness_020_d0545bd0",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr8aqcpt-1g",
+      "id": "base-mr8d3g5q-7",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,20 +23,20 @@
       }
     },
     {
-      "id": "headline-mr8aqcpt-19",
+      "id": "headline-mr8d3g5p-0",
       "type": "text",
       "role": "headline",
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 27,
+        "y": 35,
         "w": 700,
-        "h": 215
+        "h": 165
       },
       "style": {
-        "fontSize": 229,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#111111",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true
@@ -45,125 +45,138 @@
       "sizeLocked": true
     },
     {
-      "id": "headline-mr8aqcpt-1a",
+      "id": "headline-mr8d3g5q-1",
       "type": "text",
       "role": "headline",
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 195,
+        "y": 218,
         "w": 780,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 173,
         "fontWeight": 900,
-        "color": "#c9c4bf",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "shadow": true
+        "fontFamily": "Impact"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8aqcpt-1b",
+      "id": "decor-mr8d3g5q-2",
       "type": "text",
       "role": "decor",
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 367,
+        "y": 390,
         "w": 700,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 160,
         "fontWeight": 900,
-        "color": "#d9d9ce",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8aqcpt-1c",
+      "id": "decor-mr8d3g5q-3",
       "type": "text",
       "role": "decor",
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 535,
+        "y": 558,
         "w": 780,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 160,
         "fontWeight": 900,
-        "color": "#eae8e5",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8aqcpt-1d",
+      "id": "decor-mr8d3g5q-4",
       "type": "text",
       "role": "decor",
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 705,
+        "y": 728,
         "w": 700,
-        "h": 196
+        "h": 150
       },
       "style": {
-        "fontSize": 208,
+        "fontSize": 160,
         "fontWeight": 900,
-        "color": "#cec2b3",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8aqcpt-1e",
+      "id": "decor-mr8d3g5q-5",
       "type": "text",
       "role": "decor",
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 890,
+        "y": 898,
         "w": 780,
-        "h": 70
+        "h": 155
       },
       "style": {
-        "fontSize": 75,
+        "fontSize": 170,
         "fontWeight": 900,
-        "color": "#6863b7",
+        "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
-        "outline": true
+        "textStroke": {
+          "color": "#2B3BEB",
+          "width": 4
+        },
+        "textFillTransparent": true
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "product-mr8aqcpt-1f",
+      "id": "product-mr8d3g5q-6",
       "type": "image",
       "role": "product",
       "box": {
@@ -173,10 +186,10 @@
         "h": 750
       },
       "style": {},
-      "src": "/refasset?id=harness-020m7e537f7d",
+      "src": "/refasset?id=harness-020mac5351a0",
       "name": "Cut-out"
     }
   ],
-  "skeletonId": "skel_mr8aqcpt8jvw",
-  "updatedAt": 1783286492153
+  "skeletonId": "skel_mr8d3g5pfnka",
+  "updatedAt": 1783290468617
 }

@@ -1,152 +1,228 @@
 {
-  "at": "2026-07-05T21:23:47.564Z",
+  "at": "2026-07-05T22:28:45.463Z",
   "n": 1,
   "okN": 1,
-  "avgScore": 96.1,
+  "avgScore": 91.7,
   "results": [
     {
-      "id": "052",
-      "filename": "052_attached_6e7a2d035eee1c7e.webp",
+      "id": "020",
+      "filename": "020_attached_7ba93f7f655ce950.webp",
       "ok": true,
       "error": null,
       "ms": {
-        "extract": 2084,
-        "assemble": 1919,
-        "total": 11804
+        "extract": 2408,
+        "assemble": 10109,
+        "total": 69881
       },
       "fontMatch": {
         "ok": true,
-        "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/052.json",
-        "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-052.png",
+        "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/020.json",
+        "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-020.png",
         "patched": 0,
         "layers": [
           {
-            "id": "headline",
+            "id": "row-1-black-fill",
             "role": "headline",
-            "text": "No need to ruin your hair to have perfect curls",
-            "previous": "Georgia",
-            "fontFamily": "Georgia",
-            "confidence": 0.0692,
+            "text": "BLACK",
+            "previous": null,
+            "fontFamily": "",
+            "confidence": 0.0887,
             "patched": false,
             "tried": [
               {
-                "family": "Georgia",
-                "score": 0.8915,
-                "fontSize": 79
-              },
-              {
-                "family": "Times New Roman",
-                "score": 0.8223,
-                "fontSize": 86
-              },
-              {
-                "family": "Impact",
-                "score": 0.7805,
-                "fontSize": 85
+                "family": "",
+                "score": 0.8698,
+                "fontSize": 199
               },
               {
                 "family": "Arial Rounded MT Bold",
-                "score": 0.7211,
-                "fontSize": 73
-              },
-              {
-                "family": "",
-                "score": 0.6787,
-                "fontSize": 73
+                "score": 0.7811,
+                "fontSize": 193
               },
               {
                 "family": "Arial Narrow",
-                "score": 0.617,
-                "fontSize": 93
-              },
-              {
-                "family": "Bradley Hand",
-                "score": 0.5971,
-                "fontSize": 78
+                "score": 0.7019,
+                "fontSize": 236
               },
               {
                 "family": "Menlo",
-                "score": 0.5407,
-                "fontSize": 60
+                "score": 0.5947,
+                "fontSize": 229
+              },
+              {
+                "family": "Impact",
+                "score": 0.5664,
+                "fontSize": 256
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.48,
+                "fontSize": 202
+              },
+              {
+                "family": "Georgia",
+                "score": 0.4229,
+                "fontSize": 170
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.3964,
+                "fontSize": 202
               }
             ]
           },
           {
-            "id": "bottom-caption",
-            "role": "caption",
-            "text": "This natural curl cream is all you need",
-            "previous": "Georgia",
-            "fontFamily": "Georgia",
-            "confidence": 0.1197,
+            "id": "row-2-friday-fill",
+            "role": "headline",
+            "text": "FRIDAY",
+            "previous": "Impact",
+            "fontFamily": "Impact",
+            "confidence": 0.0644,
             "patched": false,
             "tried": [
               {
-                "family": "Georgia",
-                "score": 0.8811,
-                "fontSize": 58
-              },
-              {
-                "family": "Times New Roman",
-                "score": 0.7614,
-                "fontSize": 64
-              },
-              {
                 "family": "Impact",
-                "score": 0.7496,
-                "fontSize": 62
-              },
-              {
-                "family": "Arial Narrow",
-                "score": 0.6047,
-                "fontSize": 71
-              },
-              {
-                "family": "Menlo",
-                "score": 0.5833,
-                "fontSize": 42
-              },
-              {
-                "family": "Bradley Hand",
-                "score": 0.5626,
-                "fontSize": 55
-              },
-              {
-                "family": "Arial Rounded MT Bold",
-                "score": 0.559,
-                "fontSize": 42
+                "score": 0.5463,
+                "fontSize": 190
               },
               {
                 "family": "",
-                "score": 0.5482,
-                "fontSize": 42
+                "score": 0.4819,
+                "fontSize": 202
+              },
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.4619,
+                "fontSize": 202
+              },
+              {
+                "family": "Menlo",
+                "score": 0.4101,
+                "fontSize": 208
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.4016,
+                "fontSize": 196
+              },
+              {
+                "family": "Arial Narrow",
+                "score": 0.3696,
+                "fontSize": 170
+              },
+              {
+                "family": "Georgia",
+                "score": 0.3624,
+                "fontSize": 170
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.3065,
+                "fontSize": 196
               }
             ]
           }
         ]
       },
       "readSource": "scene-file",
-      "sceneTruthCorrections": [
-        "before-pill color: #4F5B53 → #68836c (glyph sample, contrast 0.46)",
-        "after-pill color: #4F5B53 → #68836c (glyph sample, contrast 0.46)",
-        "headline box: y85 h150 → y87 h158 (tight ink rows + 18px pad)",
-        "bottom-caption fontSize: 42 → 48 (2 ink lines, block 90px)",
-        "bottom-caption box: y935 h120 → y943 h118 (tight ink rows + 14px pad)"
+      "occlusionPlan": [
+        {
+          "layerId": "magazine-stack",
+          "name": "product",
+          "shape": "rect",
+          "region": {
+            "x": 0.208,
+            "y": 0.148,
+            "w": 0.611,
+            "h": 0.694
+          },
+          "rects": [
+            {
+              "x": 0,
+              "y": 0.07733333333333337,
+              "w": 1,
+              "h": 0.20000000000000007,
+              "overlayId": "row-2-friday-fill",
+              "overlayRole": "headline"
+            },
+            {
+              "x": 0,
+              "y": 0.3066666666666667,
+              "w": 1,
+              "h": 0.2,
+              "overlayId": "row-3-black-outline",
+              "overlayRole": "decor"
+            },
+            {
+              "x": 0,
+              "y": 0.5306666666666667,
+              "w": 1,
+              "h": 0.2000000000000001,
+              "overlayId": "row-4-friday-outline",
+              "overlayRole": "decor"
+            },
+            {
+              "x": 0,
+              "y": 0.7573333333333333,
+              "w": 1,
+              "h": 0.19999999999999993,
+              "overlayId": "row-5-black-outline",
+              "overlayRole": "decor"
+            }
+          ]
+        }
       ],
-      "archetype": "before-after",
-      "layerCountExtracted": 8,
+      "sceneTruthCorrections": [],
+      "typoTruthCorrections": [],
+      "archetype": "type-stack-promo",
+      "layerCountExtracted": 7,
       "parsePath": "loose",
-      "background": "#8CA084",
-      "cutoutCandidates": 3,
-      "layersApplied": 8,
-      "leavesInResult": 9,
+      "background": "#F5F5F3",
+      "cutoutCandidates": 1,
+      "layersApplied": 7,
+      "leavesInResult": 8,
       "verify": {
-        "ready": true
+        "ready": false
       },
       "pixelError": null,
       "textPileOverlaps": 0,
-      "pixelScoreRaw": 96.1,
-      "pixelScore": 96.1,
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/052/side-by-side.png",
+      "pixelScoreRaw": 91.7,
+      "pixelScore": 91.7,
+      "refine": {
+        "ran": true,
+        "scoreBefore": 91.4,
+        "scoreAfter": 91.7,
+        "rounds": 2,
+        "renders": 9,
+        "capped": "time",
+        "ms": 47535,
+        "applied": [
+          {
+            "round": 1,
+            "layerId": "headline-mr8d3g5q-1",
+            "layerName": "headline",
+            "kind": "font",
+            "detail": "fontSize ×1.08",
+            "localMae": {
+              "before": 0.113,
+              "after": 0.112
+            }
+          },
+          {
+            "round": 1,
+            "layerId": "headline-mr8d3g5p-0",
+            "layerName": "headline",
+            "kind": "nudge",
+            "detail": "nudge dx=0 dy=-17",
+            "localMae": {
+              "before": 0.243,
+              "after": 0.221
+            }
+          }
+        ],
+        "error": null
+      },
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/020/side-by-side.png",
       "attempts": 1
     }
   ]

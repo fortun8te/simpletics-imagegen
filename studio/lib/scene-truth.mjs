@@ -217,20 +217,26 @@ const isOutlinedText = (l) => !!(l.style && (l.style.textStroke || l.style.textF
  *  e.g. a product cutout stacked over display type). The pixel samplers would mostly read the
  *  occluder, not this layer's glyphs, so past ~1/3 coverage the measurement isn't of this layer
  *  and the stages keep the reader's values. */
-function occludedFrac(g, geom) {
-  const idx = geom.indexOf(g);
+function overlapWithNonText(g, geom, lo, hi) {
   const area = Math.max(1, g.px.w * g.px.h);
   let worst = 0;
-  for (let i = idx + 1; i < geom.length; i++) {
+  for (let i = lo; i < hi; i++) {
     const o = geom[i];
-    if (!o || isTexty(o.l) || (o.l.type !== 'shape' && o.l.type !== 'image')) continue;
+    if (!o || o === g || isTexty(o.l) || (o.l.type !== 'shape' && o.l.type !== 'image')) continue;
     const ix = Math.max(0, Math.min(g.px.x + g.px.w, o.px.x + o.px.w) - Math.max(g.px.x, o.px.x));
     const iy = Math.max(0, Math.min(g.px.y + g.px.h, o.px.y + o.px.h) - Math.max(g.px.y, o.px.y));
     worst = Math.max(worst, (ix * iy) / area);
   }
   return worst;
 }
-const OCCLUDED_SKIP = 1 / 3;
+/** Coverage by a LATER-painted (stacked-over) non-text leaf. */
+function occludedFrac(g, geom) { return overlapWithNonText(g, geom, geom.indexOf(g) + 1, geom.length); }
+/** Coverage by an EARLIER-painted non-text leaf (the text sits ON that layer, not on the page). */
+function underlaidFrac(g, geom) { return overlapWithNonText(g, geom, 0, geom.indexOf(g)); }
+// 0.3: the ink-row scan is ROW-based, so an occluder crossing the bottom ~30% of a display
+// row's box welds into the glyph rows and inflates the derived font size (ad 020 row-1: the
+// magazine covers 0.33 of the BLACK box → block 165px → fontSize 170→229 overshoot).
+const OCCLUDED_SKIP = 0.3;
 
 // ── local glyph/fill cluster sampler — luminance split inside a text-bearing box ────────────────
 // (Reimplementation of layout-extract's unexported sampleGlyphColor, in px space over our decode,
@@ -486,10 +492,13 @@ function truthTextColor(ctx) {
       if (!cl || !cl.inkHex || cl.contrast < GLYPH_CONTRAST_MIN) continue; // ambiguous → keep reader
       // INK/FILL SWAP guard (big display type, e.g. 170px BLACK-FRIDAY rows): when glyph
       // coverage ≈ background coverage the minority-cluster heuristic can pick the PAGE
-      // BACKGROUND as "ink". For a plain text layer (no own fill) sitting on a measured flat
-      // page, ink that matches the page bg is nonsensical — the true ink is the OTHER cluster.
+      // BACKGROUND as "ink". For a plain text layer (no own fill) sitting DIRECTLY on a
+      // measured flat page (no earlier-painted shape/image beneath it — a headline on a color
+      // blob legitimately wears the page color, so those must NOT swap), ink that matches the
+      // page bg is nonsensical — the true ink is the OTHER cluster.
       let inkHex = cl.inkHex;
       if (pageBg && !(l.style && l.style.background) && cl.fillHex
+        && underlaidFrac(g, geom) < 0.5
         && colorDist(inkHex, pageBg) < 0.06 && colorDist(cl.fillHex, pageBg) >= 0.06) {
         inkHex = cl.fillHex;
       }

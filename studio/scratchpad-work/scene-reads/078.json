@@ -1,0 +1,167 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1080 },
+  "archetype": "product-hero",
+  "background": "#F1F3F7",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "Nature’s Energy Gel\n2 ingredients",
+      "box": { "x": 85, "y": 80, "w": 940, "h": 185 },
+      "style": {
+        "fontSize": 82,
+        "fontWeight": 800,
+        "color": "#0E0E0E",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "product-sachet",
+      "type": "shape",
+      "role": "product",
+      "box": { "x": 370, "y": 295, "w": 320, "h": 575 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.343, "y": 0.273, "w": 0.296, "h": 0.532 },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "callout-pure-honey",
+      "type": "text",
+      "role": "caption",
+      "text": "Pure Honey",
+      "box": { "x": 138, "y": 378, "w": 230, "h": 50 },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 400,
+        "color": "#0E0E0E",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-pure-honey",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 335, "y": 462, "w": 95, "h": 55 },
+      "style": { "shapeKind": "arrow", "color": "#0E0E0E" }
+    },
+    {
+      "id": "callout-pink-salt",
+      "type": "text",
+      "role": "caption",
+      "text": "Pink Salt",
+      "box": { "x": 855, "y": 380, "w": 190, "h": 50 },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 400,
+        "color": "#0E0E0E",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-pink-salt",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 735, "y": 452, "w": 115, "h": 40 },
+      "style": { "shapeKind": "arrow", "color": "#0E0E0E" }
+    },
+    {
+      "id": "callout-natural",
+      "type": "text",
+      "role": "caption",
+      "text": "100% Natural",
+      "box": { "x": 72, "y": 652, "w": 262, "h": 50 },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 400,
+        "color": "#0E0E0E",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-natural",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 262, "y": 600, "w": 135, "h": 60 },
+      "style": { "shapeKind": "arrow", "color": "#0E0E0E" }
+    },
+    {
+      "id": "callout-stomach",
+      "type": "text",
+      "role": "caption",
+      "text": "stomach\nfriendly",
+      "box": { "x": 820, "y": 725, "w": 215, "h": 100 },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 400,
+        "color": "#0E0E0E",
+        "align": "left",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-stomach",
+      "type": "shape",
+      "role": "decor",
+      "box": { "x": 722, "y": 622, "w": 95, "h": 100 },
+      "style": { "shapeKind": "arrow", "color": "#0E0E0E" }
+    },
+    {
+      "id": "servings-line",
+      "type": "text",
+      "role": "subhead",
+      "text": "24 servings for",
+      "box": { "x": 58, "y": 898, "w": 355, "h": 52 },
+      "style": {
+        "fontSize": 46,
+        "fontWeight": 800,
+        "color": "#0E0E0E",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "price-badge",
+      "type": "badge",
+      "role": "badge",
+      "text": "$1.99 per serve",
+      "box": { "x": 58, "y": 958, "w": 360, "h": 56 },
+      "style": {
+        "fontSize": 46,
+        "fontWeight": 800,
+        "color": "#FFFFFF",
+        "background": "#0E0E0E",
+        "align": "center",
+        "radius": 0,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "hornet-logo",
+      "type": "shape",
+      "role": "logo",
+      "box": { "x": 862, "y": 890, "w": 125, "h": 135 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.798, "y": 0.824, "w": 0.116, "h": 0.125 },
+        "shape": "logo"
+      }
+    }
+  ]
+}
