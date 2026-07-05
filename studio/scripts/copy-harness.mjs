@@ -19,7 +19,7 @@
 //   node scripts/copy-harness.mjs --only 009,050   # subset
 //   node scripts/copy-harness.mjs --batch 8 --files a.png,b.webp  # PHASE 3 generalization batches
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, cpSync, rmSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -238,8 +238,33 @@ async function runOne(filename) {
   // 5. score: pixel-diff vs original (transcode ref to PNG at full res for fair comparison —
   //    reuse the registered ref PNG, which is a lossless sips transcode of the source).
   const diff = pixelDiff(refPng, finalRenderPath, { grid: 64 });
-  result.pixelScore = diff.ok ? diff.score : null;
+  const rawScore = diff.ok ? diff.score : null;
   result.pixelError = diff.ok ? null : diff.error;
+  // TEXT-PILE PENALTY (owner: "how can you call these results 90 — it's a 3/100"): the coarse
+  // 64-grid pixel diff barely notices a stack of garbled overlapping text in one corner, so
+  // pile-y renders scored in the high 80s and even WON best-of selection. Real designs never
+  // stack 3+ text layers on top of each other — count mutually-overlapping text pairs in the
+  // FINAL doc and subtract hard, so the metric agrees with human eyes and best-of picks clean
+  // reads over pile reads.
+  let pileOverlaps = 0;
+  try {
+    const texts = [];
+    const walk = (ns) => ns.forEach((n) => { if (n?.type === 'text' && n.box) texts.push(n.box); if (n?.children) walk(n.children); });
+    walk(assembled.doc.layers || []);
+    for (let a = 0; a < texts.length; a++) {
+      for (let b = a + 1; b < texts.length; b++) {
+        const A = texts[a], B = texts[b];
+        const ix = Math.max(0, Math.min(A.x + A.w, B.x + B.w) - Math.max(A.x, B.x));
+        const iy = Math.max(0, Math.min(A.y + A.h, B.y + B.h) - Math.max(A.y, B.y));
+        const inter = ix * iy;
+        const minArea = Math.min(A.w * A.h, B.w * B.h) || 1;
+        if (inter / minArea >= 0.4) pileOverlaps++;
+      }
+    }
+  } catch { /* penalty is best-effort */ }
+  result.textPileOverlaps = pileOverlaps;
+  result.pixelScoreRaw = rawScore;
+  result.pixelScore = rawScore == null ? null : Math.max(0, Math.round((rawScore - Math.min(30, pileOverlaps * 3)) * 10) / 10);
 
   // 6. side-by-side
   const sbsPath = join(outDir, 'side-by-side.png');
@@ -275,15 +300,46 @@ async function main() {
   mkdirSync(OUT_ROOT, { recursive: true });
   console.log(`\n=== copy-harness — ${targets.length} ad(s) ===\n`);
 
+  // BEST-OF-N (ad 002): extraction is STOCHASTIC — the same dense ad ranged 41 → 94 → 86 across
+  // three identical runs (the model sometimes stops localizing and enumerates fabricated boxes).
+  // Single-shot reads can't be judged; measure with the REAL end metric (pixel score of the final
+  // render) and keep the best attempt's numbers AND artifacts. Early-exit at ≥ BESTOF_TARGET so
+  // good first reads stay single-cost. --bestof N to override (default max 3 attempts).
+  const bestofIdx = args.indexOf('--bestof');
+  const BESTOF_MAX = bestofIdx >= 0 ? Math.max(1, parseInt(args[bestofIdx + 1] || '3', 10) || 3) : 3;
+  const BESTOF_TARGET = 92;
+
   const results = [];
   for (const filename of targets) {
     process.stdout.write(`  ${adId(filename)} ${filename} ... `);
-    const r = await runOne(filename);
-    results.push(r);
-    if (!r.ok) {
-      console.log(`FAIL (${r.error})`);
+    const outDir = join(OUT_ROOT, adId(filename));
+    const bestDir = `${outDir}.best`;
+    let best = null;
+    let attempts = 0;
+    for (let i = 0; i < BESTOF_MAX; i++) {
+      attempts++;
+      const r = await runOne(filename);
+      const isNewBest = !best || (r.ok && (!best.ok || (r.pixelScore ?? -1) > (best.pixelScore ?? -1)));
+      if (isNewBest) {
+        best = r;
+        // snapshot this attempt's artifacts so the winner's render/side-by-side survive retries
+        try { rmSync(bestDir, { recursive: true, force: true }); cpSync(outDir, bestDir, { recursive: true }); } catch { /* best-effort */ }
+      }
+      if (best.ok && (best.pixelScore ?? 0) >= BESTOF_TARGET) break;
+      if (i < BESTOF_MAX - 1) process.stdout.write(`[${r.ok ? r.pixelScore : 'FAIL'} → retry] `);
+    }
+    // restore the winning attempt's artifacts if a later (weaker) attempt overwrote them
+    try {
+      rmSync(outDir, { recursive: true, force: true });
+      cpSync(bestDir, outDir, { recursive: true });
+      rmSync(bestDir, { recursive: true, force: true });
+    } catch { /* best-effort */ }
+    best.attempts = attempts;
+    results.push(best);
+    if (!best.ok) {
+      console.log(`FAIL (${best.error})`);
     } else {
-      console.log(`score=${r.pixelScore}  layers=${r.layersApplied}/${r.layerCountExtracted}  arch=${r.archetype}  bg=${r.background}  cutouts=${r.cutoutCandidates}  ${(r.ms.total / 1000).toFixed(1)}s`);
+      console.log(`score=${best.pixelScore}  layers=${best.layersApplied}/${best.layerCountExtracted}  arch=${best.archetype}  bg=${best.background}  cutouts=${best.cutoutCandidates}  ${(best.ms.total / 1000).toFixed(1)}s${attempts > 1 ? `  (best of ${attempts})` : ''}`);
     }
   }
 

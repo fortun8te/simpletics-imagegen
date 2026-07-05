@@ -1,13 +1,13 @@
 {
-  "id": "harness_050_ed7a0a80",
-  "name": "copy-harness harness_050_ed7a0a80",
+  "id": "harness_050_ecd28260",
+  "name": "copy-harness harness_050_ecd28260",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr6miz4g-1z",
+      "id": "base-mr7ypx9y-1h",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,27 +19,27 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#181818"
+        "background": "#121212"
       }
     },
     {
-      "id": "group-mr6miz4g-1p",
+      "id": "group-mr7ypx9y-15",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 1,
+        "x": 0,
         "y": 1,
-        "w": 41,
-        "h": 144
+        "w": 695,
+        "h": 175
       },
       "children": [
         {
-          "id": "rect-mr6miz4g-1q",
+          "id": "rect-mr7ypx9y-16",
           "type": "image",
           "role": "rect",
           "name": "Cut-out · curly hair photo",
           "box": {
-            "x": 1,
+            "x": 0,
             "y": 3,
             "w": 40,
             "h": 30
@@ -56,21 +56,21 @@
           "src": "/refasset?id=harness-050"
         },
         {
-          "id": "headline-mr6miz4g-1r",
+          "id": "caption-mr7ypx9y-17",
           "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "Anthony",
+          "role": "caption",
+          "name": "caption",
+          "text": "Anthony\n@anthony23",
           "autoH": true,
           "box": {
             "x": 2,
-            "y": 39,
-            "w": 40,
-            "h": 68
+            "y": 1,
+            "w": 157,
+            "h": 72
           },
           "style": {
-            "color": "#e1e1e1",
-            "fontSize": 56,
+            "color": "#EAEAEA",
+            "fontSize": 30,
             "fontWeight": 700,
             "align": "left",
             "uppercase": false,
@@ -78,20 +78,20 @@
           }
         },
         {
-          "id": "caption-mr6miz4g-1s",
+          "id": "caption-mr7ypx9y-18",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "@anthony23",
+          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
           "autoH": true,
           "box": {
             "x": 2,
-            "y": 77,
-            "w": 40,
-            "h": 36
+            "y": 39,
+            "w": 693,
+            "h": 72
           },
           "style": {
-            "color": "#71767b",
+            "color": "#EAEAEA",
             "fontSize": 30,
             "fontWeight": 400,
             "align": "left",
@@ -100,42 +100,61 @@
           }
         },
         {
-          "id": "subhead-mr6miz4g-1t",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
-          "autoH": true,
-          "box": {
-            "x": 1,
-            "y": 1,
-            "w": 40,
-            "h": 912
-          },
-          "style": {
-            "color": "#e1e1e1",
-            "fontSize": 38,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "pill": true,
-            "background": "rgba(0,0,0,0.62)",
-            "padding": 21
-          }
-        },
-        {
-          "id": "caption-mr6miz4g-1u",
+          "id": "caption-mr7ypx9y-19",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "10:44 -04/10/2026 -647 Views",
+          "text": "10:44 · 04/10/2026 · 647 Views",
           "autoH": true,
           "box": {
             "x": 1,
-            "y": 115,
-            "w": 40,
+            "y": 93,
+            "w": 149,
             "h": 144
+          },
+          "style": {
+            "color": "#71767B",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr7ypx9y-1a",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Anthony",
+          "autoH": true,
+          "box": {
+            "x": 140,
+            "y": 93,
+            "w": 324,
+            "h": 68
+          },
+          "style": {
+            "color": "#e7e9ea",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr7ypx9y-1b",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@anthony23",
+          "autoH": true,
+          "box": {
+            "x": 140,
+            "y": 144,
+            "w": 270,
+            "h": 36
           },
           "style": {
             "color": "#71767b",
@@ -149,45 +168,45 @@
       ]
     },
     {
-      "id": "rect-mr6miz4g-1v",
+      "id": "rect-mr7ypx9y-1c",
       "type": "image",
       "role": "rect",
-      "name": "Cut-out · curly hair selfie",
+      "name": "Cut-out · Man curly hair",
       "box": {
-        "x": 43,
-        "y": 281,
-        "w": 994,
-        "h": 734
+        "x": 0,
+        "y": 259,
+        "w": 1080,
+        "h": 778
       },
       "style": {
         "crop": {
-          "x": 0.04,
-          "y": 0.26,
-          "w": 0.92,
-          "h": 0.68
+          "x": 0,
+          "y": 0.24,
+          "w": 1,
+          "h": 0.72
         },
-        "radius": 26
+        "radius": 27
       },
       "src": "/refasset?id=harness-050"
     },
     {
-      "id": "group-mr6miz4g-1w",
+      "id": "group-mr7ypx9y-1d",
       "type": "group",
       "name": "Product",
       "box": {
-        "x": 1,
+        "x": 0,
         "y": 0,
-        "w": 107,
-        "h": 91
+        "w": 1047,
+        "h": 118
       },
       "children": [
         {
-          "id": "avatar-mr6miz4g-1x",
+          "id": "avatar-mr7ypx9y-1e",
           "type": "image",
           "role": "avatar",
-          "name": "Avatar · profile picture",
+          "name": "Avatar · user avatar",
           "box": {
-            "x": 1,
+            "x": 0,
             "y": 0,
             "w": 40,
             "h": 30
@@ -204,30 +223,53 @@
           "src": "/refasset?id=harness-050"
         },
         {
-          "id": "avatar-mr6miz4g-1y",
+          "id": "avatar-mr7ypx9y-1f",
           "type": "image",
           "role": "avatar",
-          "name": "Avatar · Anthony profile picture",
+          "name": "Avatar · Anthony profile",
           "box": {
-            "x": 43,
+            "x": 49,
             "y": 32,
-            "w": 65,
-            "h": 59
+            "w": 70,
+            "h": 86
           },
           "style": {
             "crop": {
-              "x": 0.04,
+              "x": 0.05,
               "y": 0.03,
-              "w": 0.06,
-              "h": 0.06
+              "w": 0.07,
+              "h": 0.08
             },
             "shapeKind": "ellipse"
           },
           "src": "/refasset?id=harness-050"
+        },
+        {
+          "id": "logo-mr7ypx9y-1g",
+          "type": "shape",
+          "role": "logo",
+          "name": "logo",
+          "box": {
+            "x": 950,
+            "y": 54,
+            "w": 97,
+            "h": 32
+          },
+          "style": {
+            "color": "#e7e9ea",
+            "background": "#e7e9ea",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "shapeKind": "polyline"
+          }
         }
       ]
     }
   ],
-  "skeletonId": "skel_mr6miz4gxf71",
-  "updatedAt": 1783185367120
+  "skeletonId": "skel_mr7ypx9y4zgc",
+  "updatedAt": 1783266312886
 }

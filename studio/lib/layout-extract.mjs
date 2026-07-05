@@ -751,6 +751,10 @@ line — INCLUDING the very first line under its section header, which is easy t
 sits close to a similarly-worded headline above it — go back and add it before you finalize the
 JSON. A section subhead ("Premium Silk") and its list's first bullet ("✓ Premium silk") are TWO
 SEPARATE layers even when the words are nearly identical — never merge them into one.
+PACKAGING TEXT IS NOT A LAYER: text printed ON a product in a photo (brand name on a bottle,
+ingredient lists, nutrition tables, label small-print) is part of the PHOTO — do NOT transcribe
+it as text layers. Only extract text the DESIGNER placed on the canvas (headlines, prices,
+captions, buttons). A product photo region is ONE image layer, never a pile of label lines.
 SHAPE GEOMETRY: For EVERY shape layer, you MUST set style.shapeKind to the actual geometry:
 - "arrow" — annotation arrows, pointers, leader lines
 - "line" — horizontal/vertical divider lines, separator rules
@@ -2884,6 +2888,41 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
   let bestScore = scoreRaw(best);
   progress(`pass 1: ${best.layers.length} layers · ${best.archetype || 'generic'} (score ${bestScore.toFixed(1)})`);
 
+  // DEGENERATE-COORDS RETRY (ad 002): a known VLM failure mode on dense references — the model
+  // stops LOCALIZING and just ENUMERATES: every box gets the same height, x pinned to the left
+  // edge, and y walking down in a perfect arithmetic sequence (observed live: y = 2,40,78,116,…
+  // step 38, h = 30 for 15 layers). Those are fabricated list coordinates, not positions; no
+  // downstream normalizer can fix them because the information was never read. Detect the
+  // signature and burn ONE scoped two-step retry (different call shape → different sampling; the
+  // scoped read almost always localizes properly). Keep the retry only if IT isn't degenerate.
+  const degenerateCoords = (raw) => {
+    const ls = (raw?.layers || []).filter((l) => l?.box);
+    if (ls.length < 6) return false;
+    const hs = ls.map((l) => Number(l.box.h) || 0).sort((a, b) => a - b);
+    const hMed = hs[Math.floor(hs.length / 2)];
+    const sameH = ls.filter((l) => Math.abs((Number(l.box.h) || 0) - hMed) <= 2).length;
+    const leftX = ls.filter((l) => (Number(l.box.x) || 0) <= 8).length;
+    const ys = ls.map((l) => Number(l.box.y) || 0).sort((a, b) => a - b);
+    const deltas = [];
+    for (let i = 1; i < ys.length; i++) deltas.push(ys[i] - ys[i - 1]);
+    const dSorted = [...deltas].sort((a, b) => a - b);
+    const dMed = dSorted[Math.floor(dSorted.length / 2)];
+    const arithY = dMed > 0 && deltas.filter((d) => Math.abs(d - dMed) <= 4).length >= deltas.length * 0.6;
+    return (sameH >= ls.length * 0.6) && (leftX >= ls.length * 0.6 || arithY);
+  };
+  if (degenerateCoords(best) && !isCanceled()) {
+    progress('⚠ read returned fabricated list coordinates (uniform boxes, left-pinned/arithmetic y) — retrying as a scoped two-step read');
+    const ts = await visionReadTwoStep(imagePath, { timeoutMs: perPass, purpose: 'layout-extract-degenerate-retry', progress, isCanceled, signal });
+    if (ts.canceled) { cleanup(); return { ok: false, error: 'canceled', canceled: true }; }
+    if (ts.raw && !degenerateCoords(ts.raw)) {
+      best = ts.raw;
+      bestScore = scoreRaw(best);
+      progress(`degenerate-retry accepted: ${best.layers.length} layers (score ${bestScore.toFixed(1)})`);
+    } else {
+      progress('degenerate-retry did not improve localization — keeping the original read');
+    }
+  }
+
   // WEAK-TEXT RESCUE (copy-fidelity, ad 010): a read that SUCCEEDED but came back text-sparse on a
   // non-photo reference (few/short text layers on what is usually a text post) drops whole
   // paragraphs that no downstream stage can recover. Run the scoped two-step read and MERGE its
@@ -3018,39 +3057,46 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
 
   // ── De-dupe: collapse the same product/text reported across passes into ONE (union outer edges) ─
   const beforeDedup = Array.isArray(best.layers) ? best.layers.length : 0;
-  // PIXEL-COORDS NORMALIZER (ad 026): the prompt asks for 0-100 percentages but the model
-  // sometimes answers in PIXELS (x=540, w=980 …). clampPct() then flattens every coordinate to
-  // 100% and the whole design piles up in the bottom-right corner. Detect (any box edge far
-  // beyond 100) and rescale ALL boxes + fontSizePct so the outermost edges land at 100%.
+  // PIXEL-COORDS NORMALIZER v2 (ads 026 + 002): the prompt asks for 0-100 percentages but the
+  // model sometimes answers in PIXELS (x=540, w=980 …) — and with MULTI-PASS reads the two
+  // passes can come back in DIFFERENT units (pass A percent, pass B pixels). The v1 normalizer
+  // computed ONE global scale from the max edge and rescaled EVERYTHING — so when units were
+  // mixed, the correct percent layers got crushed by the pixel layers' ~0.1x factor and the
+  // whole design piled into the top-left corner (proven on ad 002: headline at x2=110 percent
+  // × the pixel layers' 0.0975 scale = the observed 10%-wide headline). v2 classifies PER
+  // LAYER: a box whose far edges both sit ≤110 is already percent and is left alone; only
+  // boxes beyond that are treated as pixels and rescaled by the pixel-population's own extent.
   {
-    let maxX = 0, maxY = 0, n = 0;
+    const pix = [];
+    let maxX = 0, maxY = 0;
     for (const l of (best.layers || [])) {
       const b = l?.box;
       if (!b) continue;
       const x2 = (Number(b.x) || 0) + (Number(b.w) || 0);
       const y2 = (Number(b.y) || 0) + (Number(b.h) || 0);
-      if (Number.isFinite(x2)) maxX = Math.max(maxX, x2);
-      if (Number.isFinite(y2)) maxY = Math.max(maxY, y2);
-      n++;
+      if (!Number.isFinite(x2) || !Number.isFinite(y2)) continue;
+      if (x2 > 110 || y2 > 110) {
+        pix.push(l);
+        maxX = Math.max(maxX, x2);
+        maxY = Math.max(maxY, y2);
+      }
     }
-    if (n && (maxX > 130 || maxY > 130)) {
+    if (pix.length && (maxX > 130 || maxY > 130)) {
       const sx = 100 / Math.max(100, maxX);
       const sy = 100 / Math.max(100, maxY);
       const sf = Math.min(sx, sy); // font sizes scale with the tighter axis
-      for (const l of (best.layers || [])) {
-        const b = l?.box;
-        if (b) {
-          if (Number.isFinite(Number(b.x))) b.x = Number(b.x) * sx;
-          if (Number.isFinite(Number(b.w))) b.w = Number(b.w) * sx;
-          if (Number.isFinite(Number(b.y))) b.y = Number(b.y) * sy;
-          if (Number.isFinite(Number(b.h))) b.h = Number(b.h) * sy;
-        }
+      for (const l of pix) {
+        const b = l.box;
+        if (Number.isFinite(Number(b.x))) b.x = Number(b.x) * sx;
+        if (Number.isFinite(Number(b.w))) b.w = Number(b.w) * sx;
+        if (Number.isFinite(Number(b.y))) b.y = Number(b.y) * sy;
+        if (Number.isFinite(Number(b.h))) b.h = Number(b.h) * sy;
         const st = l?.style;
         if (st && Number.isFinite(Number(st.fontSizePct)) && Number(st.fontSizePct) > 15) {
           st.fontSizePct = Number(st.fontSizePct) * sf;
         }
       }
-      progress(`⚠ model answered in pixels, not percentages — rescaled ${n} boxes (max edge ${Math.round(Math.max(maxX, maxY))} → 100%)`);
+      progress(`⚠ ${pix.length} of ${(best.layers || []).length} boxes answered in pixels — rescaled those (max edge ${Math.round(Math.max(maxX, maxY))} → 100%); percent boxes untouched`);
     }
   }
   const dd = dedupeRawLayers(best.layers);
@@ -3082,6 +3128,89 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
     if (drop.size) {
       best.layers = best.layers.filter((l) => !drop.has(l));
       progress(`dropped ${drop.size} duplicate text fragment${drop.size === 1 ? '' : 's'} (content dedupe)`);
+    }
+  }
+
+  // IN-PHOTO LABEL TEXT FILTER (ad 002): despite the prompt rule, the model still sometimes
+  // transcribes text printed ON the products in a photo (packaging brand names, ingredient
+  // lists, nutrition small-print) as design layers — a supplement-bundle ad came back with ~15
+  // junk text layers read off the jars' labels. Deterministic backstop: a SMALL text layer whose
+  // box sits ≥60% inside a photo/product region belongs to the photo (it ships with the crop) —
+  // drop it. Designer overlays ON photos are kept: big type (fontSizePct ≥ 3.2) and overlay-ish
+  // roles (headline/price/cta/badge/button) are exempt.
+  {
+    const photoRegions = (best.layers || []).filter((l) => {
+      if (!l?.box) return false;
+      const role = String(l.role || '').toLowerCase();
+      const area = (Number(l.box.w) || 0) * (Number(l.box.h) || 0);
+      return (l.type === 'image' || (l.type === 'shape' && /product|photo|avatar|logo|packshot/.test(role))) && area >= 400; // ≥ ~4% of a 100x100 pct space
+    });
+    // Content signature of PACKAGING text — nutrition/ingredient vocabulary (NL+EN) and
+    // pack-size descriptors. Position-independent: when the model enumerates label lines it
+    // often FABRICATES their boxes (ad 002), so containment alone can't catch them.
+    const NUTRITION_RE = /(ingredi[eë]nt|voedingswaarde|nutrition|\bkcal\b|\bkJ\b|\bmg\b|monohydraat|monohydrate|sucralose|emulgator|verdikkingsmiddel|zoetstof|\bper\s?\d+\s?g\b|\bca\.\s?\d+\s?scoops?\b)/i;
+    const PACK_SIZE_RE = /\b(smaak|flavou?r)\b|\b\d+(\.\d+)?\s?(kg|g|ml|oz)\b\s*$/i;
+    const nutritionHits = (t) => (String(t).match(new RegExp(NUTRITION_RE.source, 'gi')) || []).length;
+    {
+      const OVERLAY_ROLES = /headline|price|cta|badge|button|offer/i;
+      const dropped = [];
+      best.layers = (best.layers || []).filter((l) => {
+        if (l?.type !== 'text' || !l?.box) return true;
+        const text = String(l.text || '');
+        // (a) CONTENT: unmistakable nutrition/ingredient copy is packaging regardless of role/box
+        if (nutritionHits(text) >= 2 || (nutritionHits(text) >= 1 && text.length > 60)) { dropped.push(l); return false; }
+        if (OVERLAY_ROLES.test(String(l.role || ''))) return true;
+        if ((Number(l.style?.fontSizePct) || 0) >= 3.2) return true;
+        // (b) pack-size caption ("VANILLE SMAAK 1kg", "CITRUS SMAAK 350g") when a photo region exists
+        if (photoRegions.length && PACK_SIZE_RE.test(text.trim())) { dropped.push(l); return false; }
+        // (c) GEOMETRY: small text ≥60% inside a photo/product region ships with the crop
+        const bx = Number(l.box.x) || 0, by = Number(l.box.y) || 0;
+        const bw = Number(l.box.w) || 0, bh = Number(l.box.h) || 0;
+        const area = bw * bh;
+        if (!area) return true;
+        for (const p of photoRegions) {
+          const px = Number(p.box.x) || 0, py = Number(p.box.y) || 0;
+          const pw = Number(p.box.w) || 0, ph = Number(p.box.h) || 0;
+          const ix = Math.max(0, Math.min(bx + bw, px + pw) - Math.max(bx, px));
+          const iy = Math.max(0, Math.min(by + bh, py + ph) - Math.max(by, py));
+          if ((ix * iy) / area >= 0.6) { dropped.push(l); return false; }
+        }
+        return true;
+      });
+      if (dropped.length) progress(`dropped ${dropped.length} packaging-text layer${dropped.length === 1 ? '' : 's'} (label copy ships with the photo, not as layers)`);
+    }
+  }
+
+  // TEXT-PILE PRUNER (ad 002): when a read partially degenerates, a SUBSET of text layers comes
+  // back with fabricated near-identical boxes — 3+ texts stacked on one spot. Real designs never
+  // do that. Cluster mutually-overlapping (≥40% of the smaller box) text layers; a cluster of ≥3
+  // keeps only its largest-area member. Losing a line hurts less than shipping a garbled pile,
+  // and the copy self-check can still correct surviving text against the reference.
+  {
+    const texts = (best.layers || []).filter((l) => l?.type === 'text' && l.box);
+    const over = (A, B) => {
+      const ix = Math.max(0, Math.min(A.x + A.w, B.x + B.w) - Math.max(A.x, B.x));
+      const iy = Math.max(0, Math.min(A.y + A.h, B.y + B.h) - Math.max(A.y, B.y));
+      return (ix * iy) / (Math.min(A.w * A.h, B.w * B.h) || 1) >= 0.4;
+    };
+    const clusterOf = new Map();
+    for (const t of texts) {
+      const box = { x: +t.box.x || 0, y: +t.box.y || 0, w: +t.box.w || 0, h: +t.box.h || 0 };
+      let placed = null;
+      for (const [seed, members] of clusterOf) {
+        if (over(box, seed)) { members.push(t); placed = seed; break; }
+      }
+      if (!placed) clusterOf.set(box, [t]);
+    }
+    const drop = new Set();
+    for (const members of clusterOf.values()) {
+      if (members.length < 3) continue;
+      const keep = members.reduce((a, b) => ((+a.box.w * +a.box.h) >= (+b.box.w * +b.box.h) ? a : b));
+      for (const m of members) if (m !== keep) drop.add(m);
+    }
+    if (drop.size) {
+      best.layers = best.layers.filter((l) => !drop.has(l));
+      progress(`pruned ${drop.size} stacked text layer${drop.size === 1 ? '' : 's'} (pile of fabricated boxes — kept the dominant line per spot)`);
     }
   }
 

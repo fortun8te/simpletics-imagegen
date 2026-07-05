@@ -2,120 +2,76 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr6ndmg8-0",
+      "id": "grp-mr7ynsv4-3",
       "type": "group",
       "name": "Header",
       "box": {
         "x": 130,
-        "y": 77,
-        "w": 874,
-        "h": 211
+        "y": 38,
+        "w": 853,
+        "h": 298
       },
       "children": [
         {
-          "id": "ext-mr6ndmc9-0",
+          "id": "ext-mr7ynsv3-0",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "DORE & ROSE",
-          "autoH": true,
-          "box": {
-            "x": 130,
-            "y": 134,
-            "w": 378,
-            "h": 38
-          },
-          "style": {
-            "color": "#2d2d2d",
-            "fontSize": 19,
-            "fontWeight": 600,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr6ndmc9-1",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "Silk",
-          "autoH": true,
-          "box": {
-            "x": 162,
-            "y": 173,
-            "w": 324,
-            "h": 115
-          },
-          "style": {
-            "color": "#000000",
-            "fontSize": 59,
-            "fontWeight": 800,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr6ndmg2-2",
-          "type": "badge",
           "role": "badge",
           "name": "badge",
           "text": "✓",
           "autoH": true,
           "box": {
             "x": 238,
-            "y": 77,
+            "y": 38,
             "w": 54,
-            "h": 58
+            "h": 77
           },
           "style": {
-            "color": "#7eb3ff",
+            "color": "#4da6ff",
             "fontSize": 32,
-            "fontWeight": 800,
+            "fontWeight": 400,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr6ndmg2-3",
-          "type": "badge",
+          "id": "ext-mr7ynsv3-1",
+          "type": "text",
           "role": "badge",
           "name": "badge",
           "text": "✗",
           "autoH": true,
           "box": {
-            "x": 778,
-            "y": 77,
+            "x": 788,
+            "y": 38,
             "w": 54,
-            "h": 58
+            "h": 77
           },
           "style": {
-            "color": "#ff7a7a",
+            "color": "#e04060",
             "fontSize": 32,
-            "fontWeight": 800,
+            "fontWeight": 400,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr6ndmg2-4",
+          "id": "ext-mr7ynsv3-2",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
-          "text": "OTHERS’",
+          "text": "DORE & ROSE",
           "autoH": true,
           "box": {
-            "x": 626,
+            "x": 151,
             "y": 134,
-            "w": 378,
-            "h": 38
+            "w": 324,
+            "h": 58
           },
           "style": {
-            "color": "#2d2d2d",
-            "fontSize": 19,
+            "color": "#1a1a1a",
+            "fontSize": 24,
             "fontWeight": 600,
             "align": "center",
             "uppercase": true,
@@ -123,21 +79,43 @@
           }
         },
         {
-          "id": "ext-mr6ndmg2-5",
+          "id": "ext-mr7ynsv4-3",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "OTHERS'",
+          "autoH": true,
+          "box": {
+            "x": 713,
+            "y": 134,
+            "w": 270,
+            "h": 58
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 24,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr7ynsv4-4",
           "type": "text",
           "role": "headline",
           "name": "headline",
-          "text": "Satin",
+          "text": "Silk",
           "autoH": true,
           "box": {
-            "x": 626,
-            "y": 173,
-            "w": 378,
-            "h": 115
+            "x": 130,
+            "y": 202,
+            "w": 346,
+            "h": 134
           },
           "style": {
-            "color": "#000000",
-            "fontSize": 59,
+            "color": "#1a1a1a",
+            "fontSize": 76,
             "fontWeight": 800,
             "align": "center",
             "uppercase": false,
@@ -145,8 +123,32 @@
           }
         },
         {
-          "id": "ext-mr6ndmg4-6",
-          "type": "badge",
+          "id": "ext-mr7ynsv4-5",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Satin",
+          "autoH": true,
+          "box": {
+            "x": 594,
+            "y": 202,
+            "w": 346,
+            "h": 134
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 76,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr7ynsv4-6",
+          "type": "text",
           "role": "badge",
           "name": "badge",
           "text": "vs",
@@ -154,13 +156,13 @@
           "box": {
             "x": 475,
             "y": 211,
-            "w": 130,
+            "w": 108,
             "h": 77
           },
           "style": {
             "color": "#ffffff",
-            "background": "#7eb3ff",
-            "fontSize": 24,
+            "background": "#5c9aff",
+            "fontSize": 27,
             "fontWeight": 700,
             "align": "center",
             "radius": 540,
@@ -172,90 +174,90 @@
       ]
     },
     {
-      "id": "grp-mr6ndmg9-1",
+      "id": "grp-mr7ynsv4-4",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 54,
-        "y": 384,
-        "w": 1004,
-        "h": 1171
+        "x": 43,
+        "y": 403,
+        "w": 1037,
+        "h": 1133
       },
       "children": [
         {
-          "id": "ext-mr6ndmg5-7",
+          "id": "ext-mr7ynsv4-7",
           "type": "shape",
           "role": "rect",
-          "name": "Cut-out · Silk pillowcase",
+          "name": "Cut-out · premium silk pillowcase",
           "box": {
-            "x": 54,
-            "y": 422,
-            "w": 486,
-            "h": 576
+            "x": 43,
+            "y": 403,
+            "w": 497,
+            "h": 672
           },
           "style": {
-            "background": "#8e8e8e59",
+            "background": "#807a7359",
             "radius": 22,
             "stroke": {
-              "color": "#8e8e8e",
+              "color": "#807a73",
               "width": 4
             }
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0.05,
-              "y": 0.22,
-              "w": 0.45,
-              "h": 0.3
+              "x": 0.04,
+              "y": 0.21,
+              "w": 0.46,
+              "h": 0.35
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr6ndmg6-8",
+          "id": "ext-mr7ynsv4-8",
           "type": "shape",
           "role": "rect",
-          "name": "Cut-out · Satin pillowcase",
+          "name": "Cut-out · satin pillowcase mites",
           "box": {
             "x": 540,
-            "y": 384,
-            "w": 518,
-            "h": 614
+            "y": 403,
+            "w": 497,
+            "h": 672
           },
           "style": {
-            "background": "#b8b8b859",
+            "background": "#90898059",
             "radius": 22,
             "stroke": {
-              "color": "#b8b8b8",
+              "color": "#908980",
               "width": 4
             }
           },
           "cutoutCandidate": {
             "region": {
               "x": 0.5,
-              "y": 0.2,
-              "w": 0.48,
-              "h": 0.32
+              "y": 0.21,
+              "w": 0.46,
+              "h": 0.35
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr6ndmg7-9",
+          "id": "ext-mr7ynsv4-9",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
+          "role": "headline",
+          "name": "headline",
           "text": "Premium Silk",
           "autoH": true,
           "box": {
             "x": 86,
-            "y": 1056,
-            "w": 410,
-            "h": 58
+            "y": 1114,
+            "w": 432,
+            "h": 77
           },
           "style": {
-            "color": "#000000",
-            "fontSize": 35,
+            "color": "#1a1a1a",
+            "fontSize": 43,
             "fontWeight": 800,
             "align": "left",
             "uppercase": false,
@@ -263,43 +265,21 @@
           }
         },
         {
-          "id": "ext-mr6ndmg7-a",
+          "id": "ext-mr7ynsv4-a",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
-          "text": "Satin",
-          "autoH": true,
-          "box": {
-            "x": 670,
-            "y": 1056,
-            "w": 324,
-            "h": 58
-          },
-          "style": {
-            "color": "#000000",
-            "fontSize": 35,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr6ndmg8-b",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
           "text": "Pillowcase",
           "autoH": true,
           "box": {
             "x": 86,
-            "y": 1114,
-            "w": 238,
-            "h": 38
+            "y": 1190,
+            "w": 432,
+            "h": 58
           },
           "style": {
             "color": "#666666",
-            "fontSize": 19,
+            "fontSize": 24,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -307,29 +287,51 @@
           }
         },
         {
-          "id": "ext-mr6ndmg8-c",
+          "id": "ext-mr7ynsv4-b",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "role": "headline",
+          "name": "headline",
+          "text": "Satin",
+          "autoH": true,
+          "box": {
+            "x": 734,
+            "y": 1114,
+            "w": 346,
+            "h": 77
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 43,
+            "fontWeight": 800,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr7ynsv4-c",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Pillowcase",
           "autoH": true,
           "box": {
-            "x": 670,
-            "y": 1114,
-            "w": 238,
-            "h": 38
+            "x": 734,
+            "y": 1190,
+            "w": 346,
+            "h": 58
           },
           "style": {
             "color": "#666666",
-            "fontSize": 19,
+            "fontSize": 24,
             "fontWeight": 400,
-            "align": "left",
+            "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr6ndmg8-d",
+          "id": "ext-mr7ynsv4-d",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -337,21 +339,21 @@
           "autoH": true,
           "box": {
             "x": 86,
-            "y": 1306,
-            "w": 378,
-            "h": 58
+            "y": 1363,
+            "w": 432,
+            "h": 77
           },
           "style": {
-            "color": "#333333",
-            "fontSize": 24,
-            "fontWeight": 500,
+            "color": "#1a1a1a",
+            "fontSize": 27,
+            "fontWeight": 400,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr6ndmg8-e",
+          "id": "ext-mr7ynsv4-e",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -359,81 +361,81 @@
           "autoH": true,
           "box": {
             "x": 86,
-            "y": 1421,
+            "y": 1459,
             "w": 432,
-            "h": 58
+            "h": 77
           },
           "style": {
-            "color": "#333333",
-            "fontSize": 24,
-            "fontWeight": 500,
+            "color": "#1a1a1a",
+            "fontSize": 27,
+            "fontWeight": 400,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr6ndmg8-f",
+          "id": "ext-mr7ynsv4-f",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "✗ Synthetic fabrics",
           "autoH": true,
           "box": {
-            "x": 594,
-            "y": 1210,
-            "w": 410,
-            "h": 58
+            "x": 540,
+            "y": 1267,
+            "w": 454,
+            "h": 77
           },
           "style": {
-            "color": "#333333",
-            "fontSize": 24,
-            "fontWeight": 500,
-            "align": "left",
+            "color": "#1a1a1a",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr6ndmg8-g",
+          "id": "ext-mr7ynsv4-g",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "✗ Bacterial breeding ground",
           "autoH": true,
           "box": {
-            "x": 594,
-            "y": 1306,
-            "w": 432,
-            "h": 96
+            "x": 540,
+            "y": 1363,
+            "w": 454,
+            "h": 77
           },
           "style": {
-            "color": "#333333",
-            "fontSize": 24,
-            "fontWeight": 500,
-            "align": "left",
+            "color": "#1a1a1a",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr6ndmg8-h",
+          "id": "ext-mr7ynsv4-h",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "✗ Causes friction with skin & hair",
           "autoH": true,
           "box": {
-            "x": 594,
+            "x": 540,
             "y": 1459,
             "w": 454,
-            "h": 96
+            "h": 77
           },
           "style": {
-            "color": "#333333",
-            "fontSize": 24,
-            "fontWeight": 500,
-            "align": "left",
+            "color": "#1a1a1a",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
@@ -446,7 +448,7 @@
     "h": 1920
   },
   "archetype": "comparison",
-  "background": "#f5f5f5",
+  "background": "#f4f4f4",
   "backgroundIsPhoto": false,
   "backgroundConfidence": "high",
   "theme": "light",
