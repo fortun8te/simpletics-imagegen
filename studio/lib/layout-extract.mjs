@@ -2918,7 +2918,12 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
     const dSorted = [...deltas].sort((a, b) => a - b);
     const dMed = dSorted[Math.floor(dSorted.length / 2)];
     const arithY = dMed > 0 && deltas.filter((d) => Math.abs(d - dMed) <= 4).length >= deltas.length * 0.6;
-    return (sameH >= ls.length * 0.6) && (leftX >= ls.length * 0.6 || arithY);
+    // Two signatures: (a) uniform heights + left-pinned/arithmetic — the classic list dump;
+    // (b) left-pinned + arithmetic-y even with VARIED heights (observed on ad 002: the model
+    // invented plausible per-line heights but still walked x≈0, y+=38 — heights alone can't
+    // clear a read whose positions are a counter).
+    return ((sameH >= ls.length * 0.6) && (leftX >= ls.length * 0.6 || arithY))
+      || (leftX >= ls.length * 0.7 && arithY);
   };
   if (degenerateCoords(best) && !isCanceled()) {
     progress('⚠ read returned fabricated list coordinates (uniform boxes, left-pinned/arithmetic y) — retrying as a scoped two-step read');
@@ -3229,6 +3234,76 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
     if (drop.size) {
       best.layers = best.layers.filter((l) => !drop.has(l));
       progress(`pruned ${drop.size} stacked text layer${drop.size === 1 ? '' : 's'} (pile of fabricated boxes — kept the dominant line per spot)`);
+    }
+  }
+
+  // PIXEL-SNAP ORACLE (ad 002, the "full fixup"): the model's WORDS are reliable but its BOXES
+  // sometimes aren't — partial degenerate reads give a subset of text layers fabricated
+  // coordinates (tiny boxes crammed top-left) that no retry is guaranteed to fix. The pixels
+  // don't lie: run the deterministic contrast-based text-region scan (zero model calls) and use
+  // it as a BOX ORACLE — a text layer whose box is physically too small for its content gets
+  // SNAPPED onto the best unclaimed pixel region in reading order. Gated conservatively: only
+  // fires when there are ≥2 suspects AND enough unclaimed regions, and each pairing must be
+  // size-plausible; a clean read has zero suspects and is untouched.
+  {
+    const texts = (best.layers || []).filter((l) => l?.type === 'text' && l.box && String(l.text || '').trim());
+    const expectedW = (l) => {
+      const fs = Number(l.style?.fontSizePct) || 3;
+      const chars = String(l.text).trim().length;
+      return Math.min(96, chars * fs * 0.55); // % of width, single-line estimate
+    };
+    const suspects = texts.filter((l) => {
+      const bw = Number(l.box.w) || 0;
+      const bh = Number(l.box.h) || 0;
+      const ew = expectedW(l);
+      // box too narrow for even a 3-line wrap of the content, or degenerate sliver
+      return bw > 0 && (ew / bw > 2.5 || (bw < 12 && String(l.text).trim().length > 14) || bh < 1);
+    });
+    if (suspects.length >= 2) {
+      try {
+        const img = decodeImage(imagePath);
+        if (img) {
+          const merged = mergeTextRegions(findTextRegions(localContrastMap(img), img.width, img.height))
+            .filter((r) => r.w >= TEXT_REGION_MIN_W_PCT && r.h >= TEXT_REGION_MIN_H_PCT);
+          const wellPlaced = texts.filter((l) => !suspects.includes(l));
+          const unclaimed = merged.filter((r) => !wellPlaced.some((l) => {
+            const bx = Number(l.box.x) || 0, by = Number(l.box.y) || 0;
+            const bw = Number(l.box.w) || 0, bh = Number(l.box.h) || 0;
+            const ix = Math.max(0, Math.min(r.x + r.w, bx + bw) - Math.max(r.x, bx));
+            const iy = Math.max(0, Math.min(r.y + r.h, by + bh) - Math.max(r.y, by));
+            return r.w * r.h > 0 && (ix * iy) / (r.w * r.h) > 0.5;
+          })).sort((a, b) => a.y - b.y || a.x - b.x);
+          if (unclaimed.length >= 2) {
+            // reading order on both sides; greedy 1:1 with a size-plausibility check per pair
+            const orderedSuspects = [...suspects].sort((a, b) => (Number(a.box.y) || 0) - (Number(b.box.y) || 0) || (Number(a.box.x) || 0) - (Number(b.box.x) || 0));
+            let snapped = 0;
+            const taken = new Set();
+            for (const s of orderedSuspects) {
+              const ew = expectedW(s);
+              let bestR = null, bestScore = Infinity;
+              for (const r of unclaimed) {
+                if (taken.has(r)) continue;
+                // fontSizePct on a fabricated layer is itself unreliable — accept any pairing
+                // where the region could hold the text within a 3-line wrap at the region's own
+                // implied font size, and rank by width plausibility.
+                const impliedFs = Math.max(1.5, r.h * 0.7);
+                const fitLines = (String(s.text).trim().length * impliedFs * 0.55) / Math.max(1, r.w);
+                if (fitLines > 3.5) continue; // text can't fit this region even at 3 lines
+                const sizeRatio = ew > 0 ? Math.max(r.w / ew, ew / r.w) : 99;
+                if (sizeRatio > 6) continue; // wildly implausible pairing
+                const score = sizeRatio + r.y / 100; // prefer plausible size, then top-most
+                if (score < bestScore) { bestScore = score; bestR = r; }
+              }
+              if (!bestR) continue;
+              taken.add(bestR);
+              s.box = { x: bestR.x, y: bestR.y, w: bestR.w, h: bestR.h };
+              if (s.style && Number(s.style.fontSizePct) > bestR.h) s.style.fontSizePct = Math.max(1.5, bestR.h * 0.7);
+              snapped++;
+            }
+            if (snapped) progress(`pixel-snap: relocated ${snapped} text layer${snapped === 1 ? '' : 's'} with fabricated boxes onto real pixel text regions`);
+          }
+        }
+      } catch { /* oracle is best-effort — a failed scan changes nothing */ }
     }
   }
 

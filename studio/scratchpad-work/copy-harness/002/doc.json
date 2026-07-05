@@ -1,13 +1,13 @@
 {
-  "id": "harness_002_dd5baaf2",
-  "name": "copy-harness harness_002_dd5baaf2",
+  "id": "harness_002_bfdcc94b",
+  "name": "copy-harness harness_002_bfdcc94b",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr82p6d3-1q",
+      "id": "base-mr830ys1-s",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,105 +19,165 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#e85d1b"
+        "background": "#F15A29"
       }
     },
     {
-      "id": "group-mr82p6d3-17",
+      "id": "group-mr830ys0-i",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 1,
-        "y": 2,
-        "w": 520,
-        "h": 375
+        "x": 54,
+        "y": 77,
+        "w": 1026,
+        "h": 922
       },
       "children": [
         {
-          "id": "caption-mr82p6d3-18",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": true,
-          "sizeLocked": true,
-          "text": "PRE PRO 3.0 JAR",
+          "id": "card-mr830ys0-j",
+          "type": "shape",
+          "role": "card",
+          "name": "card",
           "box": {
-            "x": 7,
-            "y": 345,
-            "w": 40,
-            "h": 32
+            "x": 54,
+            "y": 77,
+            "w": 972,
+            "h": 922
           },
           "style": {
-            "fontSize": 16,
-            "fontWeight": 700,
             "color": "#ffffff",
+            "background": "#ffffff",
+            "fontSize": 43,
+            "fontWeight": 400,
             "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "padding": 16,
+            "shapeKind": "rect"
           }
         },
         {
-          "id": "headline-mr82p6d3-19",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "ALLE ESSENTIALS",
-          "autoH": true,
-          "box": {
-            "x": 1,
-            "y": 2,
-            "w": 520,
-            "h": 149
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 62,
-            "fontWeight": 800,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "subhead-mr82p6d3-1a",
+          "id": "subhead-mr830ys0-k",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
           "text": "KRACHTSPORT BUNDEL",
           "autoH": true,
           "box": {
-            "x": 1,
-            "y": 118,
-            "w": 393,
-            "h": 94
+            "x": 508,
+            "y": 346,
+            "w": 572,
+            "h": 46
           },
           "style": {
             "color": "#1a1a1a",
-            "fontSize": 39,
-            "fontWeight": 800,
+            "fontSize": 38,
+            "fontWeight": 900,
             "align": "center",
             "uppercase": true,
             "lineHeight": 1.2
           }
+        }
+      ]
+    },
+    {
+      "id": "group-mr830ys0-l",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 461,
+        "w": 972,
+        "h": 1459
+      },
+      "children": [
+        {
+          "id": "rect-mr830ys0-m",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · Whey Milkshake",
+          "box": {
+            "x": 508,
+            "y": 1018,
+            "w": 572,
+            "h": 902
+          },
+          "style": {
+            "crop": {
+              "x": 0.47,
+              "y": 0.53,
+              "w": 0.53,
+              "h": 0.47
+            },
+            "radius": 20
+          },
+          "src": "/refasset?id=harness-002"
         },
         {
-          "id": "price-mr82p6d3-1b",
+          "id": "rect-mr830ys0-n",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · whey protein pouch",
+          "box": {
+            "x": 108,
+            "y": 1018,
+            "w": 594,
+            "h": 826
+          },
+          "style": {
+            "crop": {
+              "x": 0.1,
+              "y": 0.53,
+              "w": 0.55,
+              "h": 0.43
+            },
+            "radius": 21
+          },
+          "src": "/refasset?id=harness-002"
+        },
+        {
+          "id": "headline-mr830ys0-o",
           "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "ALLE ESSENTIALS",
+          "autoH": true,
+          "box": {
+            "x": 508,
+            "y": 1018,
+            "w": 572,
+            "h": 84
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 56,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 31
+          }
+        },
+        {
+          "id": "price-mr830ys0-p",
+          "type": "badge",
           "role": "price",
           "name": "price",
           "text": "€63 → €49",
           "autoH": true,
           "box": {
-            "x": 3,
-            "y": 200,
-            "w": 143,
-            "h": 96
+            "x": 508,
+            "y": 461,
+            "w": 572,
+            "h": 55
           },
           "style": {
             "color": "#1a1a1a",
             "fontSize": 40,
-            "fontWeight": 900,
+            "fontWeight": 800,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
@@ -126,304 +186,42 @@
       ]
     },
     {
-      "id": "group-mr82p6d3-1c",
-      "type": "group",
-      "name": "Body",
+      "id": "logo-mr830ys1-q",
+      "type": "image",
+      "role": "logo",
+      "name": "Logo · UPFRONT logo",
       "box": {
-        "x": 1,
-        "y": 385,
-        "w": 1025,
-        "h": 1228
+        "x": 464,
+        "y": 96,
+        "w": 151,
+        "h": 115
       },
-      "children": [
-        {
-          "id": "caption-mr82p6d3-1d",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": true,
-          "sizeLocked": true,
-          "text": "WHEY MILKSHAKE POUCH",
-          "box": {
-            "x": 1,
-            "y": 385,
-            "w": 40,
-            "h": 32
-          },
-          "style": {
-            "fontSize": 16,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
-          }
-        },
-        {
-          "id": "caption-mr82p6d3-1e",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": true,
-          "sizeLocked": true,
-          "text": "CREATINE JAR",
-          "box": {
-            "x": 7,
-            "y": 425,
-            "w": 40,
-            "h": 32
-          },
-          "style": {
-            "fontSize": 16,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
-          }
-        },
-        {
-          "id": "caption-mr82p6d3-1f",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "UPFRONT\nCREATINE",
-          "autoH": true,
-          "box": {
-            "x": 7,
-            "y": 465,
-            "w": 116,
-            "h": 72
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 30,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr82p6d3-1g",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": true,
-          "sizeLocked": true,
-          "text": "PRE WORKOUT JAR",
-          "box": {
-            "x": 594,
-            "y": 1190,
-            "w": 432,
-            "h": 96
-          },
-          "style": {
-            "fontSize": 32,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
-          }
-        },
-        {
-          "id": "caption-mr82p6d3-1h",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": true,
-          "sizeLocked": true,
-          "text": "CREATINE TUB",
-          "box": {
-            "x": 594,
-            "y": 1517,
-            "w": 432,
-            "h": 96
-          },
-          "style": {
-            "fontSize": 32,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
-          }
-        }
-      ]
+      "style": {},
+      "src": "/refasset?id=harness-002m2353cc0b"
     },
     {
-      "id": "group-mr82p6d3-1i",
-      "type": "group",
-      "name": "Product",
-      "box": {
-        "x": 1,
-        "y": 1,
-        "w": 1025,
-        "h": 1727
-      },
-      "children": [
-        {
-          "id": "product-mr82p6d3-1j",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Whey Milkshake Pouch",
-          "box": {
-            "x": 1,
-            "y": 11,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#c8c8c859",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
-            "stroke": {
-              "color": "#c8c8c8",
-              "width": 2
-            }
-          }
-        },
-        {
-          "id": "product-mr82p6d3-1k",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Pre Pro 3.0 Jar",
-          "box": {
-            "x": 7,
-            "y": 10,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#b0b0b059",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.09 C 0.625 0.09 0.7917 0.0567 0.875 0.125 C 0.9583 0.1933 0.9975 0.3725 1 0.5 C 1.0025 0.6275 0.9733 0.8192 0.89 0.89 C 0.8067 0.9608 0.63 0.925 0.5 0.925 C 0.37 0.925 0.1933 0.9608 0.11 0.89 C 0.0267 0.8192 -0.0025 0.6275 0 0.5 C 0.0025 0.3725 0.0417 0.1933 0.125 0.125 C 0.2083 0.0567 0.375 0.09 0.5 0.09 Z",
-            "stroke": {
-              "color": "#b0b0b0",
-              "width": 2
-            }
-          }
-        },
-        {
-          "id": "product-mr82p6d3-1l",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Creatine Jar",
-          "box": {
-            "x": 7,
-            "y": 14,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#f5f5f559",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.09 C 0.625 0.09 0.7917 0.0567 0.875 0.125 C 0.9583 0.1933 0.9975 0.3725 1 0.5 C 1.0025 0.6275 0.9733 0.8192 0.89 0.89 C 0.8067 0.9608 0.63 0.925 0.5 0.925 C 0.37 0.925 0.1933 0.9608 0.11 0.89 C 0.0267 0.8192 -0.0025 0.6275 0 0.5 C 0.0025 0.3725 0.0417 0.1933 0.125 0.125 C 0.2083 0.0567 0.375 0.09 0.5 0.09 Z",
-            "stroke": {
-              "color": "#f5f5f5",
-              "width": 2
-            }
-          }
-        },
-        {
-          "id": "logo-mr82p6d3-1m",
-          "type": "image",
-          "role": "logo",
-          "name": "Logo · Brand Logo",
-          "box": {
-            "x": 5,
-            "y": 1,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "crop": {
-              "x": 0,
-              "y": 0,
-              "w": 0,
-              "h": 0
-            },
-            "radius": 4
-          },
-          "src": "/refasset?id=harness-002"
-        },
-        {
-          "id": "product-mr82p6d3-1n",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Pre Workout Jar",
-          "box": {
-            "x": 594,
-            "y": 1075,
-            "w": 432,
-            "h": 326
-          },
-          "style": {
-            "background": "#c0c0c059",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.09 C 0.625 0.09 0.7917 0.0567 0.875 0.125 C 0.9583 0.1933 0.9975 0.3725 1 0.5 C 1.0025 0.6275 0.9733 0.8192 0.89 0.89 C 0.8067 0.9608 0.63 0.925 0.5 0.925 C 0.37 0.925 0.1933 0.9608 0.11 0.89 C 0.0267 0.8192 -0.0025 0.6275 0 0.5 C 0.0025 0.3725 0.0417 0.1933 0.125 0.125 C 0.2083 0.0567 0.375 0.09 0.5 0.09 Z",
-            "stroke": {
-              "color": "#c0c0c0",
-              "width": 3
-            }
-          }
-        },
-        {
-          "id": "product-mr82p6d3-1o",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Creatine Tub",
-          "box": {
-            "x": 594,
-            "y": 1402,
-            "w": 432,
-            "h": 326
-          },
-          "style": {
-            "background": "#dcdcdc59",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.07 C 0.6333 0.07 0.8175 0.0283 0.9 0.1 C 0.9825 0.1717 1 0.3717 0.995 0.5 C 0.99 0.6283 0.9525 0.8033 0.87 0.87 C 0.7875 0.9367 0.6233 0.9 0.5 0.9 C 0.3767 0.9 0.2125 0.9367 0.13 0.87 C 0.0475 0.8033 0.01 0.6283 0.005 0.5 C 0 0.3717 0.0175 0.1717 0.1 0.1 C 0.1825 0.0283 0.3667 0.07 0.5 0.07 Z",
-            "stroke": {
-              "color": "#dcdcdc",
-              "width": 3
-            }
-          }
-        }
-      ]
-    },
-    {
-      "id": "cta-mr82p6d3-1p",
-      "type": "button",
+      "id": "cta-mr830ys1-r",
+      "type": "text",
       "role": "cta",
       "name": "cta",
       "text": "KOOP NU VIA UPFRONT.NL",
       "autoH": true,
       "box": {
-        "x": 1,
-        "y": 289,
-        "w": 230,
-        "h": 77
+        "x": 508,
+        "y": 634,
+        "w": 518,
+        "h": 39
       },
       "style": {
         "color": "#1a1a1a",
         "fontSize": 32,
-        "fontWeight": 800,
+        "fontWeight": 700,
         "align": "center",
         "uppercase": true,
         "lineHeight": 1.2
       }
     }
   ],
-  "skeletonId": "skel_mr82p6d3906s",
-  "updatedAt": 1783272996473
+  "skeletonId": "skel_mr830ys08phd",
+  "updatedAt": 1783273551213
 }
