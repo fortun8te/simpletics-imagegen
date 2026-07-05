@@ -4,11 +4,128 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 0,
-    "assemble": 1799,
-    "total": 9655
+    "extract": 2084,
+    "assemble": 1919,
+    "total": 11804
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/052.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-052.png",
+    "patched": 0,
+    "layers": [
+      {
+        "id": "headline",
+        "role": "headline",
+        "text": "No need to ruin your hair to have perfect curls",
+        "previous": "Georgia",
+        "fontFamily": "Georgia",
+        "confidence": 0.0692,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Georgia",
+            "score": 0.8915,
+            "fontSize": 79
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.8223,
+            "fontSize": 86
+          },
+          {
+            "family": "Impact",
+            "score": 0.7805,
+            "fontSize": 85
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.7211,
+            "fontSize": 73
+          },
+          {
+            "family": "",
+            "score": 0.6787,
+            "fontSize": 73
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.617,
+            "fontSize": 93
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.5971,
+            "fontSize": 78
+          },
+          {
+            "family": "Menlo",
+            "score": 0.5407,
+            "fontSize": 60
+          }
+        ]
+      },
+      {
+        "id": "bottom-caption",
+        "role": "caption",
+        "text": "This natural curl cream is all you need",
+        "previous": "Georgia",
+        "fontFamily": "Georgia",
+        "confidence": 0.1197,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Georgia",
+            "score": 0.8811,
+            "fontSize": 58
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.7614,
+            "fontSize": 64
+          },
+          {
+            "family": "Impact",
+            "score": 0.7496,
+            "fontSize": 62
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.6047,
+            "fontSize": 71
+          },
+          {
+            "family": "Menlo",
+            "score": 0.5833,
+            "fontSize": 42
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.5626,
+            "fontSize": 55
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.559,
+            "fontSize": 42
+          },
+          {
+            "family": "",
+            "score": 0.5482,
+            "fontSize": 42
+          }
+        ]
+      }
+    ]
   },
   "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "before-pill color: #4F5B53 → #68836c (glyph sample, contrast 0.46)",
+    "after-pill color: #4F5B53 → #68836c (glyph sample, contrast 0.46)",
+    "headline box: y85 h150 → y87 h158 (tight ink rows + 18px pad)",
+    "bottom-caption fontSize: 42 → 48 (2 ink lines, block 90px)",
+    "bottom-caption box: y935 h120 → y943 h118 (tight ink rows + 14px pad)"
+  ],
   "archetype": "before-after",
   "layerCountExtracted": 8,
   "parsePath": "loose",
@@ -17,11 +134,11 @@
   "layersApplied": 8,
   "leavesInResult": 9,
   "verify": {
-    "ready": false
+    "ready": true
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 96.2,
-  "pixelScore": 96.2,
+  "pixelScoreRaw": 96.1,
+  "pixelScore": 96.1,
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/052/side-by-side.png"
 }

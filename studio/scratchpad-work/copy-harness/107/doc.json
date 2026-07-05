@@ -1,13 +1,13 @@
 {
-  "id": "harness_107_a9876869",
-  "name": "copy-harness harness_107_a9876869",
+  "id": "harness_107_4a99e2b5",
+  "name": "copy-harness harness_107_4a99e2b5",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr89v57p-4u",
+      "id": "base-mr8arsap-42",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-42",
+      "id": "decor-mr8arsap-3a",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -50,7 +50,7 @@
       }
     },
     {
-      "id": "logo-mr89v57p-43",
+      "id": "logo-mr8arsap-3b",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -67,36 +67,37 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "headline-mr89v57p-44",
+      "id": "headline-mr8arsap-3c",
       "type": "text",
       "role": "headline",
       "text": "58%",
       "box": {
         "x": 375,
-        "y": 338,
+        "y": 322,
         "w": 395,
-        "h": 165
+        "h": 188
       },
       "style": {
-        "fontSize": 155,
+        "fontSize": 200,
         "fontWeight": 500,
         "color": "#131313",
         "align": "left",
         "lineHeight": 1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "headline-mr89v57p-45",
+      "id": "headline-mr8arsap-3d",
       "type": "text",
       "role": "headline",
       "text": "Of Athletes Are Chronically Underhydrated",
       "box": {
         "x": 130,
-        "y": 523,
+        "y": 514,
         "w": 820,
-        "h": 165
+        "h": 173
       },
       "style": {
         "fontSize": 62,
@@ -106,10 +107,11 @@
         "lineHeight": 1.2,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "caption-mr89v57p-46",
+      "id": "caption-mr8arsap-3e",
       "type": "text",
       "role": "caption",
       "text": "Journal Of Applied Physiology, 2025",
@@ -117,20 +119,21 @@
         "x": 378,
         "y": 696,
         "w": 325,
-        "h": 66
+        "h": 22
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 16,
         "fontWeight": 700,
         "color": "#131313",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "decor-mr89v57p-47",
+      "id": "decor-mr8arsap-3f",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -145,7 +148,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-48",
+      "id": "decor-mr8arsap-3g",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -160,7 +163,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-49",
+      "id": "decor-mr8arsap-3h",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -175,7 +178,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4a",
+      "id": "decor-mr8arsap-3i",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -190,7 +193,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4b",
+      "id": "decor-mr8arsap-3j",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -205,7 +208,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4c",
+      "id": "decor-mr8arsap-3k",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -220,7 +223,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4d",
+      "id": "decor-mr8arsap-3l",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -247,7 +250,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4e",
+      "id": "decor-mr8arsap-3m",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -262,7 +265,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4f",
+      "id": "decor-mr8arsap-3n",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -272,12 +275,12 @@
         "h": 165
       },
       "style": {
-        "background": "#131313",
+        "background": "#f7f3f2",
         "shapeKind": "line"
       }
     },
     {
-      "id": "decor-mr89v57p-4g",
+      "id": "decor-mr8arsap-3o",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -287,12 +290,12 @@
         "h": 155
       },
       "style": {
-        "background": "#131313",
+        "background": "#f8c084",
         "shapeKind": "line"
       }
     },
     {
-      "id": "decor-mr89v57p-4h",
+      "id": "decor-mr8arsap-3p",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -302,12 +305,12 @@
         "h": 102
       },
       "style": {
-        "background": "#131313",
+        "background": "#f2eae4",
         "shapeKind": "arrow"
       }
     },
     {
-      "id": "decor-mr89v57p-4i",
+      "id": "decor-mr8arsap-3q",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -322,7 +325,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4j",
+      "id": "decor-mr8arsap-3r",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -337,7 +340,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4k",
+      "id": "decor-mr8arsap-3s",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -352,7 +355,7 @@
       }
     },
     {
-      "id": "decor-mr89v57p-4l",
+      "id": "decor-mr8arsap-3t",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -367,7 +370,7 @@
       }
     },
     {
-      "id": "product-mr89v57p-4m",
+      "id": "product-mr8arsap-3u",
       "type": "image",
       "role": "product",
       "box": {
@@ -389,112 +392,117 @@
       "name": "Cut-out"
     },
     {
-      "id": "caption-mr89v57p-4n",
+      "id": "caption-mr8arsap-3v",
       "type": "text",
       "role": "caption",
       "text": "WEEK 1",
       "box": {
         "x": 170,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 25,
         "fontWeight": 400,
         "color": "#131313",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "caption-mr89v57p-4o",
+      "id": "caption-mr8arsap-3w",
       "type": "text",
       "role": "caption",
       "text": "WEEK 2",
       "box": {
         "x": 320,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 25,
         "fontWeight": 400,
         "color": "#131313",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "caption-mr89v57p-4p",
+      "id": "caption-mr8arsap-3x",
       "type": "text",
       "role": "caption",
       "text": "WEEK 3",
       "box": {
-        "x": 470,
-        "y": 1352,
+        "x": 475,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 25,
         "fontWeight": 400,
         "color": "#131313",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "caption-mr89v57p-4q",
+      "id": "caption-mr8arsap-3y",
       "type": "text",
       "role": "caption",
       "text": "WEEK 4",
       "box": {
         "x": 620,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 25,
         "fontWeight": 400,
         "color": "#131313",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "caption-mr89v57p-4r",
+      "id": "caption-mr8arsap-3z",
       "type": "text",
       "role": "caption",
       "text": "WEEK 5",
       "box": {
         "x": 775,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 25,
         "fontWeight": 400,
         "color": "#131313",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "badge-mr89v57p-4s",
+      "id": "badge-mr8arsap-40",
       "type": "badge",
       "role": "badge",
       "text": "DAILY HYDRATION",
@@ -507,37 +515,39 @@
       "style": {
         "fontSize": 34,
         "fontWeight": 400,
-        "color": "#FFFFFF",
+        "color": "#fff0c2",
         "background": "#F6891F",
         "align": "center",
         "radius": 4,
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "body-mr89v57p-4t",
+      "id": "body-mr8arsap-41",
       "type": "text",
       "role": "body",
       "text": "Most athletes think they're hydrating properly. Research says otherwise. And they don't even feel thirsty.",
       "box": {
         "x": 195,
-        "y": 1483,
+        "y": 1513,
         "w": 690,
-        "h": 188
+        "h": 79
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 23,
         "fontWeight": 400,
         "color": "#131313",
         "align": "center",
         "lineHeight": 1.3,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr89v57p93xi",
-  "updatedAt": 1783285033978
+  "skeletonId": "skel_mr8arsap8jqo",
+  "updatedAt": 1783286556405
 }

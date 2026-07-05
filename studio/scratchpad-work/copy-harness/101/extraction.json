@@ -50,12 +50,12 @@
       "text": "NOT ALL TPU TUBES ARE BUILT THE SAME!",
       "box": {
         "x": 150,
-        "y": 59,
+        "y": 38,
         "w": 780,
-        "h": 130
+        "h": 171
       },
       "style": {
-        "fontSize": 55,
+        "fontSize": 88,
         "fontWeight": 800,
         "color": "#111111",
         "align": "center",
@@ -119,7 +119,7 @@
       "style": {
         "fontSize": 19,
         "fontWeight": 700,
-        "color": "#FFFFFF",
+        "color": "#befdfe",
         "background": "#2AA5B6",
         "align": "center",
         "radius": 41,
@@ -155,12 +155,12 @@
       "text": "?",
       "box": {
         "x": 729,
-        "y": 335,
+        "y": 330,
         "w": 108,
-        "h": 140
+        "h": 159
       },
       "style": {
-        "fontSize": 140,
+        "fontSize": 171,
         "fontWeight": 800,
         "color": "#FFFFFF",
         "align": "center",
@@ -177,10 +177,10 @@
         "x": 76,
         "y": 697,
         "w": 389,
-        "h": 38
+        "h": 27
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 27,
         "fontWeight": 700,
         "color": "#111111",
         "align": "center",
@@ -197,10 +197,10 @@
         "x": 680,
         "y": 697,
         "w": 260,
-        "h": 38
+        "h": 27
       },
       "style": {
-        "fontSize": 30,
+        "fontSize": 27,
         "fontWeight": 700,
         "color": "#111111",
         "align": "center",
@@ -215,12 +215,12 @@
       "text": "✅ 50% thicker for better durability",
       "box": {
         "x": 65,
-        "y": 756,
+        "y": 755,
         "w": 410,
-        "h": 56
+        "h": 63
       },
       "style": {
-        "fontSize": 28,
+        "fontSize": 45,
         "fontWeight": 400,
         "color": "#111111",
         "align": "left",
@@ -235,9 +235,9 @@
       "text": "✅ Aluminium valve built to last",
       "box": {
         "x": 65,
-        "y": 846,
+        "y": 842,
         "w": 410,
-        "h": 34
+        "h": 27
       },
       "style": {
         "fontSize": 28,
@@ -255,12 +255,12 @@
       "text": "✅ Compatible with electric mini pumps",
       "box": {
         "x": 65,
-        "y": 889,
+        "y": 895,
         "w": 410,
-        "h": 56
+        "h": 55
       },
       "style": {
-        "fontSize": 28,
+        "fontSize": 45,
         "fontWeight": 400,
         "color": "#111111",
         "align": "left",
@@ -275,12 +275,12 @@
       "text": "✅ Removable valve core for repairs & sealant use",
       "box": {
         "x": 65,
-        "y": 975,
+        "y": 979,
         "w": 410,
-        "h": 58
+        "h": 55
       },
       "style": {
-        "fontSize": 28,
+        "fontSize": 20,
         "fontWeight": 400,
         "color": "#111111",
         "align": "left",
@@ -294,15 +294,15 @@
       "role": "body",
       "text": "❌ Ultra-thin walls prone to punctures",
       "box": {
-        "x": 610,
-        "y": 756,
+        "x": 603,
+        "y": 761,
         "w": 415,
-        "h": 56
+        "h": 55
       },
       "style": {
-        "fontSize": 28,
+        "fontSize": 24,
         "fontWeight": 400,
-        "color": "#111111",
+        "color": "#00303b",
         "align": "left",
         "lineHeight": 1.25,
         "uppercase": false
@@ -314,15 +314,15 @@
       "role": "body",
       "text": "❌ Weak resin valves that can melt",
       "box": {
-        "x": 610,
-        "y": 840,
+        "x": 603,
+        "y": 842,
         "w": 415,
-        "h": 56
+        "h": 50
       },
       "style": {
         "fontSize": 28,
         "fontWeight": 400,
-        "color": "#111111",
+        "color": "#013641",
         "align": "left",
         "lineHeight": 1.25,
         "uppercase": false
@@ -334,15 +334,15 @@
       "role": "body",
       "text": "❌ Not safe for use with e-pumps",
       "box": {
-        "x": 610,
-        "y": 916,
+        "x": 603,
+        "y": 919,
         "w": 415,
-        "h": 34
+        "h": 26
       },
       "style": {
         "fontSize": 28,
         "fontWeight": 400,
-        "color": "#111111",
+        "color": "#00313e",
         "align": "left",
         "lineHeight": 1.25,
         "uppercase": false
@@ -354,19 +354,20 @@
       "role": "body",
       "text": "❌ Fixed core. Can't repair slow leaks!",
       "box": {
-        "x": 610,
-        "y": 970,
+        "x": 603,
+        "y": 980,
         "w": 415,
-        "h": 60
+        "h": 43
       },
       "style": {
-        "fontSize": 28,
+        "fontSize": 24,
         "fontWeight": 400,
-        "color": "#111111",
+        "color": "#023945",
         "align": "left",
         "lineHeight": 1.25,
         "uppercase": false
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

@@ -4,11 +4,27 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 0,
+    "extract": 1,
     "assemble": 2,
-    "total": 9695
+    "total": 10447
   },
   "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "headline color: #F3E9C9 → #1775b6 (glyph sample, contrast 0.53)",
+    "headline fontSize: 96 → 154 (1 ink line, block 300px)",
+    "headline box: y138 h300 → y93 h390 (tight ink rows + 45px pad)",
+    "callout-1 fontSize: 34 → 54 (1 ink line, block 85px)",
+    "callout-1 box: y528 h108 → y519 h111 (tight ink rows + 13px pad)",
+    "callout-2 fontSize: 34 → 24 (3 ink lines, block 79px)",
+    "callout-2 box: y585 h110 → y587 h103 (tight ink rows + 12px pad)",
+    "callout-3 fontSize: 34 → 54 (1 ink line, block 48px)",
+    "callout-3 box: y1112 h85 → y1119 h62 (tight ink rows + 7px pad)",
+    "callout-4 fontSize: 34 → 49 (2 ink lines, block 80px)",
+    "callout-4 box: y1210 h115 → y1215 h104 (tight ink rows + 12px pad)",
+    "disclaimer fontSize: 24 → 27 (2 ink lines, block 46px)",
+    "disclaimer box: y1342 h66 → y1335 h60 (tight ink rows + 7px pad)",
+    "disclaimer: center-x snapped x72 → x70 (canvas center)"
+  ],
   "archetype": "annotated-photo",
   "layerCountExtracted": 11,
   "parsePath": "loose",
@@ -20,8 +36,8 @@
     "ready": false
   },
   "pixelError": null,
-  "textPileOverlaps": 1,
-  "pixelScoreRaw": 92.3,
-  "pixelScore": 89.3,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 97.1,
+  "pixelScore": 97.1,
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/014/side-by-side.png"
 }

@@ -1,13 +1,13 @@
 {
-  "id": "harness_081_f43a3428",
-  "name": "copy-harness harness_081_f43a3428",
+  "id": "harness_081_3a8e552b",
+  "name": "copy-harness harness_081_3a8e552b",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr89uco9-3i",
+      "id": "base-mr8arb64-2q",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,18 +23,18 @@
       }
     },
     {
-      "id": "headline-mr89uco9-3a",
+      "id": "headline-mr8arb64-2i",
       "type": "text",
       "role": "headline",
       "text": "WARNING",
       "box": {
         "x": 240,
-        "y": 58,
+        "y": 57,
         "w": 600,
-        "h": 118
+        "h": 112
       },
       "style": {
-        "fontSize": 105,
+        "fontSize": 119,
         "fontWeight": 400,
         "color": "#E85566",
         "align": "center",
@@ -56,31 +56,33 @@
           ]
         }
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "subhead-mr89uco9-3b",
+      "id": "subhead-mr8arb64-2j",
       "type": "text",
       "role": "subhead",
       "text": "(ACTUALLY CONTAINS) 5G CREATINE MONOHYDRATE.",
       "box": {
         "x": 100,
-        "y": 182,
-        "w": 778,
-        "h": 84
+        "y": 180,
+        "w": 880,
+        "h": 32
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 31,
         "fontWeight": 400,
         "color": "#1A1A1A",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "decor-mr89uco9-3c",
+      "id": "decor-mr8arb64-2k",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -95,7 +97,7 @@
       }
     },
     {
-      "id": "product-mr89uco9-3d",
+      "id": "product-mr8arb64-2l",
       "type": "image",
       "role": "product",
       "box": {
@@ -104,12 +106,20 @@
         "w": 360,
         "h": 345
       },
-      "style": {},
-      "src": "/refasset?id=harness-081mbce38f38",
+      "style": {
+        "crop": {
+          "x": 0.093,
+          "y": 0.433,
+          "w": 0.333,
+          "h": 0.319
+        },
+        "radius": 12
+      },
+      "src": "/refasset?id=harness-081",
       "name": "Cut-out"
     },
     {
-      "id": "product-mr89uco9-3e",
+      "id": "product-mr8arb64-2m",
       "type": "image",
       "role": "product",
       "box": {
@@ -118,33 +128,42 @@
         "w": 140,
         "h": 540
       },
-      "style": {},
-      "src": "/refasset?id=harness-081mefb1b42e",
+      "style": {
+        "crop": {
+          "x": 0.659,
+          "y": 0.255,
+          "w": 0.13,
+          "h": 0.5
+        },
+        "radius": 8
+      },
+      "src": "/refasset?id=harness-081",
       "name": "Cut-out"
     },
     {
-      "id": "caption-mr89uco9-3f",
+      "id": "caption-mr8arb64-2n",
       "type": "text",
       "role": "caption",
       "text": "TRACE CREATINE",
       "box": {
         "x": 130,
-        "y": 903,
+        "y": 907,
         "w": 290,
-        "h": 40
+        "h": 32
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 31,
         "fontWeight": 400,
         "color": "#1A1A1A",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "logo-mr89uco9-3g",
+      "id": "logo-mr8arb64-2o",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -161,27 +180,28 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "caption-mr89uco9-3h",
+      "id": "caption-mr8arb64-2p",
       "type": "text",
       "role": "caption",
       "text": "5G CREAPURE®",
       "box": {
         "x": 725,
-        "y": 900,
+        "y": 907,
         "w": 255,
-        "h": 44
+        "h": 32
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 31,
         "fontWeight": 700,
         "color": "#111111",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr89uco9tstz",
-  "updatedAt": 1783284999864
+  "skeletonId": "skel_mr8arb645aeg",
+  "updatedAt": 1783286536144
 }

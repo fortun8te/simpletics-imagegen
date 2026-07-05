@@ -1,13 +1,13 @@
 {
-  "id": "harness_052_a318e81f",
-  "name": "copy-harness harness_052_a318e81f",
+  "id": "harness_052_27348291",
+  "name": "copy-harness harness_052_27348291",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr89eo39-8",
+      "id": "base-mr8at4xv-8",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "card-mr89eo39-0",
+      "id": "card-mr8at4xv-0",
       "type": "shape",
       "role": "card",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "product-mr89eo39-1",
+      "id": "product-mr8at4xv-1",
       "type": "image",
       "role": "product",
       "box": {
@@ -59,7 +59,7 @@
       "name": "Cut-out"
     },
     {
-      "id": "product-mr89eo39-2",
+      "id": "product-mr8at4xv-2",
       "type": "image",
       "role": "product",
       "box": {
@@ -81,7 +81,7 @@
       "name": "Cut-out"
     },
     {
-      "id": "badge-mr89eo39-3",
+      "id": "badge-mr8at4xv-3",
       "type": "badge",
       "role": "badge",
       "text": "Before",
@@ -94,17 +94,18 @@
       "style": {
         "fontSize": 34,
         "fontWeight": 500,
-        "color": "#4F5B53",
+        "color": "#68836c",
         "background": "#FFFFFF",
         "align": "center",
         "radius": 33,
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "badge-mr89eo39-4",
+      "id": "badge-mr8at4xv-4",
       "type": "badge",
       "role": "badge",
       "text": "After",
@@ -117,17 +118,18 @@
       "style": {
         "fontSize": 34,
         "fontWeight": 500,
-        "color": "#4F5B53",
+        "color": "#68836c",
         "background": "#FFFFFF",
         "align": "center",
         "radius": 33,
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "product-mr89eo39-5",
+      "id": "product-mr8at4xv-5",
       "type": "image",
       "role": "product",
       "box": {
@@ -137,19 +139,19 @@
         "h": 392
       },
       "style": {},
-      "src": "/refasset?id=harness-052m4a027498",
+      "src": "/refasset?id=harness-052mfa1e14e6",
       "name": "Cut-out"
     },
     {
-      "id": "headline-mr89eo39-6",
+      "id": "headline-mr8at4xv-6",
       "type": "text",
       "role": "headline",
       "text": "No need to ruin your hair to have perfect curls",
       "box": {
         "x": 90,
-        "y": 85,
-        "w": 886,
-        "h": 150
+        "y": 87,
+        "w": 900,
+        "h": 158
       },
       "style": {
         "fontSize": 60,
@@ -160,21 +162,22 @@
         "uppercase": false,
         "fontFamily": "Georgia"
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "caption-mr89eo39-7",
+      "id": "caption-mr8at4xv-7",
       "type": "text",
       "role": "caption",
       "text": "This natural curl cream is all you need",
       "box": {
         "x": 240,
-        "y": 935,
+        "y": 943,
         "w": 600,
-        "h": 120
+        "h": 118
       },
       "style": {
-        "fontSize": 42,
+        "fontSize": 48,
         "fontWeight": 500,
         "color": "#7C9473",
         "align": "center",
@@ -182,9 +185,10 @@
         "uppercase": false,
         "fontFamily": "Georgia"
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr89eo39m5w2",
-  "updatedAt": 1783284265339
+  "skeletonId": "skel_mr8at4xu732a",
+  "updatedAt": 1783286620097
 }

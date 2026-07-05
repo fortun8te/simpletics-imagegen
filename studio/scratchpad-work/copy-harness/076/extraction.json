@@ -16,9 +16,9 @@
       "text": "What they say about us...",
       "box": {
         "x": 130,
-        "y": 78,
+        "y": 83,
         "w": 820,
-        "h": 70
+        "h": 59
       },
       "style": {
         "fontSize": 62,
@@ -73,9 +73,9 @@
       "text": "★★★★★",
       "box": {
         "x": 60,
-        "y": 225,
+        "y": 228,
         "w": 155,
-        "h": 30
+        "h": 27
       },
       "style": {
         "fontSize": 28,
@@ -92,10 +92,10 @@
       "role": "subhead",
       "text": "My go-to gels for marathon training and race day",
       "box": {
-        "x": 60,
-        "y": 272,
+        "x": 67,
+        "y": 279,
         "w": 420,
-        "h": 64
+        "h": 58
       },
       "style": {
         "fontSize": 27,
@@ -112,7 +112,7 @@
       "role": "body",
       "text": "These are the only gels I buy! I love that they have so few ingredients, taste good and provide effective energy. They're also a good size/shape for sneaking into small pockets. Totally recommend!",
       "box": {
-        "x": 60,
+        "x": 63,
         "y": 350,
         "w": 428,
         "h": 130
@@ -133,12 +133,12 @@
       "text": "Kathryn",
       "box": {
         "x": 60,
-        "y": 495,
+        "y": 491,
         "w": 150,
-        "h": 26
+        "h": 34
       },
       "style": {
-        "fontSize": 22,
+        "fontSize": 35,
         "fontWeight": 700,
         "color": "#333333",
         "align": "left",
@@ -191,7 +191,7 @@
         "x": 585,
         "y": 278,
         "w": 155,
-        "h": 30
+        "h": 27
       },
       "style": {
         "fontSize": 28,
@@ -209,12 +209,12 @@
       "text": "Love the original honey...",
       "box": {
         "x": 585,
-        "y": 325,
+        "y": 331,
         "w": 310,
-        "h": 32
+        "h": 21
       },
       "style": {
-        "fontSize": 27,
+        "fontSize": 18,
         "fontWeight": 700,
         "color": "#111111",
         "align": "left",
@@ -228,10 +228,10 @@
       "role": "body",
       "text": "Love the original honey pack! Great taste! Perfect amount! Easy to open while running or competing! Can't wait to try some of the others!",
       "box": {
-        "x": 585,
+        "x": 584,
         "y": 368,
         "w": 435,
-        "h": 112
+        "h": 84
       },
       "style": {
         "fontSize": 22,
@@ -251,10 +251,10 @@
         "x": 585,
         "y": 492,
         "w": 280,
-        "h": 26
+        "h": 22
       },
       "style": {
-        "fontSize": 22,
+        "fontSize": 19,
         "fontWeight": 700,
         "color": "#333333",
         "align": "left",
@@ -326,9 +326,9 @@
       "text": "★★★★★",
       "box": {
         "x": 513,
-        "y": 640,
+        "y": 641,
         "w": 155,
-        "h": 30
+        "h": 28
       },
       "style": {
         "fontSize": 28,
@@ -346,12 +346,12 @@
       "text": "Awesome",
       "box": {
         "x": 513,
-        "y": 690,
+        "y": 698,
         "w": 200,
-        "h": 32
+        "h": 21
       },
       "style": {
-        "fontSize": 27,
+        "fontSize": 18,
         "fontWeight": 700,
         "color": "#111111",
         "align": "left",
@@ -365,7 +365,7 @@
       "role": "body",
       "text": "Amazing gels. Great taste, easy to digest, no G.I. issues whatsoever. I use them for my runs and also for hockey! Makes a big difference for my energy levels. 10/10 would recommend.",
       "box": {
-        "x": 513,
+        "x": 515,
         "y": 735,
         "w": 455,
         "h": 115
@@ -386,12 +386,12 @@
       "text": "Jonathan C, verified customer",
       "box": {
         "x": 513,
-        "y": 865,
+        "y": 868,
         "w": 290,
-        "h": 26
+        "h": 22
       },
       "style": {
-        "fontSize": 22,
+        "fontSize": 19,
         "fontWeight": 700,
         "color": "#333333",
         "align": "left",
@@ -442,9 +442,9 @@
       "text": "★★★★★",
       "box": {
         "x": 492,
-        "y": 995,
+        "y": 992,
         "w": 155,
-        "h": 30
+        "h": 29
       },
       "style": {
         "fontSize": 28,
@@ -462,9 +462,9 @@
       "text": "The consistencies of these...",
       "box": {
         "x": 492,
-        "y": 1045,
+        "y": 1047,
         "w": 390,
-        "h": 32
+        "h": 28
       },
       "style": {
         "fontSize": 27,
@@ -481,13 +481,13 @@
       "role": "body",
       "text": "The consistencies of these honey gels are great and they sit really well in the stomach.",
       "box": {
-        "x": 492,
-        "y": 1092,
+        "x": 508,
+        "y": 1099,
         "w": 480,
-        "h": 72
+        "h": 54
       },
       "style": {
-        "fontSize": 22,
+        "fontSize": 24,
         "fontWeight": 400,
         "color": "#333333",
         "align": "left",
@@ -502,9 +502,9 @@
       "text": "Daniel C, verified customer",
       "box": {
         "x": 492,
-        "y": 1175,
+        "y": 1174,
         "w": 280,
-        "h": 26
+        "h": 23
       },
       "style": {
         "fontSize": 22,
@@ -515,5 +515,6 @@
         "uppercase": false
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

@@ -51,12 +51,12 @@
       "text": "Post",
       "box": {
         "x": 460,
-        "y": 48,
+        "y": 51,
         "w": 160,
-        "h": 52
+        "h": 45
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 49,
         "fontWeight": 700,
         "color": "#E7E9EA",
         "align": "center",
@@ -113,9 +113,9 @@
       "text": "UPFRONT",
       "box": {
         "x": 182,
-        "y": 150,
+        "y": 156,
         "w": 210,
-        "h": 44
+        "h": 33
       },
       "style": {
         "fontSize": 34,
@@ -156,10 +156,10 @@
         "x": 182,
         "y": 194,
         "w": 240,
-        "h": 42
+        "h": 35
       },
       "style": {
-        "fontSize": 32,
+        "fontSize": 38,
         "fontWeight": 400,
         "color": "#71767B",
         "align": "left",
@@ -195,13 +195,13 @@
       "role": "body",
       "text": "LAATSTE SITE WIDE SALE VAN 2026 ⌛\n\nDe Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.\n\nDaarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.\n\nSchrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
       "box": {
-        "x": 47,
+        "x": 45,
         "y": 318,
         "w": 990,
         "h": 465
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 44,
         "fontWeight": 400,
         "color": "#E7E9EA",
         "align": "left",
@@ -216,14 +216,14 @@
       "text": "05:00 PM · 12-05-2026 · 121K weergaven",
       "box": {
         "x": 47,
-        "y": 922,
+        "y": 926,
         "w": 660,
-        "h": 46
+        "h": 35
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 38,
         "fontWeight": 400,
-        "color": "#71767B",
+        "color": "#a3a4a5",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": false
@@ -271,12 +271,12 @@
       "text": "257",
       "box": {
         "x": 100,
-        "y": 1015,
+        "y": 1016,
         "w": 90,
-        "h": 44
+        "h": 35
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 38,
         "fontWeight": 400,
         "color": "#71767B",
         "align": "left",
@@ -312,12 +312,12 @@
       "text": "66",
       "box": {
         "x": 348,
-        "y": 1015,
+        "y": 1016,
         "w": 70,
-        "h": 44
+        "h": 35
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 38,
         "fontWeight": 400,
         "color": "#71767B",
         "align": "left",
@@ -353,12 +353,12 @@
       "text": "21K",
       "box": {
         "x": 584,
-        "y": 1015,
+        "y": 1016,
         "w": 90,
-        "h": 44
+        "h": 35
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 38,
         "fontWeight": 400,
         "color": "#71767B",
         "align": "left",
@@ -394,12 +394,12 @@
       "text": "89",
       "box": {
         "x": 842,
-        "y": 1015,
+        "y": 1016,
         "w": 70,
-        "h": 44
+        "h": 35
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 38,
         "fontWeight": 400,
         "color": "#71767B",
         "align": "left",
@@ -428,5 +428,6 @@
         "shape": "logo"
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

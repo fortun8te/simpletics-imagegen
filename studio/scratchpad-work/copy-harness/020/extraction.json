@@ -16,14 +16,14 @@
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 52,
+        "y": 27,
         "w": 700,
-        "h": 165
+        "h": 215
       },
       "style": {
-        "fontSize": 170,
+        "fontSize": 229,
         "fontWeight": 900,
-        "color": "#2B3BEB",
+        "color": "#f1f1f3",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true
@@ -36,14 +36,14 @@
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 218,
+        "y": 195,
         "w": 780,
-        "h": 150
+        "h": 196
       },
       "style": {
-        "fontSize": 170,
+        "fontSize": 208,
         "fontWeight": 900,
-        "color": "#2B3BEB",
+        "color": "#c9c4bf",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
@@ -57,14 +57,14 @@
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 390,
+        "y": 367,
         "w": 700,
-        "h": 150
+        "h": 196
       },
       "style": {
-        "fontSize": 170,
+        "fontSize": 208,
         "fontWeight": 900,
-        "color": "#2B3BEB",
+        "color": "#d9d9ce",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
@@ -79,14 +79,14 @@
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 558,
+        "y": 535,
         "w": 780,
-        "h": 150
+        "h": 196
       },
       "style": {
-        "fontSize": 170,
+        "fontSize": 208,
         "fontWeight": 900,
-        "color": "#2B3BEB",
+        "color": "#eae8e5",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
@@ -101,14 +101,14 @@
       "text": "BLACK",
       "box": {
         "x": 190,
-        "y": 728,
+        "y": 705,
         "w": 700,
-        "h": 150
+        "h": 196
       },
       "style": {
-        "fontSize": 170,
+        "fontSize": 208,
         "fontWeight": 900,
-        "color": "#2B3BEB",
+        "color": "#cec2b3",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
@@ -123,14 +123,14 @@
       "text": "FRIDAY",
       "box": {
         "x": 150,
-        "y": 898,
+        "y": 890,
         "w": 780,
-        "h": 155
+        "h": 70
       },
       "style": {
-        "fontSize": 170,
+        "fontSize": 102,
         "fontWeight": 900,
-        "color": "#2B3BEB",
+        "color": "#6863b7",
         "align": "center",
         "lineHeight": 1,
         "uppercase": true,
@@ -160,5 +160,6 @@
         "shape": "rect"
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

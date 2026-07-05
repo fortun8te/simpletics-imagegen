@@ -1,13 +1,13 @@
 {
-  "id": "harness_042_a25b92ec",
-  "name": "copy-harness harness_042_a25b92ec",
+  "id": "harness_042_2cc07675",
+  "name": "copy-harness harness_042_2cc07675",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr89twuq-2i",
+      "id": "base-mr8aquc1-28",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "avatar-mr89twuq-2c",
+      "id": "avatar-mr8aquc1-22",
       "type": "image",
       "role": "avatar",
       "box": {
@@ -45,7 +45,7 @@
       "name": "Avatar (cut out)"
     },
     {
-      "id": "decor-mr89twuq-2d",
+      "id": "decor-mr8aquc1-23",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -55,54 +55,56 @@
         "h": 80
       },
       "style": {
-        "background": "#6E6E6E",
+        "background": "#0a0a0a",
         "radius": 8
       }
     },
     {
-      "id": "watermark-mr89twuq-2e",
+      "id": "watermark-mr8aquc1-24",
       "type": "text",
       "role": "watermark",
       "text": "X.com",
       "box": {
         "x": 905,
-        "y": 240,
+        "y": 237,
         "w": 115,
-        "h": 44
+        "h": 42
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 41,
         "fontWeight": 400,
         "color": "#E7E9EA",
         "align": "right",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "body-mr89twuq-2f",
+      "id": "body-mr8aquc1-25",
       "type": "text",
       "role": "body",
       "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
       "box": {
         "x": 50,
-        "y": 355,
-        "w": 756,
-        "h": 141
+        "y": 360,
+        "w": 920,
+        "h": 85
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 28,
         "fontWeight": 400,
         "color": "#FFFFFF",
         "align": "left",
         "lineHeight": 1.3,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "photo-mr89twuq-2g",
+      "id": "photo-mr8aquc1-26",
       "type": "image",
       "role": "photo",
       "box": {
@@ -124,27 +126,28 @@
       "name": "Cut-out"
     },
     {
-      "id": "meta-mr89twuq-2h",
+      "id": "meta-mr8aquc1-27",
       "type": "text",
       "role": "meta",
       "text": "14:27 - 07/10/2025 - 757 Views",
       "box": {
-        "x": 60,
-        "y": 1658,
+        "x": 50,
+        "y": 1671,
         "w": 470,
-        "h": 71
+        "h": 29
       },
       "style": {
-        "fontSize": 32,
+        "fontSize": 29,
         "fontWeight": 400,
         "color": "#8B8B8B",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr89twuq2lhc",
-  "updatedAt": 1783284974739
+  "skeletonId": "skel_mr8aquc1oc8x",
+  "updatedAt": 1783286511121
 }

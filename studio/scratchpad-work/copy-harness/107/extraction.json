@@ -64,12 +64,12 @@
       "text": "58%",
       "box": {
         "x": 375,
-        "y": 338,
+        "y": 322,
         "w": 395,
-        "h": 165
+        "h": 188
       },
       "style": {
-        "fontSize": 155,
+        "fontSize": 200,
         "fontWeight": 500,
         "color": "#131313",
         "align": "left",
@@ -84,12 +84,12 @@
       "text": "Of Athletes Are Chronically Underhydrated",
       "box": {
         "x": 130,
-        "y": 523,
+        "y": 514,
         "w": 820,
-        "h": 165
+        "h": 173
       },
       "style": {
-        "fontSize": 62,
+        "fontSize": 74,
         "fontWeight": 400,
         "color": "#131313",
         "align": "center",
@@ -106,10 +106,10 @@
         "x": 378,
         "y": 696,
         "w": 325,
-        "h": 34
+        "h": 22
       },
       "style": {
-        "fontSize": 25,
+        "fontSize": 19,
         "fontWeight": 700,
         "color": "#131313",
         "align": "center",
@@ -260,7 +260,7 @@
         "h": 165
       },
       "style": {
-        "background": "#131313",
+        "background": "#f7f3f2",
         "shapeKind": "line"
       }
     },
@@ -275,7 +275,7 @@
         "h": 155
       },
       "style": {
-        "background": "#131313",
+        "background": "#f8c084",
         "shapeKind": "line"
       }
     },
@@ -290,7 +290,7 @@
         "h": 102
       },
       "style": {
-        "background": "#131313",
+        "background": "#f2eae4",
         "shapeKind": "arrow"
       }
     },
@@ -384,9 +384,9 @@
       "text": "WEEK 1",
       "box": {
         "x": 170,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
         "fontSize": 25,
@@ -404,9 +404,9 @@
       "text": "WEEK 2",
       "box": {
         "x": 320,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
         "fontSize": 25,
@@ -423,10 +423,10 @@
       "role": "caption",
       "text": "WEEK 3",
       "box": {
-        "x": 470,
-        "y": 1352,
+        "x": 475,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
         "fontSize": 25,
@@ -444,9 +444,9 @@
       "text": "WEEK 4",
       "box": {
         "x": 620,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
         "fontSize": 25,
@@ -464,9 +464,9 @@
       "text": "WEEK 5",
       "box": {
         "x": 775,
-        "y": 1352,
+        "y": 1351,
         "w": 130,
-        "h": 32
+        "h": 25
       },
       "style": {
         "fontSize": 25,
@@ -491,7 +491,7 @@
       "style": {
         "fontSize": 34,
         "fontWeight": 400,
-        "color": "#FFFFFF",
+        "color": "#fff0c2",
         "background": "#F6891F",
         "align": "center",
         "radius": 4,
@@ -506,9 +506,9 @@
       "text": "Most athletes think they're hydrating properly. Research says otherwise. And they don't even feel thirsty.",
       "box": {
         "x": 195,
-        "y": 1483,
+        "y": 1513,
         "w": 690,
-        "h": 145
+        "h": 79
       },
       "style": {
         "fontSize": 36,
@@ -519,5 +519,6 @@
         "uppercase": false
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

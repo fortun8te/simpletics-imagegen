@@ -41,7 +41,7 @@
         "h": 80
       },
       "style": {
-        "background": "#6E6E6E",
+        "background": "#0a0a0a",
         "radius": 8
       }
     },
@@ -52,12 +52,12 @@
       "text": "X.com",
       "box": {
         "x": 905,
-        "y": 240,
+        "y": 237,
         "w": 115,
-        "h": 44
+        "h": 42
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 44,
         "fontWeight": 400,
         "color": "#E7E9EA",
         "align": "right",
@@ -72,9 +72,9 @@
       "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
       "box": {
         "x": 50,
-        "y": 355,
+        "y": 360,
         "w": 920,
-        "h": 100
+        "h": 85
       },
       "style": {
         "fontSize": 36,
@@ -114,13 +114,13 @@
       "role": "meta",
       "text": "14:27 - 07/10/2025 - 757 Views",
       "box": {
-        "x": 60,
-        "y": 1658,
+        "x": 50,
+        "y": 1671,
         "w": 470,
-        "h": 44
+        "h": 29
       },
       "style": {
-        "fontSize": 32,
+        "fontSize": 29,
         "fontWeight": 400,
         "color": "#8B8B8B",
         "align": "left",
@@ -128,5 +128,6 @@
         "uppercase": false
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

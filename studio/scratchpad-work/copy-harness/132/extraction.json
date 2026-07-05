@@ -15,13 +15,13 @@
       "role": "headline",
       "text": "mfs are just always ready to hate 💀",
       "box": {
-        "x": 172,
-        "y": 328,
+        "x": 190,
+        "y": 345,
         "w": 700,
-        "h": 58
+        "h": 31
       },
       "style": {
-        "fontSize": 40,
+        "fontSize": 32,
         "fontWeight": 400,
         "color": "#1C1C1E",
         "align": "left",
@@ -95,14 +95,14 @@
       "text": "buddy really got a perm 😭",
       "box": {
         "x": 283,
-        "y": 700,
+        "y": 718,
         "w": 415,
-        "h": 72
+        "h": 35
       },
       "style": {
-        "fontSize": 31,
+        "fontSize": 38,
         "fontWeight": 400,
-        "color": "#F2F2F2",
+        "color": "#cfcdba",
         "background": "#26292F",
         "align": "left",
         "radius": 36,
@@ -117,14 +117,14 @@
       "text": "swiping up on another man's story to hate is diabolical lol",
       "box": {
         "x": 392,
-        "y": 793,
+        "y": 817,
         "w": 496,
-        "h": 112
+        "h": 69
       },
       "style": {
         "fontSize": 31,
         "fontWeight": 400,
-        "color": "#FFFFFF",
+        "color": "#ddbff9",
         "background": "#7B4FF2",
         "align": "left",
         "radius": 36,
@@ -139,14 +139,14 @@
       "text": "and it's not a perm 🖕🏽",
       "box": {
         "x": 540,
-        "y": 913,
+        "y": 934,
         "w": 348,
-        "h": 68
+        "h": 53
       },
       "style": {
-        "fontSize": 31,
+        "fontSize": 26,
         "fontWeight": 400,
-        "color": "#FFFFFF",
+        "color": "#d7c3f9",
         "background": "#7A52F4",
         "align": "left",
         "radius": 36,
@@ -176,12 +176,12 @@
       "text": "New Messages",
       "box": {
         "x": 455,
-        "y": 1000,
+        "y": 1007,
         "w": 170,
-        "h": 30
+        "h": 21
       },
       "style": {
-        "fontSize": 25,
+        "fontSize": 18,
         "fontWeight": 400,
         "color": "#8E9297",
         "align": "center",
@@ -231,10 +231,10 @@
       "role": "bubble",
       "text": "you're not fooling anyone bro 💀",
       "box": {
-        "x": 283,
-        "y": 1063,
+        "x": 299,
+        "y": 1081,
         "w": 482,
-        "h": 70
+        "h": 30
       },
       "style": {
         "fontSize": 31,
@@ -254,12 +254,12 @@
       "text": "Replied to you",
       "box": {
         "x": 308,
-        "y": 1158,
+        "y": 1163,
         "w": 200,
-        "h": 30
+        "h": 24
       },
       "style": {
-        "fontSize": 24,
+        "fontSize": 22,
         "fontWeight": 400,
         "color": "#8E9297",
         "align": "left",
@@ -288,15 +288,15 @@
       "role": "bubble",
       "text": "and it's not a perm 🖕🏽",
       "box": {
-        "x": 310,
-        "y": 1210,
+        "x": 308,
+        "y": 1237,
         "w": 315,
-        "h": 70
+        "h": 23
       },
       "style": {
-        "fontSize": 28,
+        "fontSize": 21,
         "fontWeight": 400,
-        "color": "#E8E4F5",
+        "color": "#a9a5cd",
         "background": "#3F3466",
         "align": "left",
         "radius": 34,
@@ -332,14 +332,14 @@
       "text": "then what is it? gods work?",
       "box": {
         "x": 283,
-        "y": 1302,
+        "y": 1320,
         "w": 405,
-        "h": 70
+        "h": 29
       },
       "style": {
         "fontSize": 31,
         "fontWeight": 400,
-        "color": "#F2F2F2",
+        "color": "#cfd2d6",
         "background": "#26292F",
         "align": "left",
         "radius": 36,
@@ -354,14 +354,14 @@
       "text": "just search based texture powder in amazon",
       "box": {
         "x": 367,
-        "y": 1395,
+        "y": 1421,
         "w": 521,
-        "h": 112
+        "h": 25
       },
       "style": {
-        "fontSize": 31,
+        "fontSize": 24,
         "fontWeight": 400,
-        "color": "#FFFFFF",
+        "color": "#c0d4fa",
         "background": "#4B55EE",
         "align": "left",
         "radius": 36,
@@ -376,14 +376,14 @@
       "text": "get out my dm's your worst than my girl",
       "box": {
         "x": 367,
-        "y": 1512,
+        "y": 1536,
         "w": 521,
-        "h": 110
+        "h": 25
       },
       "style": {
-        "fontSize": 31,
+        "fontSize": 24,
         "fontWeight": 400,
-        "color": "#FFFFFF",
+        "color": "#b9d7fb",
         "background": "#3E66F3",
         "align": "left",
         "radius": 36,
@@ -391,5 +391,6 @@
         "uppercase": false
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

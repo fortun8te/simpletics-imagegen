@@ -16,12 +16,12 @@
       "text": "WARNING",
       "box": {
         "x": 240,
-        "y": 58,
+        "y": 57,
         "w": 600,
-        "h": 118
+        "h": 112
       },
       "style": {
-        "fontSize": 105,
+        "fontSize": 119,
         "fontWeight": 400,
         "color": "#E85566",
         "align": "center",
@@ -51,12 +51,12 @@
       "text": "(ACTUALLY CONTAINS) 5G CREATINE MONOHYDRATE.",
       "box": {
         "x": 100,
-        "y": 182,
+        "y": 180,
         "w": 880,
-        "h": 44
+        "h": 32
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 33,
         "fontWeight": 400,
         "color": "#1A1A1A",
         "align": "center",
@@ -128,12 +128,12 @@
       "text": "TRACE CREATINE",
       "box": {
         "x": 130,
-        "y": 903,
+        "y": 907,
         "w": 290,
-        "h": 40
+        "h": 32
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 33,
         "fontWeight": 400,
         "color": "#1A1A1A",
         "align": "center",
@@ -169,12 +169,12 @@
       "text": "5G CREAPURE®",
       "box": {
         "x": 725,
-        "y": 900,
+        "y": 907,
         "w": 255,
-        "h": 44
+        "h": 32
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 33,
         "fontWeight": 700,
         "color": "#111111",
         "align": "left",
@@ -182,5 +182,6 @@
         "uppercase": true
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

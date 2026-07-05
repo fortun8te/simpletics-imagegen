@@ -79,7 +79,7 @@
       "style": {
         "fontSize": 34,
         "fontWeight": 500,
-        "color": "#4F5B53",
+        "color": "#68836c",
         "background": "#FFFFFF",
         "align": "center",
         "radius": 33,
@@ -101,7 +101,7 @@
       "style": {
         "fontSize": 34,
         "fontWeight": 500,
-        "color": "#4F5B53",
+        "color": "#68836c",
         "background": "#FFFFFF",
         "align": "center",
         "radius": 33,
@@ -137,9 +137,9 @@
       "text": "No need to ruin your hair to have perfect curls",
       "box": {
         "x": 90,
-        "y": 85,
+        "y": 87,
         "w": 900,
-        "h": 150
+        "h": 158
       },
       "style": {
         "fontSize": 60,
@@ -158,12 +158,12 @@
       "text": "This natural curl cream is all you need",
       "box": {
         "x": 240,
-        "y": 935,
+        "y": 943,
         "w": 600,
-        "h": 120
+        "h": 118
       },
       "style": {
-        "fontSize": 42,
+        "fontSize": 48,
         "fontWeight": 500,
         "color": "#7C9473",
         "align": "center",
@@ -172,5 +172,6 @@
         "fontFamily": "Georgia"
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

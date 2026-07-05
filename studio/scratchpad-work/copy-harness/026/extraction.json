@@ -30,12 +30,12 @@
       "text": "✓",
       "box": {
         "x": 232,
-        "y": 66,
+        "y": 73,
         "w": 70,
-        "h": 60
+        "h": 37
       },
       "style": {
-        "fontSize": 56,
+        "fontSize": 40,
         "fontWeight": 700,
         "color": "#7C9FE3",
         "align": "center",
@@ -49,13 +49,13 @@
       "role": "icon",
       "text": "✗",
       "box": {
-        "x": 795,
-        "y": 66,
+        "x": 775,
+        "y": 73,
         "w": 70,
-        "h": 60
+        "h": 37
       },
       "style": {
-        "fontSize": 56,
+        "fontSize": 40,
         "fontWeight": 700,
         "color": "#D5566B",
         "align": "center",
@@ -70,12 +70,12 @@
       "text": "DORE & ROSE",
       "box": {
         "x": 140,
-        "y": 142,
+        "y": 147,
         "w": 250,
-        "h": 42
+        "h": 35
       },
       "style": {
-        "fontSize": 32,
+        "fontSize": 38,
         "fontWeight": 600,
         "color": "#111418",
         "align": "center",
@@ -89,13 +89,13 @@
       "role": "eyebrow",
       "text": "OTHERS'",
       "box": {
-        "x": 735,
-        "y": 142,
+        "x": 728,
+        "y": 147,
         "w": 165,
-        "h": 42
+        "h": 34
       },
       "style": {
-        "fontSize": 32,
+        "fontSize": 36,
         "fontWeight": 600,
         "color": "#111418",
         "align": "center",
@@ -110,12 +110,12 @@
       "text": "Silk",
       "box": {
         "x": 145,
-        "y": 190,
+        "y": 205,
         "w": 230,
-        "h": 125
+        "h": 93
       },
       "style": {
-        "fontSize": 110,
+        "fontSize": 99,
         "fontWeight": 700,
         "color": "#111418",
         "align": "center",
@@ -130,7 +130,7 @@
       "role": "badge",
       "text": "VS",
       "box": {
-        "x": 488,
+        "x": 489,
         "y": 203,
         "w": 102,
         "h": 102
@@ -152,13 +152,13 @@
       "role": "headline",
       "text": "Satin",
       "box": {
-        "x": 672,
-        "y": 190,
+        "x": 673,
+        "y": 204,
         "w": 275,
-        "h": 125
+        "h": 93
       },
       "style": {
-        "fontSize": 110,
+        "fontSize": 99,
         "fontWeight": 700,
         "color": "#111418",
         "align": "center",
@@ -195,12 +195,12 @@
       "text": "Premium Silk",
       "box": {
         "x": 95,
-        "y": 1048,
+        "y": 1055,
         "w": 340,
-        "h": 62
+        "h": 45
       },
       "style": {
-        "fontSize": 56,
+        "fontSize": 49,
         "fontWeight": 700,
         "color": "#111418",
         "align": "left",
@@ -215,12 +215,12 @@
       "text": "Pillowcase",
       "box": {
         "x": 95,
-        "y": 1118,
+        "y": 1114,
         "w": 200,
-        "h": 44
+        "h": 27
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 26,
         "fontWeight": 600,
         "color": "#8B8B8B",
         "align": "left",
@@ -235,12 +235,12 @@
       "text": "Satin",
       "box": {
         "x": 800,
-        "y": 1048,
+        "y": 1056,
         "w": 190,
-        "h": 62
+        "h": 46
       },
       "style": {
-        "fontSize": 56,
+        "fontSize": 50,
         "fontWeight": 700,
         "color": "#111418",
         "align": "right",
@@ -255,12 +255,12 @@
       "text": "Pillowcase",
       "box": {
         "x": 810,
-        "y": 1118,
+        "y": 1114,
         "w": 180,
-        "h": 44
+        "h": 25
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 24,
         "fontWeight": 600,
         "color": "#8B8B8B",
         "align": "right",
@@ -275,9 +275,9 @@
       "text": "✓ Premium silk",
       "box": {
         "x": 95,
-        "y": 1182,
+        "y": 1190,
         "w": 320,
-        "h": 56
+        "h": 40
       },
       "style": {
         "fontSize": 44,
@@ -295,12 +295,12 @@
       "text": "✓ Antibacterial",
       "box": {
         "x": 95,
-        "y": 1288,
+        "y": 1299,
         "w": 340,
-        "h": 56
+        "h": 37
       },
       "style": {
-        "fontSize": 44,
+        "fontSize": 40,
         "fontWeight": 500,
         "color": "#111418",
         "align": "left",
@@ -315,12 +315,12 @@
       "text": "✓ Protects skin & hair",
       "box": {
         "x": 95,
-        "y": 1392,
+        "y": 1397,
         "w": 310,
-        "h": 116
+        "h": 106
       },
       "style": {
-        "fontSize": 44,
+        "fontSize": 34,
         "fontWeight": 500,
         "color": "#111418",
         "align": "left",
@@ -335,9 +335,9 @@
       "text": "Synthetic fabrics ✗",
       "box": {
         "x": 570,
-        "y": 1182,
+        "y": 1190,
         "w": 420,
-        "h": 56
+        "h": 40
       },
       "style": {
         "fontSize": 44,
@@ -354,10 +354,10 @@
       "role": "drawback",
       "text": "Bacterial breeding ground ✗",
       "box": {
-        "x": 590,
-        "y": 1262,
+        "x": 610,
+        "y": 1273,
         "w": 400,
-        "h": 116
+        "h": 96
       },
       "style": {
         "fontSize": 44,
@@ -375,9 +375,9 @@
       "text": "Causes friction with skin & hair ✗",
       "box": {
         "x": 550,
-        "y": 1392,
+        "y": 1405,
         "w": 440,
-        "h": 116
+        "h": 96
       },
       "style": {
         "fontSize": 44,
@@ -394,7 +394,7 @@
       "role": "cta",
       "text": "100 Nights Risk Free Trial",
       "box": {
-        "x": 255,
+        "x": 254,
         "y": 1628,
         "w": 572,
         "h": 112
@@ -410,5 +410,6 @@
         "uppercase": false
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

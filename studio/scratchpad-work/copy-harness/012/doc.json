@@ -1,13 +1,13 @@
 {
-  "id": "harness_012_6eec11ac",
-  "name": "copy-harness harness_012_6eec11ac",
+  "id": "harness_012_52dea7f2",
+  "name": "copy-harness harness_012_52dea7f2",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr89sttc-17",
+      "id": "base-mr8apkb4-x",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,18 +23,18 @@
       }
     },
     {
-      "id": "headline-mr89sttc-s",
+      "id": "headline-mr8apkb4-i",
       "type": "text",
       "role": "headline",
       "text": "Poop More While\nOn a GLP-1",
       "box": {
-        "x": 65,
-        "y": 362,
+        "x": 62,
+        "y": 350,
         "w": 745,
-        "h": 290
+        "h": 206
       },
       "style": {
-        "fontSize": 92,
+        "fontSize": 74,
         "fontWeight": 800,
         "color": "#153A20",
         "align": "left",
@@ -42,10 +42,11 @@
         "uppercase": false,
         "italic": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "benefit-mr89sttc-t",
+      "id": "benefit-mr8apkb4-j",
       "type": "badge",
       "role": "benefit",
       "text": "More Fiber Than\n2 cups of Broccoli",
@@ -65,10 +66,11 @@
         "lineHeight": 1.15,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sttc-u",
+      "id": "icon-mr8apkb4-k",
       "type": "image",
       "role": "icon",
       "box": {
@@ -77,12 +79,20 @@
         "w": 74,
         "h": 74
       },
-      "style": {},
-      "src": "/refasset?id=harness-012m8cd755cc",
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.342,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr89sttc-v",
+      "id": "benefit-mr8apkb4-l",
       "type": "badge",
       "role": "benefit",
       "text": "20+ Vitamins & Minerals",
@@ -102,10 +112,11 @@
         "lineHeight": 1.15,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sttc-w",
+      "id": "icon-mr8apkb4-m",
       "type": "image",
       "role": "icon",
       "box": {
@@ -114,12 +125,20 @@
         "w": 74,
         "h": 74
       },
-      "style": {},
-      "src": "/refasset?id=harness-012m44e1b9a4",
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.404,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr89sttc-x",
+      "id": "benefit-mr8apkb4-n",
       "type": "badge",
       "role": "benefit",
       "text": "Organic Fruits & Veggies",
@@ -139,10 +158,11 @@
         "lineHeight": 1.15,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sttc-y",
+      "id": "icon-mr8apkb4-o",
       "type": "image",
       "role": "icon",
       "box": {
@@ -152,11 +172,11 @@
         "h": 74
       },
       "style": {},
-      "src": "/refasset?id=harness-012m96ce255b",
+      "src": "/refasset?id=harness-012m194a92be",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr89sttc-z",
+      "id": "benefit-mr8apkb4-p",
       "type": "badge",
       "role": "benefit",
       "text": "Prebiotics",
@@ -176,10 +196,11 @@
         "lineHeight": 1.15,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sttc-10",
+      "id": "icon-mr8apkb4-q",
       "type": "image",
       "role": "icon",
       "box": {
@@ -188,12 +209,20 @@
         "w": 74,
         "h": 74
       },
-      "style": {},
-      "src": "/refasset?id=harness-012mca29c963",
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.528,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr89sttc-11",
+      "id": "benefit-mr8apkb4-r",
       "type": "badge",
       "role": "benefit",
       "text": "Adaptogens",
@@ -213,10 +242,11 @@
         "lineHeight": 1.15,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sttc-12",
+      "id": "icon-mr8apkb4-s",
       "type": "image",
       "role": "icon",
       "box": {
@@ -225,12 +255,20 @@
         "w": 74,
         "h": 74
       },
-      "style": {},
-      "src": "/refasset?id=harness-012mcf426af6",
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.59,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr89sttc-13",
+      "id": "benefit-mr8apkb4-t",
       "type": "badge",
       "role": "benefit",
       "text": "0 Sugar",
@@ -250,10 +288,11 @@
         "lineHeight": 1.15,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sttc-14",
+      "id": "icon-mr8apkb4-u",
       "type": "image",
       "role": "icon",
       "box": {
@@ -263,11 +302,11 @@
         "h": 74
       },
       "style": {},
-      "src": "/refasset?id=harness-012m5da3017a",
+      "src": "/refasset?id=harness-012mf695658e",
       "name": "Cut-out"
     },
     {
-      "id": "product-mr89sttc-15",
+      "id": "product-mr8apkb4-v",
       "type": "image",
       "role": "product",
       "box": {
@@ -277,16 +316,16 @@
         "h": 750
       },
       "style": {},
-      "src": "/refasset?id=harness-012mc1c153ef",
+      "src": "/refasset?id=harness-012me5741da5",
       "name": "Cut-out"
     },
     {
-      "id": "social-proof-mr89sttc-16",
+      "id": "social-proof-mr8apkb4-w",
       "type": "badge",
       "role": "social-proof",
       "text": "55,000+ ★★★★★ reviews",
       "box": {
-        "x": 205,
+        "x": 204,
         "y": 1492,
         "w": 672,
         "h": 98
@@ -301,9 +340,10 @@
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr89sttcr96v",
-  "updatedAt": 1783284936860
+  "skeletonId": "skel_mr8apkb4qwew",
+  "updatedAt": 1783286466116
 }

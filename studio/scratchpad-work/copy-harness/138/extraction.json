@@ -78,12 +78,12 @@
       "text": "Consistency",
       "box": {
         "x": 577,
-        "y": 920,
+        "y": 942,
         "w": 425,
-        "h": 78
+        "h": 53
       },
       "style": {
-        "fontSize": 74,
+        "fontSize": 57,
         "fontWeight": 700,
         "color": "#FFFFFF",
         "align": "center",
@@ -98,12 +98,12 @@
       "text": "Starts With The Right Inputs",
       "box": {
         "x": 605,
-        "y": 1002,
+        "y": 995,
         "w": 370,
-        "h": 110
+        "h": 124
       },
       "style": {
-        "fontSize": 46,
+        "fontSize": 52,
         "fontWeight": 400,
         "color": "#FFFFFF",
         "align": "center",
@@ -132,5 +132,6 @@
         "shape": "logo"
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

@@ -6,9 +6,18 @@
   "ms": {
     "extract": 0,
     "assemble": 1,
-    "total": 8957
+    "total": 11870
   },
   "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "blurred-username fill: #6E6E6E → #0a0a0a (interior median of 7 patches, Δ0.39)",
+    "x-watermark fontSize: 34 → 44 (1 ink line, block 32px)",
+    "x-watermark box: y240 h44 → y237 h42 (tight ink rows + 5px pad)",
+    "tweet-body box: y355 h100 → y360 h85 (tight ink rows + 10px pad)",
+    "timestamp-meta fontSize: 32 → 29 (1 ink line, block 21px)",
+    "timestamp-meta box: y1658 h44 → y1671 h29 (tight ink rows + 4px pad)",
+    "timestamp-meta: left margin x60 → x50 (sibling group mode)"
+  ],
   "archetype": "social-post",
   "layerCountExtracted": 6,
   "parsePath": "loose",
@@ -21,7 +30,7 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 98.7,
-  "pixelScore": 98.7,
+  "pixelScoreRaw": 99.1,
+  "pixelScore": 99.1,
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/042/side-by-side.png"
 }

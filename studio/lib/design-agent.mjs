@@ -610,12 +610,42 @@ export function applySkeletonToDoc(doc, skeleton) {
   const s = Math.min(to.w / from.w, to.h / from.h);
   const fresh = JSON.parse(JSON.stringify(skeleton.layers || []));
   let count = 0;
+  // measuredBoxes (harness v2 scene reads): boxes came MEASURED from the reference pixels —
+  // autoH re-measure would GROW them past the design's real bounds (ad 076: review-card copy
+  // spilled over its card and collided with the author line). Measured text keeps its box; the
+  // renderer + a shrink-only font fit handle overflow instead.
+  const measured = skeleton.measuredBoxes === true;
   walkNodes(fresh, (n) => {
     n.id = newId(n.role || n.type || 'layer');
     if (n.box) n.box = scaleBoxInto(n.box, from, to);
     if (n.type !== 'group') {
       if (n.style) n.style = scaleStyleMetrics(n.style, s);
-      if (n.type === 'text' || n.type === 'badge' || n.type === 'button') n.autoH = true;
+      if (n.type === 'text' || n.type === 'badge' || n.type === 'button') {
+        if (measured) {
+          n.autoH = false;
+          n.sizeLocked = true;
+          // shrink-only fit: reduce fontSize until the wrapped estimate fits the measured box
+          if (n.type === 'text' && n.text && n.style?.fontSize && n.box?.w && n.box?.h) {
+            const glyph = (n.style.fontWeight || 400) >= 700 ? 0.55 : 0.52;
+            const lh = n.style.lineHeight || 1.25;
+            const wrapH = (fs) => {
+              const cw = fs * glyph;
+              let lines = 1, cur = 0;
+              for (const w of String(n.text).split(/\s+/).filter(Boolean)) {
+                const ww = w.length * cw;
+                if (cur > 0 && cur + cw + ww > n.box.w) { lines++; cur = ww; } else cur = cur ? cur + cw + ww : ww;
+              }
+              return lines * fs * lh;
+            };
+            let guard = 0;
+            while (n.style.fontSize > 14 && wrapH(n.style.fontSize) > n.box.h * 1.12 && guard++ < 24) {
+              n.style.fontSize = Math.round(n.style.fontSize * 0.94);
+            }
+          }
+        } else {
+          n.autoH = true;
+        }
+      }
     }
     count++;
   });
@@ -2846,7 +2876,7 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
   // Lock the doc canvas to the reference's aspect (the extraction already computed it) so the
   // rebuilt comp copies the reference's real proportions.
   if (ext.canvas && ext.canvas.w && ext.canvas.h) work.canvas = { w: ext.canvas.w, h: ext.canvas.h };
-  const skeleton = { id: `skel_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, canvas: ext.canvas, layers: ext.layers, archetype: ext.archetype, background: ext.background, theme: ext.theme };
+  const skeleton = { id: `skel_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, canvas: ext.canvas, layers: ext.layers, archetype: ext.archetype, background: ext.background, theme: ext.theme, measuredBoxes: ext.measuredBoxes === true };
 
   // MAKER-CHECKER: the "maker" applies the skeleton; the deterministic verifyDesign is the "checker"
   // (a cheap second pass — generate then validate — with no extra model latency).

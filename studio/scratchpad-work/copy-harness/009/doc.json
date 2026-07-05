@@ -1,13 +1,13 @@
 {
-  "id": "harness_009_4a1cd632",
-  "name": "copy-harness harness_009_4a1cd632",
+  "id": "harness_009_a5becd05",
+  "name": "copy-harness harness_009_a5becd05",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr89sh4o-l",
+      "id": "base-mr8aoelu-1c",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "divider-mr89sh4o-0",
+      "id": "divider-mr8aoelt-r",
       "type": "shape",
       "role": "divider",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "icon-mr89sh4o-1",
+      "id": "icon-mr8aoelt-s",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -54,28 +54,29 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr89sh4o-2",
+      "id": "meta-mr8aoelt-t",
       "type": "text",
       "role": "meta",
       "text": "Post",
       "box": {
         "x": 460,
-        "y": 48,
+        "y": 51,
         "w": 160,
-        "h": 52
+        "h": 45
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 43,
         "fontWeight": 700,
         "color": "#E7E9EA",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sh4o-3",
+      "id": "icon-mr8aoelt-u",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -92,7 +93,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "avatar-mr89sh4o-4",
+      "id": "avatar-mr8aoelt-v",
       "type": "image",
       "role": "avatar",
       "box": {
@@ -114,28 +115,29 @@
       "name": "Avatar (cut out)"
     },
     {
-      "id": "meta-mr89sh4o-5",
+      "id": "meta-mr8aoelt-w",
       "type": "text",
       "role": "meta",
       "text": "UPFRONT",
       "box": {
         "x": 182,
-        "y": 150,
+        "y": 156,
         "w": 210,
-        "h": 44
+        "h": 33
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 32,
         "fontWeight": 700,
         "color": "#E7E9EA",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sh4o-6",
+      "id": "icon-mr8aoelt-x",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -152,7 +154,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr89sh4o-7",
+      "id": "meta-mr8aoelt-y",
       "type": "text",
       "role": "meta",
       "text": "@UpfrontFood",
@@ -160,20 +162,21 @@
         "x": 182,
         "y": 194,
         "w": 240,
-        "h": 42
+        "h": 35
       },
       "style": {
-        "fontSize": 32,
+        "fontSize": 34,
         "fontWeight": 400,
         "color": "#71767B",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "cta-mr89sh4o-8",
+      "id": "cta-mr8aoelt-z",
       "type": "button",
       "role": "cta",
       "text": "Volgend",
@@ -193,52 +196,55 @@
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "body-mr89sh4o-9",
+      "id": "body-mr8aoelt-10",
       "type": "text",
       "role": "body",
       "text": "LAATSTE SITE WIDE SALE VAN 2026 ⌛\n\nDe Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.\n\nDaarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.\n\nSchrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
       "box": {
-        "x": 47,
+        "x": 45,
         "y": 318,
-        "w": 756,
-        "h": 570
+        "w": 990,
+        "h": 465
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 44,
         "fontWeight": 400,
         "color": "#E7E9EA",
         "align": "left",
         "lineHeight": 1.25,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "meta-mr89sh4o-a",
+      "id": "meta-mr8aoelt-11",
       "type": "text",
       "role": "meta",
       "text": "05:00 PM · 12-05-2026 · 121K weergaven",
       "box": {
         "x": 47,
-        "y": 922,
+        "y": 926,
         "w": 660,
-        "h": 75
+        "h": 35
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 32,
         "fontWeight": 400,
-        "color": "#71767B",
+        "color": "#a3a4a5",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "divider-mr89sh4o-b",
+      "id": "divider-mr8aoelt-12",
       "type": "shape",
       "role": "divider",
       "box": {
@@ -252,7 +258,7 @@
       }
     },
     {
-      "id": "icon-mr89sh4o-c",
+      "id": "icon-mr8aoelt-13",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -269,15 +275,15 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr89sh4o-d",
+      "id": "meta-mr8aoelt-14",
       "type": "text",
       "role": "meta",
       "text": "257",
       "box": {
         "x": 100,
-        "y": 1015,
+        "y": 1016,
         "w": 90,
-        "h": 44
+        "h": 35
       },
       "style": {
         "fontSize": 34,
@@ -287,10 +293,11 @@
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sh4o-e",
+      "id": "icon-mr8aoelt-15",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -307,15 +314,15 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr89sh4o-f",
+      "id": "meta-mr8aoelt-16",
       "type": "text",
       "role": "meta",
       "text": "66",
       "box": {
         "x": 348,
-        "y": 1015,
+        "y": 1016,
         "w": 70,
-        "h": 44
+        "h": 35
       },
       "style": {
         "fontSize": 34,
@@ -325,10 +332,11 @@
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sh4o-g",
+      "id": "icon-mr8aoelt-17",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -345,15 +353,15 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr89sh4o-h",
+      "id": "meta-mr8aoelt-18",
       "type": "text",
       "role": "meta",
       "text": "21K",
       "box": {
         "x": 584,
-        "y": 1015,
+        "y": 1016,
         "w": 90,
-        "h": 44
+        "h": 35
       },
       "style": {
         "fontSize": 34,
@@ -363,10 +371,11 @@
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sh4o-i",
+      "id": "icon-mr8aoelt-19",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -383,15 +392,15 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr89sh4o-j",
+      "id": "meta-mr8aoelt-1a",
       "type": "text",
       "role": "meta",
       "text": "89",
       "box": {
         "x": 842,
-        "y": 1015,
+        "y": 1016,
         "w": 70,
-        "h": 44
+        "h": 35
       },
       "style": {
         "fontSize": 34,
@@ -401,10 +410,11 @@
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89sh4o-k",
+      "id": "icon-mr8aoelu-1b",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -421,6 +431,6 @@
       "name": "Logo (vectorized)"
     }
   ],
-  "skeletonId": "skel_mr89sh4ooerd",
-  "updatedAt": 1783284907950
+  "skeletonId": "skel_mr8aoeltzkus",
+  "updatedAt": 1783286397561
 }

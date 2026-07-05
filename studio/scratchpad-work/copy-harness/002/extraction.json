@@ -51,12 +51,12 @@
       "text": "ALLE ESSENTIALS",
       "box": {
         "x": 115,
-        "y": 252,
+        "y": 250,
         "w": 850,
-        "h": 85
+        "h": 93
       },
       "style": {
-        "fontSize": 72,
+        "fontSize": 99,
         "fontWeight": 900,
         "color": "#111111",
         "align": "center",
@@ -71,12 +71,12 @@
       "text": "KRACHTSPORT BUNDEL",
       "box": {
         "x": 160,
-        "y": 448,
+        "y": 444,
         "w": 760,
-        "h": 55
+        "h": 62
       },
       "style": {
-        "fontSize": 46,
+        "fontSize": 67,
         "fontWeight": 800,
         "color": "#111111",
         "align": "center",
@@ -91,12 +91,12 @@
       "text": "€63",
       "box": {
         "x": 330,
-        "y": 540,
+        "y": 539,
         "w": 150,
-        "h": 65
+        "h": 71
       },
       "style": {
-        "fontSize": 54,
+        "fontSize": 76,
         "fontWeight": 700,
         "color": "#1A1A1A",
         "align": "center",
@@ -140,12 +140,12 @@
       "text": "€49",
       "box": {
         "x": 580,
-        "y": 535,
+        "y": 538,
         "w": 160,
-        "h": 70
+        "h": 72
       },
       "style": {
-        "fontSize": 58,
+        "fontSize": 78,
         "fontWeight": 900,
         "color": "#111111",
         "align": "center",
@@ -174,12 +174,12 @@
       "text": "KOOP NU VIA UPFRONT.NL",
       "box": {
         "x": 280,
-        "y": 832,
+        "y": 830,
         "w": 520,
-        "h": 48
+        "h": 41
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 43,
         "fontWeight": 500,
         "color": "#1A1A1A",
         "align": "center",
@@ -208,5 +208,6 @@
         "shape": "media"
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

@@ -1,13 +1,13 @@
 {
-  "id": "harness_138_8ce39aec",
-  "name": "copy-harness harness_138_8ce39aec",
+  "id": "harness_138_180a84ab",
+  "name": "copy-harness harness_138_180a84ab",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr89vj6b-5k",
+      "id": "base-mr8as4u9-4s",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "decor-mr89vj6b-5f",
+      "id": "decor-mr8as4u9-4n",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -62,7 +62,7 @@
       }
     },
     {
-      "id": "product-mr89vj6b-5g",
+      "id": "product-mr8as4u9-4o",
       "type": "image",
       "role": "product",
       "box": {
@@ -71,41 +71,50 @@
         "w": 400,
         "h": 1035
       },
-      "style": {},
-      "src": "/refasset?id=harness-138m83ca2bdc",
+      "style": {
+        "crop": {
+          "x": 0.137,
+          "y": 0.241,
+          "w": 0.37,
+          "h": 0.539
+        },
+        "radius": 14
+      },
+      "src": "/refasset?id=harness-138",
       "name": "Cut-out"
     },
     {
-      "id": "headline-mr89vj6b-5h",
+      "id": "headline-mr8as4u9-4p",
       "type": "text",
       "role": "headline",
       "text": "Consistency",
       "box": {
         "x": 577,
-        "y": 920,
+        "y": 942,
         "w": 425,
-        "h": 82
+        "h": 53
       },
       "style": {
-        "fontSize": 74,
+        "fontSize": 51,
         "fontWeight": 700,
         "color": "#FFFFFF",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "subhead-mr89vj6b-5i",
+      "id": "subhead-mr8as4u9-4q",
       "type": "text",
       "role": "subhead",
       "text": "Starts With The Right Inputs",
       "box": {
         "x": 605,
-        "y": 1002,
+        "y": 995,
         "w": 370,
-        "h": 110
+        "h": 124
       },
       "style": {
         "fontSize": 46,
@@ -115,10 +124,11 @@
         "lineHeight": 1.2,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "logo-mr89vj6b-5j",
+      "id": "logo-mr8as4u9-4r",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -135,6 +145,6 @@
       "name": "Logo (vectorized)"
     }
   ],
-  "skeletonId": "skel_mr89vj6bqllt",
-  "updatedAt": 1783285052984
+  "skeletonId": "skel_mr8as4u9bc4a",
+  "updatedAt": 1783286573546
 }

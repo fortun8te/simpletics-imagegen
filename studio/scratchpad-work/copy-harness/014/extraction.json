@@ -30,14 +30,14 @@
       "text": "NUTRITIONAL\nSUPPORT DURING\nPERIMENOPAUSE",
       "box": {
         "x": 145,
-        "y": 138,
+        "y": 93,
         "w": 790,
-        "h": 300
+        "h": 390
       },
       "style": {
-        "fontSize": 96,
+        "fontSize": 154,
         "fontWeight": 800,
-        "color": "#F3E9C9",
+        "color": "#1775b6",
         "align": "center",
         "lineHeight": 1.05,
         "uppercase": true
@@ -50,12 +50,12 @@
       "text": "Vitamin D3\nand K2 support\nbone health*",
       "box": {
         "x": 55,
-        "y": 528,
+        "y": 519,
         "w": 275,
-        "h": 108
+        "h": 111
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 54,
         "fontWeight": 700,
         "color": "#EFE289",
         "align": "center",
@@ -85,12 +85,12 @@
       "text": "B vitamins support\ncognitive health,\nmood and energy*",
       "box": {
         "x": 685,
-        "y": 585,
+        "y": 587,
         "w": 350,
-        "h": 110
+        "h": 103
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 24,
         "fontWeight": 700,
         "color": "#EFE289",
         "align": "center",
@@ -135,12 +135,12 @@
       "text": "Fiber supports\ngut health*",
       "box": {
         "x": 60,
-        "y": 1112,
+        "y": 1119,
         "w": 255,
-        "h": 85
+        "h": 62
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 54,
         "fontWeight": 700,
         "color": "#EFE289",
         "align": "center",
@@ -170,12 +170,12 @@
       "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
       "box": {
         "x": 605,
-        "y": 1210,
+        "y": 1215,
         "w": 435,
-        "h": 115
+        "h": 104
       },
       "style": {
-        "fontSize": 34,
+        "fontSize": 49,
         "fontWeight": 700,
         "color": "#EFE289",
         "align": "center",
@@ -189,13 +189,13 @@
       "role": "legal",
       "text": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
       "box": {
-        "x": 72,
-        "y": 1342,
+        "x": 70,
+        "y": 1335,
         "w": 940,
-        "h": 66
+        "h": 60
       },
       "style": {
-        "fontSize": 24,
+        "fontSize": 27,
         "fontWeight": 400,
         "color": "#F2EDDD",
         "align": "center",
@@ -204,5 +204,6 @@
         "shadow": true
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

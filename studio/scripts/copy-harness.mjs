@@ -27,6 +27,7 @@ import { randomUUID } from 'node:crypto';
 import { homedir } from 'node:os';
 
 import { extractLayout } from '../lib/layout-extract.mjs';
+import { applySceneTruth } from '../lib/scene-truth.mjs';
 import { runCopyReference } from '../lib/design-agent.mjs';
 import { renderDesignHtml, makeImageResolver } from '../lib/designstore.mjs';
 import { renderCompPng } from '../lib/self-vision.mjs';
@@ -170,7 +171,16 @@ async function runOne(filename) {
     const sceneFile = join(STUDIO, 'scratchpad-work', 'scene-reads', `${adId(filename)}.json`);
     if (existsSync(sceneFile)) {
       ext = JSON.parse(readFileSync(sceneFile, 'utf8'));
+      // FONT MATCH (silhouette evidence): patch confident fontFamily picks into the scene file
+      // BEFORE loading — wrong font faces were a top owner complaint; this decides by rendering
+      // candidates and correlating against the reference crop, not by guessing.
+      try {
+        const { matchFontsForScene } = await import('../lib/font-match.mjs');
+        result.fontMatch = await matchFontsForScene(sceneFile, refPng);
+      } catch { /* font match is an upgrade, never a gate */ }
+      ext = JSON.parse(readFileSync(sceneFile, 'utf8'));
       ext.ok = ext.ok !== false;
+      ext.measuredBoxes = true; // scene boxes are pixel-measured — assembler must not autoH-grow them
       result.readSource = 'scene-file';
     } else {
       // selfCheck: true — ALWAYS run the iterative render→compare→correct rounds (up to 3), not
@@ -188,6 +198,17 @@ async function runOne(filename) {
     result.ms.total = Date.now() - t0;
     writeFileSync(join(outDir, 'result.json'), JSON.stringify(result, null, 2));
     return result;
+  }
+
+  // ── PIXEL-TRUTH PASS (lib/scene-truth.mjs) — the ONE wiring call ─────────────────────────────
+  // Runs after BOTH read sources (scene-file injection / pool extraction above) and BEFORE
+  // runCopyReference: attributes that are MEASURABLE from the reference pixels (page background,
+  // panel/badge fills, text colors, font sizes, alignment) are re-measured and the reader's
+  // estimates overridden on disagreement. The reader narrates; the pixels decide. Never throws.
+  {
+    const truth = applySceneTruth(ext, srcPath);
+    ext = truth.ext;
+    result.sceneTruthCorrections = truth.corrections;
   }
 
   result.archetype = ext.archetype || null;

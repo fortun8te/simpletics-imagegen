@@ -5,10 +5,22 @@
   "error": null,
   "ms": {
     "extract": 0,
-    "assemble": 160,
-    "total": 7419
+    "assemble": 172,
+    "total": 8310
   },
   "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "headline fontSize: 72 → 99 (1 ink line, block 71px)",
+    "headline box: y252 h85 → y250 h93 (tight ink rows + 11px pad)",
+    "subhead fontSize: 46 → 67 (1 ink line, block 48px)",
+    "subhead box: y448 h55 → y444 h62 (tight ink rows + 7px pad)",
+    "price-old fontSize: 54 → 76 (1 ink line, block 55px)",
+    "price-old box: y540 h65 → y539 h71 (tight ink rows + 8px pad)",
+    "price-new fontSize: 58 → 78 (1 ink line, block 56px)",
+    "price-new box: y535 h70 → y538 h72 (tight ink rows + 8px pad)",
+    "cta-caption fontSize: 36 → 43 (1 ink line, block 31px)",
+    "cta-caption box: y832 h48 → y830 h41 (tight ink rows + 5px pad)"
+  ],
   "archetype": "offer-hero",
   "layerCountExtracted": 11,
   "parsePath": "loose",
@@ -17,11 +29,11 @@
   "layersApplied": 11,
   "leavesInResult": 12,
   "verify": {
-    "ready": false
+    "ready": true
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 92.9,
-  "pixelScore": 92.9,
+  "pixelScoreRaw": 93.7,
+  "pixelScore": 93.7,
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/002/side-by-side.png"
 }

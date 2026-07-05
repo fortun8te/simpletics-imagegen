@@ -1,13 +1,13 @@
 {
-  "id": "harness_002_e96dcf6f",
-  "name": "copy-harness harness_002_e96dcf6f",
+  "id": "harness_002_74f42fdc",
+  "name": "copy-harness harness_002_74f42fdc",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr89dm1m-k",
+      "id": "base-mr8ap5er-b",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "card-mr89dm1m-9",
+      "id": "card-mr8ap5er-0",
       "type": "shape",
       "role": "card",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "logo-mr89dm1m-a",
+      "id": "logo-mr8ap5er-1",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -54,70 +54,73 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "headline-mr89dm1m-b",
+      "id": "headline-mr8ap5er-2",
       "type": "text",
       "role": "headline",
       "text": "ALLE ESSENTIALS",
       "box": {
         "x": 115,
-        "y": 252,
+        "y": 250,
         "w": 850,
-        "h": 85
+        "h": 93
       },
       "style": {
-        "fontSize": 72,
+        "fontSize": 93,
         "fontWeight": 900,
         "color": "#111111",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "subhead-mr89dm1m-c",
+      "id": "subhead-mr8ap5er-3",
       "type": "text",
       "role": "subhead",
       "text": "KRACHTSPORT BUNDEL",
       "box": {
         "x": 160,
-        "y": 448,
+        "y": 444,
         "w": 760,
-        "h": 55
+        "h": 62
       },
       "style": {
-        "fontSize": 46,
+        "fontSize": 63,
         "fontWeight": 800,
         "color": "#111111",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "price-mr89dm1m-d",
+      "id": "price-mr8ap5er-4",
       "type": "text",
       "role": "price",
       "text": "€63",
       "box": {
         "x": 330,
-        "y": 540,
+        "y": 539,
         "w": 150,
-        "h": 65
+        "h": 71
       },
       "style": {
-        "fontSize": 54,
+        "fontSize": 71,
         "fontWeight": 700,
         "color": "#1A1A1A",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "decor-mr89dm1m-e",
+      "id": "decor-mr8ap5er-5",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -131,7 +134,7 @@
       }
     },
     {
-      "id": "decor-mr89dm1m-f",
+      "id": "decor-mr8ap5er-6",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -146,28 +149,29 @@
       }
     },
     {
-      "id": "price-mr89dm1m-g",
+      "id": "price-mr8ap5er-7",
       "type": "text",
       "role": "price",
       "text": "€49",
       "box": {
         "x": 580,
-        "y": 535,
+        "y": 538,
         "w": 160,
-        "h": 70
+        "h": 72
       },
       "style": {
-        "fontSize": 58,
+        "fontSize": 73,
         "fontWeight": 900,
         "color": "#111111",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "decor-mr89dm1m-h",
+      "id": "decor-mr8ap5er-8",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -181,28 +185,29 @@
       }
     },
     {
-      "id": "caption-mr89dm1m-i",
+      "id": "caption-mr8ap5er-9",
       "type": "text",
       "role": "caption",
       "text": "KOOP NU VIA UPFRONT.NL",
       "box": {
         "x": 280,
-        "y": 832,
+        "y": 830,
         "w": 520,
-        "h": 48
+        "h": 41
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 40,
         "fontWeight": 500,
         "color": "#1A1A1A",
         "align": "center",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "product-mr89dm1m-j",
+      "id": "product-mr8ap5er-a",
       "type": "image",
       "role": "product",
       "box": {
@@ -224,6 +229,6 @@
       "name": "Cut-out"
     }
   ],
-  "skeletonId": "skel_mr89dm1lodkj",
-  "updatedAt": 1783284214392
+  "skeletonId": "skel_mr8ap5eqkv03",
+  "updatedAt": 1783286432333
 }

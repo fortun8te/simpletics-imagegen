@@ -1,13 +1,13 @@
 {
-  "id": "harness_010_a6f793e3",
-  "name": "copy-harness harness_010_a6f793e3",
+  "id": "harness_010_cd97026c",
+  "name": "copy-harness harness_010_cd97026c",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr89smzt-r",
+      "id": "base-mr8apbkh-h",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "avatar-mr89smzt-m",
+      "id": "avatar-mr8apbkh-c",
       "type": "image",
       "role": "avatar",
       "box": {
@@ -45,28 +45,29 @@
       "name": "Avatar (cut out)"
     },
     {
-      "id": "meta-mr89smzt-n",
+      "id": "meta-mr8apbkh-d",
       "type": "text",
       "role": "meta",
       "text": "UPFRONT",
       "box": {
         "x": 272,
-        "y": 392,
+        "y": 408,
         "w": 220,
-        "h": 50
+        "h": 33
       },
       "style": {
-        "fontSize": 38,
+        "fontSize": 32,
         "fontWeight": 700,
         "color": "#0F1419",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": true
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "icon-mr89smzt-o",
+      "id": "icon-mr8apbkh-e",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -83,7 +84,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr89smzt-p",
+      "id": "meta-mr8apbkh-f",
       "type": "text",
       "role": "meta",
       "text": "@UpfrontFood",
@@ -91,28 +92,29 @@
         "x": 272,
         "y": 446,
         "w": 250,
-        "h": 46
+        "h": 34
       },
       "style": {
-        "fontSize": 36,
+        "fontSize": 34,
         "fontWeight": 400,
-        "color": "#536471",
+        "color": "#909090",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     },
     {
-      "id": "body-mr89smzt-q",
+      "id": "body-mr8apbkh-g",
       "type": "text",
       "role": "body",
       "text": "WAT. EEN. JAAR. 🥹😮‍💨🤝\n\nVan een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🤝🏼",
       "box": {
-        "x": 128,
+        "x": 120,
         "y": 552,
-        "w": 756,
-        "h": 821
+        "w": 840,
+        "h": 745
       },
       "style": {
         "fontSize": 38,
@@ -122,9 +124,10 @@
         "lineHeight": 1.35,
         "uppercase": false
       },
-      "autoH": true
+      "autoH": false,
+      "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr89smztbqnt",
-  "updatedAt": 1783284915314
+  "skeletonId": "skel_mr8apbkhrd7e",
+  "updatedAt": 1783286440171
 }

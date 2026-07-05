@@ -37,9 +37,9 @@
       "text": "UPFRONT",
       "box": {
         "x": 272,
-        "y": 392,
+        "y": 408,
         "w": 220,
-        "h": 50
+        "h": 33
       },
       "style": {
         "fontSize": 38,
@@ -80,12 +80,12 @@
         "x": 272,
         "y": 446,
         "w": 250,
-        "h": 46
+        "h": 34
       },
       "style": {
         "fontSize": 36,
         "fontWeight": 400,
-        "color": "#536471",
+        "color": "#909090",
         "align": "left",
         "lineHeight": 1.1,
         "uppercase": false
@@ -97,7 +97,7 @@
       "role": "body",
       "text": "WAT. EEN. JAAR. 🥹😮‍💨🤝\n\nVan een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🤝🏼",
       "box": {
-        "x": 128,
+        "x": 120,
         "y": 552,
         "w": 840,
         "h": 745
@@ -111,5 +111,6 @@
         "uppercase": false
       }
     }
-  ]
+  ],
+  "measuredBoxes": true
 }

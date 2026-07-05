@@ -5,10 +5,16 @@
   "error": null,
   "ms": {
     "extract": 1,
-    "assemble": 2662,
-    "total": 10503
+    "assemble": 2154,
+    "total": 9722
   },
   "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "headline fontSize: 74 → 57 (1 ink line, block 41px)",
+    "headline box: y920 h78 → y942 h53 (tight ink rows + 6px pad)",
+    "subhead fontSize: 46 → 52 (2 ink lines, block 96px)",
+    "subhead box: y1002 h110 → y995 h124 (tight ink rows + 14px pad)"
+  ],
   "archetype": "product-hero",
   "layerCountExtracted": 5,
   "parsePath": "loose",
@@ -21,7 +27,7 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 77.7,
-  "pixelScore": 77.7,
+  "pixelScoreRaw": 81,
+  "pixelScore": 81,
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/138/side-by-side.png"
 }
