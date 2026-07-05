@@ -1,26 +1,10 @@
 {
   "id": "078",
   "filename": "078_attached_efa4c7170a656935.webp",
-  "ok": true,
-  "error": null,
+  "ok": false,
+  "error": "extraction failed: HTTP 429: [nvidia/minimaxai/minimax-m2.7] [429]: {\"status\":429,\"title\":\"Too Many Requests\"} (reset after 2s)",
   "ms": {
-    "extract": 73490,
-    "assemble": 2929,
-    "total": 83298
-  },
-  "archetype": "offer-hero",
-  "layerCountExtracted": 14,
-  "parsePath": "loose",
-  "background": "#f5f5f5",
-  "cutoutCandidates": 2,
-  "layersApplied": 4,
-  "leavesInResult": 15,
-  "verify": {
-    "ready": false
-  },
-  "pixelError": null,
-  "textPileOverlaps": 0,
-  "pixelScoreRaw": 90,
-  "pixelScore": 90,
-  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/078/side-by-side.png"
+    "extract": 283,
+    "total": 364
+  }
 }

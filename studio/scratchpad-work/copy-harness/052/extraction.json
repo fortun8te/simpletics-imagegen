@@ -2,90 +2,171 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr805w1r-2",
+      "id": "grp-mr84cb5g-i",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 1,
-        "y": 1,
-        "w": 658,
-        "h": 233
+        "x": 86,
+        "y": 32,
+        "w": 907,
+        "h": 292
       },
       "children": [
         {
-          "id": "ext-mr805vyx-0",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · Before Hair Photo",
+          "id": "ext-mr84cb5g-4",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "No need to ruin your hair to have perfect curls",
+          "autoH": true,
           "box": {
-            "x": 1,
-            "y": 4,
-            "w": 40,
-            "h": 30
+            "x": 86,
+            "y": 32,
+            "w": 907,
+            "h": 130
           },
           "style": {
-            "background": "#8B7D6B59",
+            "color": "#f4f3ef",
+            "fontSize": 55,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr84cb5g-5",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "Before",
+          "autoH": true,
+          "box": {
+            "x": 227,
+            "y": 270,
+            "w": 238,
+            "h": 54
+          },
+          "style": {
+            "color": "#5f8372",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr84cb5g-6",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "After",
+          "autoH": true,
+          "box": {
+            "x": 648,
+            "y": 270,
+            "w": 216,
+            "h": 54
+          },
+          "style": {
+            "color": "#5f8372",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr84cb5g-j",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 140,
+        "y": 324,
+        "w": 843,
+        "h": 589
+      },
+      "children": [
+        {
+          "id": "ext-mr84cb5g-1",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Before hair",
+          "box": {
+            "x": 140,
+            "y": 324,
+            "w": 427,
+            "h": 589
+          },
+          "style": {
+            "background": "#D9D0C659",
             "radius": 22,
             "stroke": {
-              "color": "#8B7D6B",
-              "width": 2
+              "color": "#D9D0C6",
+              "width": 3
             }
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0,
-              "y": 0,
-              "w": 0,
-              "h": 0.01
+              "x": 0.13,
+              "y": 0.3,
+              "w": 0.4,
+              "h": 0.55
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr805vyx-1",
+          "id": "ext-mr84cb5g-2",
           "type": "shape",
           "role": "rect",
-          "name": "Cut-out · After Hair Photo",
+          "name": "Cut-out · After hair",
           "box": {
-            "x": 6,
-            "y": 4,
-            "w": 40,
-            "h": 30
+            "x": 540,
+            "y": 324,
+            "w": 443,
+            "h": 589
           },
           "style": {
-            "background": "#8B7D6B59",
+            "background": "#D2C8B859",
             "radius": 22,
             "stroke": {
-              "color": "#8B7D6B",
-              "width": 2
+              "color": "#D2C8B8",
+              "width": 4
             }
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0.01,
-              "y": 0,
-              "w": 0,
-              "h": 0.01
+              "x": 0.5,
+              "y": 0.3,
+              "w": 0.41,
+              "h": 0.55
             },
             "shape": "rect"
           }
         },
         {
-          "id": "ext-mr805vyx-2-lb",
+          "id": "ext-mr84cb5g-3-lb",
           "type": "text",
           "role": "caption",
           "name": "Product label",
           "autoH": false,
           "sizeLocked": true,
-          "text": "CURL CREAM TUBE",
+          "text": "GREEN CURL CREAM TUBE",
           "box": {
-            "x": 5,
-            "y": 164,
-            "w": 40,
-            "h": 32
+            "x": 443,
+            "y": 695,
+            "w": 194,
+            "h": 42
           },
           "style": {
-            "fontSize": 16,
+            "fontSize": 21,
             "fontWeight": 700,
             "color": "#ffffff",
             "align": "center",
@@ -95,229 +176,102 @@
           }
         },
         {
-          "id": "ext-mr805vyx-3",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "No need to ruin your hair to have perfect curls",
-          "autoH": true,
-          "box": {
-            "x": 1,
-            "y": 1,
-            "w": 658,
-            "h": 79
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 35,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr805w1r-4",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "Before",
-          "autoH": true,
-          "box": {
-            "x": 3,
-            "y": 88,
-            "w": 91,
-            "h": 30
-          },
-          "style": {
-            "color": "#6B8E7B",
-            "fontSize": 25,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr805w1r-5",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "After",
-          "autoH": true,
-          "box": {
-            "x": 7,
-            "y": 126,
-            "w": 76,
-            "h": 30
-          },
-          "style": {
-            "color": "#6B8E7B",
-            "fontSize": 25,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr805w1r-6",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Everyday Curl Crème",
-          "autoH": true,
-          "box": {
-            "x": 5,
-            "y": 204,
-            "w": 84,
-            "h": 30
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 18,
-            "fontWeight": 500,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "grp-mr805w1r-3",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 1,
-        "y": 242,
-        "w": 939,
-        "h": 654
-      },
-      "children": [
-        {
-          "id": "ext-mr805w1r-a",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · man before photo",
-          "box": {
-            "x": 140,
-            "y": 356,
-            "w": 410,
-            "h": 540
-          },
-          "style": {
-            "background": "#d1cdc859",
-            "radius": 22,
-            "stroke": {
-              "color": "#d1cdc8",
-              "width": 3
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.13,
-              "y": 0.33,
-              "w": 0.38,
-              "h": 0.5
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr805w1r-b",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · man after photo",
-          "box": {
-            "x": 551,
-            "y": 356,
-            "w": 389,
-            "h": 540
-          },
-          "style": {
-            "background": "#c4a68a59",
-            "radius": 22,
-            "stroke": {
-              "color": "#c4a68a",
-              "width": 3
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.51,
-              "y": 0.33,
-              "w": 0.36,
-              "h": 0.5
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr805w1r-7",
+          "id": "ext-mr84cb5g-7",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "wavy",
           "autoH": true,
           "box": {
-            "x": 5,
-            "y": 242,
-            "w": 143,
-            "h": 74
+            "x": 497,
+            "y": 572,
+            "w": 108,
+            "h": 65
+          },
+          "style": {
+            "color": "#f4f3ef",
+            "fontSize": 54,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr84cb5g-3",
+      "type": "shape",
+      "role": "product",
+      "name": "Product · Green curl cream tube",
+      "box": {
+        "x": 443,
+        "y": 486,
+        "w": 194,
+        "h": 459
+      },
+      "style": {
+        "background": "#2f5e4e59",
+        "radius": 22,
+        "shapeKind": "path",
+        "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
+        "stroke": {
+          "color": "#2f5e4e",
+          "width": 2
+        }
+      }
+    },
+    {
+      "id": "grp-mr84cb5g-k",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 0,
+        "y": 900,
+        "w": 1080,
+        "h": 180
+      },
+      "children": [
+        {
+          "id": "ext-mr84cb27-0",
+          "type": "shape",
+          "role": "card",
+          "name": "card",
+          "box": {
+            "x": 0,
+            "y": 900,
+            "w": 1080,
+            "h": 180
           },
           "style": {
             "color": "#ffffff",
-            "fontSize": 59,
-            "fontWeight": 800,
-            "align": "center",
+            "background": "#ffffff",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
             "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2
+            "lineHeight": 1.2,
+            "opacity": 0.8,
+            "padding": 16
           }
         },
         {
-          "id": "ext-mr805w1r-8",
+          "id": "ext-mr84cb5g-8",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "125ML e 4.22 US FL OZ",
-          "autoH": true,
-          "box": {
-            "x": 5,
-            "y": 324,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr805w1r-9",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
           "text": "This natural curl cream is all you need",
           "autoH": true,
           "box": {
-            "x": 1,
-            "y": 362,
-            "w": 408,
-            "h": 61
+            "x": 162,
+            "y": 972,
+            "w": 756,
+            "h": 65
           },
           "style": {
-            "color": "#6B8E7B",
-            "fontSize": 27,
-            "fontWeight": 600,
+            "color": "#5f8372",
+            "fontSize": 35,
+            "fontWeight": 400,
             "align": "center",
             "uppercase": false,
             "fontFamily": "Georgia",
@@ -326,28 +280,6 @@
           }
         }
       ]
-    },
-    {
-      "id": "ext-mr805vyx-2",
-      "type": "shape",
-      "role": "product",
-      "name": "Product · Curl Cream Tube",
-      "box": {
-        "x": 5,
-        "y": 5,
-        "w": 40,
-        "h": 30
-      },
-      "style": {
-        "background": "#2D5A3D59",
-        "radius": 22,
-        "shapeKind": "path",
-        "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
-        "stroke": {
-          "color": "#2D5A3D",
-          "width": 2
-        }
-      }
     }
   ],
   "canvas": {
@@ -381,7 +313,14 @@
       "share": 0.125
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": null,
+    "score": null,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 1,
+    "totalCorrections": 0
+  },
   "error": null,
   "passes": 2
 }

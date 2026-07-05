@@ -2,113 +2,83 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr7zimvs-4",
+      "id": "grp-mr846k6x-a",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 0,
-        "y": 77,
-        "w": 1080,
-        "h": 940
+        "x": 162,
+        "y": 0,
+        "w": 896,
+        "h": 1920
       },
       "children": [
         {
-          "id": "ext-mr7zimvo-6",
+          "id": "ext-mr846k6t-0",
           "type": "shape",
-          "role": "card",
-          "name": "card",
+          "role": "divider",
+          "name": "divider",
           "box": {
-            "x": 486,
-            "y": 192,
-            "w": 108,
-            "h": 96
+            "x": 530,
+            "y": 0,
+            "w": 60,
+            "h": 1920
           },
           "style": {
-            "color": "#9db8e5",
-            "background": "#9db8e5",
+            "color": "#d0d0d0",
+            "background": "#d0d0d0",
             "fontSize": 43,
             "fontWeight": 600,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
             "opacity": 1,
+            "shapeKind": "line",
+            "stroke": {
+              "color": "#d0d0d0",
+              "width": 154
+            }
+          }
+        },
+        {
+          "id": "ext-mr846k6v-5",
+          "type": "shape",
+          "role": "badge",
+          "name": "badge",
+          "box": {
+            "x": 497,
+            "y": 221,
+            "w": 81,
+            "h": 67
+          },
+          "style": {
+            "color": "#6a85a0",
+            "background": "#6a85a0",
+            "fontSize": 18,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "padding": 16,
             "shapeKind": "ellipse"
           }
         },
         {
-          "id": "ext-mr7zimvo-0",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · Silk pillowcase product",
-          "box": {
-            "x": 0,
-            "y": 326,
-            "w": 540,
-            "h": 691
-          },
-          "style": {
-            "background": "#9a908959",
-            "radius": 22,
-            "stroke": {
-              "color": "#9a9089",
-              "width": 4
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0,
-              "y": 0.17,
-              "w": 0.5,
-              "h": 0.36
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr7zimvo-1",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · Satin pillowcase product",
-          "box": {
-            "x": 540,
-            "y": 326,
-            "w": 540,
-            "h": 691
-          },
-          "style": {
-            "background": "#a5a6a859",
-            "radius": 22,
-            "stroke": {
-              "color": "#a5a6a8",
-              "width": 4
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.5,
-              "y": 0.17,
-              "w": 0.5,
-              "h": 0.36
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr7zimvo-2",
+          "id": "ext-mr846k6t-1",
           "type": "text",
-          "role": "badge",
-          "name": "badge",
+          "role": "subhead",
+          "name": "subhead",
           "text": "DORE & ROSE",
           "autoH": true,
           "box": {
             "x": 162,
-            "y": 77,
-            "w": 356,
-            "h": 58
+            "y": 134,
+            "w": 389,
+            "h": 27
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 25,
+            "color": "#2f2f2f",
+            "fontSize": 19,
             "fontWeight": 700,
             "align": "center",
             "uppercase": false,
@@ -116,21 +86,21 @@
           }
         },
         {
-          "id": "ext-mr7zimvo-3",
+          "id": "ext-mr846k6v-2",
           "type": "text",
-          "role": "headline",
-          "name": "headline",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Silk",
           "autoH": true,
           "box": {
-            "x": 194,
-            "y": 154,
-            "w": 292,
-            "h": 154
+            "x": 184,
+            "y": 211,
+            "w": 346,
+            "h": 96
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 70,
+            "color": "#252d3c",
+            "fontSize": 49,
             "fontWeight": 800,
             "align": "center",
             "uppercase": false,
@@ -138,21 +108,21 @@
           }
         },
         {
-          "id": "ext-mr7zimvo-4",
+          "id": "ext-mr846k6v-3",
           "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "OTHERS’",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "OTHERS'",
           "autoH": true,
           "box": {
-            "x": 745,
-            "y": 77,
-            "w": 259,
-            "h": 58
+            "x": 648,
+            "y": 144,
+            "w": 410,
+            "h": 27
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 25,
+            "color": "#363636",
+            "fontSize": 19,
             "fontWeight": 700,
             "align": "center",
             "uppercase": false,
@@ -160,44 +130,22 @@
           }
         },
         {
-          "id": "ext-mr7zimvo-5",
+          "id": "ext-mr846k6v-4",
           "type": "text",
-          "role": "headline",
-          "name": "headline",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Satin",
           "autoH": true,
           "box": {
-            "x": 724,
-            "y": 154,
-            "w": 335,
-            "h": 154
+            "x": 713,
+            "y": 221,
+            "w": 281,
+            "h": 96
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 70,
+            "color": "#000000",
+            "fontSize": 49,
             "fontWeight": 800,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr7zimvo-7",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "vs",
-          "autoH": true,
-          "box": {
-            "x": 518,
-            "y": 211,
-            "w": 43,
-            "h": 58
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 23,
-            "fontWeight": 700,
             "align": "center",
             "uppercase": false,
             "lineHeight": 1.2
@@ -206,32 +154,90 @@
       ]
     },
     {
-      "id": "grp-mr7zimvs-5",
+      "id": "grp-mr846k6x-b",
       "type": "group",
       "name": "Body",
       "box": {
-        "x": 108,
-        "y": 1056,
+        "x": 76,
+        "y": 413,
         "w": 961,
-        "h": 442
+        "h": 1063
       },
       "children": [
         {
-          "id": "ext-mr7zimvq-8",
+          "id": "ext-mr846k6v-6",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · silky pillowcase",
+          "box": {
+            "x": 76,
+            "y": 432,
+            "w": 470,
+            "h": 586
+          },
+          "style": {
+            "background": "#7a776f59",
+            "radius": 22,
+            "stroke": {
+              "color": "#7a776f",
+              "width": 4
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.07,
+              "y": 0.23,
+              "w": 0.44,
+              "h": 0.31
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr846k6v-7",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · pillowcase with mites",
+          "box": {
+            "x": 545,
+            "y": 413,
+            "w": 459,
+            "h": 614
+          },
+          "style": {
+            "background": "#86827e59",
+            "radius": 22,
+            "stroke": {
+              "color": "#86827e",
+              "width": 4
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.51,
+              "y": 0.22,
+              "w": 0.43,
+              "h": 0.32
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr846k6v-8",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
+          "role": "headline",
+          "name": "headline",
           "text": "Premium Silk",
           "autoH": true,
           "box": {
             "x": 108,
-            "y": 1056,
-            "w": 324,
-            "h": 77
+            "y": 1066,
+            "w": 410,
+            "h": 67
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 38,
+            "color": "#222222",
+            "fontSize": 35,
             "fontWeight": 800,
             "align": "left",
             "uppercase": false,
@@ -239,43 +245,21 @@
           }
         },
         {
-          "id": "ext-mr7zimvq-9",
+          "id": "ext-mr846k6w-9",
           "type": "text",
           "role": "subhead",
           "name": "subhead",
-          "text": "Satin",
-          "autoH": true,
-          "box": {
-            "x": 875,
-            "y": 1056,
-            "w": 194,
-            "h": 77
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 38,
-            "fontWeight": 800,
-            "align": "right",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr7zimvq-a",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
           "text": "Pillowcase",
           "autoH": true,
           "box": {
             "x": 108,
             "y": 1133,
-            "w": 173,
-            "h": 58
+            "w": 270,
+            "h": 26
           },
           "style": {
-            "color": "#777777",
-            "fontSize": 21,
+            "color": "#666666",
+            "fontSize": 18,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -283,21 +267,43 @@
           }
         },
         {
-          "id": "ext-mr7zimvq-b",
+          "id": "ext-mr846k6w-a",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
+          "role": "headline",
+          "name": "headline",
+          "text": "Satin",
+          "autoH": true,
+          "box": {
+            "x": 842,
+            "y": 1066,
+            "w": 162,
+            "h": 67
+          },
+          "style": {
+            "color": "#383838",
+            "fontSize": 35,
+            "fontWeight": 800,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr846k6w-b",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
           "text": "Pillowcase",
           "autoH": true,
           "box": {
-            "x": 799,
+            "x": 805,
             "y": 1133,
-            "w": 173,
-            "h": 58
+            "w": 232,
+            "h": 26
           },
           "style": {
-            "color": "#777777",
-            "fontSize": 21,
+            "color": "#666666",
+            "fontSize": 18,
             "fontWeight": 400,
             "align": "right",
             "uppercase": false,
@@ -305,29 +311,29 @@
           }
         },
         {
-          "id": "ext-mr7zimvq-c",
+          "id": "ext-mr846k6w-c",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "✗ Synthetic fabrics",
+          "text": "Synthetic fabrics ✗",
           "autoH": true,
           "box": {
-            "x": 648,
-            "y": 1190,
-            "w": 378,
-            "h": 77
+            "x": 616,
+            "y": 1200,
+            "w": 410,
+            "h": 26
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 26,
-            "fontWeight": 600,
+            "color": "#000000",
+            "fontSize": 18,
+            "fontWeight": 400,
             "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zimvq-d",
+          "id": "ext-mr846k6w-d",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -335,43 +341,43 @@
           "autoH": true,
           "box": {
             "x": 108,
-            "y": 1286,
-            "w": 324,
-            "h": 77
+            "y": 1315,
+            "w": 410,
+            "h": 26
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 26,
-            "fontWeight": 600,
+            "color": "#000000",
+            "fontSize": 18,
+            "fontWeight": 400,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zimvq-e",
+          "id": "ext-mr846k6w-e",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "✗ Bacterial breeding ground",
+          "text": "Bacterial breeding ground ✗",
           "autoH": true,
           "box": {
-            "x": 626,
-            "y": 1286,
-            "w": 410,
-            "h": 96
+            "x": 556,
+            "y": 1315,
+            "w": 470,
+            "h": 26
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 26,
-            "fontWeight": 600,
+            "color": "#000000",
+            "fontSize": 18,
+            "fontWeight": 400,
             "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zimvq-f",
+          "id": "ext-mr846k6w-f",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -379,36 +385,36 @@
           "autoH": true,
           "box": {
             "x": 108,
-            "y": 1402,
-            "w": 324,
-            "h": 96
+            "y": 1450,
+            "w": 410,
+            "h": 26
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 26,
-            "fontWeight": 600,
+            "color": "#000000",
+            "fontSize": 18,
+            "fontWeight": 400,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2
           }
         },
         {
-          "id": "ext-mr7zimvq-g",
+          "id": "ext-mr846k6w-g",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "✗ Causes friction with skin & hair",
+          "text": "Causes friction with skin & hair ✗",
           "autoH": true,
           "box": {
-            "x": 605,
-            "y": 1402,
-            "w": 432,
-            "h": 96
+            "x": 556,
+            "y": 1450,
+            "w": 470,
+            "h": 26
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 26,
-            "fontWeight": 600,
+            "color": "#000000",
+            "fontSize": 18,
+            "fontWeight": 400,
             "align": "right",
             "uppercase": false,
             "lineHeight": 1.2
@@ -417,25 +423,25 @@
       ]
     },
     {
-      "id": "ext-mr7zimvq-h",
+      "id": "ext-mr846k6w-h",
       "type": "button",
       "role": "cta",
       "name": "cta",
       "text": "100 Nights Risk Free Trial",
       "autoH": true,
       "box": {
-        "x": 259,
-        "y": 1632,
-        "w": 562,
-        "h": 96
+        "x": 265,
+        "y": 1661,
+        "w": 551,
+        "h": 92
       },
       "style": {
-        "color": "#dcdcdc",
-        "background": "#111111",
-        "fontSize": 27,
+        "color": "#ffffff",
+        "background": "#000000",
+        "fontSize": 23,
         "fontWeight": 700,
         "align": "center",
-        "radius": 54,
+        "radius": 43,
         "uppercase": false,
         "lineHeight": 1.2,
         "padding": 16
@@ -447,7 +453,7 @@
     "h": 1920
   },
   "archetype": "comparison",
-  "background": "#f4f4f4",
+  "background": "#f2f2f2",
   "backgroundIsPhoto": false,
   "backgroundConfidence": "high",
   "theme": "light",
@@ -473,7 +479,14 @@
       "share": 0.063
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": false,
+    "score": 45,
+    "corrections": [],
+    "applied": 1,
+    "iterations": 3,
+    "totalCorrections": 15
+  },
   "error": null,
   "passes": 2
 }

@@ -1,13 +1,13 @@
 {
-  "id": "harness_009_93b97b53",
-  "name": "copy-harness harness_009_93b97b53",
+  "id": "harness_009_bd433a80",
+  "name": "copy-harness harness_009_bd433a80",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr7zdym0-v",
+      "id": "base-mr83zhhn-3x",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "card-mr7zdym0-0",
+      "id": "card-mr83zhhn-33",
       "type": "shape",
       "role": "card",
       "name": "Post bg",
@@ -42,15 +42,15 @@
         "params": {
           "name": "UPFRONT",
           "handle": "@UpfrontFood",
-          "body": "LAATSTE SITE WIDE SALE VAN 2026 ⏳\n\nDe Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.\n\nDaarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.\n\nSchrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀\n\n💬 257   🔁 66   ♥ 21K   🔖 89",
+          "body": "LAATSTE SITE WIDE SALE VAN 2026 ⏳\n\nDe Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.\n\nDaarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.\n\nSchrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
           "followLabel": "Volgend",
           "timestamp": "20:00",
           "views": "121K",
           "viewsLabel": "views",
-          "replies": "257",
-          "reposts": "66",
-          "likes": "21K",
-          "bookmarks": "89",
+          "replies": " ",
+          "reposts": " ",
+          "likes": " ",
+          "bookmarks": " ",
           "verified": true,
           "blurAvatar": false,
           "avatarEffect": "none",
@@ -65,7 +65,7 @@
       }
     },
     {
-      "id": "group-mr7zdym0-1",
+      "id": "group-mr83zhhn-34",
       "type": "group",
       "name": "Nav",
       "box": {
@@ -76,7 +76,7 @@
       },
       "children": [
         {
-          "id": "caption-mr7zdym0-2",
+          "id": "caption-mr83zhhn-35",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -100,7 +100,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "caption-mr7zdym0-3",
+          "id": "caption-mr83zhhn-36",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -124,7 +124,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "caption-mr7zdym0-4",
+          "id": "caption-mr83zhhn-37",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -151,7 +151,7 @@
       "tpl": "x-post-ad"
     },
     {
-      "id": "group-mr7zdym0-5",
+      "id": "group-mr83zhhn-38",
       "type": "group",
       "name": "Header",
       "box": {
@@ -162,7 +162,7 @@
       },
       "children": [
         {
-          "id": "avatar-mr7zdym0-6",
+          "id": "avatar-mr83zhhn-39",
           "type": "image",
           "role": "avatar",
           "name": "Avatar",
@@ -176,8 +176,8 @@
             "crop": {
               "x": 0.02,
               "y": 0.1,
-              "w": 0.08,
-              "h": 0.08
+              "w": 0.1,
+              "h": 0.15
             },
             "shapeKind": "ellipse"
           },
@@ -185,7 +185,7 @@
           "src": "/refasset?id=harness-009"
         },
         {
-          "id": "caption-mr7zdym0-7",
+          "id": "caption-mr83zhhn-3a",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -212,7 +212,7 @@
           }
         },
         {
-          "id": "badge-mr7zdym0-8",
+          "id": "badge-mr83zhhn-3b",
           "type": "shape",
           "role": "badge",
           "name": "Verified",
@@ -230,7 +230,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "caption-mr7zdym0-9",
+          "id": "caption-mr83zhhn-3c",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -257,7 +257,7 @@
           }
         },
         {
-          "id": "cta-mr7zdym0-a",
+          "id": "cta-mr83zhhn-3d",
           "type": "text",
           "autoH": true,
           "role": "cta",
@@ -289,7 +289,7 @@
       "tpl": "x-post-ad"
     },
     {
-      "id": "group-mr7zdym0-b",
+      "id": "group-mr83zhhn-3e",
       "type": "group",
       "name": "Body",
       "box": {
@@ -300,7 +300,7 @@
       },
       "children": [
         {
-          "id": "headline-mr7zdym0-c",
+          "id": "headline-mr83zhhn-3f",
           "type": "text",
           "autoH": true,
           "role": "headline",
@@ -311,10 +311,10 @@
             "x": 54,
             "y": 311,
             "w": 972,
-            "h": 50
+            "h": 60
           },
           "style": {
-            "fontSize": 35,
+            "fontSize": 42,
             "fontWeight": 400,
             "color": "#ffffff",
             "align": "left",
@@ -324,7 +324,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "caption-mr7zdym0-d",
+          "id": "caption-mr83zhhn-3g",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -333,12 +333,12 @@
           "sizeLocked": true,
           "box": {
             "x": 54,
-            "y": 394,
+            "y": 411,
             "w": 972,
-            "h": 99
+            "h": 119
           },
           "style": {
-            "fontSize": 35,
+            "fontSize": 42,
             "fontWeight": 400,
             "color": "#ffffff",
             "align": "left",
@@ -348,7 +348,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "caption-mr7zdym0-e",
+          "id": "caption-mr83zhhn-3h",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -357,12 +357,12 @@
           "sizeLocked": true,
           "box": {
             "x": 54,
-            "y": 526,
+            "y": 570,
             "w": 972,
-            "h": 99
+            "h": 119
           },
           "style": {
-            "fontSize": 35,
+            "fontSize": 42,
             "fontWeight": 400,
             "color": "#ffffff",
             "align": "left",
@@ -372,7 +372,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "caption-mr7zdym0-f",
+          "id": "caption-mr83zhhn-3i",
           "type": "text",
           "autoH": true,
           "role": "caption",
@@ -381,12 +381,12 @@
           "sizeLocked": true,
           "box": {
             "x": 54,
-            "y": 658,
+            "y": 729,
             "w": 972,
-            "h": 99
+            "h": 119
           },
           "style": {
-            "fontSize": 35,
+            "fontSize": 42,
             "fontWeight": 400,
             "color": "#ffffff",
             "align": "left",
@@ -396,31 +396,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "caption-mr7zdym0-g",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Body ¶5",
-          "text": "💬 257   🔁 66   ♥ 21K   🔖 89",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 790,
-            "w": 972,
-            "h": 50
-          },
-          "style": {
-            "fontSize": 35,
-            "fontWeight": 400,
-            "color": "#ffffff",
-            "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "group-mr7zdym0-h",
+          "id": "group-mr83zhhn-3j",
           "type": "group",
           "name": "Meta",
           "box": {
@@ -431,7 +407,7 @@
           },
           "children": [
             {
-              "id": "caption-mr7zdym0-i",
+              "id": "caption-mr83zhhn-3k",
               "type": "text",
               "autoH": true,
               "role": "caption",
@@ -455,7 +431,7 @@
               "tpl": "x-post-ad"
             },
             {
-              "id": "caption-mr7zdym0-j",
+              "id": "caption-mr83zhhn-3l",
               "type": "text",
               "autoH": true,
               "role": "caption",
@@ -482,7 +458,7 @@
               }
             },
             {
-              "id": "caption-mr7zdym0-k",
+              "id": "caption-mr83zhhn-3m",
               "type": "text",
               "autoH": true,
               "role": "caption",
@@ -509,7 +485,7 @@
           "tpl": "x-post-ad"
         },
         {
-          "id": "group-mr7zdym0-l",
+          "id": "group-mr83zhhn-3n",
           "type": "group",
           "name": "Actions",
           "box": {
@@ -520,7 +496,7 @@
           },
           "children": [
             {
-              "id": "decor-mr7zdym0-m",
+              "id": "decor-mr83zhhn-3o",
               "type": "shape",
               "role": "decor",
               "name": "reply icon",
@@ -538,12 +514,12 @@
               "tpl": "x-post-ad"
             },
             {
-              "id": "caption-mr7zdym0-n",
+              "id": "caption-mr83zhhn-3p",
               "type": "text",
               "autoH": true,
               "role": "caption",
               "name": "reply count",
-              "text": "257",
+              "text": " ",
               "sizeLocked": true,
               "box": {
                 "x": 111,
@@ -565,7 +541,7 @@
               }
             },
             {
-              "id": "decor-mr7zdym0-o",
+              "id": "decor-mr83zhhn-3q",
               "type": "shape",
               "role": "decor",
               "name": "repost icon",
@@ -583,12 +559,12 @@
               "tpl": "x-post-ad"
             },
             {
-              "id": "caption-mr7zdym0-p",
+              "id": "caption-mr83zhhn-3r",
               "type": "text",
               "autoH": true,
               "role": "caption",
               "name": "repost count",
-              "text": "66",
+              "text": " ",
               "sizeLocked": true,
               "box": {
                 "x": 305,
@@ -606,11 +582,11 @@
               },
               "tpl": "x-post-ad",
               "tplRef": {
-                "key": "reposts"
+                "key": "replies"
               }
             },
             {
-              "id": "decor-mr7zdym0-q",
+              "id": "decor-mr83zhhn-3s",
               "type": "shape",
               "role": "decor",
               "name": "like icon",
@@ -628,12 +604,12 @@
               "tpl": "x-post-ad"
             },
             {
-              "id": "caption-mr7zdym0-r",
+              "id": "caption-mr83zhhn-3t",
               "type": "text",
               "autoH": true,
               "role": "caption",
               "name": "like count",
-              "text": "21K",
+              "text": " ",
               "sizeLocked": true,
               "box": {
                 "x": 499,
@@ -651,11 +627,11 @@
               },
               "tpl": "x-post-ad",
               "tplRef": {
-                "key": "likes"
+                "key": "replies"
               }
             },
             {
-              "id": "decor-mr7zdym0-s",
+              "id": "decor-mr83zhhn-3u",
               "type": "shape",
               "role": "decor",
               "name": "bookmark icon",
@@ -673,12 +649,12 @@
               "tpl": "x-post-ad"
             },
             {
-              "id": "caption-mr7zdym0-t",
+              "id": "caption-mr83zhhn-3v",
               "type": "text",
               "autoH": true,
               "role": "caption",
               "name": "bookmark count",
-              "text": "89",
+              "text": " ",
               "sizeLocked": true,
               "box": {
                 "x": 693,
@@ -696,11 +672,11 @@
               },
               "tpl": "x-post-ad",
               "tplRef": {
-                "key": "bookmarks"
+                "key": "replies"
               }
             },
             {
-              "id": "decor-mr7zdym0-u",
+              "id": "decor-mr83zhhn-3w",
               "type": "shape",
               "role": "decor",
               "name": "Share icon",
@@ -724,6 +700,6 @@
       "tpl": "x-post-ad"
     }
   ],
-  "skeletonId": "skel_mr7zdym0k57e",
-  "updatedAt": 1783267434363
+  "skeletonId": "skel_mr83zhhm4ate",
+  "updatedAt": 1783275157073
 }

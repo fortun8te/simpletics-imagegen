@@ -328,7 +328,16 @@ async function main() {
         try { rmSync(bestDir, { recursive: true, force: true }); cpSync(outDir, bestDir, { recursive: true }); } catch { /* best-effort */ }
       }
       if (best.ok && (best.pixelScore ?? 0) >= BESTOF_TARGET) break;
-      if (i < BESTOF_MAX - 1) process.stdout.write(`[${r.ok ? r.pixelScore : 'FAIL'} → retry] `);
+      if (i < BESTOF_MAX - 1) {
+        process.stdout.write(`[${r.ok ? r.pixelScore : 'FAIL'} → retry] `);
+        // RATE-LIMIT COOL-DOWN: a failed attempt caused by gateway pressure (429, silent
+        // provider fallback, or the empty layouts a fallback text model produces) retries
+        // USELESSLY if fired immediately — same pressure, same reroute. Sit out 45s first.
+        if (!r.ok && /429|rate|too many|fallback model|unparsable \/ empty/i.test(String(r.error || ''))) {
+          process.stdout.write('(cooling 45s) ');
+          await new Promise((res) => setTimeout(res, 45_000));
+        }
+      }
     }
     // restore the winning attempt's artifacts if a later (weaker) attempt overwrote them
     try {

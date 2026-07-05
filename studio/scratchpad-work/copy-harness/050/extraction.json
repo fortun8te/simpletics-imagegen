@@ -2,21 +2,21 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr7zj8v2-6",
+      "id": "grp-mr84856f-c",
       "type": "group",
       "name": "Header",
       "box": {
         "x": 1,
-        "y": 0,
-        "w": 647,
-        "h": 106
+        "y": 1,
+        "w": 505,
+        "h": 144
       },
       "children": [
         {
-          "id": "ext-mr7zj8s7-1",
+          "id": "ext-mr84856f-1",
           "type": "shape",
           "role": "rect",
-          "name": "Cut-out · Curly Hair Photo",
+          "name": "Cut-out · Hair Result",
           "box": {
             "x": 1,
             "y": 3,
@@ -24,10 +24,10 @@
             "h": 30
           },
           "style": {
-            "background": "#3a3a3a59",
+            "background": "#2c242059",
             "radius": 22,
             "stroke": {
-              "color": "#3a3a3a",
+              "color": "#2c2420",
               "width": 2
             }
           },
@@ -42,21 +42,21 @@
           }
         },
         {
-          "id": "ext-mr7zj8s7-2",
+          "id": "ext-mr84856f-2",
           "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Anthony\n@anthony23",
+          "role": "headline",
+          "name": "headline",
+          "text": "Anthony",
           "autoH": true,
           "box": {
-            "x": 2,
-            "y": 0,
-            "w": 109,
+            "x": 1,
+            "y": 1,
+            "w": 114,
             "h": 30
           },
           "style": {
-            "color": "#ffffff",
-            "fontSize": 18,
+            "color": "#e0e0e0",
+            "fontSize": 27,
             "fontWeight": 700,
             "align": "left",
             "uppercase": false,
@@ -64,7 +64,29 @@
           }
         },
         {
-          "id": "ext-mr7zj8v2-3",
+          "id": "ext-mr84856f-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@anthony23",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 39,
+            "w": 109,
+            "h": 30
+          },
+          "style": {
+            "color": "#7a7a7a",
+            "fontSize": 19,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr84856f-4",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -72,13 +94,13 @@
           "autoH": true,
           "box": {
             "x": 1,
-            "y": 38,
-            "w": 337,
+            "y": 77,
+            "w": 505,
             "h": 30
           },
           "style": {
-            "color": "#ffffff",
-            "fontSize": 18,
+            "color": "#e0e0e0",
+            "fontSize": 17,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -86,7 +108,7 @@
           }
         },
         {
-          "id": "ext-mr7zj8v2-4",
+          "id": "ext-mr84856f-5",
           "type": "text",
           "role": "caption",
           "name": "caption",
@@ -94,57 +116,13 @@
           "autoH": true,
           "box": {
             "x": 1,
-            "y": 76,
-            "w": 122,
+            "y": 115,
+            "w": 128,
             "h": 30
           },
           "style": {
-            "color": "#71767b",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr7zj8v2-6",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "Anthony",
-          "autoH": true,
-          "box": {
-            "x": 475,
-            "y": 22,
-            "w": 173,
-            "h": 32
-          },
-          "style": {
-            "color": "#e7e9ea",
-            "fontSize": 18,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr7zj8v2-7",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "@anthony23",
-          "autoH": true,
-          "box": {
-            "x": 475,
-            "y": 54,
-            "w": 173,
-            "h": 32
-          },
-          "style": {
-            "color": "#71767b",
-            "fontSize": 18,
+            "color": "#7a7a7a",
+            "fontSize": 17,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
@@ -154,47 +132,47 @@
       ]
     },
     {
-      "id": "ext-mr7zj8v2-8",
+      "id": "ext-mr84856f-7",
       "type": "shape",
       "role": "rect",
-      "name": "Cut-out · selfie with curls",
+      "name": "Cut-out · Man with curly hair",
       "box": {
-        "x": 130,
-        "y": 270,
-        "w": 821,
-        "h": 702
+        "x": 54,
+        "y": 302,
+        "w": 950,
+        "h": 616
       },
       "style": {
-        "background": "#24242459",
+        "background": "#4b3a2d59",
         "radius": 22,
         "stroke": {
-          "color": "#242424",
-          "width": 7
+          "color": "#4b3a2d",
+          "width": 8
         }
       },
       "cutoutCandidate": {
         "region": {
-          "x": 0.12,
-          "y": 0.25,
-          "w": 0.76,
-          "h": 0.65
+          "x": 0.05,
+          "y": 0.28,
+          "w": 0.88,
+          "h": 0.57
         },
         "shape": "rect"
       }
     },
     {
-      "id": "grp-mr7zj8v2-7",
+      "id": "grp-mr84856f-d",
       "type": "group",
       "name": "Product",
       "box": {
         "x": 1,
         "y": 0,
-        "w": 442,
-        "h": 87
+        "w": 1025,
+        "h": 129
       },
       "children": [
         {
-          "id": "ext-mr7zj8s7-0",
+          "id": "ext-mr84856f-0",
           "type": "shape",
           "role": "avatar",
           "name": "Avatar · Profile Picture",
@@ -205,10 +183,10 @@
             "h": 30
           },
           "style": {
-            "background": "#2a2a2a59",
+            "background": "#8b6e4e59",
             "shapeKind": "ellipse",
             "stroke": {
-              "color": "#2a2a2a",
+              "color": "#8b6e4e",
               "width": 2
             }
           },
@@ -223,32 +201,61 @@
           }
         },
         {
-          "id": "ext-mr7zj8v2-5",
+          "id": "ext-mr84856f-6",
           "type": "shape",
           "role": "avatar",
-          "name": "Avatar · avatar image",
+          "name": "Avatar · Anthony profile picture",
           "box": {
-            "x": 378,
-            "y": 22,
-            "w": 65,
-            "h": 65
+            "x": 54,
+            "y": 43,
+            "w": 76,
+            "h": 86
           },
           "style": {
-            "background": "#80808059",
+            "background": "#3a3a3a59",
             "shapeKind": "ellipse",
             "stroke": {
-              "color": "#808080",
+              "color": "#3a3a3a",
               "width": 2
             }
           },
           "cutoutCandidate": {
             "region": {
-              "x": 0.35,
-              "y": 0.02,
-              "w": 0.06,
-              "h": 0.06
+              "x": 0.05,
+              "y": 0.04,
+              "w": 0.07,
+              "h": 0.08
             },
             "shape": "avatar"
+          }
+        },
+        {
+          "id": "ext-mr84856f-8",
+          "type": "shape",
+          "role": "logo",
+          "name": "Logo · X logo",
+          "box": {
+            "x": 961,
+            "y": 59,
+            "w": 65,
+            "h": 30
+          },
+          "style": {
+            "background": "#e8e8e859",
+            "radius": 22,
+            "stroke": {
+              "color": "#e8e8e8",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.89,
+              "y": 0.06,
+              "w": 0.06,
+              "h": 0.03
+            },
+            "shape": "logo"
           }
         }
       ]
@@ -285,7 +292,14 @@
       "share": 0.125
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": false,
+    "score": 42,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 2,
+    "totalCorrections": 5
+  },
   "error": null,
   "passes": 2
 }

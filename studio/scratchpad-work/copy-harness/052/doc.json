@@ -1,13 +1,13 @@
 {
-  "id": "harness_052_f657b615",
-  "name": "copy-harness harness_052_f657b615",
+  "id": "harness_052_0ae999cd",
+  "name": "copy-harness harness_052_0ae999cd",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base_mr805w2a",
+      "id": "base_mr84d2yt",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,76 +23,141 @@
       }
     },
     {
-      "id": "group-mr805w28-d",
+      "id": "group-mr84d2yt-75",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 1,
-        "y": 1,
-        "w": 658,
-        "h": 233
+        "x": 86,
+        "y": 32,
+        "w": 907,
+        "h": 292
       },
       "children": [
         {
-          "id": "rect-mr805w28-e",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · Before Hair Photo",
+          "id": "headline-mr84d2yt-76",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "No need to ruin your hair to have perfect curls",
+          "autoH": true,
           "box": {
-            "x": 1,
-            "y": 4,
-            "w": 40,
-            "h": 30
+            "x": 86,
+            "y": 32,
+            "w": 886,
+            "h": 130
           },
           "style": {
-            "crop": {
-              "x": 0,
-              "y": 0,
-              "w": 0,
-              "h": 0.01
-            },
-            "radius": 8
-          },
-          "src": "/refasset?id=harness-052"
+            "color": "#f4f3ef",
+            "fontSize": 55,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
         },
         {
-          "id": "rect-mr805w28-f",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · After Hair Photo",
+          "id": "badge-mr84d2yt-77",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "Before",
+          "autoH": true,
           "box": {
-            "x": 6,
-            "y": 4,
-            "w": 40,
-            "h": 30
+            "x": 227,
+            "y": 270,
+            "w": 238,
+            "h": 54
           },
           "style": {
-            "crop": {
-              "x": 0.01,
-              "y": 0,
-              "w": 0,
-              "h": 0.01
-            },
-            "radius": 8
-          },
-          "src": "/refasset?id=harness-052"
+            "color": "#5f8372",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
         },
         {
-          "id": "caption-mr805w28-g",
+          "id": "badge-mr84d2yt-78",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "After",
+          "autoH": true,
+          "box": {
+            "x": 648,
+            "y": 270,
+            "w": 216,
+            "h": 54
+          },
+          "style": {
+            "color": "#5f8372",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr84d2yt-79",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 140,
+        "y": 324,
+        "w": 843,
+        "h": 589
+      },
+      "children": [
+        {
+          "id": "rect-mr84d2yt-7a",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · Before hair",
+          "box": {
+            "x": 140,
+            "y": 324,
+            "w": 427,
+            "h": 589
+          },
+          "style": {},
+          "src": "/refasset?id=harness-052m6ac641b7"
+        },
+        {
+          "id": "rect-mr84d2yt-7b",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · After hair",
+          "box": {
+            "x": 540,
+            "y": 324,
+            "w": 443,
+            "h": 589
+          },
+          "style": {},
+          "src": "/refasset?id=harness-052m4a8761af"
+        },
+        {
+          "id": "caption-mr84d2yt-7c",
           "type": "text",
           "role": "caption",
           "name": "Product label",
           "autoH": true,
           "sizeLocked": true,
-          "text": "CURL CREAM TUBE",
+          "text": "GREEN CURL CREAM TUBE",
           "box": {
-            "x": 5,
-            "y": 164,
-            "w": 40,
-            "h": 32
+            "x": 443,
+            "y": 695,
+            "w": 194,
+            "h": 42
           },
           "style": {
-            "fontSize": 16,
+            "fontSize": 21,
             "fontWeight": 700,
             "color": "#ffffff",
             "align": "center",
@@ -102,234 +167,112 @@
           }
         },
         {
-          "id": "headline-mr805w28-h",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "No need to ruin your hair to have perfect curls",
-          "autoH": true,
-          "box": {
-            "x": 1,
-            "y": 1,
-            "w": 658,
-            "h": 202
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 56,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "badge-mr805w28-i",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "Before",
-          "autoH": true,
-          "box": {
-            "x": 3,
-            "y": 88,
-            "w": 91,
-            "h": 30
-          },
-          "style": {
-            "color": "#6B8E7B",
-            "fontSize": 25,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "badge-mr805w28-j",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "After",
-          "autoH": true,
-          "box": {
-            "x": 7,
-            "y": 126,
-            "w": 76,
-            "h": 30
-          },
-          "style": {
-            "color": "#6B8E7B",
-            "fontSize": 25,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "subhead-mr805w28-k",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Everyday Curl Crème",
-          "autoH": true,
-          "box": {
-            "x": 5,
-            "y": 204,
-            "w": 84,
-            "h": 137
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 38,
-            "fontWeight": 500,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "group-mr805w28-l",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 1,
-        "y": 242,
-        "w": 939,
-        "h": 654
-      },
-      "children": [
-        {
-          "id": "rect-mr805w28-m",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · man before photo",
-          "box": {
-            "x": 140,
-            "y": 356,
-            "w": 410,
-            "h": 540
-          },
-          "style": {},
-          "src": "/refasset?id=harness-052m4df15548"
-        },
-        {
-          "id": "rect-mr805w28-n",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · man after photo",
-          "box": {
-            "x": 551,
-            "y": 356,
-            "w": 389,
-            "h": 540
-          },
-          "style": {},
-          "src": "/refasset?id=harness-052m0355c823"
-        },
-        {
-          "id": "caption-mr805w28-o",
+          "id": "caption-mr84d2yt-7d",
           "type": "text",
           "role": "caption",
           "name": "caption",
           "text": "wavy",
           "autoH": true,
           "box": {
-            "x": 5,
-            "y": 242,
-            "w": 143,
-            "h": 74
+            "x": 497,
+            "y": 572,
+            "w": 108,
+            "h": 65
           },
           "style": {
-            "color": "#ffffff",
-            "fontSize": 59,
-            "fontWeight": 800,
-            "align": "center",
-            "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "caption-mr805w28-p",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "125ML e 4.22 US FL OZ",
-          "autoH": true,
-          "box": {
-            "x": 5,
-            "y": 324,
-            "w": 40,
-            "h": 216
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 30,
+            "color": "#f4f3ef",
+            "fontSize": 54,
             "fontWeight": 400,
             "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "subhead-mr805w28-q",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "This natural curl cream is all you need",
-          "autoH": true,
-          "box": {
-            "x": 1,
-            "y": 362,
-            "w": 408,
-            "h": 171
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 38,
-            "fontWeight": 600,
-            "align": "center",
             "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2,
-            "pill": true,
-            "background": "rgba(0,0,0,0.62)",
-            "padding": 21
+            "lineHeight": 1.2
           }
         }
       ]
     },
     {
-      "id": "product-mr805w28-r",
+      "id": "product-mr84d2yt-7e",
       "type": "shape",
       "role": "product",
-      "name": "Product · Curl Cream Tube",
+      "name": "Product · Green curl cream tube",
       "box": {
-        "x": 5,
-        "y": 5,
-        "w": 40,
-        "h": 30
+        "x": 443,
+        "y": 486,
+        "w": 194,
+        "h": 459
       },
       "style": {
-        "background": "#2D5A3D59",
+        "background": "#2f5e4e59",
         "radius": 22,
         "shapeKind": "path",
         "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
         "stroke": {
-          "color": "#2D5A3D",
+          "color": "#2f5e4e",
           "width": 2
         }
       }
+    },
+    {
+      "id": "group-mr84d2yt-7f",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 0,
+        "y": 900,
+        "w": 1080,
+        "h": 180
+      },
+      "children": [
+        {
+          "id": "card-mr84d2yt-7g",
+          "type": "shape",
+          "role": "card",
+          "name": "card",
+          "box": {
+            "x": 0,
+            "y": 900,
+            "w": 1080,
+            "h": 180
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#ffffff",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr84d2yt-7h",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "This natural curl cream is all you need",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 972,
+            "w": 756,
+            "h": 65
+          },
+          "style": {
+            "color": "#5f8372",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
     }
   ],
-  "skeletonId": "skel_mr805w286zsv",
-  "updatedAt": 1783268740324
+  "skeletonId": "skel_mr84d2yskib9",
+  "updatedAt": 1783275796900
 }

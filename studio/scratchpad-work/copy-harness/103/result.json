@@ -1,26 +1,10 @@
 {
   "id": "103",
   "filename": "103_attached_056bb15bf6d6c82e.webp",
-  "ok": true,
-  "error": null,
+  "ok": false,
+  "error": "extraction failed: gateway routed to fallback model \"mimo-v2.5-free\" (requested opencode-free-priority) — likely rate-limited; retry after backoff",
   "ms": {
-    "extract": 19853,
-    "assemble": 3317,
-    "total": 30491
-  },
-  "archetype": "x-post",
-  "layerCountExtracted": 8,
-  "parsePath": "loose",
-  "background": "#000000",
-  "cutoutCandidates": 4,
-  "layersApplied": 3,
-  "leavesInResult": 9,
-  "verify": {
-    "ready": false
-  },
-  "pixelError": null,
-  "textPileOverlaps": 1,
-  "pixelScoreRaw": 81.1,
-  "pixelScore": 78.1,
-  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/103/side-by-side.png"
+    "extract": 69300,
+    "total": 69464
+  }
 }

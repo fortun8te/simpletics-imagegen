@@ -512,6 +512,27 @@ export async function llmVision(prompt, imagePath, {
       const noVision = /image_url|unknown variant|multimodal|vision/i.test(msg);
       return { ok: false, text: null, error: `HTTP ${r.status}: ${msg}`, noVision, usage: u };
     }
+    // PROVIDER-FALLBACK GUARD v2 (9router pools): the gateway can serve a request from a pool
+    // ("opencode-free-priority") whose members include TEXT-ONLY models — under rate pressure a
+    // vision request gets answered by e.g. nvidia/minimax and the extraction comes back as
+    // "unparsable/empty layout" with no clue why. v1 compared respModel against the REQUESTED id
+    // and false-positived the moment the requested id became a pool alias (it rejected a genuine
+    // mimo answer). v2 checks an EXPLICIT expectation instead: VISION_EXPECT_MODEL (regex, e.g.
+    // "mimo") declares which model family is allowed to answer VISION calls; a response from
+    // anything else is rejected loudly so callers back off and retry until the pool serves the
+    // right family. Unset = no guard (single-model setups don't need one).
+    {
+      const respModel = String(r.json?.model || '');
+      const expect = String(process.env.VISION_EXPECT_MODEL || '').trim();
+      if (respModel && expect) {
+        let expectRe = null;
+        try { expectRe = new RegExp(expect, 'i'); } catch { /* bad regex → no guard */ }
+        if (expectRe && !expectRe.test(respModel)) {
+          logUsage({ at: Date.now(), provider, model, purpose, inTok: u.inTok, outTok: u.outTok, ms, ok: false, note: `fallback:${respModel}` });
+          return { ok: false, text: null, error: `pool served non-vision model "${respModel}" (expected /${expect}/i) — rate-limited; retry after backoff`, noVision: false, providerFallback: true, usage: u };
+        }
+      }
+    }
     const msg = r.json?.choices?.[0]?.message || {};
     // Reasoning VL models split their output: the answer lands in `content`, but if the token
     // budget was exhausted mid-think it stays empty while `reasoning_content` holds the work.
