@@ -10,10 +10,54 @@
   position: absolute;
   inset: 2px;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--persona-hi) 90%, transparent), transparent 60%),
-    linear-gradient(150deg, var(--persona-a), var(--persona-b));
+  overflow: hidden;
+  background: linear-gradient(150deg, var(--persona-a), var(--persona-b));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 12%, transparent);
+  transform: scale(1);
+}
+/* Sheen — an off-center specular highlight that ORBITS the sphere. It's a full-bleed layer
+   inside the clipped .core; because the bright spot sits away from center, rotating the layer
+   sweeps the highlight around the orb's surface — the light appears to travel across a living
+   sphere (compositor-cheap: only `transform: rotate()` is animated). */
+.sheen {
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 26%, color-mix(in srgb, var(--persona-hi) 95%, transparent), transparent 42%),
+    radial-gradient(circle at 74% 72%, color-mix(in srgb, var(--persona-b) 80%, transparent), transparent 46%);
+  transform: rotate(0deg);
+  pointer-events: none;
+}
+/* Swirl — a fainter counter-rotating tint layer for depth, so the surface color also drifts
+   opposite the highlight (parallax). Also transform-only. */
+.swirl {
+  position: absolute;
+  inset: -20%;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 0deg,
+      transparent 0deg,
+      color-mix(in srgb, var(--persona-a) 55%, transparent) 90deg,
+      transparent 200deg,
+      color-mix(in srgb, var(--persona-hi) 40%, transparent) 300deg,
+      transparent 360deg);
+  opacity: 0.5;
+  transform: rotate(0deg);
+  pointer-events: none;
+}
+/* Glow — a soft accent aura behind the core. Animated via transform/opacity ONLY (it lives on
+   its own layer, so scaling it reads as a pulsing halo without ever animating box-shadow/blur). */
+.glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%,
+    color-mix(in srgb, var(--persona-a) 55%, transparent),
+    transparent 68%);
+  opacity: 0;
+  transform: scale(1);
+  pointer-events: none;
 }
 .ring {
   position: absolute;
@@ -34,28 +78,104 @@
 /* ── states ──
    Perf note: only `transform`/`opacity` are animated (compositor-only, no layout/paint per
    frame). `will-change` is scoped to the specific animating state selectors — not left on
-   permanently — so the browser promotes `.core`/`.ring` to their own GPU layer for the
+   permanently — so the browser promotes `.core`/`.glow`/`.ring` to their own GPU layer for the
    lifetime of the animation (avoiding a full repaint of the gradient background each frame)
    without holding the memory cost once the state changes. No box-shadow/filter/blur values
-   are ever animated. */
-.orb[data-state="thinking"] .core { animation: personaBreathe 1.5s var(--ease) infinite; will-change: transform; }
-.orb[data-state="speaking"] .core { animation: personaBreathe 0.7s var(--ease) infinite; will-change: transform; }
+   are ever animated.
+
+   Idle is not static — it breathes slowly and calmly so the orb always reads as "alive". The
+   thinking/speaking states breathe faster and DEEPER and light a pulsing accent glow, so the
+   difference from idle is immediately legible. */
+/* The DOMINANT motion is the orbiting highlight (.sheen rotating), with the .swirl
+   counter-rotating for depth. The breathe (.core scale) is now a subtle secondary accent, not
+   the main event. Idle = calm slow orbit; thinking/speaking = clearly faster orbit + brighter
+   glow, so the idle→active difference is obvious at a glance. `rotate()` runs linear (constant
+   sweep); the breathe/glow keep the eased in-out. */
+
+/* idle — slow, calm orbit */
+.orb[data-state="idle"] .sheen  { animation: personaOrbit 6s linear infinite; will-change: transform; }
+.orb[data-state="idle"] .swirl  { animation: personaOrbitRev 9s linear infinite; will-change: transform; }
+.orb[data-state="idle"] .core   { animation: personaBreatheCalm 4.2s var(--ease) infinite; will-change: transform; }
+
+/* thinking — fast orbit + counter-swirl + pulsing glow (clearly livelier than idle) */
+.orb[data-state="thinking"] .sheen { animation: personaOrbit 1.6s linear infinite; will-change: transform; }
+.orb[data-state="thinking"] .swirl { animation: personaOrbitRev 2.4s linear infinite; will-change: transform; }
+.orb[data-state="thinking"] .core  { animation: personaBreathe 2.2s var(--ease) infinite; will-change: transform; }
+.orb[data-state="thinking"] .glow  { animation: personaGlow 1.6s var(--ease) infinite; will-change: transform, opacity; }
+
+/* speaking — fastest orbit */
+.orb[data-state="speaking"] .sheen { animation: personaOrbit 1s linear infinite; will-change: transform; }
+.orb[data-state="speaking"] .swirl { animation: personaOrbitRev 1.5s linear infinite; will-change: transform; }
+.orb[data-state="speaking"] .core  { animation: personaBreathe 1.4s var(--ease) infinite; will-change: transform; }
+.orb[data-state="speaking"] .glow  { animation: personaGlow 1s var(--ease) infinite; will-change: transform, opacity; }
+
+/* listening — steady orbit + ring ping */
+.orb[data-state="listening"] .sheen { animation: personaOrbit 3s linear infinite; will-change: transform; }
+.orb[data-state="listening"] .swirl { animation: personaOrbitRev 4.5s linear infinite; will-change: transform; }
 .orb[data-state="listening"] .ring { opacity: 1; animation: personaPing 1.6s var(--ease) infinite; will-change: transform, opacity; }
+.orb[data-state="listening"] .glow { animation: personaGlow 1.6s var(--ease) infinite; will-change: transform, opacity; }
+
 .orb[data-state="asleep"] .core { opacity: 0.5; filter: saturate(0.4); }
 
+/* Immunity from the idle/tab power-saver (theme.css) —
+   `html[data-app-idle] #root *` pauses ALL animations with `animation-play-state: paused
+   !important` when its activity signal (image-generation runs only) reports quiet. But the
+   design agent runs on a separate signal it doesn't see, so the persona would freeze mid-run.
+   This override matches the cursor/loader pattern: selector specificity (1,2,1) beats the
+   pauser's (1,1,1); both use !important, so higher specificity wins and the orb keeps
+   breathing during agent work regardless of the power-saver. */
+:global(html[data-app-idle='true'] #root) .orb .core,
+:global(html[data-app-idle='true'] #root) .orb .sheen,
+:global(html[data-app-idle='true'] #root) .orb .swirl,
+:global(html[data-app-idle='true'] #root) .orb .glow,
+:global(html[data-app-idle='true'] #root) .orb .ring,
+:global(html[data-tab-hidden='true'] #root) .orb .core,
+:global(html[data-tab-hidden='true'] #root) .orb .sheen,
+:global(html[data-tab-hidden='true'] #root) .orb .swirl,
+:global(html[data-tab-hidden='true'] #root) .orb .glow,
+:global(html[data-tab-hidden='true'] #root) .orb .ring {
+  animation-play-state: running !important;
+}
+
+@keyframes personaOrbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes personaOrbitRev {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(-360deg); }
+}
+@keyframes personaBreatheCalm {
+  0%, 100% { transform: scale(0.96); }
+  50% { transform: scale(1.02); }
+}
 @keyframes personaBreathe {
-  0%, 100% { transform: scale(0.9); }
-  50% { transform: scale(1.06); }
+  0%, 100% { transform: scale(0.88); }
+  50% { transform: scale(1.09); }
+}
+@keyframes personaGlow {
+  0%, 100% { transform: scale(0.9); opacity: 0.15; }
+  50% { transform: scale(1.5); opacity: 0.6; }
 }
 @keyframes personaPing {
   0% { transform: scale(0.9); opacity: 0.9; }
   100% { transform: scale(1.35); opacity: 0; }
 }
+
+/* Reduced motion — freeze every state (both the OS media query and the app's manual toggle).
+   The override above must NOT win here, so these come later and are also !important. */
 @media (prefers-reduced-motion: reduce) {
-  .orb .core, .orb .ring { animation: none !important; will-change: auto; }
+  .orb .core, .orb .sheen, .orb .swirl, .orb .glow, .orb .ring { animation: none !important; will-change: auto; }
+  .orb[data-state="thinking"] .glow,
+  .orb[data-state="speaking"] .glow { opacity: 0.35; transform: scale(1.15); }
 }
 :global([data-reduced-motion="true"]) .orb .core,
+:global([data-reduced-motion="true"]) .orb .sheen,
+:global([data-reduced-motion="true"]) .orb .swirl,
+:global([data-reduced-motion="true"]) .orb .glow,
 :global([data-reduced-motion="true"]) .orb .ring { animation: none !important; will-change: auto; }
+:global([data-reduced-motion="true"]) .orb[data-state="thinking"] .glow,
+:global([data-reduced-motion="true"]) .orb[data-state="speaking"] .glow { opacity: 0.35; transform: scale(1.15); }
 
 /* ── identity row ── */
 .identity { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }

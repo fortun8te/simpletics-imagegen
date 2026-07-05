@@ -1,0 +1,191 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr86vmmx-0",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 1,
+        "y": 1,
+        "w": 337,
+        "h": 182
+      },
+      "children": [
+        {
+          "id": "ext-mr86vmmv-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Anthony",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 1,
+            "w": 76,
+            "h": 30
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 18,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86vmmw-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@anthony23",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 39,
+            "w": 103,
+            "h": 30
+          },
+          "style": {
+            "color": "#888888",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86vmmw-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "X.com",
+          "autoH": true,
+          "box": {
+            "x": 9,
+            "y": 77,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 18,
+            "fontWeight": 700,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86vmmw-5",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 115,
+            "w": 337,
+            "h": 30
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86vmmw-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "10:44 -04/10/2026 -647 Views",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 153,
+            "w": 122,
+            "h": 30
+          },
+          "style": {
+            "color": "#888888",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "media_mr86vmmw",
+      "type": "shape",
+      "role": "product",
+      "name": "Media photo (cut out)",
+      "box": {
+        "x": 1,
+        "y": 0,
+        "w": 1036,
+        "h": 928
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 0.9750000000000001,
+          "h": 0.875
+        },
+        "shape": "media"
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "x-post",
+  "background": "#1a1a1a",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#151414",
+      "share": 0.5
+    },
+    {
+      "hex": "#312c2d",
+      "share": 0.125
+    },
+    {
+      "hex": "#6b5e58",
+      "share": 0.125
+    },
+    {
+      "hex": "#958e85",
+      "share": 0.125
+    },
+    {
+      "hex": "#ddaea3",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 0,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 3,
+    "totalCorrections": 11
+  },
+  "error": null,
+  "passes": 2
+}

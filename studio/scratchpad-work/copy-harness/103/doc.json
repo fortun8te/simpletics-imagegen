@@ -1,0 +1,168 @@
+{
+  "id": "harness_103_d429e3e3",
+  "name": "copy-harness harness_103_d429e3e3",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr86l506-7",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#000000"
+      }
+    },
+    {
+      "id": "group-mr86l506-0",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 0,
+        "y": 2,
+        "w": 744,
+        "h": 106
+      },
+      "children": [
+        {
+          "id": "caption-mr86l506-1",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "X.com",
+          "autoH": true,
+          "box": {
+            "x": 9,
+            "y": 2,
+            "w": 40,
+            "h": 45
+          },
+          "style": {
+            "color": "#e7e9ea",
+            "fontSize": 30,
+            "fontWeight": 500,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 17
+          }
+        },
+        {
+          "id": "caption-mr86l506-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Been training hard and still waking up heavy.\nStarted using Cadence Sleep Hydration and finally feel\nlike I’m actually recovering",
+          "autoH": true,
+          "box": {
+            "x": 0,
+            "y": 40,
+            "w": 734,
+            "h": 225
+          },
+          "style": {
+            "color": "#e7e9ea",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 17
+          }
+        },
+        {
+          "id": "caption-mr86l506-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "14:07 · 26/09/2025 · 6.9K Views",
+          "autoH": true,
+          "box": {
+            "x": 0,
+            "y": 78,
+            "w": 122,
+            "h": 270
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 17
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr86l506-4",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 0,
+        "y": 2,
+        "w": 1037,
+        "h": 1534
+      },
+      "children": [
+        {
+          "id": "avatar-mr86l506-5",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Blurred · user avatar",
+          "box": {
+            "x": 43,
+            "y": 77,
+            "w": 86,
+            "h": 77
+          },
+          "style": {
+            "background": "#6a6a6abf",
+            "shapeKind": "ellipse",
+            "blur": 6
+          }
+        },
+        {
+          "id": "product-mr86l506-6",
+          "type": "image",
+          "role": "product",
+          "name": "Media photo (cut out)",
+          "box": {
+            "x": 0,
+            "y": 2,
+            "w": 1037,
+            "h": 1534
+          },
+          "style": {
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 0.9750000000000001,
+              "h": 0.8150000000000001
+            },
+            "radius": 36
+          },
+          "src": "/refasset?id=harness-103"
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr86l5061fe2",
+  "updatedAt": 1783279526551
+}

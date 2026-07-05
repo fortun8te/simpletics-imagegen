@@ -1,0 +1,188 @@
+{
+  "id": "harness_050_0246cb82",
+  "name": "copy-harness harness_050_0246cb82",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base-mr86w5tl-7",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#1a1a1a"
+      }
+    },
+    {
+      "id": "group-mr86w5tl-0",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 1,
+        "y": 1,
+        "w": 337,
+        "h": 182
+      },
+      "children": [
+        {
+          "id": "caption-mr86w5tl-1",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Anthony",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 1,
+            "w": 76,
+            "h": 45
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 30,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 17
+          }
+        },
+        {
+          "id": "caption-mr86w5tl-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@anthony23",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 39,
+            "w": 103,
+            "h": 45
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 17
+          }
+        },
+        {
+          "id": "caption-mr86w5tl-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "X.com",
+          "autoH": true,
+          "box": {
+            "x": 9,
+            "y": 77,
+            "w": 40,
+            "h": 45
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 30,
+            "fontWeight": 700,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 17
+          }
+        },
+        {
+          "id": "headline-mr86w5tl-4",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 115,
+            "w": 337,
+            "h": 1008
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 31
+          }
+        },
+        {
+          "id": "caption-mr86w5tl-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "10:44 -04/10/2026 -647 Views",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 153,
+            "w": 122,
+            "h": 180
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 17
+          }
+        }
+      ]
+    },
+    {
+      "id": "product-mr86w5tl-6",
+      "type": "image",
+      "role": "product",
+      "name": "Media photo (cut out)",
+      "box": {
+        "x": 1,
+        "y": 0,
+        "w": 1036,
+        "h": 928
+      },
+      "style": {
+        "crop": {
+          "x": 0,
+          "y": 0,
+          "w": 0.9750000000000001,
+          "h": 0.875
+        },
+        "radius": 32
+      },
+      "src": "/refasset?id=harness-050"
+    }
+  ],
+  "skeletonId": "skel_mr86w5tlvdab",
+  "updatedAt": 1783280040827
+}

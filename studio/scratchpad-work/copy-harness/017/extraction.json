@@ -1,0 +1,267 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6nq3cg-r",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 240,
+        "y": 230,
+        "w": 600,
+        "h": 173
+      },
+      "children": [
+        {
+          "id": "ext-mr6nq3b8-0",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "🤧",
+          "autoH": true,
+          "box": {
+            "x": 501,
+            "y": 230,
+            "w": 78,
+            "h": 48
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 43,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nq3b9-1",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "WE GOT COPIED.",
+          "autoH": true,
+          "box": {
+            "x": 300,
+            "y": 342.7,
+            "w": 480,
+            "h": 53.6
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 39,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6nq3cg-s",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 470,
+        "w": 864,
+        "h": 874
+      },
+      "children": [
+        {
+          "id": "ext-mr6nq3ca-2",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "A brand just launched earplugs that look a lot like ours.\nSame shape. Similar colours. Lower price.",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 470,
+            "w": 864,
+            "h": 115
+          },
+          "style": {
+            "color": "#373737",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nq3cd-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "We noticed. We're not going to pretend otherwise.",
+          "autoH": true,
+          "box": {
+            "x": 140,
+            "y": 643,
+            "w": 799,
+            "h": 38
+          },
+          "style": {
+            "color": "#373737",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nq3cd-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "The part of Hears that matters can't be copied in a\nfactory run. The membrane inside cuts volume without\nclarity. It took two years to engineer. It's\npatented. It's the reason you wake up with clear ears\nafter a show instead of three days o",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 778,
+            "w": 864,
+            "h": 230
+          },
+          "style": {
+            "color": "#2d2d2d",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nq3ce-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Festival season is here and someone just launched a\nknockoff. So we're making it impossible to choose\nwrong. Deals up to 35% off until Sunday.",
+          "autoH": true,
+          "box": {
+            "x": 135,
+            "y": 1037,
+            "w": 810,
+            "h": 154
+          },
+          "style": {
+            "color": "#282828",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nq3cf-6",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Try the real thing.",
+          "autoH": true,
+          "box": {
+            "x": 400,
+            "y": 1219,
+            "w": 281,
+            "h": 38
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nq3cg-7",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Bob & Nick,\nHears",
+          "autoH": true,
+          "box": {
+            "x": 437,
+            "y": 1277,
+            "w": 205,
+            "h": 67
+          },
+          "style": {
+            "color": "#2c2c2c",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#ffffff",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#ffffff",
+      "share": 0.5
+    },
+    {
+      "hex": "#ffffff",
+      "share": 0.25
+    },
+    {
+      "hex": "#fffffe",
+      "share": 0.125
+    },
+    {
+      "hex": "#555553",
+      "share": 0.063
+    },
+    {
+      "hex": "#ffffff",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 75,
+    "corrections": [
+      {
+        "layer": "headline",
+        "problem": "The text 'WE GOT COPIED.' is too large and bold compared to the reference, disrupting the original balanced hierarchy.",
+        "fix": "Reduce font weight and size to match reference proportions, scaling to 80% of current size."
+      },
+      {
+        "layer": "body text",
+        "problem": "Line breaks and paragraph spacing differ significantly from the reference, creating a less compact layout.",
+        "fix": "Adjust line spacing and paragraph margins to match reference, reducing vertical space by 15%."
+      },
+      {
+        "layer": "email footer",
+        "problem": "The sign-off 'Bob & Nick, Hears' is misaligned and positioned lower than in the reference.",
+        "fix": "Move up 20% to align with reference footer position."
+      },
+      {
+        "layer": "background",
+        "problem": "The overall canvas is wider than the reference, altering the text column width and margins.",
+        "fix": "Constrain width to match reference aspect ratio, scaling to 90% of current width."
+      }
+    ],
+    "applied": 1
+  },
+  "error": null,
+  "passes": 2
+}

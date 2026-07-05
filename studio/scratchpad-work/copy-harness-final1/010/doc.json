@@ -1,0 +1,672 @@
+{
+  "id": "harness_010_6f1a83a1",
+  "name": "copy-harness harness_010_6f1a83a1",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6ei108-1i",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "card-mr6ei108-r",
+      "type": "shape",
+      "role": "card",
+      "name": "Post bg",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "background": "#ffffff"
+      },
+      "tpl": "x-post-ad",
+      "template": {
+        "id": "x-post-ad",
+        "params": {
+          "name": "WAT. EEN. JAAR. 🥺😴🤝",
+          "handle": "@UpfrontFood",
+          "body": "Van een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🙏",
+          "followLabel": "Volgend",
+          "timestamp": "05:00 PM · 12-05-2026",
+          "views": "121K",
+          "viewsLabel": "views",
+          "replies": "257",
+          "reposts": "66",
+          "likes": "21K",
+          "bookmarks": "89",
+          "verified": true,
+          "blurAvatar": false,
+          "avatarEffect": "none",
+          "theme": "light",
+          "media": "",
+          "photo": "attached photo",
+          "quoteName": "Simpletics",
+          "quoteHandle": "@simpletics",
+          "quoteText": "the texture powder is genuinely the only thing that gave my flat hair volume"
+        }
+      }
+    },
+    {
+      "id": "group-mr6ei108-s",
+      "type": "group",
+      "name": "Nav",
+      "box": {
+        "x": 54,
+        "y": 47,
+        "w": 972,
+        "h": 78
+      },
+      "children": [
+        {
+          "id": "caption-mr6ei108-t",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "Back",
+          "text": "←",
+          "sizeLocked": true,
+          "box": {
+            "x": 54,
+            "y": 54,
+            "w": 108,
+            "h": 71
+          },
+          "style": {
+            "fontSize": 59,
+            "fontWeight": 700,
+            "color": "#0f1419",
+            "align": "left",
+            "lineHeight": 1,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6ei108-u",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "Nav title",
+          "text": "Post",
+          "sizeLocked": true,
+          "box": {
+            "x": 216,
+            "y": 54,
+            "w": 648,
+            "h": 71
+          },
+          "style": {
+            "fontSize": 54,
+            "fontWeight": 800,
+            "color": "#0f1419",
+            "align": "center",
+            "lineHeight": 1.15,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6ei108-v",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "More",
+          "text": "⋯",
+          "sizeLocked": true,
+          "box": {
+            "x": 918,
+            "y": 47,
+            "w": 108,
+            "h": 71
+          },
+          "style": {
+            "fontSize": 59,
+            "fontWeight": 800,
+            "color": "#0f1419",
+            "align": "right",
+            "lineHeight": 1,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        }
+      ],
+      "tpl": "x-post-ad"
+    },
+    {
+      "id": "group-mr6ei108-w",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 183,
+        "w": 972,
+        "h": 140
+      },
+      "children": [
+        {
+          "id": "avatar-mr6ei108-x",
+          "type": "image",
+          "role": "avatar",
+          "name": "Avatar",
+          "box": {
+            "x": 54,
+            "y": 183,
+            "w": 140,
+            "h": 140
+          },
+          "style": {
+            "crop": {
+              "x": 0.05,
+              "y": 0.12578616352201258,
+              "w": 0.08,
+              "h": 0.05031446540880503
+            },
+            "shapeKind": "ellipse"
+          },
+          "tpl": "x-post-ad",
+          "src": "/refasset?id=harness-010"
+        },
+        {
+          "id": "caption-mr6ei108-y",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "Name",
+          "text": "WAT. EEN. JAAR. 🥺😴🤝",
+          "sizeLocked": true,
+          "box": {
+            "x": 226,
+            "y": 202,
+            "w": 713,
+            "h": 61
+          },
+          "style": {
+            "fontSize": 45,
+            "fontWeight": 800,
+            "color": "#0f1419",
+            "align": "left",
+            "lineHeight": 1.2,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad",
+          "tplRef": {
+            "key": "name"
+          }
+        },
+        {
+          "id": "badge-mr6ei108-z",
+          "type": "text",
+          "autoH": true,
+          "role": "badge",
+          "name": "Verified",
+          "text": "✔",
+          "sizeLocked": true,
+          "box": {
+            "x": 702,
+            "y": 205,
+            "w": 45,
+            "h": 45
+          },
+          "style": {
+            "fontSize": 27,
+            "fontWeight": 900,
+            "color": "#0f1419",
+            "background": "#1d9bf0",
+            "radius": 45,
+            "align": "center",
+            "lineHeight": 1,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6ei108-10",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "Handle",
+          "text": "@UpfrontFood",
+          "sizeLocked": true,
+          "box": {
+            "x": 226,
+            "y": 258,
+            "w": 540,
+            "h": 53
+          },
+          "style": {
+            "fontSize": 39,
+            "fontWeight": 400,
+            "color": "#536471",
+            "align": "left",
+            "lineHeight": 1.2,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad",
+          "tplRef": {
+            "key": "handle"
+          }
+        },
+        {
+          "id": "cta-mr6ei108-11",
+          "type": "text",
+          "autoH": true,
+          "role": "cta",
+          "name": "Following",
+          "text": "Volgend",
+          "sizeLocked": true,
+          "box": {
+            "x": 728,
+            "y": 208,
+            "w": 298,
+            "h": 90
+          },
+          "style": {
+            "fontSize": 39,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "background": "#0f1419",
+            "radius": 90,
+            "align": "center",
+            "lineHeight": 1,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad",
+          "tplRef": {
+            "key": "followLabel"
+          }
+        }
+      ],
+      "tpl": "x-post-ad"
+    },
+    {
+      "id": "group-mr6ei108-12",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 390,
+        "w": 972,
+        "h": 1434
+      },
+      "children": [
+        {
+          "id": "headline-mr6ei108-13",
+          "type": "text",
+          "autoH": true,
+          "role": "headline",
+          "name": "Body ¶1",
+          "text": "Van een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.",
+          "sizeLocked": true,
+          "box": {
+            "x": 54,
+            "y": 390,
+            "w": 972,
+            "h": 204
+          },
+          "style": {
+            "fontSize": 48,
+            "fontWeight": 400,
+            "color": "#0f1419",
+            "align": "left",
+            "lineHeight": 1.42,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6ei108-14",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "Body ¶2",
+          "text": "Stap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.",
+          "sizeLocked": true,
+          "box": {
+            "x": 54,
+            "y": 640,
+            "w": 972,
+            "h": 204
+          },
+          "style": {
+            "fontSize": 48,
+            "fontWeight": 400,
+            "color": "#0f1419",
+            "align": "left",
+            "lineHeight": 1.42,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6ei108-15",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "Body ¶3",
+          "text": "Om 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.",
+          "sizeLocked": true,
+          "box": {
+            "x": 54,
+            "y": 890,
+            "w": 972,
+            "h": 204
+          },
+          "style": {
+            "fontSize": 48,
+            "fontWeight": 400,
+            "color": "#0f1419",
+            "align": "left",
+            "lineHeight": 1.42,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6ei108-16",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "Body ¶4",
+          "text": "Zo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🙏",
+          "sizeLocked": true,
+          "box": {
+            "x": 54,
+            "y": 1140,
+            "w": 972,
+            "h": 136
+          },
+          "style": {
+            "fontSize": 48,
+            "fontWeight": 400,
+            "color": "#0f1419",
+            "align": "left",
+            "lineHeight": 1.42,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "group-mr6ei108-17",
+          "type": "group",
+          "name": "Meta",
+          "box": {
+            "x": 54,
+            "y": 1619,
+            "w": 972,
+            "h": 52
+          },
+          "children": [
+            {
+              "id": "caption-mr6ei108-18",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "Meta time",
+              "text": "05:00 PM · 12-05-2026 · ",
+              "sizeLocked": true,
+              "box": {
+                "x": 54,
+                "y": 1619,
+                "w": 444,
+                "h": 52
+              },
+              "style": {
+                "fontSize": 37,
+                "fontWeight": 400,
+                "color": "#536471",
+                "align": "left",
+                "lineHeight": 1.2,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6ei108-19",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "Viewcount",
+              "text": "121K",
+              "sizeLocked": true,
+              "box": {
+                "x": 498,
+                "y": 1619,
+                "w": 92,
+                "h": 52
+              },
+              "style": {
+                "fontSize": 37,
+                "fontWeight": 800,
+                "color": "#0f1419",
+                "align": "left",
+                "lineHeight": 1.2,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad",
+              "tplRef": {
+                "key": "views"
+              }
+            },
+            {
+              "id": "caption-mr6ei108-1a",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "Meta views label",
+              "text": " views",
+              "sizeLocked": true,
+              "box": {
+                "x": 601,
+                "y": 1619,
+                "w": 425,
+                "h": 52
+              },
+              "style": {
+                "fontSize": 37,
+                "fontWeight": 400,
+                "color": "#536471",
+                "align": "left",
+                "lineHeight": 1.2,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            }
+          ],
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "group-mr6ei108-1b",
+          "type": "group",
+          "name": "Actions",
+          "box": {
+            "x": 54,
+            "y": 1709,
+            "w": 972,
+            "h": 115
+          },
+          "children": [
+            {
+              "id": "caption-mr6ei108-1c",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "reply count",
+              "text": "💬︎  257",
+              "sizeLocked": true,
+              "box": {
+                "x": 54,
+                "y": 1709,
+                "w": 194,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#536471",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6ei108-1d",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "repost count",
+              "text": "⇄  66",
+              "sizeLocked": true,
+              "box": {
+                "x": 248,
+                "y": 1709,
+                "w": 194,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#536471",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6ei108-1e",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "like count",
+              "text": "♥  21K",
+              "sizeLocked": true,
+              "box": {
+                "x": 442,
+                "y": 1709,
+                "w": 194,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#536471",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "decor-mr6ei108-1f",
+              "type": "shape",
+              "role": "decor",
+              "name": "Bookmark icon",
+              "box": {
+                "x": 636,
+                "y": 1749,
+                "w": 27,
+                "h": 36
+              },
+              "style": {
+                "shapeKind": "polyline",
+                "background": "#536471",
+                "points": [
+                  0.06,
+                  0.04,
+                  0.94,
+                  0.04,
+                  0.94,
+                  0.96,
+                  0.5,
+                  0.6,
+                  0.06,
+                  0.96,
+                  0.06,
+                  0.04
+                ],
+                "stroke": {
+                  "color": "#536471",
+                  "width": 3
+                }
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6ei108-1g",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "Bookmark count",
+              "text": "89",
+              "sizeLocked": true,
+              "box": {
+                "x": 679,
+                "y": 1709,
+                "w": 167,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#536471",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad",
+              "tplRef": {
+                "key": "bookmarks"
+              }
+            },
+            {
+              "id": "caption-mr6ei108-1h",
+              "type": "text",
+              "autoH": true,
+              "role": "caption",
+              "name": "Share",
+              "text": "⬆",
+              "sizeLocked": true,
+              "box": {
+                "x": 970,
+                "y": 1709,
+                "w": 56,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#536471",
+                "align": "right",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            }
+          ],
+          "tpl": "x-post-ad"
+        }
+      ],
+      "tpl": "x-post-ad"
+    }
+  ],
+  "skeletonId": "skel_mr6ei1073kz9",
+  "updatedAt": 1783171885977
+}

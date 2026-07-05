@@ -1,0 +1,654 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "card-mr6fnoog-34",
+      "type": "shape",
+      "role": "card",
+      "name": "Post bg",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "background": "#000000"
+      },
+      "tpl": "x-post-ad",
+      "template": {
+        "id": "x-post-ad",
+        "params": {
+          "name": "blurred username text",
+          "handle": "@UpfrontFood",
+          "body": "Been training hard and still waking up heavy.\nStarted using Cadence Sleep Hydration and finally feel\nlike I'm actually recovering",
+          "followLabel": "Volgend",
+          "timestamp": "05:00 PM · 12-05-2026",
+          "views": "6.9K",
+          "viewsLabel": "views",
+          "replies": "257",
+          "reposts": "66",
+          "likes": "14",
+          "bookmarks": "89",
+          "verified": false,
+          "blurAvatar": true,
+          "avatarEffect": "none",
+          "theme": "dark",
+          "media": "photo",
+          "photo": "lifestyle flat lay",
+          "quoteName": "Simpletics",
+          "quoteHandle": "@simpletics",
+          "quoteText": "the texture powder is genuinely the only thing that gave my flat hair volume"
+        }
+      }
+    },
+    {
+      "id": "group-mr6fnoog-38",
+      "type": "group",
+      "name": "Nav",
+      "box": {
+        "x": 54,
+        "y": 47,
+        "w": 972,
+        "h": 78
+      },
+      "children": [
+        {
+          "id": "caption-mr6fnoog-35",
+          "type": "text",
+          "autoH": false,
+          "role": "caption",
+          "name": "Back",
+          "text": "←",
+          "sizeLocked": true,
+          "box": {
+            "x": 54,
+            "y": 54,
+            "w": 108,
+            "h": 71
+          },
+          "style": {
+            "fontSize": 59,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "left",
+            "lineHeight": 1,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6fnoog-36",
+          "type": "text",
+          "autoH": false,
+          "role": "caption",
+          "name": "Nav title",
+          "text": "Post",
+          "sizeLocked": true,
+          "box": {
+            "x": 216,
+            "y": 54,
+            "w": 648,
+            "h": 71
+          },
+          "style": {
+            "fontSize": 54,
+            "fontWeight": 800,
+            "color": "#ffffff",
+            "align": "center",
+            "lineHeight": 1.15,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6fnoog-37",
+          "type": "text",
+          "autoH": false,
+          "role": "caption",
+          "name": "More",
+          "text": "⋯",
+          "sizeLocked": true,
+          "box": {
+            "x": 918,
+            "y": 47,
+            "w": 108,
+            "h": 71
+          },
+          "style": {
+            "fontSize": 59,
+            "fontWeight": 800,
+            "color": "#ffffff",
+            "align": "right",
+            "lineHeight": 1,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        }
+      ],
+      "tpl": "x-post-ad"
+    },
+    {
+      "id": "group-mr6fnoog-3d",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 183,
+        "w": 972,
+        "h": 140
+      },
+      "children": [
+        {
+          "id": "avatar-mr6fnoog-39",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Avatar",
+          "box": {
+            "x": 54,
+            "y": 183,
+            "w": 140,
+            "h": 140
+          },
+          "style": {
+            "shapeKind": "ellipse",
+            "gradient": {
+              "type": "linear",
+              "angle": 160,
+              "stops": [
+                {
+                  "color": "#ffffff",
+                  "pos": 0
+                },
+                {
+                  "color": "#dcdcdc",
+                  "pos": 1
+                }
+              ]
+            }
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "caption-mr6fnoog-3a",
+          "type": "text",
+          "autoH": false,
+          "role": "caption",
+          "name": "Name",
+          "text": "blurred username text",
+          "sizeLocked": true,
+          "box": {
+            "x": 226,
+            "y": 202,
+            "w": 681,
+            "h": 61
+          },
+          "style": {
+            "fontSize": 45,
+            "fontWeight": 800,
+            "color": "#e7e9ea",
+            "align": "left",
+            "lineHeight": 1.2,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad",
+          "tplRef": {
+            "key": "name"
+          }
+        },
+        {
+          "id": "caption-mr6fnoog-3b",
+          "type": "text",
+          "autoH": false,
+          "role": "caption",
+          "name": "Handle",
+          "text": "@UpfrontFood",
+          "sizeLocked": true,
+          "box": {
+            "x": 226,
+            "y": 258,
+            "w": 540,
+            "h": 53
+          },
+          "style": {
+            "fontSize": 39,
+            "fontWeight": 400,
+            "color": "#71767b",
+            "align": "left",
+            "lineHeight": 1.2,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad",
+          "tplRef": {
+            "key": "handle"
+          }
+        },
+        {
+          "id": "cta-mr6fnoog-3c",
+          "type": "text",
+          "autoH": false,
+          "role": "cta",
+          "name": "Following",
+          "text": "Volgend",
+          "sizeLocked": true,
+          "box": {
+            "x": 728,
+            "y": 208,
+            "w": 298,
+            "h": 90
+          },
+          "style": {
+            "fontSize": 39,
+            "fontWeight": 700,
+            "color": "#0f1419",
+            "background": "#ffffff",
+            "radius": 90,
+            "align": "center",
+            "lineHeight": 1,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad",
+          "tplRef": {
+            "key": "followLabel"
+          }
+        }
+      ],
+      "tpl": "x-post-ad"
+    },
+    {
+      "id": "group-mr6fnooh-3t",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 390,
+        "w": 972,
+        "h": 1434
+      },
+      "children": [
+        {
+          "id": "headline-mr6fnoog-3e",
+          "type": "text",
+          "autoH": false,
+          "role": "headline",
+          "name": "Body ¶1",
+          "text": "Been training hard and still waking up heavy. Started using Cadence Sleep Hydration and finally feel like I'm actually recovering",
+          "sizeLocked": true,
+          "box": {
+            "x": 54,
+            "y": 390,
+            "w": 972,
+            "h": 273
+          },
+          "style": {
+            "fontSize": 48,
+            "fontWeight": 400,
+            "color": "#ffffff",
+            "align": "left",
+            "lineHeight": 1.42,
+            "fontFamily": ""
+          },
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "group-mr6fnooh-3l",
+          "type": "group",
+          "name": "Media",
+          "box": {
+            "x": 54,
+            "y": 1043,
+            "w": 972,
+            "h": 538
+          },
+          "children": [
+            {
+              "id": "card-mr6fnoog-3j",
+              "type": "shape",
+              "role": "card",
+              "name": "Media frame",
+              "box": {
+                "x": 54,
+                "y": 1043,
+                "w": 972,
+                "h": 538
+              },
+              "style": {
+                "background": "#16181c",
+                "radius": 32,
+                "stroke": {
+                  "color": "#2f3336",
+                  "width": 2
+                }
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "product-mr6fnoog-3k",
+              "type": "shape",
+              "role": "product",
+              "name": "Image · lifestyle flat lay",
+              "box": {
+                "x": 54,
+                "y": 1043,
+                "w": 972,
+                "h": 538
+              },
+              "style": {
+                "background": "#9aa0a6",
+                "opacity": 0.45,
+                "radius": 32
+              },
+              "tpl": "x-post-ad",
+              "cutoutCandidate": {
+                "region": {
+                  "x": 0.03,
+                  "y": 0.27,
+                  "w": 0.94,
+                  "h": 0.71
+                },
+                "shape": "rect"
+              }
+            }
+          ],
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "group-mr6fnoog-3i",
+          "type": "group",
+          "name": "Meta",
+          "box": {
+            "x": 54,
+            "y": 1619,
+            "w": 972,
+            "h": 52
+          },
+          "children": [
+            {
+              "id": "caption-mr6fnoog-3f",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "Meta time",
+              "text": "05:00 PM · 12-05-2026 · ",
+              "sizeLocked": true,
+              "box": {
+                "x": 54,
+                "y": 1619,
+                "w": 444,
+                "h": 52
+              },
+              "style": {
+                "fontSize": 37,
+                "fontWeight": 400,
+                "color": "#71767b",
+                "align": "left",
+                "lineHeight": 1.2,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6fnoog-3g",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "Viewcount",
+              "text": "6.9K",
+              "sizeLocked": true,
+              "box": {
+                "x": 498,
+                "y": 1619,
+                "w": 92,
+                "h": 52
+              },
+              "style": {
+                "fontSize": 37,
+                "fontWeight": 800,
+                "color": "#ffffff",
+                "align": "left",
+                "lineHeight": 1.2,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad",
+              "tplRef": {
+                "key": "views"
+              }
+            },
+            {
+              "id": "caption-mr6fnoog-3h",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "Meta views label",
+              "text": " views",
+              "sizeLocked": true,
+              "box": {
+                "x": 601,
+                "y": 1619,
+                "w": 425,
+                "h": 52
+              },
+              "style": {
+                "fontSize": 37,
+                "fontWeight": 400,
+                "color": "#71767b",
+                "align": "left",
+                "lineHeight": 1.2,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            }
+          ],
+          "tpl": "x-post-ad"
+        },
+        {
+          "id": "group-mr6fnooh-3s",
+          "type": "group",
+          "name": "Actions",
+          "box": {
+            "x": 54,
+            "y": 1709,
+            "w": 972,
+            "h": 115
+          },
+          "children": [
+            {
+              "id": "caption-mr6fnooh-3m",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "reply count",
+              "text": "💬︎  257",
+              "sizeLocked": true,
+              "box": {
+                "x": 54,
+                "y": 1709,
+                "w": 194,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#71767b",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6fnooh-3n",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "repost count",
+              "text": "⇄  66",
+              "sizeLocked": true,
+              "box": {
+                "x": 248,
+                "y": 1709,
+                "w": 194,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#71767b",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6fnooh-3o",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "like count",
+              "text": "♥  14",
+              "sizeLocked": true,
+              "box": {
+                "x": 442,
+                "y": 1709,
+                "w": 194,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#71767b",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "decor-mr6fnooh-3p",
+              "type": "shape",
+              "role": "decor",
+              "name": "Bookmark icon",
+              "box": {
+                "x": 636,
+                "y": 1749,
+                "w": 27,
+                "h": 36
+              },
+              "style": {
+                "shapeKind": "polyline",
+                "background": "#71767b",
+                "points": [
+                  0.06,
+                  0.04,
+                  0.94,
+                  0.04,
+                  0.94,
+                  0.96,
+                  0.5,
+                  0.6,
+                  0.06,
+                  0.96,
+                  0.06,
+                  0.04
+                ],
+                "stroke": {
+                  "color": "#71767b",
+                  "width": 3
+                }
+              },
+              "tpl": "x-post-ad"
+            },
+            {
+              "id": "caption-mr6fnooh-3q",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "Bookmark count",
+              "text": "89",
+              "sizeLocked": true,
+              "box": {
+                "x": 679,
+                "y": 1709,
+                "w": 167,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#71767b",
+                "align": "left",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad",
+              "tplRef": {
+                "key": "bookmarks"
+              }
+            },
+            {
+              "id": "caption-mr6fnooh-3r",
+              "type": "text",
+              "autoH": false,
+              "role": "caption",
+              "name": "Share",
+              "text": "⬆",
+              "sizeLocked": true,
+              "box": {
+                "x": 970,
+                "y": 1709,
+                "w": 56,
+                "h": 115
+              },
+              "style": {
+                "fontSize": 35,
+                "fontWeight": 400,
+                "color": "#71767b",
+                "align": "right",
+                "lineHeight": 1,
+                "fontFamily": ""
+              },
+              "tpl": "x-post-ad"
+            }
+          ],
+          "tpl": "x-post-ad"
+        }
+      ],
+      "tpl": "x-post-ad"
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "x-post",
+  "background": "#000000",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#010101",
+      "share": 0.5
+    },
+    {
+      "hex": "#c5c1b7",
+      "share": 0.125
+    },
+    {
+      "hex": "#443d34",
+      "share": 0.125
+    },
+    {
+      "hex": "#6b6156",
+      "share": 0.125
+    },
+    {
+      "hex": "#8e897f",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

@@ -1,0 +1,177 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr86kjrt-0",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 0,
+        "y": 2,
+        "w": 744,
+        "h": 106
+      },
+      "children": [
+        {
+          "id": "ext-mr86kjrs-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "X.com",
+          "autoH": true,
+          "box": {
+            "x": 9,
+            "y": 2,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#e7e9ea",
+            "fontSize": 18,
+            "fontWeight": 500,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86kjrs-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Been training hard and still waking up heavy.\nStarted using Cadence Sleep Hydration and finally feel\nlike I’m actually recovering",
+          "autoH": true,
+          "box": {
+            "x": 0,
+            "y": 40,
+            "w": 744,
+            "h": 30
+          },
+          "style": {
+            "color": "#e7e9ea",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86kjrs-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "14:07 · 26/09/2025 · 6.9K Views",
+          "autoH": true,
+          "box": {
+            "x": 0,
+            "y": 78,
+            "w": 122,
+            "h": 30
+          },
+          "style": {
+            "color": "#71767b",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr86kjrt-1",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 0,
+        "y": 2,
+        "w": 1037,
+        "h": 1534
+      },
+      "children": [
+        {
+          "id": "ext-mr86kjrs-5",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Blurred · user avatar",
+          "box": {
+            "x": 43,
+            "y": 77,
+            "w": 86,
+            "h": 77
+          },
+          "style": {
+            "background": "#6a6a6abf",
+            "shapeKind": "ellipse",
+            "blur": 6
+          }
+        },
+        {
+          "id": "media_mr86kjrt",
+          "type": "shape",
+          "role": "product",
+          "name": "Media photo (cut out)",
+          "box": {
+            "x": 0,
+            "y": 2,
+            "w": 1037,
+            "h": 1534
+          },
+          "style": {},
+          "cutoutCandidate": {
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 0.9750000000000001,
+              "h": 0.8150000000000001
+            },
+            "shape": "media"
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "x-post",
+  "background": "#000000",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#010101",
+      "share": 0.5
+    },
+    {
+      "hex": "#c5c1b7",
+      "share": 0.125
+    },
+    {
+      "hex": "#443d34",
+      "share": 0.125
+    },
+    {
+      "hex": "#6b6156",
+      "share": 0.125
+    },
+    {
+      "hex": "#8e897f",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 0,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 3,
+    "totalCorrections": 7
+  },
+  "error": null,
+  "passes": 2
+}

@@ -1,0 +1,201 @@
+{
+  "id": "harness_035_dea1e9eb",
+  "name": "copy-harness harness_035_dea1e9eb",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base_mr6mnssx",
+      "type": "image",
+      "role": "base",
+      "name": "Background (reference photo)",
+      "src": "/refasset?id=harness-035",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "group-mr6mnssw-n",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "children": [
+        {
+          "id": "rect-mr6mnssw-o",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · woman with headband",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 1920
+          },
+          "style": {
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "radius": 38
+          },
+          "src": "/refasset?id=harness-035"
+        },
+        {
+          "id": "badge-mr6mnssw-p",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "Ask me anything",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 115,
+            "w": 454,
+            "h": 77
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1a1a1a",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "headline-mr6mnssw-q",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "How long did it take to reduce your fine lines & wrinkles?",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 192,
+            "w": 864,
+            "h": 234
+          },
+          "style": {
+            "color": "#fdfdfd",
+            "background": "#f5f5f5",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6mnssw-r",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 1286,
+        "w": 972,
+        "h": 404
+      },
+      "children": [
+        {
+          "id": "caption-mr6mnssw-s",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "It wasn't overnight, but it didn't take too long either. I just used this once a week, and by week 2, my lines were smoother and skin tighter.",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 1286,
+            "w": 734,
+            "h": 269
+          },
+          "style": {
+            "color": "#615853",
+            "background": "#f5f5f5",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6mnssw-t",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "By week 4, my husband kept complimenting how younger and more radiant I looked.",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 1536,
+            "w": 734,
+            "h": 154
+          },
+          "style": {
+            "color": "#625956",
+            "background": "#f5f5f5",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "caption-mr6mnssw-u",
+      "type": "text",
+      "role": "caption",
+      "name": "caption",
+      "text": "I'm leaving the link if you're interested. Here's where you can get it 👇",
+      "autoH": true,
+      "box": {
+        "x": 108,
+        "y": 1709,
+        "w": 734,
+        "h": 154
+      },
+      "style": {
+        "color": "#000000",
+        "background": "#f5f5f5",
+        "fontSize": 30,
+        "fontWeight": 600,
+        "align": "center",
+        "radius": 108,
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6mnsswrknv",
+  "updatedAt": 1783185592209
+}

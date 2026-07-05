@@ -1,0 +1,254 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6dohv2-5",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 173,
+        "y": 768,
+        "w": 821,
+        "h": 545
+      },
+      "children": [
+        {
+          "id": "ext-mr6dohne-1",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 768,
+            "w": 734,
+            "h": 134
+          },
+          "style": {
+            "color": "#d8bba9",
+            "background": "#000000",
+            "fontSize": 38,
+            "fontWeight": 600,
+            "align": "center",
+            "radius": 22,
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6dohuy-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "72,6 kg",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 864,
+            "w": 324,
+            "h": 134
+          },
+          "style": {
+            "color": "#af8f7e",
+            "background": "#000000",
+            "fontSize": 41,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 22,
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6dohv0-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "68,2kg",
+          "autoH": true,
+          "box": {
+            "x": 421,
+            "y": 864,
+            "w": 324,
+            "h": 134
+          },
+          "style": {
+            "color": "#c18f6b",
+            "background": "#000000",
+            "fontSize": 41,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 22,
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6dohv1-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "66,1kg",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 864,
+            "w": 324,
+            "h": 134
+          },
+          "style": {
+            "color": "#c73584",
+            "background": "#ffd1dc",
+            "fontSize": 41,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 22,
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6dohv2-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Ganz Ehrlich: ich habe null damit gerechnet 😂🥴",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 998,
+            "w": 734,
+            "h": 230
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#000000",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "center",
+            "radius": 22,
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6dohv2-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@vitafant_natural",
+          "autoH": true,
+          "box": {
+            "x": 421,
+            "y": 1236,
+            "w": 162,
+            "h": 77
+          },
+          "style": {
+            "color": "#847365",
+            "background": "#000000",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "center",
+            "radius": 11,
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6dohne-0",
+      "type": "shape",
+      "role": "product",
+      "name": "Product · green pouch bag",
+      "box": {
+        "x": 918,
+        "y": 1890,
+        "w": 162,
+        "h": 30
+      },
+      "style": {
+        "background": "#2d4a2e59",
+        "radius": 22,
+        "shapeKind": "path",
+        "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
+        "stroke": {
+          "color": "#2d4a2e",
+          "width": 2
+        }
+      }
+    },
+    {
+      "id": "ext-mr6dohne-0-lb",
+      "type": "text",
+      "role": "caption",
+      "name": "Product label",
+      "autoH": false,
+      "sizeLocked": true,
+      "text": "GREEN POUCH BAG",
+      "box": {
+        "x": 918,
+        "y": 1884,
+        "w": 162,
+        "h": 36
+      },
+      "style": {
+        "fontSize": 18,
+        "fontWeight": 700,
+        "color": "#ffffff",
+        "align": "center",
+        "uppercase": true,
+        "lineHeight": 1,
+        "shadow": true
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "story-native",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#56533c",
+      "share": 0.25
+    },
+    {
+      "hex": "#d8d3c3",
+      "share": 0.25
+    },
+    {
+      "hex": "#1b160e",
+      "share": 0.25
+    },
+    {
+      "hex": "#9c7757",
+      "share": 0.125
+    },
+    {
+      "hex": "#baa37f",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

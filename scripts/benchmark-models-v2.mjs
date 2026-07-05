@@ -83,6 +83,12 @@ const TARGETS = [
 
 function log(msg) { console.log(msg); }
 const isCompareMode = process.argv.includes('--compare');
+// LM Studio can now report MULTIPLE models as "loaded" simultaneously (observed live: e4b + 12b
+// both `state:"loaded"` at once), which broke the old "detect the one loaded model" assumption —
+// classifyLoaded's specificity order would silently always pick 12b over e4b. --target=<name>
+// (gemma-4-e4b | gemma-4-12b | ornith-9b) pins the exact model id and forces every call onto it.
+const targetArg = process.argv.find((a) => a.startsWith('--target='));
+const forcedTarget = targetArg ? targetArg.slice('--target='.length).trim() : null;
 
 // ── Detect the currently LOADED model via /api/v0/models (per-model state), falling back to
 // the plain /models list + VISION_MODEL best guess if /api/v0 isn't available.
@@ -210,11 +216,11 @@ function scoreVisionTask(task, parsed, rawText) {
   return 4;
 }
 
-async function runVisionTask(task) {
+async function runVisionTask(task, forceModel = null) {
   const imgPath = join(IMAGE_DIR, task.file);
   if (!existsSync(imgPath)) return { id: task.id, ok: false, error: `image not found: ${imgPath}` };
   const started = Date.now();
-  const r = await llmVision(LAYOUT_PROMPT, imgPath, { purpose: 'benchmark-vision', timeoutMs: 90_000, maxTokens: 6000 });
+  const r = await llmVision(LAYOUT_PROMPT, imgPath, { purpose: 'benchmark-vision', timeoutMs: 90_000, maxTokens: 6000, _forceModel: forceModel });
   const ms = Date.now() - started;
   const parsed = r.ok ? tryParseJson(r.text) : null;
   const score = scoreVisionTask(task, parsed, r.text);
@@ -317,11 +323,11 @@ function scoreAgenticTask(task, ops, rawText) {
   return 4;
 }
 
-async function runAgenticTask(task) {
+async function runAgenticTask(task, forceModel = null) {
   const prompt = `You lay out ad comps by editing a JSON scene graph.\n${task.scene}\n\n`
     + `Instruction: ${task.instruction}\n${OP_GRAMMAR}`;
   const started = Date.now();
-  const r = await llmText(prompt, { purpose: 'benchmark-agentic', timeoutMs: 60_000, maxTokens: 1500, _noPrefer: true });
+  const r = await llmText(prompt, { purpose: 'benchmark-agentic', timeoutMs: 60_000, maxTokens: 1500, _noPrefer: true, _forceModel: forceModel });
   const ms = Date.now() - started;
   const ops = r.ok ? parseOpsArray(r.text) : null;
   const score = scoreAgenticTask(task, ops, r.text);
@@ -439,10 +445,13 @@ function scoreCreativeTask(brief, parsed, rawText, lint) {
   };
 }
 
-async function runCreativeTask(brief) {
+async function runCreativeTask(brief, forceModel = null) {
   const prompt = CREATIVE_PROMPT_TEMPLATE(brief.brief);
   const started = Date.now();
-  const r = await llmText(prompt, { purpose: 'benchmark-creative', timeoutMs: 90_000, maxTokens: 3000, _noPrefer: true });
+  // Ornith is a REASONING model — it burns tokens in reasoning_content BEFORE emitting the JSON,
+  // so a 3000 cap truncated it mid-think (outTok:3000/validJson:false) and mis-scored its real
+  // creative quality. 8000 gives it room to reason THEN emit; unused local tokens are free.
+  const r = await llmText(prompt, { purpose: 'benchmark-creative', timeoutMs: 90_000, maxTokens: 8000, _noPrefer: true, _forceModel: forceModel });
   const ms = Date.now() - started;
   const parsed = r.ok ? tryParseCreativeJson(r.text) : null;
   const lint = parsed ? safeLint(parsed) : null;
@@ -719,16 +728,36 @@ async function main() {
     log('No model appears to be loaded in LM Studio right now. Load gemma-4-e4b, ornith-9b, or gemma-4-12b and re-run.');
     process.exit(1);
   }
-  const { target, modelId } = classifyLoaded(probe.ids);
-  log(`Detected loaded model(s): ${probe.ids.join(', ')}`);
-  if (!target) {
-    log(`NOTE: loaded model "${modelId}" does not match any of the three known targets (gemma-4-e4b / gemma-4-12b / ornith-9b).`);
-    log('Running the suite anyway and tagging results with its real id, as a reference point.');
+  let target, modelId;
+  if (forcedTarget) {
+    // Resolve --target=<name> against a KNOWN pattern, then find the matching real id among
+    // whatever's actually loaded — pins the exact model even when >1 show loaded at once.
+    const known = TARGETS.find(([name]) => name === forcedTarget);
+    if (!known) {
+      log(`ERROR: --target="${forcedTarget}" is not one of the known targets: ${TARGETS.map((t) => t[0]).join(', ')}`);
+      process.exit(1);
+    }
+    const hit = probe.ids.find(known[1]);
+    if (!hit) {
+      log(`ERROR: --target="${forcedTarget}" is not currently loaded. Loaded: ${probe.ids.join(', ') || '(none)'}`);
+      process.exit(1);
+    }
+    target = forcedTarget; modelId = hit;
+    log(`Detected loaded model(s): ${probe.ids.join(', ')}`);
+    log(`Forced target: "${target}" (model id: ${modelId})`);
   } else {
-    log(`Target match: "${target}" (model id: ${modelId})`);
-  }
-  if (probe.ids.length > 1) {
-    log(`NOTE: multiple models reported loaded (${probe.ids.join(', ')}) — this benchmark targets "${modelId}" specifically.`);
+    ({ target, modelId } = classifyLoaded(probe.ids));
+    log(`Detected loaded model(s): ${probe.ids.join(', ')}`);
+    if (!target) {
+      log(`NOTE: loaded model "${modelId}" does not match any of the three known targets (gemma-4-e4b / gemma-4-12b / ornith-9b).`);
+      log('Running the suite anyway and tagging results with its real id, as a reference point.');
+    } else {
+      log(`Target match: "${target}" (model id: ${modelId})`);
+    }
+    if (probe.ids.length > 1) {
+      log(`NOTE: multiple models reported loaded (${probe.ids.join(', ')}) — auto-picked "${modelId}" by specificity order.`);
+      log('Pass --target=gemma-4-e4b|gemma-4-12b|ornith-9b to pin an exact model instead of guessing.');
+    }
   }
 
   // ── VISION ──
@@ -737,11 +766,11 @@ async function main() {
   let visionConsistency = null;
   for (const task of VISION_TASKS) {
     log(`  running: ${task.id} (${task.desc})...`);
-    const r = await runVisionTask(task);
+    const r = await runVisionTask(task, modelId);
     visionResults.push(r);
     log(`    -> ok=${r.ok} score=${r.score}/5 latency=${r.latencyMs}ms layers=${r.layerCount}/${r.expectedLayers} tok(in/out)=${r.inTok}/${r.outTok}`);
     if (task.repeatTwice) {
-      const consistency = await runTwiceForConsistency(task.id, () => runVisionTask(task));
+      const consistency = await runTwiceForConsistency(task.id, () => runVisionTask(task, modelId));
       // replace the single sample above with run1 for the saved tasks array; append run2 separately.
       visionResults[visionResults.length - 1] = consistency.run1;
       visionResults.push({ ...consistency.run2, id: `${task.id}-repeat2` });
@@ -763,7 +792,7 @@ async function main() {
   const agenticResults = [];
   for (const task of AGENTIC_TASKS) {
     log(`  running: ${task.id} (${task.desc})...`);
-    const r = await runAgenticTask(task);
+    const r = await runAgenticTask(task, modelId);
     agenticResults.push(r);
     log(`    -> ok=${r.ok} score=${r.score}/5 latency=${r.latencyMs}ms validOps=${r.validOpsCount}/${r.validOpsFound} tok(in/out)=${r.inTok}/${r.outTok}`);
   }
@@ -777,7 +806,7 @@ async function main() {
   let creativeConsistency = null;
   for (const brief of CREATIVE_BRIEFS) {
     log(`  running: ${brief.id} (${brief.desc})...`);
-    const r = await runCreativeTask(brief);
+    const r = await runCreativeTask(brief, modelId);
     creativeResults.push(r);
     log(`    -> ok=${r.ok} score=${r.score}/5 latency=${r.latencyMs}ms layers=${r.layerCount} archetype=${r.archetype} lint=${r.lintCount ?? 'n/a'} tok(in/out)=${r.inTok}/${r.outTok}`);
     if (r.lintFindings?.length) log(`       lint findings: ${r.lintFindings.slice(0, 3).join(' | ')}${r.lintFindings.length > 3 ? ' ...' : ''}`);
@@ -785,7 +814,7 @@ async function main() {
   // Mandatory repeat-twice pass on the FIRST brief ("maybe try the same ad twice too").
   const repeatBrief = CREATIVE_BRIEFS[0];
   log(`  [consistency] repeating "${repeatBrief.id}" a 2nd time on the identical brief...`);
-  const consistency = await runTwiceForConsistency(repeatBrief.id, () => runCreativeTask(repeatBrief));
+  const consistency = await runTwiceForConsistency(repeatBrief.id, () => runCreativeTask(repeatBrief, modelId));
   creativeResults.push({ ...consistency.run2, id: `${repeatBrief.id}-repeat2` });
   creativeConsistency = {
     taskId: repeatBrief.id, stability: consistency.stability, scoreDelta: consistency.scoreDelta,

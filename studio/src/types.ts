@@ -249,12 +249,6 @@ export interface GenEstimate { seconds: number; samples: number; fallback: boole
 
 export interface Health { ok: boolean; bridge: boolean; codex: { alive: boolean }; queue: QueueInfo; estimate?: GenEstimate; codexUsage?: CodexUsage; blockers?: Blockers; }
 
-export interface ActivityJob {
-  id: string; ad: string; variation: string; prompt: string; run: number;
-  status: JobStatus; startedAt?: number | null; error?: string | null;
-  spendAt?: number | null; reason?: FailReason;
-}
-
 // Targets for POST /api/generate. Exactly one of ads / variation / prompt; omit all = whole batch.
 export type GenerateScope = {
   ads?: string[];

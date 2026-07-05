@@ -1,0 +1,263 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6eu1an-0",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 12,
+        "y": 7,
+        "w": 128,
+        "h": 137
+      },
+      "children": [
+        {
+          "id": "ext-mr6eu17m-2",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Anthony",
+          "autoH": true,
+          "box": {
+            "x": 24,
+            "y": 7,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 19,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6eu1am-3",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "@anthony23",
+          "autoH": true,
+          "box": {
+            "x": 24,
+            "y": 45,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6eu1am-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+          "autoH": true,
+          "box": {
+            "x": 12,
+            "y": 83,
+            "w": 103,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6eu1am-5",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "X.com",
+          "autoH": true,
+          "box": {
+            "x": 100,
+            "y": 9,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6eu1am-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "10:44 -04/10/2026 -647 Views",
+          "autoH": true,
+          "box": {
+            "x": 12,
+            "y": 114,
+            "w": 55,
+            "h": 30
+          },
+          "style": {
+            "color": "#d1d1d1",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6eu1am-7",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · man with curly hair selfie",
+      "box": {
+        "x": 136,
+        "y": 309,
+        "w": 944,
+        "h": 771
+      },
+      "style": {
+        "background": "#3e302559",
+        "radius": 22,
+        "stroke": {
+          "color": "#3e3025",
+          "width": 8
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.13,
+          "y": 0.29,
+          "w": 0.87,
+          "h": 0.71
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "grp-mr6eu1an-1",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 12,
+        "y": 6,
+        "w": 97,
+        "h": 103
+      },
+      "children": [
+        {
+          "id": "ext-mr6eu17m-0",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Avatar · profile picture",
+          "box": {
+            "x": 12,
+            "y": 6,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#2c2c2c59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#2c2c2c",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.01,
+              "y": 0.01,
+              "w": 0.01,
+              "h": 0.01
+            },
+            "shape": "avatar"
+          }
+        },
+        {
+          "id": "ext-mr6eu17m-1",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Avatar · curly hair selfie",
+          "box": {
+            "x": 12,
+            "y": 29,
+            "w": 97,
+            "h": 80
+          },
+          "style": {
+            "background": "#2c2c2c59",
+            "radius": 22,
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#2c2c2c",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.01,
+              "y": 0.03,
+              "w": 0.09,
+              "h": 0.07
+            },
+            "shape": "avatar"
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "x-post",
+  "background": "#1a1a1a",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#151414",
+      "share": 0.5
+    },
+    {
+      "hex": "#312c2d",
+      "share": 0.125
+    },
+    {
+      "hex": "#6b5e58",
+      "share": 0.125
+    },
+    {
+      "hex": "#958e85",
+      "share": 0.125
+    },
+    {
+      "hex": "#ddaea3",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

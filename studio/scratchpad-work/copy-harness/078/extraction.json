@@ -1,0 +1,285 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr86xzqe-4",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "children": [
+        {
+          "id": "ext-mr86xzq9-0",
+          "type": "shape",
+          "role": "card",
+          "name": "card",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 1080
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#ffffff",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr86xzqe-3",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Nature’s Energy Gel\n2 ingredients",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 54,
+            "w": 972,
+            "h": 194
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 86,
+            "fontWeight": 900,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr86xzqe-5",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 86,
+        "y": 297,
+        "w": 950,
+        "h": 567
+      },
+      "children": [
+        {
+          "id": "ext-mr86xzqe-1",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Energy Gel Packet",
+          "box": {
+            "x": 405,
+            "y": 297,
+            "w": 270,
+            "h": 567
+          },
+          "style": {
+            "background": "#f1c74159",
+            "radius": 22,
+            "stroke": {
+              "color": "#f1c741",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.38,
+              "y": 0.28,
+              "w": 0.25,
+              "h": 0.53
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr86xzqe-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pure Honey",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 389,
+            "w": 194,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 32,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86xzqe-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pink Salt",
+          "autoH": true,
+          "box": {
+            "x": 842,
+            "y": 389,
+            "w": 184,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 32,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86xzqe-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "100% Natural",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 626,
+            "w": 216,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 32,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr86xzqe-7",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "stomach\nfriendly",
+          "autoH": true,
+          "box": {
+            "x": 842,
+            "y": 680,
+            "w": 194,
+            "h": 65
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 29,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr86xzqe-2",
+      "type": "shape",
+      "role": "logo",
+      "name": "Logo · Hornet Logo",
+      "box": {
+        "x": 891,
+        "y": 945,
+        "w": 86,
+        "h": 81
+      },
+      "style": {
+        "background": "#1a1a1a59",
+        "shapeKind": "ellipse",
+        "stroke": {
+          "color": "#1a1a1a",
+          "width": 2
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.83,
+          "y": 0.88,
+          "w": 0.08,
+          "h": 0.08
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "ext-mr86xzqe-8",
+      "type": "text",
+      "role": "price",
+      "name": "price",
+      "text": "24 servings for\n$1.99 per serve",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 918,
+        "w": 378,
+        "h": 86
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 37,
+        "fontWeight": 800,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "offer-hero",
+  "background": "#f4f4f4",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#f5f4f5",
+      "share": 0.5
+    },
+    {
+      "hex": "#f4f6fa",
+      "share": 0.25
+    },
+    {
+      "hex": "#ececec",
+      "share": 0.125
+    },
+    {
+      "hex": "#090a0b",
+      "share": 0.063
+    },
+    {
+      "hex": "#987534",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 45,
+    "corrections": [],
+    "applied": 0,
+    "iterations": 3,
+    "totalCorrections": 10
+  },
+  "error": null,
+  "passes": 2
+}

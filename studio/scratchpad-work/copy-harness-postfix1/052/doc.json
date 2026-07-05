@@ -1,0 +1,298 @@
+{
+  "id": "harness_052_de2f3165",
+  "name": "copy-harness harness_052_de2f3165",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base_mr6dluph",
+      "type": "image",
+      "role": "base",
+      "name": "Background (reference photo)",
+      "src": "/refasset?id=harness-052",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "group-mr6dlupg-2g",
+      "type": "group",
+      "name": "Frame",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "children": [
+        {
+          "id": "card-mr6dlupg-2h",
+          "type": "shape",
+          "role": "card",
+          "name": "Background",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 1080
+          },
+          "style": {
+            "background": "#8fa88a"
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "card-mr6dlupg-2i",
+          "type": "shape",
+          "role": "card",
+          "name": "Footer band",
+          "box": {
+            "x": 0,
+            "y": 907,
+            "w": 1080,
+            "h": 173
+          },
+          "style": {
+            "background": "#f4f2ec"
+          },
+          "tpl": "before-after"
+        }
+      ],
+      "tpl": "before-after",
+      "template": {
+        "id": "before-after",
+        "params": {
+          "headline": "No need to ruin your hair\nto have perfect curls",
+          "leftLabel": "Before panel",
+          "rightLabel": "After panel",
+          "product": "product tube",
+          "closing": "This natural curl cream\nis all you need",
+          "bg": "#8fa88a"
+        }
+      }
+    },
+    {
+      "id": "headline-mr6dlupg-2j",
+      "type": "text",
+      "autoH": true,
+      "role": "headline",
+      "name": "Headline",
+      "text": "No need to ruin your hair\nto have perfect curls",
+      "sizeLocked": true,
+      "box": {
+        "x": 172,
+        "y": 59,
+        "w": 738,
+        "h": 224
+      },
+      "style": {
+        "fontSize": 63,
+        "fontWeight": 500,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1.18,
+        "fontFamily": "Georgia"
+      },
+      "tpl": "before-after",
+      "tplRef": {
+        "key": "headline"
+      }
+    },
+    {
+      "id": "group-mr6dlupg-2k",
+      "type": "group",
+      "name": "Panels",
+      "box": {
+        "x": 54,
+        "y": 259,
+        "w": 972,
+        "h": 389
+      },
+      "children": [
+        {
+          "id": "product-mr6dlupg-2l",
+          "type": "shape",
+          "role": "product",
+          "name": "Before panel",
+          "box": {
+            "x": 54,
+            "y": 259,
+            "w": 484,
+            "h": 389
+          },
+          "style": {
+            "background": "#9aa0a6",
+            "opacity": 0.4,
+            "radius": 13
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "product-mr6dlupg-2m",
+          "type": "shape",
+          "role": "product",
+          "name": "After panel",
+          "box": {
+            "x": 542,
+            "y": 259,
+            "w": 484,
+            "h": 389
+          },
+          "style": {
+            "background": "#9aa0a6",
+            "opacity": 0.55,
+            "radius": 13
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "caption-mr6dlupg-2n",
+          "type": "shape",
+          "role": "caption",
+          "name": "Divider",
+          "box": {
+            "x": 538,
+            "y": 259,
+            "w": 4,
+            "h": 389
+          },
+          "style": {
+            "background": "#ffffff"
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "badge-mr6dlupg-2o",
+          "type": "badge",
+          "autoH": true,
+          "role": "badge",
+          "name": "Before panel pill",
+          "text": "Before panel",
+          "box": {
+            "x": 208,
+            "y": 281,
+            "w": 178,
+            "h": 68
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "background": "#111111cc",
+            "radius": 43,
+            "align": "center",
+            "uppercase": true
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "leftLabel"
+          },
+          "tpl": "before-after",
+          "tplRef": {
+            "key": "leftLabel"
+          }
+        },
+        {
+          "id": "badge-mr6dlupg-2p",
+          "type": "badge",
+          "autoH": true,
+          "role": "badge",
+          "name": "After panel pill",
+          "text": "After panel",
+          "box": {
+            "x": 702,
+            "y": 281,
+            "w": 162,
+            "h": 68
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "background": "#111111cc",
+            "radius": 43,
+            "align": "center",
+            "uppercase": true
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "rightLabel"
+          },
+          "tpl": "before-after",
+          "tplRef": {
+            "key": "rightLabel"
+          }
+        }
+      ],
+      "element": {
+        "id": "before-after",
+        "params": {
+          "leftLabel": "Before panel",
+          "rightLabel": "After panel"
+        },
+        "v": 2
+      },
+      "tpl": "before-after"
+    },
+    {
+      "id": "product-mr6dlupg-2q",
+      "type": "image",
+      "role": "product",
+      "name": "Image · product tube",
+      "box": {
+        "x": 443,
+        "y": 432,
+        "w": 194,
+        "h": 367
+      },
+      "style": {
+        "crop": {
+          "x": 0.12,
+          "y": 0.29,
+          "w": 0.45,
+          "h": 0.69
+        },
+        "radius": 8
+      },
+      "tpl": "before-after",
+      "src": "/refasset?id=harness-052"
+    },
+    {
+      "id": "subhead-mr6dlupg-2r",
+      "type": "text",
+      "autoH": true,
+      "role": "subhead",
+      "name": "Closing",
+      "text": "This natural curl cream\nis all you need",
+      "sizeLocked": true,
+      "box": {
+        "x": 288,
+        "y": 940,
+        "w": 504,
+        "h": 169
+      },
+      "style": {
+        "fontSize": 45,
+        "fontWeight": 500,
+        "color": "#5c7a56",
+        "align": "center",
+        "lineHeight": 1.25,
+        "fontFamily": "Georgia"
+      },
+      "tpl": "before-after",
+      "tplRef": {
+        "key": "closing"
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6dlupgl4cn",
+  "updatedAt": 1783170384821
+}

@@ -9,8 +9,9 @@ Two very different problems are tangled together, and the fix is to separate the
    gets a pixel-faithful scaffold, edits copy. This is 100% achievable and is where "easy as
    fuck to make these social things" comes from. THIS is the KPI we can truly hit.
 2. **Arbitrary-ad extraction** (copy any random ad 1:1) — this is bounded by the vision model
-   (Gemma-4-e4b, a small local VL). We make it as good as possible (grouping, effects, native
-   detection, refine loop) but it will never be pixel-perfect on every ad. Honest.
+   (ornith-1.0-9b via LM Studio, the current default for both vision and reasoning — Gemma is
+   hard-blocked). We make it as good as possible (grouping, effects, native detection, refine
+   loop) but it will never be pixel-perfect on every ad. Honest.
 
 So: pour effort into the templates + a dead-simple preset picker, and make extraction feed those
 templates (detect archetype → drop the matching preset → let vision fill copy/positions).

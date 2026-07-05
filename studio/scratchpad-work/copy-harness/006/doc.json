@@ -1,0 +1,210 @@
+{
+  "id": "harness_006_e61a805f",
+  "name": "copy-harness harness_006_e61a805f",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6njxnk-2a",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#e8e8e8"
+      }
+    },
+    {
+      "id": "group-mr6njxnk-21",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 2,
+        "y": 3,
+        "w": 41,
+        "h": 108
+      },
+      "children": [
+        {
+          "id": "caption-mr6njxnk-22",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "PROTEIN OATS POUCH",
+          "box": {
+            "x": 3,
+            "y": 41,
+            "w": 40,
+            "h": 32
+          },
+          "style": {
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "headline-mr6njxnk-23",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "SNEL TREK\nNA JE ONTBIJT?\nJE MIST VEZELS",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 3,
+            "w": 40,
+            "h": 538
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 56,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6njxnk-24",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Ze vertragen je vertering\nen houden je uren vol.",
+          "autoH": true,
+          "box": {
+            "x": 3,
+            "y": 81,
+            "w": 40,
+            "h": 324
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "rect-mr6njxnk-25",
+      "type": "image",
+      "role": "rect",
+      "name": "Cut-out · oat protein bag",
+      "box": {
+        "x": 243,
+        "y": 835,
+        "w": 594,
+        "h": 998
+      },
+      "style": {
+        "crop": {
+          "x": 0.23,
+          "y": 0.44,
+          "w": 0.55,
+          "h": 0.52
+        },
+        "radius": 21
+      },
+      "src": "/refasset?id=harness-006"
+    },
+    {
+      "id": "group-mr6njxnk-26",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 3,
+        "y": 2,
+        "w": 585,
+        "h": 319
+      },
+      "children": [
+        {
+          "id": "logo-mr6njxnk-27",
+          "type": "image",
+          "role": "logo",
+          "name": "Logo · Brand logo",
+          "box": {
+            "x": 5,
+            "y": 2,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0
+            },
+            "radius": 4
+          },
+          "src": "/refasset?id=harness-006"
+        },
+        {
+          "id": "product-mr6njxnk-28",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · Protein oats pouch",
+          "box": {
+            "x": 3,
+            "y": 8,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#f5f5f559",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
+            "stroke": {
+              "color": "#f5f5f5",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "logo-mr6njxnk-29",
+          "type": "image",
+          "role": "logo",
+          "name": "Logo · circular logo mark",
+          "box": {
+            "x": 491,
+            "y": 221,
+            "w": 97,
+            "h": 100
+          },
+          "style": {
+            "crop": {
+              "x": 0.46,
+              "y": 0.12,
+              "w": 0.09,
+              "h": 0.05
+            },
+            "radius": 12
+          },
+          "src": "/refasset?id=harness-006"
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6njxnjjke5",
+  "updatedAt": 1783187091489
+}

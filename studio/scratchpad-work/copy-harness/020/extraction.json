@@ -1,0 +1,165 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "type-stack-promo",
+  "background": "#F5F5F3",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "row-1-black-fill",
+      "type": "text",
+      "role": "headline",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 27,
+        "w": 700,
+        "h": 215
+      },
+      "style": {
+        "fontSize": 229,
+        "fontWeight": 900,
+        "color": "#f1f1f3",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "row-2-friday-fill",
+      "type": "text",
+      "role": "headline",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 195,
+        "w": 780,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#c9c4bf",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "shadow": true
+      }
+    },
+    {
+      "id": "row-3-black-outline",
+      "type": "text",
+      "role": "decor",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 367,
+        "w": 700,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#d9d9ce",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true
+      }
+    },
+    {
+      "id": "row-4-friday-outline",
+      "type": "text",
+      "role": "decor",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 535,
+        "w": 780,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#eae8e5",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true
+      }
+    },
+    {
+      "id": "row-5-black-outline",
+      "type": "text",
+      "role": "decor",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 705,
+        "w": 700,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#cec2b3",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true
+      }
+    },
+    {
+      "id": "row-6-friday-outline",
+      "type": "text",
+      "role": "decor",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 890,
+        "w": 780,
+        "h": 70
+      },
+      "style": {
+        "fontSize": 102,
+        "fontWeight": 900,
+        "color": "#6863b7",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true
+      }
+    },
+    {
+      "id": "magazine-stack",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 225,
+        "y": 160,
+        "w": 660,
+        "h": 750
+      },
+      "style": {
+        "shadow": true
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.208,
+          "y": 0.148,
+          "w": 0.611,
+          "h": 0.694
+        },
+        "shape": "rect"
+      }
+    }
+  ],
+  "measuredBoxes": true
+}

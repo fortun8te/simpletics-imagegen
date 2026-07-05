@@ -1,7 +1,7 @@
 // lib/brand-skills.mjs — per-brand agent skills (.state/skills/{brand}.md).
 // MagicPath-style reusable instruction bundles: styling rules, layout defaults, copy tone.
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -27,9 +27,4 @@ export function saveBrandSkill(brand, text) {
   const body = String(text || '').trim().slice(0, 4000);
   writeFileSync(join(DIR, `${b}.md`), body ? `${body}\n` : '');
   return body;
-}
-
-export function listBrandSkills() {
-  ensure();
-  return readdirSync(DIR).filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, ''));
 }

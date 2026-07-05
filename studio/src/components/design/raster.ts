@@ -6,7 +6,7 @@
 // globalCompositeOperation), layer blur (style.blur → ctx.filter), per-corner radii
 // (style.radiusCorners) on shapes/text backgrounds, and clipping groups (GroupNode.clip).
 
-import { isGroup, resolveGradient, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
+import { isComponent, isGroup, resolveCrop, resolveGradient, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
 import { arrowGeometry, gradientCanvas, starburstPoints, vignetteCanvas, vignetteSpec } from './fills';
 import { pillPadding, textLayout, type Measurer } from './textMetrics';
 
@@ -59,12 +59,15 @@ function pixelateSource(img: CanvasImageSource, dw: number, dh: number, blockSiz
 
 function drawImageLayer(ctx: CanvasRenderingContext2D, img: HTMLImageElement, l: Layer) {
   const { x, y, w, h } = l.box;
-  const contain = l.fit === 'contain';
-  const scale = contain
-    ? Math.min(w / img.naturalWidth, h / img.naturalHeight)
-    : Math.max(w / img.naturalWidth, h / img.naturalHeight);
-  const dw = img.naturalWidth * scale;
-  const dh = img.naturalHeight * scale;
+  // ERR-18: a degenerate/broken image (e.g. a 0×0 decode failure that still fires `load`, or a
+  // src that resolved to an empty asset) has naturalWidth/naturalHeight === 0. Every scale below
+  // divides by these, so Infinity/NaN would otherwise corrupt drawImage's dw/dh — skip the draw
+  // entirely (leaves the box empty, same visual contract as the existing "missing image" catch
+  // in drawNodes) rather than let a NaN box silently propagate through rasterizeDesign's output.
+  if (!(img.naturalWidth > 0) || !(img.naturalHeight > 0)) {
+    console.warn('[raster] skipping degenerate image (0 natural size):', l.src);
+    return;
+  }
   ctx.save();
   // PARITY: Stage puts borderRadius on the <img> (ellipse → 50%, else radiusCorners/radius);
   // designSvg clips the <image> to the same geometry; designstore rounds the overflow:hidden
@@ -76,13 +79,67 @@ function drawImageLayer(ctx: CanvasRenderingContext2D, img: HTMLImageElement, l:
     roundRect(ctx, x, y, w, h, cornerRadii(l.style));
   }
   ctx.clip();
+  const pixelate = pixelateOf(l.style);
+  // style.crop (cut-out): show ONLY this sub-rect of the SOURCE image (fractions 0..1 of the
+  // source's native size), scaled to FILL the box, then clipped by the shape above — the
+  // non-destructive circular-avatar / logo cut-out. PARITY: this is drawImage(src-rect→dest-box);
+  // Stage/designstore size the <img> to box/crop and shift by −crop·(box/crop) (same geometry),
+  // designSvg exposes the sub-rect via the <image> viewBox. `fit` does NOT apply with a crop —
+  // the crop defines the source rect exactly, so it always fills the box (cover semantics).
+  const crop = resolveCrop(l.style?.crop);
+  if (crop) {
+    const sx = crop.x * img.naturalWidth;
+    const sy = crop.y * img.naturalHeight;
+    const sw = Math.max(1, crop.w * img.naturalWidth);
+    const sh = Math.max(1, crop.h * img.naturalHeight);
+    // style.pixelate: mosaic the CROPPED region only (so the block size reads at the box scale).
+    const source: CanvasImageSource = pixelate
+      ? pixelateSourceRect(img, sx, sy, sw, sh, w, h, pixelate)
+      : img;
+    if (pixelate) ctx.drawImage(source, x, y, w, h);
+    else ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+    ctx.restore();
+    return;
+  }
+  const contain = l.fit === 'contain';
+  const scale = contain
+    ? Math.min(w / img.naturalWidth, h / img.naturalHeight)
+    : Math.max(w / img.naturalWidth, h / img.naturalHeight);
+  const dw = img.naturalWidth * scale;
+  const dh = img.naturalHeight * scale;
   // style.pixelate (block size in px at the drawn resolution) → true mosaic censoring, e.g. for
   // anonymizing a face/username in a real photo/avatar. Additive to blur — if both are set,
   // pixelate wins (mosaic is the intent when explicitly requested for censoring).
-  const pixelate = pixelateOf(l.style);
   const source: CanvasImageSource = pixelate ? pixelateSource(img, dw, dh, pixelate) : img;
   ctx.drawImage(source, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
   ctx.restore();
+}
+
+/** Mosaic-pixelate a SOURCE SUB-RECT (crop) scaled to a box of dw×dh — the crop variant of
+ *  pixelateSource. Draws the sub-rect into a box-sized offscreen, downscales-then-upscales with
+ *  smoothing off (crisp blocks), and returns a dw×dh canvas the caller drawImages in place. */
+function pixelateSourceRect(
+  img: CanvasImageSource, sx: number, sy: number, sw: number, sh: number,
+  dw: number, dh: number, blockSize: number,
+): CanvasImageSource {
+  const w = Math.max(1, Math.round(dw));
+  const h = Math.max(1, Math.round(dh));
+  const block = Math.max(1, blockSize);
+  const smallW = Math.max(1, Math.round(w / block));
+  const smallH = Math.max(1, Math.round(h / block));
+  const small = document.createElement('canvas');
+  small.width = smallW;
+  small.height = smallH;
+  const sctx = small.getContext('2d')!;
+  sctx.imageSmoothingEnabled = true;
+  sctx.drawImage(img, sx, sy, sw, sh, 0, 0, smallW, smallH);
+  const big = document.createElement('canvas');
+  big.width = w;
+  big.height = h;
+  const bctx = big.getContext('2d')!;
+  bctx.imageSmoothingEnabled = false;
+  bctx.drawImage(small, 0, 0, w, h);
+  return big;
 }
 
 /** Uniform radius or per-corner [tl, tr, br, bl]. radiusCorners wins over radius —
@@ -425,6 +482,8 @@ async function drawNodes(ctx: CanvasRenderingContext2D, nodes: SceneNode[]) {
   let clipSaves = 0;
   for (const n of nodes) {
     if (n.hidden) continue;
+    // Native ComponentLayers own their HTML/CSS — no canvas leaf renderer for them yet; skip.
+    if (isComponent(n)) continue;
     if (!isGroup(n) && n.isMask === true) {
       ctx.save();
       clipSaves++;

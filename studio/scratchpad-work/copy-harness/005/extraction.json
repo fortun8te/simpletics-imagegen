@@ -1,0 +1,325 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6nj9n2-9",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 1,
+        "y": 2,
+        "w": 971,
+        "h": 612
+      },
+      "children": [
+        {
+          "id": "ext-mr6nj9lj-0-lb",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": false,
+          "sizeLocked": true,
+          "text": "CHOCOLATE PROTEIN BAR",
+          "box": {
+            "x": 5,
+            "y": 40,
+            "w": 40,
+            "h": 32
+          },
+          "style": {
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "ext-mr6nj9lj-1",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "CHOCO\nEIWITREEP",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 2,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#d0d0d0",
+            "fontSize": 27,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9lj-2",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "13 G EIWIT\nECHT VOEDZAAM\nGEEN ZOETSTOFFEN",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 80,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 17,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9lj-3",
+          "type": "badge",
+          "role": "caption",
+          "name": "caption",
+          "text": "PINDAKAAS",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 118,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 27,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9n1-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "ingrediënten\ndadels, pinda's (27%), ei-wit\n(15%), melkchocolade (cacaoboter,\nmelkpoeder, suiker, cacaomassa,\nvanille-extract), emulgator: zonnebloemlecithine\n(15%), cacao nibs, zeezout",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 156,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#666666",
+            "fontSize": 17,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9n1-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "voedingswaarden / 100g / 50g\nenergie 2017 kJ / 1009 kJ\n483 kcal / 242 kcal\nvetten 27g / 13g\n- verz. vetten 9,3g / 4,7g\nkoolhydraten 34g / 17g\n- suikers 26g / 13g\nvezels 4,4g / 2,2g\neiwitten 25g / 13g\nzout 0,59g / 0,29g",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 194,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#666666",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9n1-6",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "30% KORTING",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 232,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#d4531b",
+            "fontSize": 17,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9n1-7",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "UPFRONT",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 270,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 26,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9n1-8",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "CHOCO",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 173,
+            "w": 864,
+            "h": 211
+          },
+          "style": {
+            "color": "#c5c5c5",
+            "fontSize": 124,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nj9n1-9",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "EIWITREEP",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 403,
+            "w": 864,
+            "h": 211
+          },
+          "style": {
+            "color": "#c5c5c5",
+            "fontSize": 124,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6nj9n1-a",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · UPFRONT protein bar",
+      "box": {
+        "x": 410,
+        "y": 557,
+        "w": 410,
+        "h": 883
+      },
+      "style": {
+        "background": "#ffffff59",
+        "radius": 22,
+        "stroke": {
+          "color": "#ffffff",
+          "width": 3
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.38,
+          "y": 0.29,
+          "w": 0.38,
+          "h": 0.46
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "ext-mr6nj9lj-0",
+      "type": "shape",
+      "role": "product",
+      "name": "Product · chocolate protein bar",
+      "box": {
+        "x": 5,
+        "y": 6,
+        "w": 40,
+        "h": 30
+      },
+      "style": {
+        "background": "#f0f0f059",
+        "radius": 22,
+        "shapeKind": "path",
+        "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
+        "stroke": {
+          "color": "#f0f0f0",
+          "width": 2
+        }
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#f2f2f2",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#fdfdfc",
+      "share": 0.5
+    },
+    {
+      "hex": "#f4f4f4",
+      "share": 0.25
+    },
+    {
+      "hex": "#eeeeee",
+      "share": 0.125
+    },
+    {
+      "hex": "#8a7972",
+      "share": 0.063
+    },
+    {
+      "hex": "#cabcb6",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

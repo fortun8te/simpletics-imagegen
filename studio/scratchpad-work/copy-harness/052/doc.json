@@ -1,0 +1,194 @@
+{
+  "id": "harness_052_27348291",
+  "name": "copy-harness harness_052_27348291",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base-mr8at4xv-8",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#8CA084"
+      }
+    },
+    {
+      "id": "card-mr8at4xv-0",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 0,
+        "y": 897,
+        "w": 1080,
+        "h": 183
+      },
+      "style": {
+        "background": "#FFFFFF"
+      }
+    },
+    {
+      "id": "product-mr8at4xv-1",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 143,
+        "y": 322,
+        "w": 390,
+        "h": 558
+      },
+      "style": {
+        "crop": {
+          "x": 0.132,
+          "y": 0.298,
+          "w": 0.361,
+          "h": 0.517
+        },
+        "radius": 14
+      },
+      "src": "/refasset?id=harness-052",
+      "name": "Cut-out"
+    },
+    {
+      "id": "product-mr8at4xv-2",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 548,
+        "y": 322,
+        "w": 390,
+        "h": 558
+      },
+      "style": {
+        "crop": {
+          "x": 0.507,
+          "y": 0.298,
+          "w": 0.361,
+          "h": 0.517
+        },
+        "radius": 14
+      },
+      "src": "/refasset?id=harness-052",
+      "name": "Cut-out"
+    },
+    {
+      "id": "badge-mr8at4xv-3",
+      "type": "badge",
+      "role": "badge",
+      "text": "Before",
+      "box": {
+        "x": 229,
+        "y": 287,
+        "w": 218,
+        "h": 66
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 500,
+        "color": "#68836c",
+        "background": "#FFFFFF",
+        "align": "center",
+        "radius": 33,
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "badge-mr8at4xv-4",
+      "type": "badge",
+      "role": "badge",
+      "text": "After",
+      "box": {
+        "x": 633,
+        "y": 287,
+        "w": 218,
+        "h": 66
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 500,
+        "color": "#68836c",
+        "background": "#FFFFFF",
+        "align": "center",
+        "radius": 33,
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "product-mr8at4xv-5",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 466,
+        "y": 500,
+        "w": 148,
+        "h": 392
+      },
+      "style": {},
+      "src": "/refasset?id=harness-052mfa1e14e6",
+      "name": "Cut-out"
+    },
+    {
+      "id": "headline-mr8at4xv-6",
+      "type": "text",
+      "role": "headline",
+      "text": "No need to ruin your hair to have perfect curls",
+      "box": {
+        "x": 90,
+        "y": 87,
+        "w": 900,
+        "h": 158
+      },
+      "style": {
+        "fontSize": 60,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.2,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "caption-mr8at4xv-7",
+      "type": "text",
+      "role": "caption",
+      "text": "This natural curl cream is all you need",
+      "box": {
+        "x": 240,
+        "y": 943,
+        "w": 600,
+        "h": 118
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 500,
+        "color": "#7C9473",
+        "align": "center",
+        "lineHeight": 1.25,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      },
+      "autoH": false,
+      "sizeLocked": true
+    }
+  ],
+  "skeletonId": "skel_mr8at4xu732a",
+  "updatedAt": 1783286620097
+}

@@ -12,8 +12,33 @@
 // Degraded mode for very small models = maxOpsPerTurn: 1 — same code path, not a fork.
 // Parsing stays tolerant (code fences, surrounding prose, bare op objects); a fully
 // unparsable reply gets ONE same-turn retry quoting the error.
+//
+// v7 — ORCHESTRATOR-WORKER FAN-OUT + a shared step vocabulary:
+//   • runFanOut() — a lead decomposes work into ≤3 INDEPENDENT subtasks, runs them CONCURRENTLY
+//     (each its own llmText/llmVision call against ornith — LM Studio serves PARALLEL=4, so 2-3
+//     concurrent local calls are safe), then gathers. Emits one `subagent` step per worker with a
+//     STABLE id, short title, the model label, a live substatus line, and start/done phases — so a
+//     single UI activity component can list the workers. Falls back to a single call when a task
+//     doesn't decompose (the caller decides via decompose()).
+//   • makerChecker() — a cheap maker-checker verify: one pass GENERATES, a second VALIDATES/repairs.
+//   • STEP_KINDS — the ONE progress/step vocabulary shared by every flow that streams through this
+//     harness (the design-edit agent AND the reference-build/extraction path), so both render
+//     identically. `thinking` (plan/narration) · `op` (an applied action + its summary) ·
+//     `subagent` (a fan-out worker's lifecycle) · `verify` (the terminal maker-checker/summary).
+//
+// These are ADDITIVE: runBatchAgent is unchanged and remains the default single-agent path.
 
 import { llmText } from './llm.mjs';
+
+// The single step/event vocabulary every harness-driven flow emits. The frontend renders ONE
+// activity component off these kinds — edit runs and reference-build runs look identical.
+export const STEP_KINDS = ['thinking', 'op', 'subagent', 'verify'];
+
+// Monotonic per-process counter so every spawned sub-agent gets a stable, unique id even when
+// several fan-outs run back to back. `sa1`, `sa2`, … — short enough for tiny models to echo, and
+// stable across the worker's start→update→done lifecycle so the UI can key its row on it.
+let saSeq = 0;
+export function nextSubAgentId(prefix = 'sa') { return `${prefix}${++saSeq}`; }
 
 /** Strip code fences and pull the first balanced {...} JSON object out of a model reply. */
 export function parseOneOp(text) {
@@ -139,6 +164,12 @@ export async function runBatchAgent({
   // the model contributes nothing). Headroom is cheap: unused budget isn't billed.
   maxTokensPerTurn = 3000,
   maxApplied = null,
+  // CONTEXT BUDGET (v7): a HARD ceiling (est tokens = chars/4) on the assembled per-turn PROMPT
+  // (system + observation + last-turn feedback + lint + ask). ornith's window is ~60k; we keep a
+  // turn well under it with a safe default so a huge comp (100+ layers) can never blow the window.
+  // The guard prunes the OLDEST/least-critical context first (last-turn feedback), then truncates
+  // the observation, so the current scene + the ask always survive. Set 0 to disable (tests).
+  contextBudgetTokens = 12_000,
   // Main-turn VISION (v6): when the active model can see (LM Studio serving a gemma VL model),
   // SHOW it the canvas instead of only describing it. `imageForTurn(turnIndex)` returns a PNG
   // path (or null to skip) and `visionCall(prompt, imagePath, opts)` shares llmText's contract.
@@ -153,6 +184,7 @@ export async function runBatchAgent({
   let stoppedBy = 'maxTurns';
   let lastFeedback = [];   // per-op results from the previous turn (successes AND errors)
   let lintShownTurns = 0;  // consecutive turns the current lint findings have been visible
+  let doneRejections = 0;  // times "done" was rejected by the lint gate (HARNESS-12 escalation)
   let lastLintKey = '';
   let zeroAppliedTurns = 0;
 
@@ -167,23 +199,77 @@ export async function runBatchAgent({
   // Retry cap bump: every observed harness call failure in .state/llm-usage.jsonl had outTok
   // EXACTLY at the completion cap (220/300/700/2500/3000) — the model burned the whole budget
   // thinking and the completion was truncated/empty. Retrying at the SAME cap just repeats the
-  // failure; the retry gets 1.5× headroom (≤4096). Unused budget isn't billed.
-  const bumpedCap = Math.min(Math.round(maxTokensPerTurn * 1.5), 4096);
+  // failure; the retry gets 2× headroom. Ornith is a REASONING model that needs real room to
+  // think THEN emit, so the ceiling is 8192 (a 4096 cap still truncated ornith mid-think). Unused
+  // budget isn't billed locally.
+  const bumpedCap = Math.min(Math.max(Math.round(maxTokensPerTurn * 2), 8000), 8192);
+  // est-tokens of a string (chars/4, the same cheap model used everywhere in this harness).
+  const est = (s) => Math.ceil(String(s || '').length / 4);
 
   const callModel = async (extra, { maxTokens = maxTokensPerTurn } = {}) => {
-    const parts = [`CURRENT STATE:\n${buildObservation()}`];
-    if (lastFeedback.length) parts.unshift(`LAST TURN RESULTS:\n${lastFeedback.map((s, i) => `${i + 1}. ${s}`).join('\n')}`);
+    const observation = buildObservation();
     const findings = lint ? lint() : [];
     const lintKey = findings.join('|');
     if (lintKey === lastLintKey && findings.length) lintShownTurns++;
     else lintShownTurns = findings.length ? 1 : 0;
     lastLintKey = lintKey;
-    if (findings.length) parts.push(`LINT (fix before done):\n${findings.slice(0, 6).map((f, i) => `${i + 1}) ${f}`).join('\n')}`);
     // degraded mode after a zero-applied turn: ask for ONE op — same code path, simpler reply
     // (weak models recover from a wasted turn far more reliably with a single-op ask)
     const opCap = zeroAppliedTurns > 0 ? 1 : maxOpsPerTurn;
-    parts.push(extra || `Reply with ONE JSON object: {"plan":"…","ops":[…up to ${opCap} op${opCap === 1 ? '' : 's'}…],"done":true|false}. No prose.`);
-    const prompt = parts.join('\n\n');
+    const askLine = extra || `Reply with ONE JSON object: {"plan":"…","ops":[…up to ${opCap} op${opCap === 1 ? '' : 's'}…],"done":true|false}. No prose.`;
+
+    // ── CONTEXT-BUDGET GUARD (v7) ────────────────────────────────────────────────────────────────
+    // Assemble the prompt sections with priorities, then prune to fit contextBudgetTokens (system +
+    // sections). CRITICAL sections (the ask + the current observation) always survive; the OLDEST/
+    // least-critical (last-turn feedback) is trimmed/dropped FIRST, then the observation is
+    // truncated as a last resort. Guarantees a turn never exceeds ornith's ~60k window.
+    let feedback = lastFeedback;
+    let obs = observation;
+    const budgetChars = (contextBudgetTokens > 0 ? contextBudgetTokens : Infinity) * 4;
+    if (Number.isFinite(budgetChars)) {
+      const fixedChars = est(system) * 4 + askLine.length + (findings.length ? 200 + findings.slice(0, 6).join('').length : 0) + 64;
+      let avail = budgetChars - fixedChars;
+      // 1) prune last-turn feedback oldest-first until it fits its share (leave ≥40% for the obs)
+      const feedbackCap = Math.max(0, Math.floor(avail * 0.35));
+      let fbText = feedback.length ? feedback.map((s, i) => `${i + 1}. ${s}`).join('\n') : '';
+      while (fbText.length > feedbackCap && feedback.length) {
+        feedback = feedback.slice(1); // drop the OLDEST feedback line
+        fbText = feedback.length ? feedback.map((s, i) => `${i + 1}. ${s}`).join('\n') : '';
+      }
+      avail -= fbText.length;
+      // 2) hard-truncate the observation if it (somehow) still overflows the remaining budget.
+      // When the SYSTEM prompt alone already eats the whole budget (avail ≤ 0, e.g. the ~2800-token
+      // edit prompt against a 3000 budget), `avail` can't be the truncation target or the full
+      // observation would ship unpruned and blow the window (the exact failure the guard exists to
+      // prevent). Clamp to a hard MINIMUM obs window so the current scene always survives AND is
+      // always bounded — the current instruction + ask are in fixedChars and never pruned.
+      const minObsChars = Math.min(obs.length, Math.max(600, Math.floor(budgetChars * 0.12)));
+      const obsCap = Math.max(avail, minObsChars);
+      if (obs.length > obsCap) {
+        obs = `⚠ STATE TRUNCATED to fit the context budget — the scene below is INCOMPLETE. Reference ONLY node ids you can see; never invent or guess ids beyond this list.\n${obs.slice(0, Math.max(0, obsCap - 40))}\n…(truncated)`;
+      }
+    }
+
+    const assemble = () => {
+      const parts = [`CURRENT STATE:\n${obs}`];
+      if (feedback.length) parts.unshift(`LAST TURN RESULTS:\n${feedback.map((s, i) => `${i + 1}. ${s}`).join('\n')}`);
+      if (findings.length) parts.push(`LINT (fix before done):\n${findings.slice(0, 6).map((f, i) => `${i + 1}) ${f}`).join('\n')}`);
+      parts.push(askLine);
+      return parts.join('\n\n');
+    };
+    let prompt = assemble();
+    // FINAL EXACT CLAMP: the arithmetic above works from an ESTIMATE of the fixed sections and
+    // historically drifted a few dozen tokens over budget as prompt text evolved (section headers
+    // and joiners aren't in fixedChars — observed 3014/3025 vs a 3000 budget). Enforce the budget
+    // as a hard invariant on the ASSEMBLED prompt: shave the observation by the real overage.
+    if (Number.isFinite(budgetChars)) {
+      const overChars = (prompt.length + (system || '').length) - budgetChars;
+      if (overChars > 0 && obs.length > overChars + 60) {
+        const alert = obs.startsWith('⚠ STATE TRUNCATED') ? '' : '⚠ STATE TRUNCATED to fit the context budget — reference ONLY node ids you can see below.\n';
+        obs = `${alert}${obs.slice(0, Math.max(0, obs.length - overChars - 60 - alert.length))}\n…(truncated)`;
+        prompt = assemble();
+      }
+    }
     usage.estTokens += Math.ceil((prompt.length + (system || '').length) / 4);
     turns++;
     let r = null;
@@ -278,7 +364,17 @@ export async function runBatchAgent({
         stoppedBy = maxApplied != null && applied >= maxApplied ? 'maxApplied' : 'done';
         break;
       }
-      lastFeedback.push(`done rejected — lint still has ${post.length} finding(s); fix them first`);
+      // ESCALATION (HARNESS-12): a model that keeps declaring done WITHOUT applying fixes is stuck
+      // in a rejection loop — after 3 rejections with nothing applied in between, stop burning
+      // turns and exit with an explicit verdict (callers run their deterministic repair/autolayout
+      // fallbacks post-loop; looping to MAX_TURNS here just wasted latency).
+      doneRejections += 1;
+      if (doneRejections >= 3 && appliedThisTurn === 0) {
+        emit('thinking', `done rejected ${doneRejections}× with no fixes applied — escalating to deterministic fallback (${post.slice(0, 2).join(' · ')})`);
+        stoppedBy = 'lint-stuck';
+        break;
+      }
+      lastFeedback.push(`done rejected — lint still has ${post.length} finding(s); fix EXACTLY these, then done: ${post.slice(0, 3).join(' · ')}`);
       emit('thinking', `done rejected: ${post.length} lint finding(s) remain`);
     }
     if (zeroAppliedTurns >= 2) { stoppedBy = 'skips'; break; }
@@ -286,4 +382,111 @@ export async function runBatchAgent({
 
   if (signal?.aborted) stoppedBy = 'aborted';
   return { ok: applied > 0 || stoppedBy === 'done', steps, applied, turns, source: 'llm', usage, stoppedBy };
+}
+
+// ── Bounded-concurrency map ────────────────────────────────────────────────────────────────────
+// Run `fn(item, i)` over `items` with at most `limit` in flight at once. Preserves input order in
+// the returned results array; a worker that throws yields { ok:false, error } in its slot (never
+// rejects the whole batch). Cap is hard: LM Studio serves ornith at PARALLEL=4, so ≤3 keeps a lane
+// free for the lead/other traffic.
+export async function mapConcurrent(items, limit, fn) {
+  const list = Array.from(items || []);
+  const cap = Math.max(1, Math.min(3, limit | 0 || 1));
+  const results = new Array(list.length);
+  let next = 0;
+  const worker = async () => {
+    for (;;) {
+      const i = next++;
+      if (i >= list.length) return;
+      try { results[i] = await fn(list[i], i); }
+      catch (e) { results[i] = { ok: false, error: String(e?.message || e) }; }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(cap, list.length) }, worker));
+  return results;
+}
+
+/**
+ * ORCHESTRATOR-WORKER FAN-OUT.
+ *
+ * A lead has already DECOMPOSED a job into ≤3 independent subtasks (the caller supplies them —
+ * this function does not itself decide whether a task decomposes; it just runs the fan-out once a
+ * decomposition exists, and the caller falls back to the normal single loop when it doesn't).
+ * Each subtask runs CONCURRENTLY as its own sub-agent (its own llm call), and every sub-agent's
+ * lifecycle is streamed as `subagent` steps sharing the unified vocabulary.
+ *
+ * subtasks: [{ id?, title, run(ctx) }]  — `run` receives { id, title, update(line), model } and
+ *           returns whatever the caller wants gathered (a result object; may include { ok, ... }).
+ *           `update(line)` emits a live substatus line for that worker's row.
+ * onStep:   (step) => void — receives {kind:'subagent', ...} frames (start / update / done).
+ * model:    the model label to stamp on every worker row (e.g. 'ornith' / llmInfo().model).
+ * concurrency: hard-capped at 3.
+ * parentRunId: threaded onto every subagent frame so the UI can group workers under their run.
+ *
+ * Returns { results:[…in subtask order…], ok:boolean }. Never throws for a worker failure.
+ */
+export async function runFanOut({
+  subtasks = [],
+  onStep = () => {},
+  model = 'ornith',
+  concurrency = 3,
+  parentRunId = null,
+  signal = null,
+} = {}) {
+  const tasks = (Array.isArray(subtasks) ? subtasks : []).filter((t) => t && typeof t.run === 'function').slice(0, 3);
+  if (!tasks.length) return { results: [], ok: false };
+
+  const emitSub = (id, title, phase, status) => {
+    try {
+      onStep({
+        i: 0, kind: 'subagent', at: Date.now(),
+        summary: status ? `${title}: ${status}` : title,
+        data: { id, title, model, status: status || '', phase, parentRunId },
+      });
+    } catch { /* observer only — a bad sink must never break the fan-out */ }
+  };
+
+  const results = await mapConcurrent(tasks, Math.min(3, concurrency), async (t) => {
+    const id = t.id || nextSubAgentId();
+    const title = String(t.title || 'subtask').slice(0, 60);
+    emitSub(id, title, 'start', 'started');
+    const update = (line) => emitSub(id, title, 'update', String(line || '').slice(0, 120));
+    let out;
+    try {
+      if (signal?.aborted) throw new Error('aborted');
+      out = await t.run({ id, title, update, model, signal });
+      const okFlag = !(out && typeof out === 'object' && out.ok === false);
+      emitSub(id, title, 'done', okFlag ? 'done' : `failed: ${(out && out.error) || 'error'}`);
+    } catch (e) {
+      out = { ok: false, error: String(e?.message || e) };
+      emitSub(id, title, 'done', `failed: ${out.error}`);
+    }
+    return out;
+  });
+
+  const ok = results.some((r) => !(r && typeof r === 'object' && r.ok === false));
+  return { results, ok };
+}
+
+/**
+ * MAKER-CHECKER verify (cheap, one extra pass). `make()` produces a candidate; `check(candidate)`
+ * validates it and returns { ok, findings?, fixed? }. When the check fails and returns a `fixed`
+ * candidate, that repaired candidate is used. Purely a convenience wrapper so both flows share the
+ * same generate-then-validate shape without each re-implementing it. Never throws — a checker
+ * failure degrades to accepting the maker's output as-is.
+ */
+export async function makerChecker(make, check) {
+  const candidate = await make();
+  if (typeof check !== 'function') return { candidate, ok: true, findings: [] };
+  try {
+    const verdict = await check(candidate);
+    if (verdict && verdict.ok) return { candidate, ok: true, findings: verdict.findings || [] };
+    return {
+      candidate: (verdict && verdict.fixed != null) ? verdict.fixed : candidate,
+      ok: false,
+      findings: (verdict && verdict.findings) || [],
+    };
+  } catch (e) {
+    return { candidate, ok: true, findings: [`checker error: ${String(e?.message || e)}`] };
+  }
 }

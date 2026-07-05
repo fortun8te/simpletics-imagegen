@@ -1,10 +1,15 @@
 // Design view — router + gallery for the reference-first design system.
 //
 //   gallery : visual comp cards (thumbnails) + copied layouts (skeletons) + New comp entry.
-//             Drop or paste a PNG anywhere here → auto upload → extraction countdown → editor.
-//             Paste FROM Figma → decoded into a comp directly (figmaImport).
-//   new     : NewCompFlow — pick reference → copy its design → pick base image
-//   editor  : Editor — the canvas editor (Stage) with layers/inspector/underlay/export
+//             "New comp"        → opens the Editor directly on a fresh blank comp; design mode
+//                                 greets with attach-a-reference-to-copy OR start-blank (size).
+//             Drop / paste a PNG → create a comp sized to the image, open the Editor, and kick a
+//                                 "copy this reference" AGENT run in-editor (no standalone screen).
+//             Paste FROM Figma  → decoded into a comp directly (figmaImport).
+//   editor  : Editor — the canvas editor (Stage) with layers/inspector/underlay/export/agent.
+//
+// The old standalone "Copy from Reference" flow (pick reference → copy → pick base) is gone: copy
+// is now an in-editor agent run (Editor.runCopyReference → /api/design/agent opts.reference).
 //
 // Workspace scoping: everything fetched with the active brand — comps/skeletons created in
 // another workspace don't show here (legacy unstamped docs show everywhere).
@@ -15,12 +20,11 @@ import { useStore } from '../../store';
 import { EmptyState } from '../EmptyState';
 import { Icon } from '../Icon';
 import Editor from '../design/Editor';
-import NewCompFlow from '../design/NewCompFlow';
-import { ModelSelector, type ModelOption } from '../ai/ModelSelector';
+import { rasterizeDesign } from '../design/raster';
 import { parseFigmaClipboard, sniffFigmaClipboard, uploadFigmaImages, applyFigmaImageUrls } from '../design/figmaImport';
 import {
-  buildBlankDoc, CANVAS_PRESETS, designId, layerId,
-  type CanvasPresetId, type DesignDoc, type Skeleton,
+  applySkeleton, buildBlankDoc, CANVAS_PRESETS, designId, layerId,
+  type CanvasPresetId, type DesignDoc,
 } from '../../lib/sceneGraph';
 import {
   makeVariants, pushToVariants, setIdOf, stampVariant, variantSetId, visibleTags,
@@ -32,6 +36,128 @@ import styles from './DesignView.module.css';
 // A comp thumb doc may not carry tags in its DesignDoc type yet (the scene-graph type is owned by
 // the editor side); treat them as an additive optional field when round-tripping getDesign→save.
 type TaggableDoc = DesignDoc & { tags?: string[] };
+
+// ── Download helpers ───────────────────────────────────────────────────────────────────────────
+// Filesystem-safe file/folder name: strip characters that break on Windows/macOS/zip readers,
+// collapse whitespace, trim dots/spaces, cap length. Empty → 'untitled'.
+function sanitizeName(raw: string, fallback = 'untitled'): string {
+  const cleaned = String(raw ?? '')
+    .replace(/[\x00-\x1f]/g, ' ')
+    .replace(/[/\\?%*:|"<>]/g, '-') // path-illegal chars → dash
+    .replace(/\s+/g, ' ')
+    .replace(/^[.\s]+|[.\s]+$/g, '') // no leading/trailing dot or space (Windows)
+    .slice(0, 120)
+    .trim();
+  return cleaned || fallback;
+}
+
+// Ensure a name is unique within a folder by appending " (2)", " (3)", … before the extension.
+function uniqueInFolder(used: Set<string>, base: string, ext: string): string {
+  let candidate = `${base}${ext}`;
+  let n = 2;
+  while (used.has(candidate.toLowerCase())) candidate = `${base} (${n++})${ext}`;
+  used.add(candidate.toLowerCase());
+  return candidate;
+}
+
+// ── Minimal STORE-method ZIP builder (zero-dep, no compression) ──────────────────────────────────
+// Produces a valid .zip with an internal folder structure ("A/B/file.png"). STORE means bytes are
+// copied verbatim — fine here since PNGs are already compressed.
+const CRC_TABLE = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    t[n] = c >>> 0;
+  }
+  return t;
+})();
+function crc32(bytes: Uint8Array): number {
+  let c = 0xffffffff;
+  for (let i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
+  return (c ^ 0xffffffff) >>> 0;
+}
+function buildZip(entries: { path: string; data: Uint8Array }[]): Blob {
+  const enc = new TextEncoder();
+  const chunks: Uint8Array[] = [];
+  const central: Uint8Array[] = [];
+  let offset = 0;
+  for (const { path, data } of entries) {
+    const nameBytes = enc.encode(path.replace(/\\/g, '/'));
+    const crc = crc32(data);
+    const local = new Uint8Array(30 + nameBytes.length);
+    const lv = new DataView(local.buffer);
+    lv.setUint32(0, 0x04034b50, true); // local file header sig
+    lv.setUint16(4, 20, true);         // version needed
+    lv.setUint16(6, 0x0800, true);     // flags: UTF-8 filenames
+    lv.setUint16(8, 0, true);          // method 0 = STORE
+    lv.setUint16(10, 0, true);         // mod time
+    lv.setUint16(12, 0, true);         // mod date
+    lv.setUint32(14, crc, true);
+    lv.setUint32(18, data.length, true); // compressed size
+    lv.setUint32(22, data.length, true); // uncompressed size
+    lv.setUint16(26, nameBytes.length, true);
+    lv.setUint16(28, 0, true);           // extra length
+    local.set(nameBytes, 30);
+    chunks.push(local, data);
+
+    const cen = new Uint8Array(46 + nameBytes.length);
+    const cv = new DataView(cen.buffer);
+    cv.setUint32(0, 0x02014b50, true); // central dir header sig
+    cv.setUint16(4, 20, true);         // version made by
+    cv.setUint16(6, 20, true);         // version needed
+    cv.setUint16(8, 0x0800, true);     // flags: UTF-8
+    cv.setUint16(10, 0, true);         // method STORE
+    cv.setUint16(12, 0, true);
+    cv.setUint16(14, 0, true);
+    cv.setUint32(16, crc, true);
+    cv.setUint32(20, data.length, true);
+    cv.setUint32(24, data.length, true);
+    cv.setUint16(28, nameBytes.length, true);
+    cv.setUint32(42, offset, true);    // relative offset of local header
+    cen.set(nameBytes, 46);
+    central.push(cen);
+
+    offset += local.length + data.length;
+  }
+  const centralSize = central.reduce((n, c) => n + c.length, 0);
+  const end = new Uint8Array(22);
+  const ev = new DataView(end.buffer);
+  ev.setUint32(0, 0x06054b50, true);       // end of central dir sig
+  ev.setUint16(8, entries.length, true);   // entries on this disk
+  ev.setUint16(10, entries.length, true);  // total entries
+  ev.setUint32(12, centralSize, true);     // central dir size
+  ev.setUint32(16, offset, true);          // central dir offset
+  // Concatenate every part into one contiguous buffer, then hand the ArrayBuffer to Blob
+  // (a plain Uint8Array is not a valid BlobPart under this TS lib config).
+  const parts = [...chunks, ...central, end];
+  const total = parts.reduce((n, p) => n + p.length, 0);
+  const out = new Uint8Array(total);
+  let pos = 0;
+  for (const p of parts) { out.set(p, pos); pos += p.length; }
+  return new Blob([out.buffer as ArrayBuffer], { type: 'application/zip' });
+}
+
+// dataURL → raw bytes (for the PNG rasterizeDesign returns).
+function dataUrlToBytes(dataUrl: string): Uint8Array {
+  const b64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+  const bin = atob(b64);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+// Trigger a browser download of a Blob under a chosen filename.
+function triggerDownload(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
 
 function relTime(ts: number): string {
   const min = Math.round((Date.now() - ts) / 60000);
@@ -170,12 +296,14 @@ function useBatchImages() {
 export default function DesignView() {
   const brand = useStore((s) => s.brand);
   const docTick = useStore((s) => s.ui.docTick);
-  const [mode, setMode] = useState<'gallery' | 'new'>('gallery');
+  // The open comp + how the Editor should behave on entry: `greet` shows the attach-a-reference /
+  // start-blank onboarding (fresh "New comp"); `autoRun` kicks a copy-reference agent run at once
+  // (drop / paste a reference). Both are one-shot flags consumed by the Editor on mount.
   const [doc, setDoc] = useState<DesignDoc | null>(null);
+  const [editorGreet, setEditorGreet] = useState(false);
+  const [editorAutoRun, setEditorAutoRun] = useState<{ reference: { ref: string; label?: string } } | null>(null);
   const [comps, setComps] = useState<DesignSummary[]>([]);
   const [skeletons, setSkeletons] = useState<SkeletonSummary[]>([]);
-  const [presetSkeleton, setPresetSkeleton] = useState<Skeleton | null>(null);
-  const [autoRef, setAutoRef] = useState<{ kind: 'upload'; ref: string; url: string } | null>(null);
   const [applyFor, setApplyFor] = useState<DesignSummary | null>(null);
   const [applyPicked, setApplyPicked] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState<string | null>(null);
@@ -187,12 +315,10 @@ export default function DesignView() {
   // inline "+ tag" editor: which comp id has the input open, and its draft text
   const [tagEditFor, setTagEditFor] = useState<string | null>(null);
   const [tagDraft, setTagDraft] = useState('');
-  // "Agent: <provider> · <model>" header control, from GET /api/llm/usage (fallback: codex).
-  // Mirrors AgentPanel.tsx's model footer: the real ModelSelector renders once GET /api/llm/config
-  // succeeds (llmCfg set); on servers without that route (404), it falls back to a read-only label.
-  const [agentLabel, setAgentLabel] = useState('codex');
+  // "Agent: <model>" READ-ONLY header indicator, from GET /api/llm/usage. Ornith is the single
+  // default for everything now — there is no model-switching UI, just this label.
+  const [agentLabel, setAgentLabel] = useState('Ornith');
   const [llmCfg, setLlmCfg] = useState<{ baseUrl?: string; model?: string; label?: string } | null>(null);
-  const [llmPresets, setLlmPresets] = useState<{ label: string; baseUrl: string; model: string }[]>([]);
   // "Copied layouts" (skeletons) live under a collapsed disclosure — comps are the main grid
   const [skelOpen, setSkelOpen] = useState(false);
   // variant sets: "Make variants…" count popover target + "Push to siblings…" popover target
@@ -208,10 +334,26 @@ export default function DesignView() {
   const [allWorkspaces, setAllWorkspaces] = useState(false);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [barBusy, setBarBusy] = useState(false);
-  // Marquee (rubber-band) drag state. `marquee` is the live rect in CLIENT coords (null = idle);
-  // the container ref anchors getBoundingClientRect() reads and card intersection tests.
+  // Marquee (rubber-band) drag state. `marquee` is the live rect in CLIENT (viewport) coords
+  // (null = idle); the container ref anchors getBoundingClientRect() reads and card intersection
+  // tests. The rect is stored in TRUE viewport coords so hit-testing against each card's
+  // getBoundingClientRect() (also viewport coords) always matches what the cursor covers.
   const galleryRef = useRef<HTMLDivElement | null>(null);
   const [marquee, setMarquee] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  // The marquee is DRAWN inside this fixed overlay. `position:fixed` resolves against the nearest
+  // ancestor that establishes a containing block (a `transform`, `filter`, `backdrop-filter`,
+  // `perspective`, etc.) — and the app shell's <main> carries a backdrop-filter, so a plain
+  // `position:fixed; left:clientX` box lands offset by <main>'s top-left, i.e. NOT under the
+  // cursor. Rendering the rect inside this same-containing-block overlay and subtracting the
+  // overlay's own viewport offset (marqueeStyle) puts it back exactly under the pointer, at any
+  // scroll position, independent of which ancestor owns the containing block.
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const marqueeStyle = useCallback((r: { x: number; y: number; w: number; h: number }) => {
+    const o = overlayRef.current?.getBoundingClientRect();
+    const ox = o?.left ?? 0;
+    const oy = o?.top ?? 0;
+    return { left: r.x - ox, top: r.y - oy, width: r.w, height: r.h };
+  }, []);
 
   // "Copied layouts" (skeletons) get the SAME marquee + checkbox + floating-bar interaction as
   // comps, but skeletons are a different data type (different delete API) — a separate Set keeps
@@ -222,6 +364,26 @@ export default function DesignView() {
   const [skelBarBusy, setSkelBarBusy] = useState(false);
 
   const flash = (m: string) => { setNote(m); window.setTimeout(() => setNote(null), 3500); };
+
+  // STATE-5: switching workspace (brand) while a comp is open would leave the Editor autosaving the
+  // OLD brand's doc into the new workspace's context. The gallery↔editor `if (doc)` split is
+  // deliberate per-doc fresh state (STATE-4), so we don't try to keep the editor across brands —
+  // we close it. Autosave persists on every change, so closing loses nothing. `doc.brand` may be
+  // null on legacy/unstamped docs (they belong to every workspace) — only close when it's set and
+  // actually mismatches the newly-selected brand.
+  useEffect(() => {
+    if (!doc) return;
+    const docBrand = (doc as DesignDoc & { brand?: string | null }).brand ?? null;
+    if (docBrand != null && docBrand !== brand) {
+      const closedName = doc.name || 'comp';
+      try { localStorage.removeItem(lastCompKey); } catch { /* ignore */ }
+      setEditorGreet(false);
+      setEditorAutoRun(null);
+      setDoc(null);
+      flash(`Closed “${closedName}” — workspace changed`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brand]);
 
   const refresh = useCallback(() => {
     api.listDesigns(allWorkspaces ? null : brand).then((r) => setComps(r.designs || []));
@@ -256,29 +418,11 @@ export default function DesignView() {
     api.getLlmConfig().then((r) => {
       if (!alive || !r.ok) return; // route missing → read-only chip
       setLlmCfg(r.config || {});
-      if (Array.isArray(r.presets) && r.presets.length) setLlmPresets(r.presets);
     });
     return () => { alive = false; };
   }, []);
 
   const currentModelLabel = llmCfg?.label || llmCfg?.model || agentLabel;
-  const presetActive = (p: { baseUrl: string; model: string }) =>
-    !!llmCfg && (llmCfg.baseUrl || '') === p.baseUrl && (!p.model || (llmCfg.model || '') === p.model);
-  const modelOptions: ModelOption[] = llmPresets.map((p) => {
-    let provider = '';
-    try { provider = new URL(p.baseUrl).hostname.replace(/^www\.|:.*$/g, ''); } catch { provider = 'custom'; }
-    return { id: `${p.baseUrl}::${p.model}`, name: p.label, provider, hint: p.model || undefined };
-  });
-  const activeModelId = llmPresets.find(presetActive)
-    ? `${llmPresets.find(presetActive)!.baseUrl}::${llmPresets.find(presetActive)!.model}`
-    : undefined;
-  const applyLlmConfig = async (cfg: { baseUrl: string; model: string }, label: string) => {
-    const r = await api.setLlmConfig(cfg);
-    if (r.ok) {
-      setLlmCfg(r.config || { ...cfg, label });
-      flash(`Model → ${r.config?.label || label}`);
-    } else flash(r.error || 'Model switch failed');
-  };
 
   // The server's .state dir is the single source of truth — refetch on tab focus so two
   // tabs/instances pointed at the same backend always show the same comps/skeletons.
@@ -300,6 +444,8 @@ export default function DesignView() {
   const openComp = useCallback(async (id: string) => {
     const r = await api.getDesign(id);
     if (r.ok && r.design) {
+      setEditorGreet(false);
+      setEditorAutoRun(null);
       setDoc(r.design);
       try { localStorage.setItem(lastCompKey, id); } catch { /* private mode etc. */ }
     }
@@ -308,6 +454,19 @@ export default function DesignView() {
   // Toggle one card in/out of the selection without opening it (modifier-click / marquee helper).
   const toggleSelected = useCallback((id: string) => {
     setSelected((cur) => { const next = new Set(cur); if (next.has(id)) next.delete(id); else next.add(id); return next; });
+  }, []);
+
+  // Variant SET as a unit: selecting a set selects every member (the owner's ask — a set should be
+  // just as selectable as a single comp). The set-level checkbox is "on" only when EVERY member is
+  // selected; clicking it selects all members if any are missing, else deselects them all.
+  const toggleSelectedSet = useCallback((ids: string[]) => {
+    setSelected((cur) => {
+      const next = new Set(cur);
+      const allOn = ids.every((id) => next.has(id));
+      if (allOn) for (const id of ids) next.delete(id);
+      else for (const id of ids) next.add(id);
+      return next;
+    });
   }, []);
 
   const toggleSelectedSkel = useCallback((id: string) => {
@@ -351,21 +510,61 @@ export default function DesignView() {
   // still exists in the fetched list, and at most once per mount (no loops after closing).
   const autoOpened = useRef(false);
   useEffect(() => {
-    if (autoOpened.current || doc || mode !== 'gallery' || !comps.length) return;
+    if (autoOpened.current || doc || !comps.length) return;
     let stored: string | null = null;
     try { stored = localStorage.getItem(lastCompKey); } catch { /* ignore */ }
     if (!stored) return;
     autoOpened.current = true;
     if (comps.some((c) => c.id === stored)) openComp(stored);
     else { try { localStorage.removeItem(lastCompKey); } catch { /* ignore */ } }
-  }, [comps, doc, mode, lastCompKey, openComp]);
+  }, [comps, doc, lastCompKey, openComp]);
 
+  // "New comp" → open the Editor directly on a fresh blank 1:1 comp, and GREET (attach a reference
+  // to copy, or start blank with a size choice). No standalone screen — the choice is in-editor.
+  const newComp = async () => {
+    setBusy('blank');
+    try {
+      const preset = CANVAS_PRESETS[0]; // 1:1 default; editable in-editor from the greeting
+      const fresh = buildBlankDoc('', { w: preset.w, h: preset.h }, { name: 'New comp', brand: brand ?? null });
+      // A fresh blank comp reads as a clean white artboard (the owner disliked the old blue-navy
+      // tint). role:'base' so the top-strip frame-color control targets it. Editable in-editor.
+      fresh.layers = [{
+        id: layerId('base'), type: 'shape', role: 'base', name: 'Background',
+        box: { x: 0, y: 0, w: preset.w, h: preset.h },
+        style: { shapeKind: 'rect', background: '#ffffff' },
+      }];
+      const s = await api.saveDesign(fresh);
+      if (s.ok && s.design) {
+        try { localStorage.setItem(lastCompKey, s.design.id); } catch { /* private mode etc. */ }
+        setEditorAutoRun(null);
+        setEditorGreet(true);
+        setDoc(s.design);
+      } else flash(s.error || 'Could not create comp');
+    } finally { setBusy(null); }
+  };
+
+  // "Copied layouts" card → apply the saved skeleton onto a fresh blank comp and open the editor
+  // directly (a one-click shortcut — no standalone new-comp screen).
   const startFromSkeleton = async (id: string) => {
     const r = await api.getSkeleton(id);
-    if (r.ok && r.skeleton) {
-      setPresetSkeleton(r.skeleton);
-      setMode('new');
-    }
+    if (!r.ok || !r.skeleton) return;
+    const skel = r.skeleton;
+    setBusy('blank');
+    try {
+      let fresh = buildBlankDoc('color:#ffffff', { w: skel.canvas.w, h: skel.canvas.h }, {
+        name: skel.name ? `From ${skel.name}` : 'New comp',
+        brand: brand ?? null,
+        reference: skel.sourceRef ?? null,
+      });
+      fresh = applySkeleton(fresh, skel);
+      const s = await api.saveDesign(fresh);
+      if (s.ok && s.design) {
+        try { localStorage.setItem(lastCompKey, s.design.id); } catch { /* private mode etc. */ }
+        setEditorGreet(false);
+        setEditorAutoRun(null);
+        setDoc(s.design);
+      } else flash(s.error || 'Could not create comp');
+    } finally { setBusy(null); }
   };
 
   const duplicateComp = async (d: DesignSummary) => {
@@ -392,16 +591,21 @@ export default function DesignView() {
         name: `Blank ${preset.name}`,
         brand: brand ?? null,
       });
+      // Clean white artboard base (was a blue-navy tint the owner disliked). role:'base' so the
+      // top-strip frame-color control edits it in place.
       fresh.layers = [{
-        id: layerId('bg'),
+        id: layerId('base'),
         type: 'shape',
+        role: 'base',
         name: 'Background',
         box: { x: 0, y: 0, w: preset.w, h: preset.h },
-        style: { shapeKind: 'rect', background: '#181d29' },
+        style: { shapeKind: 'rect', background: '#ffffff' },
       }];
       const s = await api.saveDesign(fresh);
       if (s.ok && s.design) {
         try { localStorage.setItem(lastCompKey, s.design.id); } catch { /* private mode etc. */ }
+        setEditorGreet(false);
+        setEditorAutoRun(null);
         setDoc(s.design);
       } else flash(s.error || 'Could not create blank comp');
     } finally { setBusy(null); }
@@ -423,24 +627,61 @@ export default function DesignView() {
     } finally { setBarBusy(false); }
   }, [selected, clearSelection, refresh]);
 
-  // Export loops the /api/design/export endpoint over the selection (one POST per comp).
-  const exportSelected = async () => {
+  // Download the selection as correctly-named PNGs. Everything happens client-side:
+  //   - fetch each comp's full doc (api.getDesign) and rasterize it to a full-res PNG,
+  //   - name each file by the comp's real name (sanitized, deduped),
+  //   - group into  Workspace / Batch / <name>.png  folders inside a single STORE-method ZIP.
+  // A single selected comp downloads as a plain named .png (no zip). Comps that fail to render
+  // are skipped with a note rather than corrupting the archive.
+  const downloadSelected = async () => {
     const ids = [...selected];
     if (!ids.length) return;
     setBarBusy(true);
-    let done = 0;
     try {
-      for (const id of ids) {
-        try {
-          const r = await fetch('/api/design/export', {
-            method: 'POST',
-            headers: { 'content-type': 'application/json' },
-            body: JSON.stringify({ id }),
-          });
-          if (r.ok) done++;
-        } catch { /* keep going — report the count at the end */ }
+      // Resolve each id → its summary (for naming/folders) in the current selection order.
+      const picked = ids
+        .map((id) => comps.find((c) => c.id === id))
+        .filter((c): c is DesignSummary => !!c);
+
+      // Folder key: Workspace (brand) / Batch (template or adType). Sanitized, empty parts dropped.
+      const folderFor = (d: DesignSummary): string => {
+        const ws = sanitizeName(d.brand || '', '');
+        const batch = sanitizeName(d.template || d.adType || '', '');
+        return [ws, batch].filter(Boolean).join('/');
+      };
+
+      // Single comp → plain named PNG, no zip.
+      if (picked.length === 1) {
+        const d = picked[0];
+        const r = await api.getDesign(d.id);
+        if (!r.ok || !r.design) { flash('Could not render comp for download'); return; }
+        const png = await rasterizeDesign(r.design as unknown as DesignDoc).catch(() => null);
+        if (!png) { flash('Could not render comp for download'); return; }
+        triggerDownload(new Blob([dataUrlToBytes(png).buffer as ArrayBuffer], { type: 'image/png' }), `${sanitizeName(d.name, d.id)}.png`);
+        flash('Downloaded 1 comp');
+        return;
       }
-      flash(`Exported ${done}/${ids.length} comp${ids.length === 1 ? '' : 's'}`);
+
+      // Multiple → build one ZIP with a folder structure, deduping names within each folder.
+      const usedByFolder = new Map<string, Set<string>>();
+      const entries: { path: string; data: Uint8Array }[] = [];
+      let skipped = 0;
+      for (const d of picked) {
+        const r = await api.getDesign(d.id);
+        const png = r.ok && r.design
+          ? await rasterizeDesign(r.design as unknown as DesignDoc).catch(() => null)
+          : null;
+        if (!png) { skipped++; continue; }
+        const folder = folderFor(d);
+        if (!usedByFolder.has(folder)) usedByFolder.set(folder, new Set());
+        const file = uniqueInFolder(usedByFolder.get(folder)!, sanitizeName(d.name, d.id), '.png');
+        entries.push({ path: folder ? `${folder}/${file}` : file, data: dataUrlToBytes(png) });
+      }
+      if (!entries.length) { flash('Nothing could be rendered — download skipped'); return; }
+      const stamp = new Date().toISOString().slice(0, 10);
+      const zipName = `${sanitizeName(allWorkspaces ? 'comps' : (brand || 'comps'), 'comps')}-${stamp}.zip`;
+      triggerDownload(buildZip(entries), zipName);
+      flash(`Downloaded ${entries.length} comp${entries.length === 1 ? '' : 's'}${skipped ? ` (${skipped} skipped)` : ''}`);
     } finally { setBarBusy(false); }
   };
 
@@ -612,7 +853,7 @@ export default function DesignView() {
     } finally { setBusy(null); }
   };
 
-  // ── drop / paste: PNG → auto extract flow; Figma clipboard → direct import ──
+  // ── drop / paste: PNG → open editor + copy-reference agent run; Figma clipboard → direct import ──
   const fileToDataUrl = (f: File) => new Promise<string>((resolve, reject) => {
     const r = new FileReader();
     r.onload = () => resolve(String(r.result));
@@ -620,18 +861,41 @@ export default function DesignView() {
     r.readAsDataURL(f);
   });
 
+  // Measure a data-URL image → natural pixel size (for canvas aspect). Falls back to 1:1.
+  const measureImage = (dataUrl: string) => new Promise<{ w: number; h: number }>((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve({ w: img.naturalWidth || 1080, h: img.naturalHeight || 1080 });
+    img.onerror = () => resolve({ w: 1080, h: 1080 });
+    img.src = dataUrl;
+  });
+
+  // Drop / paste a reference PNG → create a blank comp sized to the reference's aspect ratio, open
+  // the Editor, and hand it an autoRun so it kicks a "copy this reference" AGENT run at once (the
+  // same /api/design/agent opts.reference path, streaming into the editor's agent feed). No
+  // standalone extraction screen — the copy happens inside design mode like any other agent run.
   const startFromImageFile = useCallback(async (file: File) => {
     setBusy('upload');
     try {
       const dataUrl = await fileToDataUrl(file);
       const r = await api.uploadRef(dataUrl);
-      if (r.ok && r.id && r.url) {
-        setAutoRef({ kind: 'upload', ref: r.id, url: r.url });
-        setPresetSkeleton(null);
-        setMode('new');
-      } else flash('Upload failed');
+      if (!r.ok || !r.id || !r.url) { flash('Upload failed'); return; }
+      // Canvas sized to the reference: cap the long edge to 1080 so we ship an ad-shaped comp.
+      const { w, h } = await measureImage(dataUrl);
+      const scale = 1080 / Math.max(w, h);
+      const canvas = { w: Math.round(w * scale), h: Math.round(h * scale) };
+      const fresh = buildBlankDoc('color:#ffffff', canvas, {
+        name: 'Copy of reference',
+        brand: brand ?? null,
+        reference: { kind: 'upload', ref: r.id, url: r.url, label: file.name || 'Dropped reference' },
+      });
+      const s = await api.saveDesign(fresh);
+      if (!s.ok || !s.design) { flash(s.error || 'Could not create comp'); return; }
+      try { localStorage.setItem(lastCompKey, s.design.id); } catch { /* private mode etc. */ }
+      setEditorGreet(false);
+      setEditorAutoRun({ reference: { ref: r.id, label: file.name || 'Dropped reference' } });
+      setDoc(s.design);
     } finally { setBusy(null); }
-  }, []);
+  }, [brand, lastCompKey]);
 
   const importFromFigma = useCallback(async (html: string) => {
     setBusy('figma');
@@ -665,7 +929,7 @@ export default function DesignView() {
   }, [brand]);
 
   useEffect(() => {
-    if (mode !== 'gallery' || doc) return;
+    if (doc) return; // in the editor, paste is handled there (a reference to copy)
     const onPaste = (e: ClipboardEvent) => {
       const html = e.clipboardData?.getData('text/html') || null;
       if (html && sniffFigmaClipboard(html)) { e.preventDefault(); importFromFigma(html); return; }
@@ -674,7 +938,7 @@ export default function DesignView() {
     };
     window.addEventListener('paste', onPaste);
     return () => window.removeEventListener('paste', onPaste);
-  }, [mode, doc, importFromFigma, startFromImageFile]);
+  }, [doc, importFromFigma, startFromImageFile]);
 
   // Keyboard over the selection (matches Finder): Escape clears; Delete/Backspace deletes (with the
   // same confirm the bar uses). Both are ignored while typing in a field so the search/tag inputs
@@ -682,6 +946,11 @@ export default function DesignView() {
   // input. Bound whenever the gallery is showing so Select-all works before anything is selected.
   const filteredIdsRef = useRef<string[]>([]);
   filteredIdsRef.current = filteredComps.map((d) => d.id);
+  // Skeleton ids for ⌘/Ctrl-A parity — refs so the key handler stays a stable one-time binding.
+  const skelIdsRef = useRef<string[]>([]);
+  skelIdsRef.current = skeletons.map((s) => s.id);
+  const skelOpenRef = useRef(false);
+  skelOpenRef.current = skelOpen;
   useEffect(() => {
     const typingIn = (el: EventTarget | null) => {
       const n = el as HTMLElement | null;
@@ -692,6 +961,15 @@ export default function DesignView() {
     const onKey = (e: KeyboardEvent) => {
       if (typingIn(e.target)) return;
       if ((e.metaKey || e.ctrlKey) && (e.key === 'a' || e.key === 'A')) {
+        // Context-aware select-all: if a copied-layout selection is the active one (or the
+        // skeleton grid is the only thing selectable), ⌘/Ctrl-A fills that grid; otherwise it
+        // selects every comp. Comps are the primary grid, so they win when nothing's selected.
+        const skelActive = selectedSkels.size > 0 && !selected.size;
+        if (skelActive) {
+          const ids = skelIdsRef.current;
+          if (ids.length) { e.preventDefault(); setSelectedSkels(new Set(ids)); }
+          return;
+        }
         const ids = filteredIdsRef.current;
         if (ids.length) { e.preventDefault(); setSelected(new Set(ids)); }
         return;
@@ -839,22 +1117,15 @@ export default function DesignView() {
     return (
       <Editor
         initialDoc={doc}
+        greet={editorGreet}
+        autoRun={editorAutoRun}
         onClose={() => {
           try { localStorage.removeItem(lastCompKey); } catch { /* ignore */ }
+          setEditorGreet(false);
+          setEditorAutoRun(null);
           setDoc(null);
           refresh();
         }}
-      />
-    );
-  }
-
-  if (mode === 'new') {
-    return (
-      <NewCompFlow
-        presetSkeleton={presetSkeleton}
-        autoRef={autoRef}
-        onCreated={(fresh) => { setPresetSkeleton(null); setAutoRef(null); setMode('gallery'); setDoc(fresh); }}
-        onCancel={() => { setPresetSkeleton(null); setAutoRef(null); setMode('gallery'); }}
       />
     );
   }
@@ -881,7 +1152,7 @@ export default function DesignView() {
           zone as a subtle inline affordance, search + agent chip on the same line. */}
       <div className={styles.hero}>
         <div className={styles.newSplit}>
-          <button type="button" className={styles.newBtn} onClick={() => setMode('new')}>
+          <button type="button" className={styles.newBtn} onClick={() => void newComp()}>
             <Icon name="plus" size={14} /> New comp
           </button>
           <DropdownMenu.Root modal={false}>
@@ -892,11 +1163,8 @@ export default function DesignView() {
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
               <DropdownMenu.Content className={styles.menu} align="start" sideOffset={4} collisionPadding={8}>
-                <DropdownMenu.Item className={styles.menuItem} onSelect={() => setMode('new')}>
-                  <span className={styles.menuIcon}><Icon name="photo" size={13} /></span>
-                  From reference…
-                </DropdownMenu.Item>
-                <DropdownMenu.Separator className={styles.menuSep} />
+                {/* New comp opens the editor and greets with attach-a-reference; these jump
+                    straight to a blank canvas at a chosen size, skipping the greeting. */}
                 {CANVAS_PRESETS.map((p) => (
                   <DropdownMenu.Item key={p.id} className={styles.menuItem} onSelect={() => createBlank(p.id)}>
                     <span className={styles.menuIcon}><Icon name="shape-square" size={13} /></span>
@@ -909,7 +1177,7 @@ export default function DesignView() {
         </div>
         <span className={styles.dropZone}>
           <Icon name="photo" size={13} />
-          Drop / paste a PNG — Figma selections paste directly
+          Drop / paste a reference — it opens in the editor and the agent copies it
         </span>
         <div className={styles.heroRight}>
           <input
@@ -923,21 +1191,9 @@ export default function DesignView() {
             title="Show comps from every workspace" onClick={() => setAllWorkspaces((v) => !v)}>
             All workspaces
           </button>
-          {llmCfg ? (
-            <ModelSelector
-              models={modelOptions}
-              value={activeModelId}
-              triggerLabel={`Agent: ${currentModelLabel}`}
-              align="end"
-              side="bottom"
-              onValueChange={(m) => {
-                const p = llmPresets.find((pr) => `${pr.baseUrl}::${pr.model}` === m.id);
-                if (p) void applyLlmConfig({ baseUrl: p.baseUrl, model: p.model }, p.label);
-              }}
-            />
-          ) : (
-            <span className={styles.agentChip} title="Design-agent LLM provider">Agent: {agentLabel}</span>
-          )}
+          {/* Read-only model indicator — no switching UI (the owner wants Ornith as the single
+              default for everything; the backend routes to whatever LM Studio has loaded). */}
+          <span className={styles.agentChip} title="Design-agent model">Agent: {currentModelLabel}</span>
         </div>
       </div>
 
@@ -988,8 +1244,8 @@ export default function DesignView() {
           <EmptyState
             icon="palette"
             title="No comps yet"
-            hint="Start from a reference ad — its design gets copied as editable layers over your image. Or drop a PNG anywhere here."
-            action={{ label: 'New comp', onClick: () => setMode('new') }}
+            hint="New comp opens the editor — attach a reference and the agent copies its layout, or start from a blank canvas. Or drop a reference here."
+            action={{ label: 'New comp', onClick: () => void newComp() }}
           />
         ) : filteredComps.length === 0 ? (
           <EmptyState
@@ -1000,11 +1256,32 @@ export default function DesignView() {
           />
         ) : (
           <>
-            {stackRows.map(({ setId, members }) => (
-              <div key={setId} className={styles.stackRow}>
-                <p className={styles.stackHead}>
-                  {members[0].name.replace(/\s+·\s+[A-Z]$/, '')} · {members.length} variants
-                </p>
+            {stackRows.map(({ setId, members }) => {
+              const memberIds = members.map((m) => m.id);
+              const selCount = memberIds.filter((id) => selected.has(id)).length;
+              const allOn = selCount === memberIds.length;
+              return (
+              <div key={setId} className={styles.stackRow} data-selected={allOn || undefined}>
+                <div className={styles.stackHead}>
+                  {/* Set-level checkbox: selecting a set selects every member (parity — a set is
+                      as selectable as a single comp). On = all members selected. */}
+                  <button
+                    type="button"
+                    className={`${styles.selBox} ${styles.selBoxSet}`}
+                    data-on={allOn || undefined}
+                    data-partial={(selCount > 0 && !allOn) || undefined}
+                    aria-label={allOn ? 'Deselect set' : 'Select set'}
+                    aria-pressed={allOn}
+                    title={allOn ? 'Deselect all in set' : 'Select all in set'}
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleSelectedSet(memberIds); }}
+                  >
+                    {allOn ? <Icon name="check" size={11} /> : (selCount > 0 ? <Icon name="minus" size={11} /> : null)}
+                  </button>
+                  <span className={styles.stackHeadLabel}>
+                    {members[0].name.replace(/\s+·\s+[A-Z]$/, '')} · {members.length} variants
+                    {selCount > 0 ? <span className={styles.stackSelCount}> · {selCount} selected</span> : null}
+                  </span>
+                </div>
                 <div className={styles.stackCards}>
                   {members.map((d, i) => (
                     <div key={d.id} className={styles.stackCard} data-card-id={d.id}
@@ -1036,7 +1313,8 @@ export default function DesignView() {
                   ))}
                 </div>
               </div>
-            ))}
+              );
+            })}
             <div className={styles.compGrid}>
               {singleComps.map((d) => (
                 <div key={d.id} className={styles.compCard} data-card-id={d.id}
@@ -1113,18 +1391,35 @@ export default function DesignView() {
 
       {skeletons.length > 0 ? (
         <section className={styles.section}>
-          <button
-            type="button"
-            className={styles.disclosure}
-            aria-expanded={skelOpen}
-            onClick={() => setSkelOpen((o) => !o)}
-          >
-            <span className={styles.discChevron} data-open={skelOpen || undefined}>
-              <Icon name="chevron-right" size={12} />
-            </span>
-            <span className="eyebrow">Copied layouts</span>
-            <span className={styles.sectionCount}>{skeletons.length}</span>
-          </button>
+          {/* Copied-layouts head — same rhythm as the comps head: disclosure toggle, count,
+              live selected-count, and a Select-all (only meaningful once the grid is open). */}
+          <div className={styles.sectionHead}>
+            <button
+              type="button"
+              className={styles.disclosure}
+              aria-expanded={skelOpen}
+              onClick={() => setSkelOpen((o) => !o)}
+            >
+              <span className={styles.discChevron} data-open={skelOpen || undefined}>
+                <Icon name="chevron-right" size={12} />
+              </span>
+              <span className="eyebrow">Copied layouts</span>
+              <span className={styles.sectionCount}>{skeletons.length}</span>
+            </button>
+            {selectedSkels.size > 0 ? (
+              <span className={styles.sectionCount} data-selcount
+                title="Selected — click a card's checkbox to add/remove, drag to marquee-select, Del to delete, Esc to clear">
+                · {selectedSkels.size} selected
+              </span>
+            ) : null}
+            {skelOpen && skeletons.length > 0 && selectedSkels.size < skeletons.length ? (
+              <button type="button" className={styles.selectAll}
+                title="Select all copied layouts (⌘/Ctrl-A)"
+                onClick={() => setSelectedSkels(new Set(skeletons.map((s) => s.id)))}>
+                Select all
+              </button>
+            ) : null}
+          </div>
           {skelOpen ? (
             <div
               ref={skelGridRef}
@@ -1164,21 +1459,14 @@ export default function DesignView() {
         </section>
       ) : null}
 
-      {/* Rubber-band marquee rectangle (client coords → fixed overlay). */}
-      {marquee ? (
-        <div
-          className={styles.marquee}
-          style={{ left: marquee.x, top: marquee.y, width: marquee.w, height: marquee.h }}
-          aria-hidden
-        />
-      ) : null}
-      {skelMarquee ? (
-        <div
-          className={styles.marquee}
-          style={{ left: skelMarquee.x, top: skelMarquee.y, width: skelMarquee.w, height: skelMarquee.h }}
-          aria-hidden
-        />
-      ) : null}
+      {/* Rubber-band marquee rectangle. Drawn inside a fixed overlay whose own viewport offset is
+          subtracted (marqueeStyle) so the rect lands exactly under the cursor even though an
+          ancestor (<main>'s backdrop-filter) establishes the containing block for fixed elements.
+          The overlay stays mounted so its rect is measurable the instant a drag begins. */}
+      <div ref={overlayRef} className={styles.marqueeLayer} aria-hidden>
+        {marquee ? <div className={styles.marquee} style={marqueeStyle(marquee)} /> : null}
+        {skelMarquee ? <div className={styles.marquee} style={marqueeStyle(skelMarquee)} /> : null}
+      </div>
 
       {/* Floating selection bar for "Copied layouts" — same pattern as the comps bar, kept
           separate so it never mixes with a concurrent comp selection. */}
@@ -1205,8 +1493,9 @@ export default function DesignView() {
             disabled={selected.size !== 1 || barBusy} title={selected.size === 1 ? 'Rename this comp' : 'Select exactly one to rename'}>
             <Icon name="pencil" size={13} /> Rename
           </button>
-          <button type="button" className={styles.selBarBtn} onClick={exportSelected} disabled={barBusy}>
-            <Icon name="download" size={13} /> Export {selected.size}
+          <button type="button" className={styles.selBarBtn} onClick={downloadSelected} disabled={barBusy}
+            title={selected.size === 1 ? 'Download this comp as a named PNG' : `Download ${selected.size} comps as a named ZIP (grouped by workspace/batch)`}>
+            <Icon name="download" size={13} /> Download {selected.size}
           </button>
           <button type="button" className={`${styles.selBarBtn} ${styles.selBarDanger}`} onClick={deleteSelected} disabled={barBusy}>
             <Icon name="x" size={13} /> Delete {selected.size}

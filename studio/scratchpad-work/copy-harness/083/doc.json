@@ -1,0 +1,129 @@
+{
+  "id": "harness_083_10a1dc65",
+  "name": "copy-harness harness_083_10a1dc65",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6mpq35-1n",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "group-mr6mpq34-1i",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 192,
+        "w": 972,
+        "h": 672
+      },
+      "children": [
+        {
+          "id": "rect-mr6mpq34-1j",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · creatine sachet box",
+          "box": {
+            "x": 594,
+            "y": 326,
+            "w": 432,
+            "h": 538
+          },
+          "style": {
+            "crop": {
+              "x": 0.55,
+              "y": 0.17,
+              "w": 0.4,
+              "h": 0.28
+            },
+            "radius": 15
+          },
+          "src": "/refasset?id=harness-083"
+        },
+        {
+          "id": "headline-mr6mpq34-1k",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "We spent all our money on product development",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 192,
+            "w": 540,
+            "h": 422
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 65,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "subhead-mr6mpq34-1l",
+      "type": "text",
+      "role": "subhead",
+      "name": "subhead",
+      "text": "(so we couldn't pay our designers)",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 864,
+        "w": 486,
+        "h": 120
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 50,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "cta-mr6mpq34-1m",
+      "type": "text",
+      "role": "cta",
+      "name": "cta",
+      "text": "Please buy our Creatine",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 1190,
+        "w": 518,
+        "h": 183
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 76,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6mpq34ptg5",
+  "updatedAt": 1783185682001
+}

@@ -1,0 +1,132 @@
+{
+  "id": "harness_053_11809278",
+  "name": "copy-harness harness_053_11809278",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base_mr6f45s3",
+      "type": "image",
+      "role": "base",
+      "name": "Background (reference photo)",
+      "src": "/refasset?id=harness-053",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "caption-mr6f45s2-2r",
+      "type": "text",
+      "autoH": true,
+      "role": "caption",
+      "name": "Hook pill",
+      "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+      "box": {
+        "x": 76,
+        "y": 125,
+        "w": 929,
+        "h": 182
+      },
+      "style": {
+        "fontSize": 63,
+        "fontWeight": 700,
+        "lineHeight": 1.15,
+        "letterSpacing": -0.2,
+        "color": "#0a0a0a",
+        "background": "#ffffff",
+        "pill": true,
+        "padding": 32,
+        "radius": 19,
+        "align": "center"
+      },
+      "sizeLocked": true,
+      "paramRef": {
+        "key": "text"
+      },
+      "element": {
+        "id": "ig-caption",
+        "params": {
+          "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+          "hook": "",
+          "items": [],
+          "style": "light",
+          "preset": "pill",
+          "align": "center",
+          "size": 5.8,
+          "tight": false
+        },
+        "v": 2
+      },
+      "tpl": "story-native",
+      "tplRef": {
+        "key": "hook"
+      },
+      "template": {
+        "id": "story-native",
+        "params": {
+          "hook": "Vor 8 Wochen - vor 4 Wochen - Heute",
+          "hook2": "72,6 kg",
+          "style": "light"
+        }
+      }
+    },
+    {
+      "id": "caption-mr6f45s2-2s",
+      "type": "text",
+      "autoH": true,
+      "role": "caption",
+      "name": "Sub-hook pill",
+      "text": "72,6 kg",
+      "box": {
+        "x": 419,
+        "y": 384,
+        "w": 242,
+        "h": 150
+      },
+      "style": {
+        "fontSize": 52,
+        "fontWeight": 700,
+        "lineHeight": 1.15,
+        "letterSpacing": -0.2,
+        "color": "#0a0a0a",
+        "background": "#ffffff",
+        "pill": true,
+        "padding": 26,
+        "radius": 16,
+        "align": "center"
+      },
+      "sizeLocked": true,
+      "paramRef": {
+        "key": "text"
+      },
+      "element": {
+        "id": "ig-caption",
+        "params": {
+          "text": "72,6 kg",
+          "hook": "",
+          "items": [],
+          "style": "light",
+          "preset": "pill",
+          "align": "center",
+          "size": 4.8,
+          "tight": false
+        },
+        "v": 2
+      },
+      "tpl": "story-native",
+      "tplRef": {
+        "key": "hook2"
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6f45s2hvl3",
+  "updatedAt": 1783172918595
+}

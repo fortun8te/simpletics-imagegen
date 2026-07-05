@@ -1,0 +1,354 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "benefit-list",
+  "background": "#E9F3EB",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "Poop More While\nOn a GLP-1",
+      "box": {
+        "x": 62,
+        "y": 350,
+        "w": 745,
+        "h": 206
+      },
+      "style": {
+        "fontSize": 74,
+        "fontWeight": 800,
+        "color": "#153A20",
+        "align": "left",
+        "lineHeight": 1.05,
+        "uppercase": false,
+        "italic": true
+      }
+    },
+    {
+      "id": "pill-1",
+      "type": "badge",
+      "role": "benefit",
+      "text": "More Fiber Than\n2 cups of Broccoli",
+      "box": {
+        "x": 62,
+        "y": 645,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "pill-1-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 656,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 37
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.07,
+          "y": 0.342,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "pill-2",
+      "type": "badge",
+      "role": "benefit",
+      "text": "20+ Vitamins & Minerals",
+      "box": {
+        "x": 62,
+        "y": 765,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "pill-2-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 776,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 37
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.07,
+          "y": 0.404,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "pill-3",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Organic Fruits & Veggies",
+      "box": {
+        "x": 62,
+        "y": 885,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "pill-3-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 896,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 37
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.07,
+          "y": 0.467,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "pill-4",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Prebiotics",
+      "box": {
+        "x": 62,
+        "y": 1003,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "pill-4-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1014,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 37
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.07,
+          "y": 0.528,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "pill-5",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Adaptogens",
+      "box": {
+        "x": 62,
+        "y": 1121,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "pill-5-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1132,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 37
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.07,
+          "y": 0.59,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "pill-6",
+      "type": "badge",
+      "role": "benefit",
+      "text": "0 Sugar",
+      "box": {
+        "x": 62,
+        "y": 1239,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "pill-6-icon",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1250,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 37
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.07,
+          "y": 0.651,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "gummy-bear",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 532,
+        "y": 598,
+        "w": 505,
+        "h": 750
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.493,
+          "y": 0.311,
+          "w": 0.468,
+          "h": 0.391
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "reviews-pill",
+      "type": "badge",
+      "role": "social-proof",
+      "text": "55,000+ ★★★★★ reviews",
+      "box": {
+        "x": 204,
+        "y": 1492,
+        "w": 672,
+        "h": 98
+      },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 700,
+        "color": "#1F7A33",
+        "background": "#FFD43B",
+        "align": "center",
+        "radius": 49,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    }
+  ],
+  "measuredBoxes": true
+}

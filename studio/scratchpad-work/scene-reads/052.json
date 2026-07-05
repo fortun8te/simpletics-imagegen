@@ -1,0 +1,176 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "before-after",
+  "background": "#8CA084",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "bottom-band",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 0,
+        "y": 897,
+        "w": 1080,
+        "h": 183
+      },
+      "style": {
+        "background": "#FFFFFF"
+      }
+    },
+    {
+      "id": "before-photo",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 143,
+        "y": 322,
+        "w": 390,
+        "h": 558
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.132,
+          "y": 0.298,
+          "w": 0.361,
+          "h": 0.517
+        },
+        "shape": "media"
+      }
+    },
+    {
+      "id": "after-photo",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 548,
+        "y": 322,
+        "w": 390,
+        "h": 558
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.507,
+          "y": 0.298,
+          "w": 0.361,
+          "h": 0.517
+        },
+        "shape": "media"
+      }
+    },
+    {
+      "id": "before-pill",
+      "type": "badge",
+      "role": "badge",
+      "text": "Before",
+      "box": {
+        "x": 229,
+        "y": 287,
+        "w": 218,
+        "h": 66
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 500,
+        "color": "#4F5B53",
+        "background": "#FFFFFF",
+        "align": "center",
+        "radius": 33,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "after-pill",
+      "type": "badge",
+      "role": "badge",
+      "text": "After",
+      "box": {
+        "x": 633,
+        "y": 287,
+        "w": 218,
+        "h": 66
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 500,
+        "color": "#4F5B53",
+        "background": "#FFFFFF",
+        "align": "center",
+        "radius": 33,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "product-tube",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 466,
+        "y": 500,
+        "w": 148,
+        "h": 392
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.431,
+          "y": 0.463,
+          "w": 0.137,
+          "h": 0.363
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "No need to ruin your hair to have perfect curls",
+      "box": {
+        "x": 90,
+        "y": 85,
+        "w": 900,
+        "h": 150
+      },
+      "style": {
+        "fontSize": 60,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.2,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    },
+    {
+      "id": "bottom-caption",
+      "type": "text",
+      "role": "caption",
+      "text": "This natural curl cream is all you need",
+      "box": {
+        "x": 240,
+        "y": 935,
+        "w": 600,
+        "h": 120
+      },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 500,
+        "color": "#7C9473",
+        "align": "center",
+        "lineHeight": 1.25,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
+    }
+  ]
+}

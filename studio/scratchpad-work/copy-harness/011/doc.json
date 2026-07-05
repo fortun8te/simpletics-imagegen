@@ -1,0 +1,188 @@
+{
+  "id": "harness_011_bbfdb4b1",
+  "name": "copy-harness harness_011_bbfdb4b1",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6nlqow-31",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "group-mr6nlqov-2t",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 211,
+        "w": 983,
+        "h": 384
+      },
+      "children": [
+        {
+          "id": "subhead-mr6nlqov-2u",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "< Notes",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 211,
+            "w": 151,
+            "h": 58
+          },
+          "style": {
+            "color": "#ccaa00",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6nlqov-2v",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Done",
+          "autoH": true,
+          "box": {
+            "x": 907,
+            "y": 211,
+            "w": 130,
+            "h": 58
+          },
+          "style": {
+            "color": "#ccaa00",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "right",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6nlqov-2w",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Things Men Can Do to Support Their Reproductive Health",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 365,
+            "w": 864,
+            "h": 230
+          },
+          "style": {
+            "color": "#222222",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6nlqov-2x",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 97,
+        "y": 614,
+        "w": 951,
+        "h": 1267
+      },
+      "children": [
+        {
+          "id": "rect-mr6nlqov-2y",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · green gummies",
+          "box": {
+            "x": 454,
+            "y": 998,
+            "w": 594,
+            "h": 883
+          },
+          "style": {
+            "crop": {
+              "x": 0.42,
+              "y": 0.52,
+              "w": 0.55,
+              "h": 0.46
+            },
+            "radius": 21
+          },
+          "src": "/refasset?id=harness-011"
+        },
+        {
+          "id": "caption-mr6nlqov-2z",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "• Strength train regularly\n• Prioritize sleep\n• Prioritize nutrition by taking Grüns.\nPacked with zinc, selenium, vitamin C +\nE support male reproductive health*\n• Limit alcohol",
+          "autoH": true,
+          "box": {
+            "x": 140,
+            "y": 614,
+            "w": 734,
+            "h": 422
+          },
+          "style": {
+            "color": "#222222",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nlqov-30",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "*This statement has not been evaluated by the\nFood and Drug Administration. This product is\nnot intended to diagnose, treat, cure, or\nprevent any disease.",
+          "autoH": true,
+          "box": {
+            "x": 97,
+            "y": 1402,
+            "w": 540,
+            "h": 252
+          },
+          "style": {
+            "color": "#222222",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6nlqot9t8e",
+  "updatedAt": 1783187175776
+}

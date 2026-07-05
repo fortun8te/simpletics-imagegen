@@ -1,0 +1,335 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6e02hp-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Nature's Energy Gel\n2 ingredients",
+      "autoH": true,
+      "box": {
+        "x": 76,
+        "y": 65,
+        "w": 994,
+        "h": 151
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 63,
+        "fontWeight": 900,
+        "align": "center",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "grp-mr6e02kg-6",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 86,
+        "y": 346,
+        "w": 886,
+        "h": 388
+      },
+      "children": [
+        {
+          "id": "ext-mr6e02hp-1-lb",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": false,
+          "sizeLocked": true,
+          "text": "HONEY SHOT TUBE",
+          "box": {
+            "x": 378,
+            "y": 520,
+            "w": 324,
+            "h": 72
+          },
+          "style": {
+            "fontSize": 32,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "ext-mr6e02hq-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pure Honey",
+          "autoH": true,
+          "box": {
+            "x": 130,
+            "y": 346,
+            "w": 194,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6e02hq-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pink Salt",
+          "autoH": true,
+          "box": {
+            "x": 778,
+            "y": 346,
+            "w": 194,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6e02hq-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "100% Natural",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 562,
+            "w": 238,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6e02hq-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "stomach\nfriendly",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 626,
+            "w": 238,
+            "h": 108
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 49,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6e02kg-7",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 378,
+        "y": 259,
+        "w": 616,
+        "h": 778
+      },
+      "children": [
+        {
+          "id": "ext-mr6e02hp-1",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · honey shot tube",
+          "box": {
+            "x": 378,
+            "y": 259,
+            "w": 324,
+            "h": 594
+          },
+          "style": {
+            "background": "#f0c74e59",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
+            "stroke": {
+              "color": "#f0c74e",
+              "width": 3
+            }
+          }
+        },
+        {
+          "id": "ext-mr6e02kg-8",
+          "type": "shape",
+          "role": "logo",
+          "name": "Logo · hornet energy logo",
+          "box": {
+            "x": 864,
+            "y": 886,
+            "w": 130,
+            "h": 151
+          },
+          "style": {
+            "background": "#0a0a0a59",
+            "radius": 22,
+            "stroke": {
+              "color": "#0a0a0a",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.8,
+              "y": 0.82,
+              "w": 0.12,
+              "h": 0.14
+            },
+            "shape": "logo"
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6e02kg-8",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 65,
+        "y": 886,
+        "w": 378,
+        "h": 162
+      },
+      "children": [
+        {
+          "id": "ext-mr6e02hq-6",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "24 servings for",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 886,
+            "w": 378,
+            "h": 76
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 45,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6e02hq-7",
+          "type": "button",
+          "role": "price",
+          "name": "price",
+          "text": "$1.99 per serve",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 972,
+            "w": 378,
+            "h": 76
+          },
+          "style": {
+            "color": "#101111",
+            "background": "#0a0a0a",
+            "fontSize": 41,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "offer-hero",
+  "background": "#f4f6f8",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#f5f4f5",
+      "share": 0.5
+    },
+    {
+      "hex": "#f4f6fa",
+      "share": 0.25
+    },
+    {
+      "hex": "#ececec",
+      "share": 0.125
+    },
+    {
+      "hex": "#090a0b",
+      "share": 0.063
+    },
+    {
+      "hex": "#987534",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 65,
+    "corrections": [
+      {
+        "layer": "headline",
+        "problem": "The large bold headline 'Nature's Energy Gel 2 ingredients' is missing from the top of the image area in the generated render. It only appears as small caption text below the image.",
+        "fix": "Restore the headline text 'Nature's Energy Gel 2 ingredients' at the top center of the graphic, using large bold font (approx 48px), color #1a1a1a."
+      },
+      {
+        "layer": "price tag",
+        "problem": "The black rounded rectangle containing '$1.99 per serve' is missing from the bottom-left area of the generated render.",
+        "fix": "Add a black (#000000) rounded rectangle (approx 160x35px) at the bottom-left position, containing white text '$1.99 per serve'."
+      },
+      {
+        "layer": "background / overlay",
+        "problem": "The generated render includes Instagram UI chrome ('Follow' bar, profile avatar, caption block below) that is not present in the reference graphic.",
+        "fix": "Remove all social media interface elements (header bar, avatar circle, caption text area). The output should be just the central graphic on a plain white background."
+      },
+      {
+        "layer": "product image / frame",
+        "problem": "The reference features a thin yellow rectangular outline framing the honey tube; this distinct border is missing or indistinct in the generated render.",
+        "fix": "Add a thin yellow (#f0c040) rectangular border around the central honey tube graphic, matching the vertical alignment and width of the reference frame."
+      }
+    ],
+    "applied": 1
+  },
+  "error": null,
+  "passes": 2
+}

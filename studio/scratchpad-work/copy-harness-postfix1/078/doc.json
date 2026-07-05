@@ -1,0 +1,291 @@
+{
+  "id": "harness_078_2d3be9ef",
+  "name": "copy-harness harness_078_2d3be9ef",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base-mr6e335s-3e",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#f4f6f8"
+      }
+    },
+    {
+      "id": "headline-mr6e335r-31",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Nature's Energy Gel\n2 ingredients",
+      "autoH": true,
+      "box": {
+        "x": 76,
+        "y": 65,
+        "w": 886,
+        "h": 151
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 63,
+        "fontWeight": 900,
+        "align": "center",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "group-mr6e335r-32",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 86,
+        "y": 346,
+        "w": 886,
+        "h": 388
+      },
+      "children": [
+        {
+          "id": "caption-mr6e335s-33",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "HONEY SHOT TUBE",
+          "box": {
+            "x": 378,
+            "y": 520,
+            "w": 324,
+            "h": 72
+          },
+          "style": {
+            "fontSize": 32,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "caption-mr6e335s-34",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pure Honey",
+          "autoH": true,
+          "box": {
+            "x": 130,
+            "y": 346,
+            "w": 194,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6e335s-35",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pink Salt",
+          "autoH": true,
+          "box": {
+            "x": 778,
+            "y": 346,
+            "w": 194,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6e335s-36",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "100% Natural",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 562,
+            "w": 238,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6e335s-37",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "stomach\nfriendly",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 626,
+            "w": 238,
+            "h": 118
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 49,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6e335s-38",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 378,
+        "y": 259,
+        "w": 616,
+        "h": 778
+      },
+      "children": [
+        {
+          "id": "product-mr6e335s-39",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · honey shot tube",
+          "box": {
+            "x": 378,
+            "y": 259,
+            "w": 324,
+            "h": 594
+          },
+          "style": {
+            "background": "#f0c74e59",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
+            "stroke": {
+              "color": "#f0c74e",
+              "width": 3
+            }
+          }
+        },
+        {
+          "id": "logo-mr6e335s-3a",
+          "type": "image",
+          "role": "logo",
+          "name": "Logo · hornet energy logo",
+          "box": {
+            "x": 864,
+            "y": 886,
+            "w": 130,
+            "h": 151
+          },
+          "style": {
+            "crop": {
+              "x": 0.8,
+              "y": 0.82,
+              "w": 0.12,
+              "h": 0.14
+            },
+            "radius": 16
+          },
+          "src": "/refasset?id=harness-078"
+        }
+      ]
+    },
+    {
+      "id": "group-mr6e335s-3b",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 65,
+        "y": 886,
+        "w": 378,
+        "h": 162
+      },
+      "children": [
+        {
+          "id": "price-mr6e335s-3c",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "24 servings for",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 886,
+            "w": 378,
+            "h": 76
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 45,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "price-mr6e335s-3d",
+          "type": "button",
+          "role": "price",
+          "name": "price",
+          "text": "$1.99 per serve",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 972,
+            "w": 378,
+            "h": 82
+          },
+          "style": {
+            "color": "#101111",
+            "background": "#0a0a0a",
+            "fontSize": 41,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6e335ro97e",
+  "updatedAt": 1783171188930
+}

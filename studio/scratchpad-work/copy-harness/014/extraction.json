@@ -1,0 +1,209 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "annotated-photo",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "theme": "dark",
+  "layers": [
+    {
+      "id": "vignette-overlay",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 0,
+        "y": 1250,
+        "w": 1080,
+        "h": 670
+      },
+      "style": {
+        "background": "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 100%)"
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "NUTRITIONAL\nSUPPORT DURING\nPERIMENOPAUSE",
+      "box": {
+        "x": 145,
+        "y": 93,
+        "w": 790,
+        "h": 390
+      },
+      "style": {
+        "fontSize": 154,
+        "fontWeight": 800,
+        "color": "#1775b6",
+        "align": "center",
+        "lineHeight": 1.05,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "callout-1",
+      "type": "text",
+      "role": "caption",
+      "text": "Vitamin D3\nand K2 support\nbone health*",
+      "box": {
+        "x": 55,
+        "y": 519,
+        "w": 275,
+        "h": 111
+      },
+      "style": {
+        "fontSize": 54,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-1",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 222,
+        "y": 652,
+        "w": 80,
+        "h": 72
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "callout-2",
+      "type": "text",
+      "role": "caption",
+      "text": "B vitamins support\ncognitive health,\nmood and energy*",
+      "box": {
+        "x": 685,
+        "y": 587,
+        "w": 350,
+        "h": 103
+      },
+      "style": {
+        "fontSize": 24,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-2",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 718,
+        "y": 742,
+        "w": 92,
+        "h": 68
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "arrow-3",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 200,
+        "y": 1038,
+        "w": 100,
+        "h": 70
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "callout-3",
+      "type": "text",
+      "role": "caption",
+      "text": "Fiber supports\ngut health*",
+      "box": {
+        "x": 60,
+        "y": 1119,
+        "w": 255,
+        "h": 62
+      },
+      "style": {
+        "fontSize": 54,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-4",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 818,
+        "y": 1122,
+        "w": 60,
+        "h": 95
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "callout-4",
+      "type": "text",
+      "role": "caption",
+      "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
+      "box": {
+        "x": 605,
+        "y": 1215,
+        "w": 435,
+        "h": 104
+      },
+      "style": {
+        "fontSize": 49,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "disclaimer",
+      "type": "text",
+      "role": "legal",
+      "text": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
+      "box": {
+        "x": 70,
+        "y": 1335,
+        "w": 940,
+        "h": 60
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 400,
+        "color": "#F2EDDD",
+        "align": "center",
+        "lineHeight": 1.25,
+        "uppercase": false,
+        "shadow": true
+      }
+    }
+  ],
+  "measuredBoxes": true
+}

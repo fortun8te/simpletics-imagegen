@@ -1,0 +1,47 @@
+{
+  "id": "020",
+  "filename": "020_attached_7ba93f7f655ce950.webp",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 0,
+    "assemble": 3864,
+    "total": 12074
+  },
+  "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "row-1-black-fill color: #2B3BEB → #f1f1f3 (glyph sample, contrast 0.67)",
+    "row-2-friday-fill color: #2B3BEB → #c9c4bf (glyph sample, contrast 0.36)",
+    "row-3-black-outline color: #2B3BEB → #d9d9ce (glyph sample, contrast 0.35)",
+    "row-4-friday-outline color: #2B3BEB → #eae8e5 (glyph sample, contrast 0.51)",
+    "row-5-black-outline color: #2B3BEB → #cec2b3 (glyph sample, contrast 0.42)",
+    "row-6-friday-outline color: #2B3BEB → #6863b7 (glyph sample, contrast 0.31)",
+    "row-1-black-fill fontSize: 170 → 229 (1 ink line, block 165px)",
+    "row-1-black-fill box: y52 h165 → y27 h215 (tight ink rows + 25px pad)",
+    "row-2-friday-fill fontSize: 170 → 208 (1 ink line, block 150px)",
+    "row-2-friday-fill box: y218 h150 → y195 h196 (tight ink rows + 23px pad)",
+    "row-3-black-outline fontSize: 170 → 208 (1 ink line, block 150px)",
+    "row-3-black-outline box: y390 h150 → y367 h196 (tight ink rows + 23px pad)",
+    "row-4-friday-outline fontSize: 170 → 208 (1 ink line, block 150px)",
+    "row-4-friday-outline box: y558 h150 → y535 h196 (tight ink rows + 23px pad)",
+    "row-5-black-outline fontSize: 170 → 208 (1 ink line, block 150px)",
+    "row-5-black-outline box: y728 h150 → y705 h196 (tight ink rows + 23px pad)",
+    "row-6-friday-outline fontSize: 170 → 102 (2 ink lines, block 54px)",
+    "row-6-friday-outline box: y898 h155 → y890 h70 (tight ink rows + 8px pad)"
+  ],
+  "archetype": "type-stack-promo",
+  "layerCountExtracted": 7,
+  "parsePath": "loose",
+  "background": "#F5F5F3",
+  "cutoutCandidates": 1,
+  "layersApplied": 7,
+  "leavesInResult": 8,
+  "verify": {
+    "ready": false
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 87.6,
+  "pixelScore": 87.6,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/020/side-by-side.png"
+}

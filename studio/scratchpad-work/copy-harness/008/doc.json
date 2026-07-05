@@ -1,0 +1,238 @@
+{
+  "id": "harness_008_0fb7253b",
+  "name": "copy-harness harness_008_0fb7253b",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base_mr6nlbm8",
+      "type": "image",
+      "role": "base",
+      "name": "Background (reference photo)",
+      "src": "/refasset?id=harness-008",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "group-mr6nlbm7-2j",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 0,
+        "y": 96,
+        "w": 1080,
+        "h": 423
+      },
+      "children": [
+        {
+          "id": "headline-mr6nlbm7-2k",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "EIWIT OATS",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 96,
+            "w": 864,
+            "h": 154
+          },
+          "style": {
+            "color": "#f0ede8",
+            "fontSize": 92,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "price-mr6nlbm7-2l",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "VAN €19 VOOR €11",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 269,
+            "w": 594,
+            "h": 96
+          },
+          "style": {
+            "color": "#4e463d",
+            "fontSize": 41,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6nlbm7-2m",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "UPFRONT 3 WEEKSE",
+          "autoH": true,
+          "box": {
+            "x": 0,
+            "y": 365,
+            "w": 778,
+            "h": 154
+          },
+          "style": {
+            "color": "rgba(255,255,255,0.12)",
+            "fontSize": 45,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6nlbm7-2n",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 538,
+        "w": 864,
+        "h": 1094
+      },
+      "children": [
+        {
+          "id": "rect-mr6nlbm7-2o",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · chocolate protein oats",
+          "box": {
+            "x": 238,
+            "y": 538,
+            "w": 605,
+            "h": 730
+          },
+          "style": {
+            "crop": {
+              "x": 0.22,
+              "y": 0.28,
+              "w": 0.56,
+              "h": 0.38
+            },
+            "radius": 21
+          },
+          "src": "/refasset?id=harness-008"
+        },
+        {
+          "id": "badge-mr6nlbm7-2p",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "*ALLEEN TIJDENS EARLY ACCESS OATS VOOR MAAR €10",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 979,
+            "w": 378,
+            "h": 288
+          },
+          "style": {
+            "color": "#a89182",
+            "background": "#e54c1b",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 540,
+            "uppercase": true,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6nlbm7-2q",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "30% OP HET ONTBIJTASSORTIMENT",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 1555,
+            "w": 756,
+            "h": 77
+          },
+          "style": {
+            "color": "#f0ede8",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "logo-mr6nlbm7-2r",
+      "type": "text",
+      "role": "logo",
+      "name": "logo",
+      "text": "UPFRONT",
+      "autoH": true,
+      "box": {
+        "x": 324,
+        "y": 1690,
+        "w": 432,
+        "h": 96
+      },
+      "style": {
+        "color": "#ffffff",
+        "fontSize": 41,
+        "fontWeight": 800,
+        "align": "center",
+        "uppercase": true,
+        "lineHeight": 1.2,
+        "pill": true,
+        "background": "rgba(0,0,0,0.62)",
+        "padding": 23
+      }
+    },
+    {
+      "id": "cta-mr6nlbm7-2s",
+      "type": "button",
+      "role": "cta",
+      "name": "cta",
+      "text": "SCHRIJF JE IN VOOR DE EARLY ACCESS",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 1440,
+        "w": 518,
+        "h": 109
+      },
+      "style": {
+        "color": "#96614d",
+        "background": "#d1410a",
+        "fontSize": 32,
+        "fontWeight": 700,
+        "align": "center",
+        "uppercase": true,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6nlbm7wvr0",
+  "updatedAt": 1783187156240
+}

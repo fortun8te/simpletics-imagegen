@@ -1,0 +1,264 @@
+{
+  "id": "harness_001_9c94a6c6",
+  "name": "copy-harness harness_001_9c94a6c6",
+  "canvas": {
+    "w": 1080,
+    "h": 1917
+  },
+  "layers": [
+    {
+      "id": "base-mr6nh6cw-b",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1917
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#f0f0f0"
+      }
+    },
+    {
+      "id": "group-mr6nh6cw-0",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 151,
+        "y": 134,
+        "w": 778,
+        "h": 518
+      },
+      "children": [
+        {
+          "id": "headline-mr6nh6cw-1",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "WAT ECHT IS WINT",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 134,
+            "w": 756,
+            "h": 134
+          },
+          "style": {
+            "color": "#3c3c3c",
+            "background": "#ffffff",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "price-mr6nh6cw-2",
+          "type": "badge",
+          "role": "price",
+          "name": "price",
+          "text": "€32,- → €29,-",
+          "autoH": true,
+          "box": {
+            "x": 302,
+            "y": 307,
+            "w": 475,
+            "h": 86
+          },
+          "style": {
+            "color": "#000000",
+            "background": "#ffffff",
+            "fontSize": 40,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "headline-mr6nh6cw-3",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "UPFRONT",
+          "autoH": true,
+          "box": {
+            "x": 151,
+            "y": 479,
+            "w": 778,
+            "h": 173
+          },
+          "style": {
+            "color": "#000000",
+            "background": "#ffffff",
+            "fontSize": 86,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6nh6cw-4",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 86,
+        "y": 441,
+        "w": 907,
+        "h": 1189
+      },
+      "children": [
+        {
+          "id": "card-mr6nh6cw-5",
+          "type": "shape",
+          "role": "card",
+          "name": "card",
+          "box": {
+            "x": 86,
+            "y": 441,
+            "w": 907,
+            "h": 1189
+          },
+          "style": {
+            "color": "#f0f0f0",
+            "background": "#cdcdcd",
+            "fontSize": 43,
+            "fontWeight": 400,
+            "align": "center",
+            "radius": 32,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8,
+            "padding": 16
+          }
+        },
+        {
+          "id": "subhead-mr6nh6cw-6",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "CLEAR WHEY LIMONADE",
+          "autoH": true,
+          "box": {
+            "x": 151,
+            "y": 652,
+            "w": 778,
+            "h": 77
+          },
+          "style": {
+            "color": "#000000",
+            "background": "#ffffff",
+            "fontSize": 38,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6nh6cw-7",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "ZWARTE BES SMAAK 700g",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 767,
+            "w": 734,
+            "h": 77
+          },
+          "style": {
+            "color": "#000000",
+            "background": "#f0f0f0",
+            "fontSize": 30,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6nh6cw-8",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Ingrediënten: wei-eiwit-isolaat (melk) (60%), zwarte-bessenpoeder (10%), kokosmelkpoeder, natural& kunstmatige smaak, zuurteregelaar (citroenzuur), natural& kunstmatige kleur, zoetstof (sucralose)",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 882,
+            "w": 734,
+            "h": 180
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nh6cw-9",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "voedingswaarden per 100g per 25g energie 1380 kJ 345 kcal 86 kcal vet 2.0g 0.5g - waarvan verzadigd 1.7g 0.4g koolhydraten 4.0g 1.0g - waarvan suikers 4.0g 1.0g eiwit 80g 20g zout 0.10g 0.03g",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 1074,
+            "w": 734,
+            "h": 422
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "logo-mr6nh6cw-a",
+      "type": "text",
+      "role": "logo",
+      "name": "logo",
+      "text": "UPFRONT",
+      "autoH": true,
+      "box": {
+        "x": 389,
+        "y": 1687,
+        "w": 302,
+        "h": 96
+      },
+      "style": {
+        "color": "#000000",
+        "fontSize": 38,
+        "fontWeight": 800,
+        "align": "center",
+        "uppercase": true,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6nh6cwu9t1",
+  "updatedAt": 1783186962802
+}

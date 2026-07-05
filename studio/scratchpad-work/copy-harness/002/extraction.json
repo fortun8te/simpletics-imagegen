@@ -1,0 +1,213 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#E4490E",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "poster-card",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 95,
+        "y": 90,
+        "w": 890,
+        "h": 1570
+      },
+      "style": {
+        "background": "#FFFFFF"
+      }
+    },
+    {
+      "id": "seal-emblem",
+      "type": "shape",
+      "role": "logo",
+      "box": {
+        "x": 482,
+        "y": 118,
+        "w": 116,
+        "h": 116
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.446,
+          "y": 0.061,
+          "w": 0.107,
+          "h": 0.061
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "ALLE ESSENTIALS",
+      "box": {
+        "x": 115,
+        "y": 250,
+        "w": 850,
+        "h": 93
+      },
+      "style": {
+        "fontSize": 99,
+        "fontWeight": 900,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "subhead",
+      "type": "text",
+      "role": "subhead",
+      "text": "KRACHTSPORT BUNDEL",
+      "box": {
+        "x": 160,
+        "y": 444,
+        "w": 760,
+        "h": 62
+      },
+      "style": {
+        "fontSize": 67,
+        "fontWeight": 800,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "price-old",
+      "type": "text",
+      "role": "price",
+      "text": "€63",
+      "box": {
+        "x": 330,
+        "y": 539,
+        "w": 150,
+        "h": 71
+      },
+      "style": {
+        "fontSize": 76,
+        "fontWeight": 700,
+        "color": "#1A1A1A",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "price-old-strike",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 322,
+        "y": 566,
+        "w": 165,
+        "h": 7
+      },
+      "style": {
+        "background": "#E4490E"
+      }
+    },
+    {
+      "id": "price-arrow",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 502,
+        "y": 552,
+        "w": 68,
+        "h": 42
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "background": "#111111"
+      }
+    },
+    {
+      "id": "price-new",
+      "type": "text",
+      "role": "price",
+      "text": "€49",
+      "box": {
+        "x": 580,
+        "y": 538,
+        "w": 160,
+        "h": 72
+      },
+      "style": {
+        "fontSize": 78,
+        "fontWeight": 900,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "price-new-underline",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 580,
+        "y": 610,
+        "w": 160,
+        "h": 7
+      },
+      "style": {
+        "background": "#E4490E"
+      }
+    },
+    {
+      "id": "cta-caption",
+      "type": "text",
+      "role": "caption",
+      "text": "KOOP NU VIA UPFRONT.NL",
+      "box": {
+        "x": 280,
+        "y": 830,
+        "w": 520,
+        "h": 41
+      },
+      "style": {
+        "fontSize": 43,
+        "fontWeight": 500,
+        "color": "#1A1A1A",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "product-cluster",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 55,
+        "y": 905,
+        "w": 975,
+        "h": 760
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.051,
+          "y": 0.471,
+          "w": 0.903,
+          "h": 0.396
+        },
+        "shape": "media"
+      }
+    }
+  ],
+  "measuredBoxes": true
+}

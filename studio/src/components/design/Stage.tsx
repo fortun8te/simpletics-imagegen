@@ -38,12 +38,13 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
 } from 'react';
-import { isGroup, type DesignDoc, type GroupNode, type Layer, type LayerBox, type SceneNode, type ShapeKind } from '../../lib/sceneGraph';
+import { cropImageCss, isComponent, isGroup, isLeafLayer, resolveCrop, type DesignDoc, type GroupNode, type Layer, type LayerBox, type SceneNode, type ShapeKind } from '../../lib/sceneGraph';
 import { ancestorsOf, cloneNodeDeep, findNode, findParentList, leaves, translateNode, scaleNodeInto, walk } from '../../lib/sceneTree';
 import { arrowGeometry, fillCss, starburstPoints, vignetteCss, vignetteSpec } from './fills';
 import { pillPadding, textBlockHeight } from './textMetrics';
 import { applyElementTextEdit } from './elements';
-import AgentCursorOverlay from './AgentCursorOverlay';
+import AgentCursorOverlay, { type CursorTarget } from './AgentCursorOverlay';
+import { useStore } from '../../store';
 import styles from './Stage.module.css';
 
 /** style.pixelate (block size in px) isn't declared on LayerStyle yet — see the sceneGraph.ts
@@ -493,6 +494,11 @@ export default function Stage({
   /** Latest text typed in the WYSIWYG session (read from the DOM on input). Declared here
    *  (rather than beside its other usages below) so the lock effect can reach it. */
   const editTextRef = useRef('');
+  /** The live contentEditable span for the current edit session — measured at commit so the
+   *  stored box.h matches what actually rendered (text reflow can change the height the moment
+   *  the field blurs; an estimate-only grow left the scene graph out of sync with the pixels,
+   *  which is what the agent then read). */
+  const editElRef = useRef<HTMLSpanElement | null>(null);
   const [box, setBox] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
   /** Deliberate "always marquee" affordance: real comps are usually covered edge-to-edge by
    *  overlay layers (a scrim, a second full-bleed photo, a background shape), so plain
@@ -515,6 +521,39 @@ export default function Stage({
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locked]);
+
+  // ── live agent-cursor targeting ──────────────────────────────────────────────────────────────
+  // While the agent runs, its op steps now stream a `data.targetBox` = { x,y,w,h,cw,ch } (the node
+  // the op touched, in canvas coords + canvas dims). We surface the LATEST such target so the fake
+  // cursor GLIDES TO the element the agent is actually editing (hover over that box) instead of the
+  // decorative fixed tour. When no target has arrived yet (thinking / extraction), `target` is null
+  // and the overlay falls back to its ambient waypoint animation. Cheap: we only scan this doc's
+  // current run's frames and keep the last box. Scoped to this doc so another variant's run can't
+  // steer this cursor. Only read the store while locked (avoids re-renders when idle).
+  const designEvents = useStore((s) => s.ui.designEvents);
+  const cursorTarget = useMemo<CursorTarget | null>(() => {
+    if (!locked) return null;
+    const mine = designEvents.filter((e) => e.docId == null || e.docId === doc.id);
+    if (!mine.length) return null;
+    const runId = mine[mine.length - 1].runId;
+    // walk this run's op frames newest→oldest, take the first with a usable targetBox
+    for (let i = mine.length - 1; i >= 0; i--) {
+      const e = mine[i];
+      if (e.runId !== runId || !e.step) continue;
+      const tb = (e.step.data as { targetBox?: { x: number; y: number; w: number; h: number; cw: number; ch: number } } | undefined)?.targetBox;
+      if (tb && tb.cw > 0 && tb.ch > 0 && tb.w >= 0 && tb.h >= 0) {
+        // normalize to 0..1 fractions of the canvas; the overlay converts to % and centers on the box
+        return {
+          key: `${e.runId}:${e.step.i}`,
+          left: (tb.x + tb.w / 2) / tb.cw,
+          top: (tb.y + tb.h / 2) / tb.ch,
+          w: tb.w / tb.cw,
+          h: tb.h / tb.ch,
+        };
+      }
+    }
+    return null;
+  }, [locked, designEvents, doc.id]);
 
   useEffect(() => {
     const isTypingTarget = (t: EventTarget | null) => {
@@ -546,10 +585,30 @@ export default function Stage({
   useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => setBox({ w: el.clientWidth, h: el.clientHeight }));
+    // The stage's box can be resized by an ANCESTOR layout transition (the app shell's sidebar
+    // fold animates grid-template-columns over ~260ms — see AppShell.module.css), which fires
+    // this observer on every intermediate animation frame. Measuring mid-transition can read a
+    // transient (and occasionally zero) size, and since `fit` zoom derives directly from `box`,
+    // that stale number used to stick until something else forced a reflow (matching the "have
+    // to zoom out to fix it" symptom). Debounce the observer's own updates to settle AFTER the
+    // transition ends, and always guard against a zero/NaN box so `fit` never divides by it.
+    let settle: number | undefined;
+    const measure = () => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      if (w > 0 && h > 0) setBox({ w, h });
+    };
+    const ro = new ResizeObserver(() => {
+      measure(); // stay live for real (non-transition) resizes, e.g. dragging the OS window
+      if (settle) window.clearTimeout(settle);
+      settle = window.setTimeout(measure, 300); // re-measure once > the 260ms shell transition
+    });
     ro.observe(el);
-    setBox({ w: el.clientWidth, h: el.clientHeight });
-    return () => ro.disconnect();
+    measure();
+    return () => {
+      if (settle) window.clearTimeout(settle);
+      ro.disconnect();
+    };
   }, []);
 
   const { w: cw, h: ch } = doc.canvas;
@@ -867,7 +926,7 @@ export default function Stage({
           const fresh = JSON.parse(JSON.stringify(snap)) as SceneNode;
           n.box = fresh.box;
           if (isGroup(n) && isGroup(fresh)) n.children = fresh.children;
-          else if (!isGroup(n) && !isGroup(fresh)) n.style = fresh.style;
+          else if (isLeafLayer(n) && isLeafLayer(fresh)) n.style = fresh.style;
           scaleNodeInto(n, d.primaryStart, r.box);
         }
       }, false);
@@ -932,6 +991,7 @@ export default function Stage({
    *  session (an unguarded callback ref re-selected the text on every parent re-render —
    *  that was the "erratic caption editing" bug). */
   const mountEditable = (l: Layer) => (el: HTMLSpanElement | null) => {
+    editElRef.current = el; // keep the live node so commitEdit can measure its true rendered height
     if (!el || focusedEditFor.current === l.id) return;
     focusedEditFor.current = l.id;
     editTextRef.current = l.text || '';
@@ -957,22 +1017,37 @@ export default function Stage({
   const commitEdit = () => {
     const id = editingId;
     if (!id) return;
+    // Measure the TRUE rendered height of the just-edited text BEFORE we tear down the edit
+    // session — the contentEditable node is still mounted here, so its box reflects the real
+    // post-reflow wrap. Convert px → canvas units via the artboard rect. This is what keeps the
+    // element from visibly jumping on blur and keeps the stored box.h honest for the agent.
+    let measuredH: number | null = null;
+    const el = editElRef.current;
+    const ab = artboardRef.current;
+    if (el && ab) {
+      const abRect = ab.getBoundingClientRect();
+      const elRect = el.getBoundingClientRect();
+      if (abRect.height > 0 && elRect.height > 0) measuredH = (elRect.height / abRect.height) * ch;
+    }
+    editElRef.current = null;
     setEditingId(null);
     focusedEditFor.current = null;
     const text = editTextRef.current;
     editTextRef.current = '';
     const l = findNode(doc, id);
-    if (!l || isGroup(l) || !text || (l.text || '') === text) return;
+    if (!l || !isLeafLayer(l) || !text || (l.text || '') === text) return;
     onChange((next) => {
       // v2 single edit path: element children rebuild through their param (clean re-measure,
-      // no stale styles). Plain layers fall through to a direct set + autoH growth.
+      // no stale styles). Plain layers fall through to a direct set + autoH re-measure.
       if (applyElementTextEdit(next, id, text)) return;
       const t = findNode(next, id);
-      if (t && !isGroup(t)) {
+      if (t && isLeafLayer(t)) {
         t.text = text;
         if (t.autoH !== false) {
-          const need = textBlockHeight(t as Layer);
-          if (need > t.box.h) t.box.h = need;
+          // Prefer the real measured height (grows AND shrinks so the box tracks the text both
+          // ways); fall back to the estimator only if we couldn't measure. Clamp to a sane floor.
+          const need = measuredH != null ? Math.max(8, Math.round(measuredH)) : textBlockHeight(t as Layer);
+          t.box.h = measuredH != null ? need : Math.max(t.box.h, need);
         }
       }
     }, true);
@@ -1020,22 +1095,56 @@ export default function Stage({
         onDoubleClick={(e) => openEditor(e, l)}
       >
         {l.type === 'image' && l.src ? (
-          pixelateOf(s) > 0 ? (
-            // True mosaic censoring (block size in px at the layer's rendered box) — e.g.
-            // blurring/pixelating a face or username in a real photo/avatar. Additive to
-            // style.blur; when both are set pixelate wins (mosaic is the explicit censor intent).
-            // Same objectFit/borderRadius CSS as the sharp path below, so it drops in cleanly —
-            // the avatarShape synthetic-circle blur/pixelate path (templates.mjs) is untouched.
-            <PixelatedImage
-              src={l.src}
-              blockSize={pixelateOf(s)}
-              w={l.box.w}
-              h={l.box.h}
-              style={{ objectFit: l.fit || 'cover', borderRadius: kind === 'ellipse' ? '50%' : cornerCss() }}
-            />
-          ) : (
-            <img src={l.src} alt="" draggable={false} style={{ objectFit: l.fit || 'cover', borderRadius: kind === 'ellipse' ? '50%' : cornerCss() }} />
-          )
+          (() => {
+            const imgRadius = kind === 'ellipse' ? '50%' : cornerCss();
+            // style.crop (cut-out): show ONLY this sub-rect of the SOURCE image, scaled to FILL
+            // the box, clipped by the .layer's overflow:hidden + the shape clip below.
+            // PARITY: size the <img> to box/crop and shift by −crop·(box/crop) — the exact geometry
+            // raster.ts draws as drawImage(src-rect→dest-box) and designSvg exposes via the <image>
+            // viewBox. Expressed in cqw so it scales with the artboard like every other length.
+            const crop = resolveCrop(s.crop);
+            if (crop) {
+              const c = cropImageCss(crop, l.box);
+              // The <img> overflows the box, so the shape clip lives on this wrapper (the .layer
+              // already clips to the box rect; border-radius here rounds/ellipses that clip). With
+              // a crop, object-fit is irrelevant — the source sub-rect fills the box exactly.
+              const imgStyle: CSSProperties = {
+                position: 'absolute',
+                left: cq(c.left), top: cq(c.top),
+                width: cq(c.width), height: cq(c.height),
+                maxWidth: 'none', maxHeight: 'none',
+                objectFit: 'fill',
+              };
+              return (
+                <div
+                  className={styles.shape}
+                  style={{ position: 'relative', overflow: 'hidden', borderRadius: imgRadius || undefined }}
+                >
+                  {pixelateOf(s) > 0 ? (
+                    <PixelatedImage src={l.src} blockSize={pixelateOf(s)} w={l.box.w} h={l.box.h} style={imgStyle} />
+                  ) : (
+                    <img src={l.src} alt="" draggable={false} style={imgStyle} />
+                  )}
+                </div>
+              );
+            }
+            return pixelateOf(s) > 0 ? (
+              // True mosaic censoring (block size in px at the layer's rendered box) — e.g.
+              // blurring/pixelating a face or username in a real photo/avatar. Additive to
+              // style.blur; when both are set pixelate wins (mosaic is the explicit censor intent).
+              // Same objectFit/borderRadius CSS as the sharp path below, so it drops in cleanly —
+              // the avatarShape synthetic-circle blur/pixelate path (templates.mjs) is untouched.
+              <PixelatedImage
+                src={l.src}
+                blockSize={pixelateOf(s)}
+                w={l.box.w}
+                h={l.box.h}
+                style={{ objectFit: l.fit || 'cover', borderRadius: imgRadius }}
+              />
+            ) : (
+              <img src={l.src} alt="" draggable={false} style={{ objectFit: l.fit || 'cover', borderRadius: imgRadius }} />
+            );
+          })()
         ) : l.type === 'vignette' ? (
           <div className={styles.shape} style={{ background: vignetteCss(vignetteSpec(s)) }} />
         ) : l.type === 'shape' && (kind === 'arrow' || kind === 'line') ? (
@@ -1133,22 +1242,33 @@ export default function Stage({
                   {l.text}
                 </span>
               </span>
-            ) : editing ? (
+            ) : (
+              // WYSIWYG: the committed text renders through the EXACT same inline-block span
+              // as the editing state (only contentEditable + handlers toggle). Rendering bare
+              // `l.text` as an anonymous flex item vs a real span flex-item wrapped/positioned
+              // differently (min-width:1ch, block formatting), which caused the visible jump on
+              // blur. Now editing and committed are byte-identical DOM/box, so no reflow.
               <span
-                key="edit"
-                ref={mountEditable(l)}
-                contentEditable
+                key={editing ? 'edit' : 'view'}
+                ref={editing ? mountEditable(l) : undefined}
+                contentEditable={editing || undefined}
                 suppressContentEditableWarning
                 spellCheck={false}
-                onInput={onEditableInput}
-                onBlur={commitEdit}
-                onKeyDown={onEditableKeyDown}
-                onPointerDown={(e) => e.stopPropagation()}
-                style={{ outline: 'none', cursor: 'text', minWidth: '1ch', whiteSpace: 'pre-wrap' }}
+                onInput={editing ? onEditableInput : undefined}
+                onBlur={editing ? commitEdit : undefined}
+                onKeyDown={editing ? onEditableKeyDown : undefined}
+                onPointerDown={editing ? (e) => e.stopPropagation() : undefined}
+                style={{
+                  display: 'inline-block',
+                  width: '100%',
+                  textAlign: s.align || 'left',
+                  whiteSpace: 'pre-wrap',
+                  ...(editing ? { outline: 'none', cursor: 'text' } : null),
+                }}
               >
                 {l.text}
               </span>
-            ) : l.text}
+            )}
           </span>
         )}
       </div>
@@ -1213,10 +1333,12 @@ export default function Stage({
     nodes.flatMap((n) => {
       if (n.hidden) return [];
       if (isGroup(n)) {
-        const hasMask = n.children.some((c) => !isGroup(c) && (c as Layer).isMask);
+        const hasMask = n.children.some((c) => isLeafLayer(c) && c.isMask);
         if (n.clip || hasMask) return [renderClippedGroup(n, groupOpacity)];
         return renderNodes(n.children, groupOpacity * (n.style?.opacity ?? 1));
       }
+      // Native ComponentLayers have no Stage leaf renderer yet — skip (don't crash reading style).
+      if (isComponent(n)) return [];
       return [renderLeaf(n, groupOpacity)];
     });
 
@@ -1256,7 +1378,7 @@ export default function Stage({
         <div className={styles.clip}>
           {renderNodes(doc.layers, 1)}
 
-          {showCursor ? <AgentCursorOverlay exiting={cursorExiting} /> : null}
+          {showCursor ? <AgentCursorOverlay exiting={cursorExiting} target={cursorTarget} /> : null}
 
           {underlay && underlay.mode === 'over' ? (
             <img
@@ -1294,7 +1416,7 @@ export default function Stage({
         {/* selection chrome + inline editor live OUTSIDE the clip so handles never get cut off */}
         {selectedNodes.map((n, i) => {
           const primary = i === selectedNodes.length - 1 && selectedNodes.length === 1;
-          const autoH = !isGroup(n) && !!n.autoH;
+          const autoH = isLeafLayer(n) && !!n.autoH;
           return (
             <div
               key={`sel-${n.id}`}

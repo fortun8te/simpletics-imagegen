@@ -7,6 +7,7 @@ import { useEvents } from './useEvents';
 import { refreshState } from './refresh';
 import { isAppActive, pollIntervalMs } from './lib/activity';
 import AppShell from './components/AppShell';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function syncIdleFlags() {
   try {
@@ -27,18 +28,38 @@ export default function App() {
   const setSettings = useStore((s) => s.setSettings);
 
   useEffect(() => {
-    api.getConfig().then((cfg) => {
-      setConfig(cfg);
-      const brands = cfg.brands || [];
-      const wantBrand = brands.find((b) => b.id === brand) || brands.find((b) => b.id === DEFAULT_BRAND) || brands[0];
-      if (!wantBrand) return;
-      const batches = wantBrand.batches || [];
-      const wantBatch =
-        (wantBrand.id === brand && batches.find((bt) => bt.code === batch)) ||
-        batches.find((bt) => bt.code === DEFAULT_BATCH) ||
-        batches[0];
-      select(wantBrand.id, wantBatch ? wantBatch.code : '');
-    });
+    // Bootstrap the workspace list. api.getConfig() swallows any network/500 error into an empty
+    // { brands: [] } (e.g. a transient parse error while config.json is being written, or a
+    // slow cold-start), which would otherwise leave the sidebar permanently workspace-less for
+    // the whole session — the reported "workspaces are not loaded in". Retry with backoff until
+    // brands actually arrive so the app self-heals instead of getting stuck empty.
+    let alive = true;
+    let attempt = 0;
+    const load = () => {
+      api.getConfig().then((cfg) => {
+        if (!alive) return;
+        setConfig(cfg);
+        const brands = cfg.brands || [];
+        if (brands.length === 0) {
+          // Nothing came back — retry (capped backoff) rather than sitting empty forever.
+          if (attempt < 8) {
+            attempt += 1;
+            window.setTimeout(() => { if (alive) load(); }, Math.min(500 * attempt, 4000));
+          }
+          return;
+        }
+        const wantBrand = brands.find((b) => b.id === brand) || brands.find((b) => b.id === DEFAULT_BRAND) || brands[0];
+        if (!wantBrand) return;
+        const batches = wantBrand.batches || [];
+        const wantBatch =
+          (wantBrand.id === brand && batches.find((bt) => bt.code === batch)) ||
+          batches.find((bt) => bt.code === DEFAULT_BATCH) ||
+          batches[0];
+        select(wantBrand.id, wantBatch ? wantBatch.code : '');
+      });
+    };
+    load();
+    return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setConfig, select]);
 
@@ -113,5 +134,13 @@ export default function App() {
     return () => { alive = false; if (timer) window.clearTimeout(timer); };
   }, [setUsage, setBlockers]);
 
-  return <AppShell />;
+  // Second, inner boundary: if AppShell's own subtree throws (e.g. a Design-mode canvas render
+  // crash deep inside BatchView/DesignView/Editor), this catches it independently of the outer
+  // main.tsx boundary — a render error here still shows the compact panel instead of a blank
+  // screen, without necessarily masking issues caught earlier in App's own hooks.
+  return (
+    <ErrorBoundary label="app shell">
+      <AppShell />
+    </ErrorBoundary>
+  );
 }

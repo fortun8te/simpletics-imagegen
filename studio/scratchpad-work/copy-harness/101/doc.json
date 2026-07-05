@@ -1,0 +1,410 @@
+{
+  "id": "harness_101_f61af402",
+  "name": "copy-harness harness_101_f61af402",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base-mr8arjd6-39",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#FFFFFF"
+      }
+    },
+    {
+      "id": "card-mr8arjd6-2r",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 540,
+        "y": 0,
+        "w": 540,
+        "h": 1080
+      },
+      "style": {
+        "background": "#2AA5B6"
+      }
+    },
+    {
+      "id": "watermark-mr8arjd6-2s",
+      "type": "text",
+      "role": "watermark",
+      "text": "craft cadence",
+      "box": {
+        "x": 10,
+        "y": 8,
+        "w": 230,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 26,
+        "fontWeight": 500,
+        "color": "#DDDDDD",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "headline-mr8arjd6-2t",
+      "type": "text",
+      "role": "headline",
+      "text": "NOT ALL TPU TUBES ARE BUILT THE SAME!",
+      "box": {
+        "x": 150,
+        "y": 38,
+        "w": 780,
+        "h": 171
+      },
+      "style": {
+        "fontSize": 73,
+        "fontWeight": 800,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "logo-mr8arjd6-2u",
+      "type": "image",
+      "role": "logo",
+      "box": {
+        "x": 113,
+        "y": 400,
+        "w": 173,
+        "h": 67
+      },
+      "style": {
+        "crop": {
+          "x": 0.105,
+          "y": 0.37,
+          "w": 0.16,
+          "h": 0.062
+        },
+        "radius": 8
+      },
+      "src": "/refasset?id=harness-101",
+      "name": "Cut-out"
+    },
+    {
+      "id": "product-mr8arjd6-2v",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 184,
+        "y": 227,
+        "w": 205,
+        "h": 448
+      },
+      "style": {},
+      "src": "/refasset?id=harness-101m040056ab",
+      "name": "Cut-out"
+    },
+    {
+      "id": "badge-mr8arjd6-2w",
+      "type": "badge",
+      "role": "badge",
+      "text": "BUY 3, GET 1 FREE!",
+      "box": {
+        "x": 310,
+        "y": 451,
+        "w": 82,
+        "h": 82
+      },
+      "style": {
+        "fontSize": 19,
+        "fontWeight": 700,
+        "color": "#befdfe",
+        "background": "#2AA5B6",
+        "align": "center",
+        "radius": 41,
+        "lineHeight": 1.15,
+        "uppercase": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "product-mr8arjd6-2x",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 734,
+        "y": 232,
+        "w": 162,
+        "h": 443
+      },
+      "style": {
+        "crop": {
+          "x": 0.68,
+          "y": 0.215,
+          "w": 0.15,
+          "h": 0.41
+        },
+        "radius": 8
+      },
+      "src": "/refasset?id=harness-101",
+      "name": "Cut-out"
+    },
+    {
+      "id": "decor-mr8arjd6-2y",
+      "type": "text",
+      "role": "decor",
+      "text": "?",
+      "box": {
+        "x": 729,
+        "y": 330,
+        "w": 108,
+        "h": 159
+      },
+      "style": {
+        "fontSize": 171,
+        "fontWeight": 800,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "subhead-mr8arjd6-2z",
+      "type": "text",
+      "role": "subhead",
+      "text": "CRAFT CADENCE TPU TUBE",
+      "box": {
+        "x": 76,
+        "y": 697,
+        "w": 389,
+        "h": 27
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "subhead-mr8arjd6-30",
+      "type": "text",
+      "role": "subhead",
+      "text": "TYPICAL TPU TUBE",
+      "box": {
+        "x": 680,
+        "y": 697,
+        "w": 260,
+        "h": 27
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-31",
+      "type": "text",
+      "role": "body",
+      "text": "✅ 50% thicker for better durability",
+      "box": {
+        "x": 65,
+        "y": 755,
+        "w": 410,
+        "h": 63
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-32",
+      "type": "text",
+      "role": "body",
+      "text": "✅ Aluminium valve built to last",
+      "box": {
+        "x": 65,
+        "y": 842,
+        "w": 410,
+        "h": 27
+      },
+      "style": {
+        "fontSize": 24,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-33",
+      "type": "text",
+      "role": "body",
+      "text": "✅ Compatible with electric mini pumps",
+      "box": {
+        "x": 65,
+        "y": 895,
+        "w": 410,
+        "h": 55
+      },
+      "style": {
+        "fontSize": 24,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-34",
+      "type": "text",
+      "role": "body",
+      "text": "✅ Removable valve core for repairs & sealant use",
+      "box": {
+        "x": 65,
+        "y": 979,
+        "w": 410,
+        "h": 55
+      },
+      "style": {
+        "fontSize": 20,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-35",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Ultra-thin walls prone to punctures",
+      "box": {
+        "x": 603,
+        "y": 761,
+        "w": 415,
+        "h": 55
+      },
+      "style": {
+        "fontSize": 24,
+        "fontWeight": 400,
+        "color": "#00303b",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-36",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Weak resin valves that can melt",
+      "box": {
+        "x": 603,
+        "y": 842,
+        "w": 415,
+        "h": 50
+      },
+      "style": {
+        "fontSize": 24,
+        "fontWeight": 400,
+        "color": "#013641",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-37",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Not safe for use with e-pumps",
+      "box": {
+        "x": 603,
+        "y": 919,
+        "w": 415,
+        "h": 26
+      },
+      "style": {
+        "fontSize": 23,
+        "fontWeight": 400,
+        "color": "#00313e",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8arjd6-38",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Fixed core. Can't repair slow leaks!",
+      "box": {
+        "x": 603,
+        "y": 980,
+        "w": 415,
+        "h": 43
+      },
+      "style": {
+        "fontSize": 21,
+        "fontWeight": 400,
+        "color": "#023945",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    }
+  ],
+  "skeletonId": "skel_mr8arjd5qwvt",
+  "updatedAt": 1783286547917
+}

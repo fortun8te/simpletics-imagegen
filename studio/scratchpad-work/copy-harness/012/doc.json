@@ -1,0 +1,349 @@
+{
+  "id": "harness_012_52dea7f2",
+  "name": "copy-harness harness_012_52dea7f2",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr8apkb4-x",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#E9F3EB"
+      }
+    },
+    {
+      "id": "headline-mr8apkb4-i",
+      "type": "text",
+      "role": "headline",
+      "text": "Poop More While\nOn a GLP-1",
+      "box": {
+        "x": 62,
+        "y": 350,
+        "w": 745,
+        "h": 206
+      },
+      "style": {
+        "fontSize": 74,
+        "fontWeight": 800,
+        "color": "#153A20",
+        "align": "left",
+        "lineHeight": 1.05,
+        "uppercase": false,
+        "italic": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "benefit-mr8apkb4-j",
+      "type": "badge",
+      "role": "benefit",
+      "text": "More Fiber Than\n2 cups of Broccoli",
+      "box": {
+        "x": 62,
+        "y": 645,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "icon-mr8apkb4-k",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 656,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.342,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr8apkb4-l",
+      "type": "badge",
+      "role": "benefit",
+      "text": "20+ Vitamins & Minerals",
+      "box": {
+        "x": 62,
+        "y": 765,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "icon-mr8apkb4-m",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 776,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.404,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr8apkb4-n",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Organic Fruits & Veggies",
+      "box": {
+        "x": 62,
+        "y": 885,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "icon-mr8apkb4-o",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 896,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012m194a92be",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr8apkb4-p",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Prebiotics",
+      "box": {
+        "x": 62,
+        "y": 1003,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "icon-mr8apkb4-q",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1014,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.528,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr8apkb4-r",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Adaptogens",
+      "box": {
+        "x": 62,
+        "y": 1121,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "icon-mr8apkb4-s",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1132,
+        "w": 74,
+        "h": 74
+      },
+      "style": {
+        "crop": {
+          "x": 0.07,
+          "y": 0.59,
+          "w": 0.069,
+          "h": 0.039
+        },
+        "radius": 9
+      },
+      "src": "/refasset?id=harness-012",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr8apkb4-t",
+      "type": "badge",
+      "role": "benefit",
+      "text": "0 Sugar",
+      "box": {
+        "x": 62,
+        "y": 1239,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "icon-mr8apkb4-u",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1250,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012mf695658e",
+      "name": "Cut-out"
+    },
+    {
+      "id": "product-mr8apkb4-v",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 532,
+        "y": 598,
+        "w": 505,
+        "h": 750
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012me5741da5",
+      "name": "Cut-out"
+    },
+    {
+      "id": "social-proof-mr8apkb4-w",
+      "type": "badge",
+      "role": "social-proof",
+      "text": "55,000+ ★★★★★ reviews",
+      "box": {
+        "x": 204,
+        "y": 1492,
+        "w": 672,
+        "h": 98
+      },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 700,
+        "color": "#1F7A33",
+        "background": "#FFD43B",
+        "align": "center",
+        "radius": 49,
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    }
+  ],
+  "skeletonId": "skel_mr8apkb4qwew",
+  "updatedAt": 1783286466116
+}

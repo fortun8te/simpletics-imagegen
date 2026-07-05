@@ -34,6 +34,7 @@
 
 import { groupBounds, walkNodes, findNode } from './scene-tree.mjs';
 import { estimateTextBoxH, estimateLineCount } from './type-scale.mjs';
+import { NATIVE_ICONS } from './native-icons.mjs';
 
 // ── tiny local id helper (mirrors sceneGraph.ts layerId — same shape, independent counter) ──────
 let seq = 0;
@@ -153,6 +154,19 @@ const sized = (doc) => {
 
 const text = (over) => ({ id: layerId(over.role || 'text'), type: 'text', autoH: true, ...over });
 const shape = (over) => ({ id: layerId(over.role || 'shape'), type: 'shape', ...over });
+
+/** Shrink a single-line-intent layer's fontSize (floor 55%) until its text fits the box width —
+ *  bottom-anchored pills/prices must never wrap past the canvas on long extracted copy. Mutates
+ *  and returns the layer. Uses the same glyph model as intrinsicTextW (defined below; hoisted). */
+const fitSingleLine = (l) => {
+  const s = l.style || {};
+  const floor = Math.max(12, Math.round((s.fontSize || 40) * 0.55));
+  let guard = 0;
+  while (intrinsicTextW(l) > (l.box?.w || 0) && (l.style.fontSize || 0) > floor && guard++ < 20) {
+    l.style.fontSize = Math.max(floor, Math.round(l.style.fontSize * 0.93));
+  }
+  return l;
+};
 
 // ── font sensibility ─────────────────────────────────────────────────────────────────────────────
 // Tiny opinionated map: pick the ONE font that matches the real-world artifact an element mimics
@@ -331,9 +345,12 @@ export const ICONS = {
   'chat-bubble': 'M0.10 0.18 Q0.10 0.10 0.18 0.10 L0.82 0.10 Q0.90 0.10 0.90 0.18 L0.90 0.62 Q0.90 0.70 0.82 0.70 L0.38 0.70 L0.18 0.88 L0.18 0.70 Q0.10 0.70 0.10 0.62 Z',
   'play': 'M0.24 0.12 L0.88 0.5 L0.24 0.88 Z',
   'plus': 'M0.42 0.10 L0.58 0.10 L0.58 0.42 L0.90 0.42 L0.90 0.58 L0.58 0.58 L0.58 0.90 L0.42 0.90 L0.42 0.58 L0.10 0.58 L0.10 0.42 L0.10 0.42 Z',
+  // EXACT platform-chrome + brand glyphs from lib/native-icons.mjs (verbatim X.com / Instagram
+  // DOM-extracted paths, Bootstrap Icons (MIT) fallbacks, simple-icons (CC0) brand marks) —
+  // keys like 'x-like-outline', 'ig-comment', 'ios-check', 'brand-tiktok'. Same 0..1-normalized
+  // d-string contract as the hand-drawn set above, so they render/recolor identically.
+  ...Object.fromEntries(Object.entries(NATIVE_ICONS).map(([k, v]) => [k, v.d])),
 };
-
-export const ICON_NAMES = Object.keys(ICONS);
 
 // ── the registry ─────────────────────────────────────────────────────────────────────────────────
 
@@ -555,16 +572,16 @@ export const ELEMENTS = [
     build(doc, p) {
       const { rx, ry, fs } = sized(doc);
       return [
-        text({
+        fitSingleLine(text({
           role: 'price', name: 'Old price', text: p.oldPrice,
           box: { x: rx(0.05), y: ry(0.78), w: rx(0.22), h: ry(0.06) },
           style: { fontSize: fs(0.04), fontWeight: 500, color: 'rgba(255,255,255,0.55)', align: 'left' },
-        }),
-        text({
+        })),
+        fitSingleLine(text({
           role: 'price', name: 'New price', text: p.newPrice,
           box: { x: rx(0.28), y: ry(0.765), w: rx(0.3), h: ry(0.075) },
           style: { fontSize: fs(0.055), fontWeight: 800, color: p.color, align: 'left', shadow: true },
-        }),
+        })),
       ];
     },
   },
@@ -861,7 +878,7 @@ export const ELEMENTS = [
     params: [T('text', 'SHOP NOW'), C('color', '#2c5cff', { brandColor: true }), C('textColor', '#ffffff')],
     build(doc, p) {
       const { rx, ry, fs } = sized(doc);
-      return [{
+      return [fitSingleLine({
         id: layerId('cta'), type: 'button', role: 'cta', name: 'CTA', autoH: true,
         text: p.text,
         box: { x: rx(0.05), y: ry(0.885), w: rx(0.35), h: ry(0.055) },
@@ -870,7 +887,7 @@ export const ELEMENTS = [
         // a filled button muddies the label rather than lifting the pill; a clean flat pill reads
         // more premium and matches every renderer identically.
         style: { fontSize: fs(0.034), fontWeight: 700, color: p.textColor, background: p.color, radius: fs(0.04), align: 'center', uppercase: true, letterSpacing: 0.5, padding: fs(0.018) },
-      }];
+      })];
     },
   },
   {
@@ -1305,8 +1322,9 @@ export const ELEMENTS = [
         text({
           role: 'caption', name: 'Stars', text: '★★★★★☆☆☆☆☆'.slice(5 - n, 10 - n), // n filled + (5−n) outline
           box: { x, y, w, h: ry(0.04) },
-          // #ffb400 = the warm amber real review widgets (Trustpilot/Yotpo/Google) use — reads gold,
-          // not the muddy mustard #f5b301 gave at ad scale; letterSpacing opens an even star track.
+          // #ffb400 = the warm amber the amber-gold-star review widgets (Yotpo/Google/Amazon) use —
+          // reads gold, not the muddy mustard #f5b301 gave at ad scale; letterSpacing opens an even
+          // star track. (Trustpilot is NOT amber — its green #00b67a is used by the trust-badge below.)
           style: { fontSize: fs(0.036), fontWeight: 700, color: '#ffb400', align: 'left', lineHeight: 1, letterSpacing: 2, shadow: true },
         }),
         text({
@@ -1678,6 +1696,78 @@ export function buildElement(id, doc, rawParams = undefined, kit = undefined) {
     element: stamp,
   };
   return [group];
+}
+
+// ── smart vector/raster decision ─────────────────────────────────────────────────────────────────
+// Determines whether a shape layer should remain as a vector (rect, ellipse, arrow, line, polyline,
+// simple path) or needs rasterization (complex paths, effects like blur/backdropBlur/vignette).
+
+/** Shape kinds that are ALWAYS rendered as vectors (no rasterization needed). */
+const VECTOR_SHAPE_KINDS = new Set(['rect', 'ellipse', 'line', 'arrow']);
+
+/**
+ * Decide whether a shape layer should be rasterized or kept as a vector.
+ * Simple shapes (rect, ellipse, line, arrow) are ALWAYS vectors. Complex paths, effects, and
+ * high-complexity geometries may need rasterization.
+ *
+ * @param {object} layer — a scene-graph layer with style
+ * @param {object} [opts] — optional context
+ * @returns {{ rasterize:boolean, reason:string }}
+ */
+export function shouldRasterize(layer, opts = {}) {
+  const s = layer?.style || {};
+  const kind = s.shapeKind || 'rect';
+
+  // Simple shapes: NEVER rasterize
+  if (VECTOR_SHAPE_KINDS.has(kind)) {
+    return { rasterize: false, reason: `simple shape: ${kind}` };
+  }
+
+  // Starburst: vector polygon (computed from spike count)
+  if (kind === 'starburst') {
+    const spikes = s.spikes || 12;
+    if (spikes <= 40) return { rasterize: false, reason: `starburst with ${spikes} spikes (vector polygon)` };
+    return { rasterize: true, reason: `starburst with ${spikes} spikes (>40, complex polygon)` };
+  }
+
+  // Freeform SVG path: check complexity by counting path commands
+  if (kind === 'path' && s.path) {
+    const cmdCount = (s.path.match(/[CcSsQqTtAa]/g) || []).length;
+    const pointCount = (s.path.match(/[MLml]/g) || []).length;
+    if (cmdCount > 30 || pointCount > 50) {
+      return { rasterize: true, reason: `complex path (${cmdCount} curves, ${pointCount} points)` };
+    }
+    return { rasterize: false, reason: `simple path (${cmdCount} curves, ${pointCount} points)` };
+  }
+
+  // Polyline: vector for reasonable point counts
+  if (kind === 'polyline' && Array.isArray(s.points)) {
+    const n = s.points.length / 2;
+    if (n <= 24) return { rasterize: false, reason: `polyline with ${n} points` };
+    return { rasterize: true, reason: `polyline with ${n} points (>24, complex)` };
+  }
+
+  // Effects that require rasterization
+  if (s.backdropBlur && s.backdropBlur > 0) {
+    return { rasterize: true, reason: `backdropBlur effect (${s.backdropBlur}px)` };
+  }
+  if (s.blur && s.blur > 0) {
+    return { rasterize: true, reason: `blur effect (${s.blur}px)` };
+  }
+  if (s.vignette) {
+    return { rasterize: true, reason: 'vignette effect' };
+  }
+
+  // Gradient: depends on complexity
+  if (s.gradient) {
+    if (typeof s.gradient === 'object' && Array.isArray(s.gradient.stops) && s.gradient.stops.length > 6) {
+      return { rasterize: true, reason: `gradient with ${s.gradient.stops.length} stops (>6)` };
+    }
+    return { rasterize: false, reason: 'simple gradient (vector CSS)' };
+  }
+
+  // Default: vector
+  return { rasterize: false, reason: 'no complex features detected' };
 }
 
 // ── agent catalog ────────────────────────────────────────────────────────────────────────────────

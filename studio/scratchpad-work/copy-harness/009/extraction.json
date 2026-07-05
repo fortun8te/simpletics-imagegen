@@ -1,0 +1,433 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "x-post",
+  "background": "#000000",
+  "backgroundIsPhoto": false,
+  "theme": "dark",
+  "layers": [
+    {
+      "id": "topbar-divider",
+      "type": "shape",
+      "role": "divider",
+      "box": {
+        "x": 0,
+        "y": 128,
+        "w": 1080,
+        "h": 2
+      },
+      "style": {
+        "background": "#2F3336"
+      }
+    },
+    {
+      "id": "back-arrow",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 35,
+        "y": 48,
+        "w": 50,
+        "h": 45
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.032,
+          "y": 0.044,
+          "w": 0.046,
+          "h": 0.042
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "topbar-title",
+      "type": "text",
+      "role": "meta",
+      "text": "Post",
+      "box": {
+        "x": 460,
+        "y": 51,
+        "w": 160,
+        "h": 45
+      },
+      "style": {
+        "fontSize": 49,
+        "fontWeight": 700,
+        "color": "#E7E9EA",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "menu-dots",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 972,
+        "y": 58,
+        "w": 60,
+        "h": 22
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.9,
+          "y": 0.054,
+          "w": 0.056,
+          "h": 0.02
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "avatar",
+      "type": "shape",
+      "role": "avatar",
+      "box": {
+        "x": 23,
+        "y": 130,
+        "w": 124,
+        "h": 124
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.021,
+          "y": 0.12,
+          "w": 0.115,
+          "h": 0.115
+        },
+        "shape": "avatar"
+      }
+    },
+    {
+      "id": "display-name",
+      "type": "text",
+      "role": "meta",
+      "text": "UPFRONT",
+      "box": {
+        "x": 182,
+        "y": 156,
+        "w": 210,
+        "h": 33
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 700,
+        "color": "#E7E9EA",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "verified-badge",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 344,
+        "y": 152,
+        "w": 40,
+        "h": 40
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.319,
+          "y": 0.141,
+          "w": 0.037,
+          "h": 0.037
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "handle",
+      "type": "text",
+      "role": "meta",
+      "text": "@UpfrontFood",
+      "box": {
+        "x": 182,
+        "y": 194,
+        "w": 240,
+        "h": 35
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#71767B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "follow-button",
+      "type": "button",
+      "role": "cta",
+      "text": "Volgend",
+      "box": {
+        "x": 833,
+        "y": 136,
+        "w": 202,
+        "h": 62
+      },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 700,
+        "color": "#0F1419",
+        "background": "#FFFFFF",
+        "align": "center",
+        "radius": 31,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "post-body",
+      "type": "text",
+      "role": "body",
+      "text": "LAATSTE SITE WIDE SALE VAN 2026 ⌛\n\nDe Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.\n\nDaarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.\n\nSchrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
+      "box": {
+        "x": 45,
+        "y": 318,
+        "w": 990,
+        "h": 465
+      },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 400,
+        "color": "#E7E9EA",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "timestamp",
+      "type": "text",
+      "role": "meta",
+      "text": "05:00 PM · 12-05-2026 · 121K weergaven",
+      "box": {
+        "x": 47,
+        "y": 926,
+        "w": 660,
+        "h": 35
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#a3a4a5",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "actions-divider",
+      "type": "shape",
+      "role": "divider",
+      "box": {
+        "x": 0,
+        "y": 986,
+        "w": 1080,
+        "h": 2
+      },
+      "style": {
+        "background": "#2F3336"
+      }
+    },
+    {
+      "id": "icon-reply",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 33,
+        "y": 1012,
+        "w": 48,
+        "h": 48
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.031,
+          "y": 0.937,
+          "w": 0.044,
+          "h": 0.044
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "count-reply",
+      "type": "text",
+      "role": "meta",
+      "text": "257",
+      "box": {
+        "x": 100,
+        "y": 1016,
+        "w": 90,
+        "h": 35
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#71767B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "icon-repost",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 268,
+        "y": 1016,
+        "w": 54,
+        "h": 42
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.248,
+          "y": 0.941,
+          "w": 0.05,
+          "h": 0.039
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "count-repost",
+      "type": "text",
+      "role": "meta",
+      "text": "66",
+      "box": {
+        "x": 348,
+        "y": 1016,
+        "w": 70,
+        "h": 35
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#71767B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "icon-like",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 516,
+        "y": 1012,
+        "w": 50,
+        "h": 46
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.478,
+          "y": 0.937,
+          "w": 0.046,
+          "h": 0.043
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "count-like",
+      "type": "text",
+      "role": "meta",
+      "text": "21K",
+      "box": {
+        "x": 584,
+        "y": 1016,
+        "w": 90,
+        "h": 35
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#71767B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "icon-bookmark",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 778,
+        "y": 1008,
+        "w": 44,
+        "h": 52
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.72,
+          "y": 0.933,
+          "w": 0.041,
+          "h": 0.048
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "count-bookmark",
+      "type": "text",
+      "role": "meta",
+      "text": "89",
+      "box": {
+        "x": 842,
+        "y": 1016,
+        "w": 70,
+        "h": 35
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#71767B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "icon-share",
+      "type": "shape",
+      "role": "icon",
+      "box": {
+        "x": 996,
+        "y": 1006,
+        "w": 48,
+        "h": 54
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.922,
+          "y": 0.931,
+          "w": 0.044,
+          "h": 0.05
+        },
+        "shape": "logo"
+      }
+    }
+  ],
+  "measuredBoxes": true
+}

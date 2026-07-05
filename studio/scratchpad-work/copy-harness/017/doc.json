@@ -1,0 +1,230 @@
+{
+  "id": "harness_017_8045e893",
+  "name": "copy-harness harness_017_8045e893",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6nqach-5g",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "group-mr6nqach-56",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 300,
+        "y": 230,
+        "w": 480,
+        "h": 167
+      },
+      "children": [
+        {
+          "id": "caption-mr6nqach-57",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "🤧",
+          "autoH": true,
+          "box": {
+            "x": 501,
+            "y": 230,
+            "w": 78,
+            "h": 52
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 43,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6nqach-58",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "WE GOT COPIED.",
+          "autoH": true,
+          "box": {
+            "x": 300,
+            "y": 343,
+            "w": 480,
+            "h": 68
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6nqach-59",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 470,
+        "w": 864,
+        "h": 874
+      },
+      "children": [
+        {
+          "id": "subhead-mr6nqach-5a",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "A brand just launched earplugs that look a lot like ours.\nSame shape. Similar colours. Lower price.",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 470,
+            "w": 778,
+            "h": 183
+          },
+          "style": {
+            "color": "#373737",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nqach-5b",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "We noticed. We're not going to pretend otherwise.",
+          "autoH": true,
+          "box": {
+            "x": 140,
+            "y": 643,
+            "w": 734,
+            "h": 72
+          },
+          "style": {
+            "color": "#373737",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nqach-5c",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "The part of Hears that matters can't be copied in a\nfactory run. The membrane inside cuts volume without\nclarity. It took two years to engineer. It's\npatented. It's the reason you wake up with clear ears\nafter a show instead of three days o",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 778,
+            "w": 734,
+            "h": 288
+          },
+          "style": {
+            "color": "#2d2d2d",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nqach-5d",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Festival season is here and someone just launched a\nknockoff. So we're making it impossible to choose\nwrong. Deals up to 35% off until Sunday.",
+          "autoH": true,
+          "box": {
+            "x": 135,
+            "y": 1037,
+            "w": 734,
+            "h": 180
+          },
+          "style": {
+            "color": "#282828",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6nqach-5e",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Try the real thing.",
+          "autoH": true,
+          "box": {
+            "x": 400,
+            "y": 1219,
+            "w": 281,
+            "h": 92
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nqach-5f",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Bob & Nick,\nHears",
+          "autoH": true,
+          "box": {
+            "x": 437,
+            "y": 1277,
+            "w": 205,
+            "h": 72
+          },
+          "style": {
+            "color": "#2c2c2c",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6nqachkqlc",
+  "updatedAt": 1783187387873
+}

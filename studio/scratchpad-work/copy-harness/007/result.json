@@ -1,0 +1,24 @@
+{
+  "id": "007",
+  "filename": "007_attached_46cfb484c9440472.webp",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 27576,
+    "assemble": 1,
+    "total": 37031
+  },
+  "archetype": "offer-hero",
+  "layerCountExtracted": 5,
+  "parsePath": "loose",
+  "background": "#e2d5ce",
+  "cutoutCandidates": 1,
+  "layersApplied": 3,
+  "leavesInResult": 6,
+  "verify": {
+    "ready": true
+  },
+  "pixelScore": 97,
+  "pixelError": null,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/007/side-by-side.png"
+}

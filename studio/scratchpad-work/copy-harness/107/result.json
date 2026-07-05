@@ -1,0 +1,46 @@
+{
+  "id": "107",
+  "filename": "107_attached_3fba9647f2f90bf8.png",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 0,
+    "assemble": 1269,
+    "total": 8442
+  },
+  "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "data-seg-2 fill: #131313 → #f7f3f2 (interior median of 9 patches, Δ0.88)",
+    "data-seg-3 fill: #131313 → #f8c084 (interior median of 9 patches, Δ0.70)",
+    "data-seg-4-arrow fill: #131313 → #f2eae4 (interior median of 9 patches, Δ0.85)",
+    "hydration-badge color: #FFFFFF → #fff0c2 (glyph sample, contrast 0.29)",
+    "stat-number fontSize: 155 → 200 (1 ink line, block 144px)",
+    "stat-number box: y338 h165 → y322 h188 (tight ink rows + 22px pad)",
+    "headline fontSize: 62 → 74 (2 ink lines, block 133px)",
+    "headline box: y523 h165 → y514 h173 (tight ink rows + 20px pad)",
+    "source-line fontSize: 25 → 19 (1 ink line, block 14px)",
+    "source-line box: y696 h34 → y696 h22 (tight ink rows + 4px pad)",
+    "week-label-1 box: y1352 h32 → y1351 h25 (tight ink rows + 4px pad)",
+    "week-label-2 box: y1352 h32 → y1351 h25 (tight ink rows + 4px pad)",
+    "week-label-3 box: y1352 h32 → y1351 h25 (tight ink rows + 4px pad)",
+    "week-label-4 box: y1352 h32 → y1351 h25 (tight ink rows + 4px pad)",
+    "week-label-5 box: y1352 h32 → y1351 h25 (tight ink rows + 4px pad)",
+    "bottom-caption box: y1483 h145 → y1513 h79 (tight ink rows + 9px pad)",
+    "week-label-3: center-x snapped x470 → x475 (canvas center)"
+  ],
+  "archetype": "data-stat",
+  "layerCountExtracted": 28,
+  "parsePath": "loose",
+  "background": "#F2F1EF",
+  "cutoutCandidates": 2,
+  "layersApplied": 28,
+  "leavesInResult": 29,
+  "verify": {
+    "ready": false
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 94.6,
+  "pixelScore": 94.6,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/107/side-by-side.png"
+}

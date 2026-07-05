@@ -1,0 +1,47 @@
+{
+  "id": "009",
+  "filename": "009_attached_885c19be02ccf229.png",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 0,
+    "assemble": 136,
+    "total": 8451
+  },
+  "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "timestamp color: #71767B → #a3a4a5 (glyph sample, contrast 0.50)",
+    "topbar-title fontSize: 38 → 49 (1 ink line, block 35px)",
+    "topbar-title box: y48 h52 → y51 h45 (tight ink rows + 5px pad)",
+    "display-name box: y150 h44 → y156 h33 (tight ink rows + 4px pad)",
+    "handle fontSize: 32 → 38 (1 ink line, block 27px)",
+    "handle box: y194 h42 → y194 h35 (tight ink rows + 4px pad)",
+    "post-body fontSize: 38 → 44 (7 ink lines, block 432px)",
+    "timestamp fontSize: 34 → 38 (1 ink line, block 27px)",
+    "timestamp box: y922 h46 → y926 h35 (tight ink rows + 4px pad)",
+    "count-reply fontSize: 34 → 38 (1 ink line, block 27px)",
+    "count-reply box: y1015 h44 → y1016 h35 (tight ink rows + 4px pad)",
+    "count-repost fontSize: 34 → 38 (1 ink line, block 27px)",
+    "count-repost box: y1015 h44 → y1016 h35 (tight ink rows + 4px pad)",
+    "count-like fontSize: 34 → 38 (1 ink line, block 27px)",
+    "count-like box: y1015 h44 → y1016 h35 (tight ink rows + 4px pad)",
+    "count-bookmark fontSize: 34 → 38 (1 ink line, block 27px)",
+    "count-bookmark box: y1015 h44 → y1016 h35 (tight ink rows + 4px pad)",
+    "post-body: center-x snapped x47 → x45 (canvas center)"
+  ],
+  "archetype": "x-post",
+  "layerCountExtracted": 21,
+  "parsePath": "loose",
+  "background": "#000000",
+  "cutoutCandidates": 9,
+  "layersApplied": 21,
+  "leavesInResult": 22,
+  "verify": {
+    "ready": true
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 93.6,
+  "pixelScore": 93.6,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/009/side-by-side.png"
+}

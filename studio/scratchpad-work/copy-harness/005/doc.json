@@ -1,0 +1,307 @@
+{
+  "id": "harness_005_ffeb3d5f",
+  "name": "copy-harness harness_005_ffeb3d5f",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6nj9nr-20",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#f2f2f2"
+      }
+    },
+    {
+      "id": "group-mr6nj9nq-1n",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 1,
+        "y": 2,
+        "w": 971,
+        "h": 612
+      },
+      "children": [
+        {
+          "id": "caption-mr6nj9nq-1o",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "CHOCOLATE PROTEIN BAR",
+          "box": {
+            "x": 5,
+            "y": 40,
+            "w": 40,
+            "h": 32
+          },
+          "style": {
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "headline-mr6nj9nr-1p",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "CHOCO\nEIWITREEP",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 2,
+            "w": 40,
+            "h": 135
+          },
+          "style": {
+            "color": "#d0d0d0",
+            "fontSize": 56,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6nj9nr-1q",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "13 G EIWIT\nECHT VOEDZAAM\nGEEN ZOETSTOFFEN",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 80,
+            "w": 40,
+            "h": 320
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nj9nr-1r",
+          "type": "badge",
+          "role": "caption",
+          "name": "caption",
+          "text": "PINDAKAAS",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 118,
+            "w": 40,
+            "h": 36
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nj9nr-1s",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "ingrediënten\ndadels, pinda's (27%), ei-wit\n(15%), melkchocolade (cacaoboter,\nmelkpoeder, suiker, cacaomassa,\nvanille-extract), emulgator: zonnebloemlecithine\n(15%), cacao nibs, zeezout",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 156,
+            "w": 40,
+            "h": 648
+          },
+          "style": {
+            "color": "#666666",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nj9nr-1t",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "voedingswaarden / 100g / 50g\nenergie 2017 kJ / 1009 kJ\n483 kcal / 242 kcal\nvetten 27g / 13g\n- verz. vetten 9,3g / 4,7g\nkoolhydraten 34g / 17g\n- suikers 26g / 13g\nvezels 4,4g / 2,2g\neiwitten 25g / 13g\nzout 0,59g / 0,29g",
+          "autoH": true,
+          "box": {
+            "x": 5,
+            "y": 194,
+            "w": 40,
+            "h": 1692
+          },
+          "style": {
+            "color": "#666666",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "price-mr6nj9nr-1u",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "30% KORTING",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 232,
+            "w": 40,
+            "h": 96
+          },
+          "style": {
+            "color": "#d4531b",
+            "fontSize": 40,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6nj9nr-1v",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "UPFRONT",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 270,
+            "w": 40,
+            "h": 68
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 56,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6nj9nr-1w",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "CHOCO",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 173,
+            "w": 864,
+            "h": 211
+          },
+          "style": {
+            "color": "#c5c5c5",
+            "fontSize": 124,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6nj9nr-1x",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "EIWITREEP",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 403,
+            "w": 864,
+            "h": 211
+          },
+          "style": {
+            "color": "#c5c5c5",
+            "fontSize": 124,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "rect-mr6nj9nr-1y",
+      "type": "image",
+      "role": "rect",
+      "name": "Cut-out · UPFRONT protein bar",
+      "box": {
+        "x": 410,
+        "y": 557,
+        "w": 410,
+        "h": 883
+      },
+      "style": {
+        "crop": {
+          "x": 0.38,
+          "y": 0.29,
+          "w": 0.38,
+          "h": 0.46
+        },
+        "radius": 14
+      },
+      "src": "/refasset?id=harness-005"
+    },
+    {
+      "id": "product-mr6nj9nr-1z",
+      "type": "shape",
+      "role": "product",
+      "name": "Product · chocolate protein bar",
+      "box": {
+        "x": 5,
+        "y": 6,
+        "w": 40,
+        "h": 30
+      },
+      "style": {
+        "background": "#f0f0f059",
+        "radius": 22,
+        "shapeKind": "path",
+        "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
+        "stroke": {
+          "color": "#f0f0f0",
+          "width": 2
+        }
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6nj9nq46k8",
+  "updatedAt": 1783187060393
+}

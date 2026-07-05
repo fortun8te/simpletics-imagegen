@@ -12,7 +12,7 @@
 // for Layer.isMask geometry masks AND GroupNode.clip frames, style="mix-blend-mode" for
 // style.blend, and <feGaussianBlur> filters for style.blur (layer blur).
 
-import { isGroup, resolveGradient, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
+import { cropImageCss, isComponent, isGroup, resolveCrop, resolveGradient, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
 import { fontFaceCss } from '../../lib/fontFaces';
 import { arrowGeometry, gradientSvgDef, starburstPoints, vignetteSpec, vignetteSvgDef } from './fills';
 import { pillPadding, textLayout, type Measurer } from './textMetrics';
@@ -97,6 +97,35 @@ async function pixelateDataUrl(dataUrl: string, dw: number, dh: number, blockSiz
   bctx.imageSmoothingEnabled = false;
   bctx.drawImage(small, 0, 0, w, h);
   return big.toDataURL('image/png');
+}
+
+/** Crop a data-URL image down to a SUB-RECT (fractions 0..1 of the source) and re-encode as a
+ *  PNG data URL sized dw×dh (the layer box). PARITY: this bakes the crop into the embedded pixels
+ *  so the <image> below is a plain box-filling image — the same result raster.ts gets from
+ *  drawImage(src-rect→dest-box) and Stage/designstore get from an oversized offset <img>. Keeping
+ *  it a real cropped bitmap (rather than an oversized <image> + viewBox) means the SVG is portable
+ *  and pastes into Figma as a correct standalone cut-out. Preserves alpha (PNG). */
+async function cropDataUrl(
+  dataUrl: string, crop: { x: number; y: number; w: number; h: number }, dw: number, dh: number,
+): Promise<string> {
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const im = new Image();
+    im.onload = () => resolve(im);
+    im.onerror = () => reject(new Error('crop: image decode failed'));
+    im.src = dataUrl;
+  });
+  const w = Math.max(1, Math.round(dw));
+  const h = Math.max(1, Math.round(dh));
+  const sx = crop.x * img.naturalWidth;
+  const sy = crop.y * img.naturalHeight;
+  const sw = Math.max(1, crop.w * img.naturalWidth);
+  const sh = Math.max(1, crop.h * img.naturalHeight);
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+  return canvas.toDataURL('image/png');
 }
 
 /** Measurement context configured like raster.ts drawTextLayer. */
@@ -317,10 +346,21 @@ async function imageSvg(l: Layer, defs: string[]): Promise<string> {
   const { x, y, w, h } = l.box;
   const s = l.style || {};
   let href = await fetchAsDataUrl(l.src!);
+  // style.crop (cut-out): bake the SOURCE sub-rect into a box-sized bitmap FIRST — see cropDataUrl.
+  // The <image> below then just embeds an already-cropped, box-filling image (preserveAspectRatio
+  // becomes a no-op), and the clipPath rounds/ellipses it. PARITY: same source rect raster.ts
+  // draws and Stage/designstore offset-crop to; keeping it a real bitmap makes the SVG portable
+  // and the Figma paste a correct standalone cut-out.
+  const crop = resolveCrop(s.crop);
+  if (crop) {
+    try { href = await cropDataUrl(href, crop, w, h); }
+    catch { /* fall back to the un-cropped source rather than failing the whole export */ }
+  }
   // style.pixelate: pre-rasterize the mosaic into the embedded data URL — see pixelateDataUrl
   // above. Pixelating at the FULL box size (w x h) keeps the block size meaningful relative to
   // the rendered output regardless of the source image's native resolution, and the <image>
-  // preserveAspectRatio below still covers/contains it exactly like the sharp path did.
+  // preserveAspectRatio below still covers/contains it exactly like the sharp path did. When a
+  // crop was baked above, the href is already box-sized, so this mosaics the cropped region.
   const pixelate = pixelateOf(s);
   if (pixelate) {
     try { href = await pixelateDataUrl(href, w, h, pixelate); }
@@ -341,8 +381,9 @@ async function imageSvg(l: Layer, defs: string[]): Promise<string> {
     clipGeom = `<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`;
   }
   defs.push(`<clipPath id="${esc(clipId)}">${clipGeom}</clipPath>`);
-  // slice = cover, meet = contain — both centered, matching raster.ts drawImageLayer.
-  const par = l.fit === 'contain' ? 'xMidYMid meet' : 'xMidYMid slice';
+  // slice = cover, meet = contain — both centered, matching raster.ts drawImageLayer. A cropped
+  // image was baked to box size above, so it fills exactly — force slice regardless of `fit`.
+  const par = crop ? 'xMidYMid slice' : l.fit === 'contain' ? 'xMidYMid meet' : 'xMidYMid slice';
   return (
     `<image x="${x}" y="${y}" width="${w}" height="${h}" href="${esc(href)}"` +
     ` preserveAspectRatio="${par}" clip-path="url(#${clipId})"/>`
@@ -391,6 +432,8 @@ async function nodesSvg(nodes: SceneNode[], defs: string[]): Promise<string[]> {
   let openClips = 0;
   for (const n of nodes) {
     if (n.hidden) continue;
+    // Native ComponentLayers own their HTML/CSS — no SVG leaf renderer for them yet; skip.
+    if (isComponent(n)) continue;
     if (!isGroup(n) && n.isMask === true) {
       const clipId = `mask-${n.id}`;
       defs.push(`<clipPath id="${esc(clipId)}">${maskShapeSvg(n)}</clipPath>`);

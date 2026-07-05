@@ -1,0 +1,219 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr85r5mo-0",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · green juice window",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "background": "#4a6b5a59",
+        "radius": 22,
+        "stroke": {
+          "color": "#4a6b5a",
+          "width": 9
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1,
+          "h": 1
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "grp-mr85r5tv-0",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 162,
+        "y": 768,
+        "w": 756,
+        "h": 384
+      },
+      "children": [
+        {
+          "id": "ext-mr85r5mo-1",
+          "type": "shape",
+          "role": "scrim",
+          "name": "scrim",
+          "box": {
+            "x": 162,
+            "y": 768,
+            "w": 756,
+            "h": 384
+          },
+          "style": {
+            "color": "rgba(0,0,0,0.5)",
+            "background": "rgba(0,0,0,0.5)",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "radius": 54,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 1,
+            "padding": 16,
+            "shapeKind": "rect"
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.15,
+              "y": 0.4,
+              "w": 0.7,
+              "h": 0.2
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr85r5tp-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+          "autoH": true,
+          "box": {
+            "x": 81.25,
+            "y": 777.375,
+            "w": 917.5,
+            "h": 96.25
+          },
+          "style": {
+            "color": "#d3c5b5",
+            "fontSize": 44,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr85r5tr-3",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "72,6 kg",
+          "autoH": true,
+          "box": {
+            "x": 194,
+            "y": 883,
+            "w": 216,
+            "h": 77
+          },
+          "style": {
+            "color": "#b6a8a5",
+            "background": "#000000",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 54,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr85r5ts-4",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "68,2kg",
+          "autoH": true,
+          "box": {
+            "x": 443,
+            "y": 883,
+            "w": 216,
+            "h": 77
+          },
+          "style": {
+            "color": "#be7a4f",
+            "background": "#000000",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 54,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr85r5tt-5",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "66,1kg",
+          "autoH": true,
+          "box": {
+            "x": 702,
+            "y": 883,
+            "w": 216,
+            "h": 77
+          },
+          "style": {
+            "color": "#ce717b",
+            "background": "#f54291",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 54,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "story-native",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#56533c",
+      "share": 0.25
+    },
+    {
+      "hex": "#d8d3c3",
+      "share": 0.25
+    },
+    {
+      "hex": "#1b160e",
+      "share": 0.25
+    },
+    {
+      "hex": "#9c7757",
+      "share": 0.125
+    },
+    {
+      "hex": "#baa37f",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": {
+    "matched": true,
+    "score": 85,
+    "corrections": [],
+    "applied": 1,
+    "iterations": 1,
+    "totalCorrections": 4
+  },
+  "error": null,
+  "passes": 2
+}

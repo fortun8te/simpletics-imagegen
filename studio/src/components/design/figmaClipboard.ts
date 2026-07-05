@@ -20,10 +20,12 @@
 import {
   isComponent,
   isGroup,
+  resolveCrop,
   resolveGradient,
   type DesignDoc,
   type GradientFill,
   type GroupNode,
+  type ImageCrop,
   type Layer,
   type SceneNode,
 } from '../../lib/sceneGraph';
@@ -76,11 +78,22 @@ function blendOf(s: Layer['style']): string | undefined {
 
 const ELEMENT_NAMES = new Map(ELEMENTS.map((e) => [e.id, e.name]));
 
-/** Display name for a node: element instances are named after their element def. */
+/** Title-case a role/type token ("headline" → "Headline", "x-post" → "X Post") so a fallback
+ *  name never pastes into Figma's layers panel as a bare lowercase slug. */
+function humanizeName(raw: string): string {
+  const cleaned = raw.replace(/[-_]+/g, ' ').trim();
+  if (!cleaned) return 'Layer';
+  return cleaned.replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+/** Display name for a node: element instances are named after their element def; otherwise the
+ *  layer's own name wins, and only then a humanized role/type fallback (never a generic "Frame"/
+ *  "Group" slug or an empty string — Figma would autoRename or show a meaningless default). */
 function nodeName(n: SceneNode, fallback: string): string {
   const elId = (n as { element?: { id?: string } }).element?.id;
   const elName = elId ? ELEMENT_NAMES.get(elId) : undefined;
-  return elName || n.name || fallback;
+  const own = (n.name || '').trim();
+  return elName || own || humanizeName(fallback);
 }
 
 export type FigmaCopyResult = { method: 'figma-native' | 'svg'; ok: boolean; detail: string };
@@ -89,6 +102,10 @@ export type FigmaCopyResult = { method: 'figma-native' | 'svg'; ok: boolean; det
  *  emitSceneNode); figmaImport matches BOTH to reassemble the path on paste-back. */
 export const FIGMA_PATH_PLUGIN_ID = 'neuegen.studio';
 export const FIGMA_PATH_PLUGIN_KEY = 'path';
+/** pluginData key carrying a text layer's autoH flag. We no longer encode autoH as
+ *  textAutoResize:HEIGHT (that mode fights our fixed-box vertical centering — see emitText), so
+ *  the flag rides losslessly in pluginData and figmaImport restores Layer.autoH from it. */
+export const FIGMA_AUTOH_PLUGIN_KEY = 'autoH';
 
 // ── color parsing (pure — no canvas, so the message builder runs in node too) ────────────────────
 
@@ -369,6 +386,9 @@ interface EmitCtx {
   nodes: FigNodeChange[];
   blobs: Array<{ bytes: Uint8Array }>;
   images: Map<string, FigImageInput>;
+  /** Image-layer ids whose bytes are a baked cut-out (crop + shape-as-alpha) — emitted as a plain
+   *  rect + FILL because the alpha already carries the shape (see the image branch below). */
+  cutoutBaked: Set<string>;
   guid(): FigGUID;
   /** Per-parent child index counters, keyed by parent localID. */
   counters: Map<number, number>;
@@ -497,9 +517,36 @@ function emitPolyline(
 ): void {
   const s = (l.style || {}) as FxStyle;
   const pts = s.points || [];
-  const abs: Array<[number, number]> = [];
+  const raw: Array<[number, number]> = [];
   for (let i = 0; i + 1 < pts.length; i += 2) {
-    abs.push([l.box.x + pts[i] * l.box.w, l.box.y + pts[i + 1] * l.box.h]);
+    raw.push([l.box.x + pts[i] * l.box.w, l.box.y + pts[i + 1] * l.box.h]);
+  }
+  // Layer hygiene (research §3/#5): every point pair becomes a LINE node, so (a) drop duplicate
+  // and collinear-continuation midpoints (they add nodes without changing geometry — tolerance
+  // ~0.5px of perpendicular deviation, forward-direction only so genuine back-and-forth strokes
+  // survive), then (b) cap at MAX_POLYLINE_POINTS by uniform decimation (endpoints kept) so one
+  // agent-drawn squiggle can't paste hundreds of LINE nodes into Figma.
+  const abs: Array<[number, number]> = [];
+  for (const p of raw) {
+    const n = abs.length;
+    if (n >= 1 && abs[n - 1][0] === p[0] && abs[n - 1][1] === p[1]) continue; // exact duplicate
+    if (n >= 2) {
+      const [ax, ay] = abs[n - 2];
+      const [bx, by] = abs[n - 1];
+      const cross = (bx - ax) * (p[1] - ay) - (by - ay) * (p[0] - ax);
+      const dot = (bx - ax) * (p[0] - bx) + (by - ay) * (p[1] - by);
+      if (Math.abs(cross) < 0.5 && dot >= 0) { abs[n - 1] = p; continue; } // extend prior segment
+    }
+    abs.push(p);
+  }
+  const MAX_POLYLINE_POINTS = 64;
+  if (abs.length > MAX_POLYLINE_POINTS) {
+    const kept: Array<[number, number]> = [];
+    for (let i = 0; i < MAX_POLYLINE_POINTS; i++) {
+      kept.push(abs[Math.round((i * (abs.length - 1)) / (MAX_POLYLINE_POINTS - 1))]);
+    }
+    abs.length = 0;
+    abs.push(...kept);
   }
   const frameGuid = ctx.guid();
   const blend = blendOf(s);
@@ -612,19 +659,56 @@ function emitText(
     fontName: { family: resolveFigmaFamily(s.fontFamily), style: weightToStyle(weight), postscript: '' },
     textDecoration: s.strikethrough ? 'STRIKETHROUGH' : 'NONE',
     textAlignHorizontal: s.align === 'center' ? 'CENTER' : s.align === 'right' ? 'RIGHT' : 'LEFT',
-    textAlignVertical: 'CENTER', // raster.ts centers the wrapped block in its box
-    // autoH text grows with content in the editor → HEIGHT auto-resize in Figma.
-    textAutoResize: l.autoH ? 'HEIGHT' : 'NONE',
+    // ── VERTICAL GEOMETRY — must agree with textAutoResize or text jumps on paste ─────────────
+    // raster.ts centers the wrapped block in a FIXED box ((h-blockH)/2). That centering is only
+    // meaningful when the box height is fixed. With textAutoResize:HEIGHT, Figma DISCARDS our
+    // size.y and hugs the text (box height = content height), so a 'CENTER' vertical align has no
+    // slack to center in — the run collapses to a top-anchored block at a DIFFERENT y than our
+    // centered design. That HEIGHT+CENTER contradiction is the "massive text issue": every
+    // auto-height text node lands at the wrong vertical position (and, when a substituted font
+    // re-wraps to more/fewer lines, the auto-growing box shoves neighbours). Fix: keep the box
+    // FIXED (textAutoResize:NONE, size = our exact design box) for EVERY text node so Figma
+    // reproduces our box verbatim and our vertical CENTER is honoured. A substituted font that
+    // measures slightly taller then clips/centres symmetrically inside the box — same as raster.ts
+    // — instead of reflowing the whole layout. autoH is preserved for copy-back via pluginData
+    // (see below); import restores it without needing the lossy HEIGHT signal.
+    textAlignVertical: 'CENTER',
+    textAutoResize: 'NONE',
     lineHeight: { value: (s.lineHeight || 1.2) * 100, units: 'PERCENT' },
     letterSpacing: { value: s.letterSpacing || 0, units: 'PIXELS' },
     textCase: s.uppercase ? 'UPPER' : 'ORIGINAL',
     textData: { characters: String(text || '') },
     fillPaints: [solidPaint(s.color || '#ffffff')],
-    autoRename: true,
+    // ── OVERRIDE TAGS — the actual "text renders incorrectly" root cause ──────────────────────
+    // Every overridable text property in Figma's clipboard NodeChange is paired with a
+    // `<field>Tag: uint`. The tag is Figma's field-override marker: a TEXT node's own
+    // fontSize/fontName/lineHeight/… are applied ONLY when their Tag is present. With NO tags
+    // (what we used to emit), Figma treats each property as unset and inherits the empty text
+    // style's defaults — so a pasted headline collapsed to Figma's default face/size/spacing
+    // regardless of the values we wrote (schema-verified: `*Tag` fields exist for exactly these
+    // properties; a value with no tag decodes fine but is ignored by the editor). Set every tag
+    // so the styled run renders with the fontSize/family/weight/lineHeight/spacing/fill/case we
+    // intended. `1` is a valid non-zero override marker (round-trips through the kiwi schema).
+    fontSizeTag: 1,
+    fontNameTag: 1,
+    textDecorationTag: 1,
+    textAlignHorizontalTag: 1,
+    textAlignVerticalTag: 1,
+    textAutoResizeTag: 1,
+    lineHeightTag: 1,
+    textCaseTag: 1,
+    textDataTag: 1,
+    fillPaintsTag: 1,
+    // Keep the name WE assigned (element display name / content). autoRename lets Figma rewrite
+    // a TEXT node's name from its characters on paste — which clobbers meaningful element names
+    // ("CTA button" → "SHOP NOW") and is part of the "frames aren't named properly" report.
+    autoRename: false,
     handleMirroring: 'NONE',
     proportionsConstrained: false,
     ...(effects ? { effects } : {}),
     ...(blendOf(s) ? { blendMode: blendOf(s) } : {}),
+    // Preserve autoH for copy-back (we no longer signal it via textAutoResize — see above).
+    ...(l.autoH ? { pluginData: [{ pluginID: FIGMA_PATH_PLUGIN_ID, key: FIGMA_AUTOH_PLUGIN_KEY, value: '1' }] } : {}),
   }, l.figma));
 }
 
@@ -736,16 +820,37 @@ function emitSceneNode(
 
   if (l.type === 'image') {
     const img = ctx.images.get(l.id);
-    if (!img) return; // image failed to load — skip rather than emit a broken fill
+    if (!img) {
+      // Image bytes missing (fetch 404 / decode failure / crop bake threw). Emitting nothing here
+      // makes the layer VANISH from the paste with no trace — one of the "some layers just don't
+      // show up in Figma" reports. Emit a labeled, box-sized placeholder rectangle instead (same
+      // discipline as the component / VECTOR fallbacks): the layer and its position stay visible so
+      // the user sees WHAT failed and can re-drop the image, rather than silently losing it.
+      ctx.nodes.push(mergeFigmaPassthrough({
+        ...rectNode(ctx, parent, parentOrigin, l, `${name} (image missing)`, [solidPaint('#3a3a3a')]),
+        strokePaints: [solidPaint('#ff5555')],
+        strokeWeight: 2,
+        strokeAlign: 'INSIDE',
+      }, l.figma));
+      return;
+    }
     const blobIndex = ctx.blobs.length;
     ctx.blobs.push({ bytes: img.bytes });
-    ctx.nodes.push(mergeFigmaPassthrough(rectNode(ctx, parent, parentOrigin, l, name, [{
+    // A baked cut-out (crop + shape-as-alpha) is already box-sized with the shape in its alpha, so
+    // emit a PLAIN rectangle (no corner radius / not an ellipse — imageForCutout strips those) and
+    // FILL: the transparency IS the shape, giving Figma a correct standalone cutout. Non-cut-out
+    // images keep the original shape on the node (rectNode reads radius/radiusCorners) + fit.
+    const isCutout = ctx.cutoutBaked.has(l.id);
+    const nodeLayer = isCutout
+      ? { ...l, fit: 'cover' as const, style: { ...(l.style || {}), shapeKind: undefined, radius: 0, radiusCorners: undefined } }
+      : l;
+    ctx.nodes.push(mergeFigmaPassthrough(rectNode(ctx, parent, parentOrigin, nodeLayer, name, [{
       type: 'IMAGE',
       visible: true,
       opacity: 1,
       blendMode: 'NORMAL',
       image: { hash: img.hash, name: `${name}.png`, dataBlob: blobIndex },
-      imageScaleMode: l.fit === 'contain' ? 'FIT' : 'FILL',
+      imageScaleMode: !isCutout && l.fit === 'contain' ? 'FIT' : 'FILL',
       imageShouldColorManage: true,
       originalImageWidth: img.width,
       originalImageHeight: img.height,
@@ -875,10 +980,17 @@ function emitSceneNode(
 export function buildFigmaMessage(
   doc: DesignDoc,
   images: Map<string, FigImageInput>,
+  cutoutBaked?: Set<string>,
 ): { meta: FigMeta; message: FigMessage } {
   const SESSION = 4747;
   let nextLocal = 1;
   const guid = (): FigGUID => ({ sessionID: SESSION, localID: nextLocal++ });
+  // Which image layers carry BAKED cut-out bytes (crop + shape-as-alpha). When the caller loaded
+  // images (copyForFigma), it passes the set the bake populated. Fall back to deriving it from the
+  // doc — any image layer with a resolved crop whose bytes are present was baked as a cut-out — so
+  // buildFigmaMessage stays correct even when called with a pre-built images map.
+  const cutouts = cutoutBaked
+    ?? new Set(collectImageLayers(doc.layers).filter((l) => cropOf(l.style) && images.has(l.id)).map((l) => l.id));
 
   const docGuid = { sessionID: 0, localID: 0 };
   const pageGuid = { sessionID: 0, localID: 1 };
@@ -913,7 +1025,7 @@ export function buildFigmaMessage(
     },
   ];
 
-  const ctx: EmitCtx = { nodes, blobs: [], images, guid, counters: new Map() };
+  const ctx: EmitCtx = { nodes, blobs: [], images, cutoutBaked: cutouts, guid, counters: new Map() };
   emitChildren(ctx, frameGuid, { x: 0, y: 0 }, doc.layers);
 
   const fileKey = randomFileKey();
@@ -949,8 +1061,9 @@ function randomFileKey(): string {
 export function buildFigmaClipboardHtml(
   doc: DesignDoc,
   images: Map<string, FigImageInput> = new Map(),
+  cutoutBaked?: Set<string>,
 ): string {
-  const { meta, message } = buildFigmaMessage(doc, images);
+  const { meta, message } = buildFigmaMessage(doc, images, cutoutBaked);
   const html = encodeFigmaClipboardHtml(meta, message);
   // Sanity roundtrip before the clipboard sees it — never copy an undecodable payload.
   const back = decodeFigmaClipboardHtml(html);
@@ -1002,14 +1115,135 @@ function pixelateOf(s: Layer['style']): number {
   return typeof v === 'number' && v > 0 ? v : 0;
 }
 
-async function loadImageInputs(doc: DesignDoc): Promise<Map<string, FigImageInput>> {
-  const out = new Map<string, FigImageInput>();
-  for (const l of collectImageLayers(doc.layers)) {
-    const res = await fetch(l.src!);
-    if (!res.ok) { console.warn(`figmaClipboard: image fetch failed (${res.status}): ${l.src}`); continue; }
+/** style.crop (cut-out) normalized, or null (identity/missing). */
+function cropOf(s: Layer['style']): ImageCrop | null {
+  return resolveCrop((s as (FxStyle & { crop?: ImageCrop }) | undefined)?.crop);
+}
+
+/** Corner radii for an image layer's box (px) — uniform `radius`, else per-corner, else 0. */
+function imageCornerRadii(s: Layer['style']): [number, number, number, number] {
+  const rc = (s as FxStyle | undefined)?.radiusCorners;
+  if (Array.isArray(rc) && rc.length === 4) return [rc[0], rc[1], rc[2], rc[3]];
+  const r = s?.radius || 0;
+  return [r, r, r, r];
+}
+
+/** Trace the box's shape into a canvas path (for destination-in alpha masking): ellipse for a
+ *  circular avatar, per-corner rounded rect for rounded UI, plain rect otherwise. Box coords are
+ *  0,0,w,h (the baked cut-out canvas is box-sized). PARITY with the shape every other renderer
+ *  clips the image to. */
+function traceCutoutShape(ctx: CanvasRenderingContext2D, s: Layer['style'], w: number, h: number) {
+  ctx.beginPath();
+  if (s?.shapeKind === 'ellipse') {
+    ctx.ellipse(w / 2, h / 2, w / 2, h / 2, 0, 0, Math.PI * 2);
+    return;
+  }
+  const [tl, tr, br, bl] = imageCornerRadii(s).map((v) => Math.max(0, Math.min(v, w / 2, h / 2))) as [number, number, number, number];
+  ctx.moveTo(tl, 0);
+  ctx.arcTo(w, 0, w, h, tr);
+  ctx.arcTo(w, h, 0, h, br);
+  ctx.arcTo(0, h, 0, 0, bl);
+  ctx.arcTo(0, 0, w, 0, tl);
+  ctx.closePath();
+}
+
+/**
+ * Bake a real transparent PNG of a cut-out: crop the SOURCE sub-rect into a box-sized canvas
+ * (scaled to fill), optionally mosaic it (crop+pixelate combo), then apply the layer's shape as
+ * ALPHA (destination-in) so a circular avatar exports as an actual circle, rounded UI as a rounded
+ * rect, with correct transparency outside the shape. Mirrors the pixelate bake: Figma then gets a
+ * correct standalone cut-out as the image fill, NOT a raw uncropped square. Same principle used by
+ * raster.ts (drawImage src-rect + ctx.clip) and designSvg.ts (cropDataUrl) — this just also bakes
+ * the mask into alpha because a Figma image fill can't carry an arbitrary clip of its own.
+ */
+async function cutoutBitmap(
+  bmp: ImageBitmap, crop: ImageCrop, s: Layer['style'], boxW: number, boxH: number,
+): Promise<Blob> {
+  const w = Math.max(1, Math.round(boxW));
+  const h = Math.max(1, Math.round(boxH));
+  const sx = crop.x * bmp.width;
+  const sy = crop.y * bmp.height;
+  const sw = Math.max(1, crop.w * bmp.width);
+  const sh = Math.max(1, crop.h * bmp.height);
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d')!;
+  const pixelate = pixelateOf(s);
+  if (pixelate > 0) {
+    // Crop → mosaic (downscale-with-smoothing, upscale-without) → then draw box-sized.
+    const block = Math.max(1, pixelate);
+    const smallW = Math.max(1, Math.round(w / block));
+    const smallH = Math.max(1, Math.round(h / block));
+    const small = document.createElement('canvas');
+    small.width = smallW; small.height = smallH;
+    const sctx = small.getContext('2d')!;
+    sctx.imageSmoothingEnabled = true;
+    sctx.drawImage(bmp, sx, sy, sw, sh, 0, 0, smallW, smallH);
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(small, 0, 0, w, h);
+    ctx.imageSmoothingEnabled = true;
+  } else {
+    ctx.drawImage(bmp, sx, sy, sw, sh, 0, 0, w, h);
+  }
+  // Apply the shape as alpha: keep only pixels inside the traced shape.
+  ctx.globalCompositeOperation = 'destination-in';
+  ctx.fillStyle = '#000';
+  traceCutoutShape(ctx, s, w, h);
+  ctx.fill();
+  ctx.globalCompositeOperation = 'source-over';
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((out) => (out ? resolve(out) : reject(new Error('cutout: toBlob failed'))), 'image/png');
+  });
+}
+
+/**
+ * Load + bake ONE image layer into a FigImageInput, or return null if anything at all goes wrong.
+ *
+ * ROBUSTNESS CONTRACT (audit LAYER-27/28): this function NEVER throws and NEVER rejects. Every
+ * failure mode — a thrown fetch (CORS, malformed URL, network abort), an HTTP-error response, a
+ * corrupt blob that fails createImageBitmap, a crypto.digest failure — resolves to `null`. The
+ * caller then simply omits the id from the images map, and emitSceneNode's existing "bytes missing"
+ * branch draws a labeled placeholder rectangle for exactly that one layer. One bad image must never
+ * reject loadImageInputs and silently degrade the WHOLE doc to the SVG fallback.
+ *
+ * Exported for direct unit testing (the full copyForFigma path can't run headless — no real fetch /
+ * createImageBitmap in Node).
+ */
+export async function loadOneImage(
+  l: Layer,
+  cutoutBaked?: Set<string>,
+): Promise<FigImageInput | null> {
+  try {
+    // LAYER-27: wrap the fetch CALL itself, not just the response — a THROWN fetch (CORS / bad URL /
+    // abort) must degrade this one image, not reject the whole build.
+    let res: Response;
+    try {
+      res = await fetch(l.src!);
+    } catch (err) {
+      console.warn(`figmaClipboard: image fetch threw, using placeholder: ${l.src}`, err);
+      return null;
+    }
+    if (!res.ok) {
+      console.warn(`figmaClipboard: image fetch failed (${res.status}): ${l.src}`);
+      return null;
+    }
     let blob = await res.blob();
+    const crop = cropOf(l.style);
     const pixelate = pixelateOf(l.style);
-    if (pixelate > 0) {
+    if (crop) {
+      // Cut-out: bake a real transparent PNG (crop + shape-as-alpha, + pixelate if set) so Figma
+      // gets a correct standalone cutout, not a raw uncropped square. The emitted node then uses a
+      // plain rect + FILL (see the image branch in emitSceneNode) — the alpha carries the shape.
+      try {
+        const srcBmp = await createImageBitmap(blob);
+        blob = await cutoutBitmap(srcBmp, crop, l.style, l.box.w, l.box.h);
+        srcBmp.close();
+        cutoutBaked?.add(l.id);
+      } catch (err) {
+        console.warn('figmaClipboard: cutout bake failed, using sharp image', err);
+      }
+    } else if (pixelate > 0) {
       try {
         const srcBmp = await createImageBitmap(blob);
         blob = await pixelateBitmap(srcBmp, pixelate, l.box.w, l.box.h);
@@ -1018,11 +1252,35 @@ async function loadImageInputs(doc: DesignDoc): Promise<Map<string, FigImageInpu
         console.warn('figmaClipboard: pixelate bake failed, using sharp image', err);
       }
     }
-    const bytes = new Uint8Array(await blob.arrayBuffer());
-    const hash = new Uint8Array(await crypto.subtle.digest('SHA-1', bytes));
-    const bmp = await createImageBitmap(blob);
-    out.set(l.id, { bytes, hash, width: bmp.width, height: bmp.height });
-    bmp.close();
+    // LAYER-28: the final bytes/hash/bmp construction runs for EVERY image (not just crop/pixelate)
+    // and can throw on a corrupt blob (createImageBitmap) or a crypto failure. Wrap it so that one
+    // image degrades to the placeholder instead of nuking the whole doc to SVG.
+    try {
+      const bytes = new Uint8Array(await blob.arrayBuffer());
+      const hash = new Uint8Array(await crypto.subtle.digest('SHA-1', bytes));
+      const bmp = await createImageBitmap(blob);
+      const input: FigImageInput = { bytes, hash, width: bmp.width, height: bmp.height };
+      bmp.close();
+      return input;
+    } catch (err) {
+      console.warn(`figmaClipboard: image decode/hash failed, using placeholder: ${l.src}`, err);
+      return null;
+    }
+  } catch (err) {
+    // Belt-and-braces: any unforeseen throw still degrades this one image, never the whole doc.
+    console.warn(`figmaClipboard: image load failed, using placeholder: ${l.src}`, err);
+    return null;
+  }
+}
+
+async function loadImageInputs(
+  doc: DesignDoc,
+  cutoutBaked?: Set<string>,
+): Promise<Map<string, FigImageInput>> {
+  const out = new Map<string, FigImageInput>();
+  for (const l of collectImageLayers(doc.layers)) {
+    const input = await loadOneImage(l, cutoutBaked);
+    if (input) out.set(l.id, input);
   }
   return out;
 }
@@ -1034,8 +1292,9 @@ async function loadImageInputs(doc: DesignDoc): Promise<Map<string, FigImageInpu
 async function buildBestFigmaHtml(doc: DesignDoc): Promise<{ html: string; method: 'figma-native' | 'svg'; svg: string }> {
   let svg = '';
   try {
-    const images = await loadImageInputs(doc);
-    const html = buildFigmaClipboardHtml(doc, images);
+    const cutoutBaked = new Set<string>();
+    const images = await loadImageInputs(doc, cutoutBaked);
+    const html = buildFigmaClipboardHtml(doc, images, cutoutBaked);
     // Pre-build the SVG too so the plaintext part of the same ClipboardItem is always populated.
     svg = await designToSvg(doc).catch(() => '');
     return { html, method: 'figma-native', svg };

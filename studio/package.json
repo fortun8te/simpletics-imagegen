@@ -8,21 +8,27 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs",
     "test:agent": "node --test test/design-agent-v3.test.mjs test/elements-v2.test.mjs test/templates.test.mjs",
+    "test:figma": "tsx scripts/figma-roundtrip.test.mjs",
+    "test:cutout": "node --experimental-strip-types --test scripts/cutout-parity.test.mjs",
     "test:inspo": "node scripts/design-agent-inspo-loop.mjs",
     "test:inspo:live": "node scripts/design-agent-inspo-loop.mjs --live"
   },
   "dependencies": {
     "@imgly/background-removal": "^1.7.0",
+    "@imgly/background-removal-node": "^1.4.5",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
     "@radix-ui/react-scroll-area": "^1.2.0",
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-tooltip": "^1.1.4",
+    "imagetracerjs": "^1.2.6",
     "kiwi-schema": "^0.5.0",
     "pako": "^2.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "simple-icons": "^16.25.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
@@ -30,6 +36,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "tsx": "^4.23.0",
     "typescript": "^5.5.4",
     "vite": "^5.4.8"
   }

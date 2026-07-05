@@ -1,0 +1,33 @@
+{
+  "id": "010",
+  "filename": "010_attached_d1da6c1ffd909d18.png",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 2,
+    "assemble": 26,
+    "total": 10941
+  },
+  "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "handle color: #536471 → #909090 (glyph sample, contrast 0.36)",
+    "display-name box: y392 h50 → y408 h33 (tight ink rows + 4px pad)",
+    "handle box: y446 h46 → y446 h34 (tight ink rows + 4px pad)",
+    "post-body: center-x snapped x128 → x120 (canvas center)"
+  ],
+  "archetype": "x-post",
+  "layerCountExtracted": 5,
+  "parsePath": "loose",
+  "background": "#FFFFFF",
+  "cutoutCandidates": 2,
+  "layersApplied": 5,
+  "leavesInResult": 6,
+  "verify": {
+    "ready": false
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 97.2,
+  "pixelScore": 97.2,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/010/side-by-side.png"
+}

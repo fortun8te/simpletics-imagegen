@@ -38,6 +38,18 @@
       "port": 5199
     },
     {
+      "name": "koof-3d",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5903",
+        "--directory",
+        "/Users/michael/Downloads/KOOF PROJECT"
+      ],
+      "port": 5903
+    },
+    {
       "name": "a350-viewer",
       "runtimeExecutable": "python3",
       "runtimeArgs": [

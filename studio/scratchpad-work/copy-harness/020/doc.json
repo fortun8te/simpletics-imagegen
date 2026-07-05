@@ -1,0 +1,182 @@
+{
+  "id": "harness_020_3c1e555e",
+  "name": "copy-harness harness_020_3c1e555e",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base-mr8aqcpt-1g",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#F5F5F3"
+      }
+    },
+    {
+      "id": "headline-mr8aqcpt-19",
+      "type": "text",
+      "role": "headline",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 27,
+        "w": 700,
+        "h": 215
+      },
+      "style": {
+        "fontSize": 229,
+        "fontWeight": 900,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "headline-mr8aqcpt-1a",
+      "type": "text",
+      "role": "headline",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 195,
+        "w": 780,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#c9c4bf",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "shadow": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "decor-mr8aqcpt-1b",
+      "type": "text",
+      "role": "decor",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 367,
+        "w": 700,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#d9d9ce",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "decor-mr8aqcpt-1c",
+      "type": "text",
+      "role": "decor",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 535,
+        "w": 780,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#eae8e5",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "decor-mr8aqcpt-1d",
+      "type": "text",
+      "role": "decor",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 705,
+        "w": 700,
+        "h": 196
+      },
+      "style": {
+        "fontSize": 208,
+        "fontWeight": 900,
+        "color": "#cec2b3",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "decor-mr8aqcpt-1e",
+      "type": "text",
+      "role": "decor",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 890,
+        "w": 780,
+        "h": 70
+      },
+      "style": {
+        "fontSize": 75,
+        "fontWeight": 900,
+        "color": "#6863b7",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "product-mr8aqcpt-1f",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 225,
+        "y": 160,
+        "w": 660,
+        "h": 750
+      },
+      "style": {},
+      "src": "/refasset?id=harness-020m7e537f7d",
+      "name": "Cut-out"
+    }
+  ],
+  "skeletonId": "skel_mr8aqcpt8jvw",
+  "updatedAt": 1783286492153
+}

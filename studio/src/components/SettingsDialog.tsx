@@ -196,7 +196,9 @@ export default function SettingsDialog() {
   const showArchived = useStore((st) => st.ui.showArchived);
   const reducedMotion = useStore((st) => st.ui.reducedMotion);
   const setUI = useStore((st) => st.setUI);
-  const codexUsage = useStore((st) => st.codexUsage ?? st.state?.codexUsage);
+  // STATE-19: read the canonical top-level codexUsage only. setState writes /api/state's usage
+  // through to this field (see store.setState), so there is no need to fall back to st.state.
+  const codexUsage = useStore((st) => st.codexUsage);
   const settings = useStore((st) => st.settings);
   const setSettings = useStore((st) => st.setSettings);
 

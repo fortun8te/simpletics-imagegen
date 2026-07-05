@@ -1,0 +1,179 @@
+{
+  "at": "2026-07-04T12:47:05.526Z",
+  "n": 8,
+  "okN": 7,
+  "avgScore": 82,
+  "results": [
+    {
+      "id": "009",
+      "filename": "009_attached_885c19be02ccf229.png",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 116869,
+        "assemble": 4,
+        "total": 129296
+      },
+      "archetype": "x-post",
+      "layerCountExtracted": 18,
+      "parsePath": "loose",
+      "background": "#000000",
+      "cutoutCandidates": 0,
+      "layersApplied": 4,
+      "verify": {
+        "ready": false
+      },
+      "pixelScore": 90,
+      "pixelError": null,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/009/side-by-side.png"
+    },
+    {
+      "id": "010",
+      "filename": "010_attached_d1da6c1ffd909d18.png",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 770382,
+        "assemble": 3,
+        "total": 779013
+      },
+      "archetype": "generic",
+      "layerCountExtracted": 7,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 1,
+      "layersApplied": 3,
+      "verify": {
+        "ready": false
+      },
+      "pixelScore": 95.7,
+      "pixelError": null,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/010/side-by-side.png"
+    },
+    {
+      "id": "026",
+      "filename": "026_attached_84a042d29cdfff93.webp",
+      "ok": false,
+      "error": "extraction failed: timeout",
+      "ms": {
+        "extract": 360212,
+        "total": 360324
+      }
+    },
+    {
+      "id": "050",
+      "filename": "050_attached_0d40eff6fd3e3051.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 89383,
+        "assemble": 4,
+        "total": 104049
+      },
+      "archetype": "x-post",
+      "layerCountExtracted": 7,
+      "parsePath": "loose",
+      "background": "#161616",
+      "cutoutCandidates": 2,
+      "layersApplied": 3,
+      "verify": {
+        "ready": false
+      },
+      "pixelScore": 87.8,
+      "pixelError": null,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/050/side-by-side.png"
+    },
+    {
+      "id": "052",
+      "filename": "052_attached_6e7a2d035eee1c7e.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 828126,
+        "assemble": 2,
+        "total": 836368
+      },
+      "archetype": "before-after",
+      "layerCountExtracted": 10,
+      "parsePath": "loose",
+      "background": "photo",
+      "cutoutCandidates": 0,
+      "layersApplied": 5,
+      "verify": {
+        "ready": true
+      },
+      "pixelScore": 83.7,
+      "pixelError": null,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/052/side-by-side.png"
+    },
+    {
+      "id": "053",
+      "filename": "053_attached_3a7620d3e291fe78.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 219208,
+        "assemble": 2,
+        "total": 231581
+      },
+      "archetype": "story-native",
+      "layerCountExtracted": 8,
+      "parsePath": "loose",
+      "background": "photo",
+      "cutoutCandidates": 0,
+      "layersApplied": 3,
+      "verify": {
+        "ready": false
+      },
+      "pixelScore": 55.1,
+      "pixelError": null,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/053/side-by-side.png"
+    },
+    {
+      "id": "078",
+      "filename": "078_attached_efa4c7170a656935.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 657674,
+        "assemble": 4,
+        "total": 668228
+      },
+      "archetype": "offer-hero",
+      "layerCountExtracted": 17,
+      "parsePath": "loose",
+      "background": "#f2f3f5",
+      "cutoutCandidates": 1,
+      "layersApplied": 4,
+      "verify": {
+        "ready": false
+      },
+      "pixelScore": 84.8,
+      "pixelError": null,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/078/side-by-side.png"
+    },
+    {
+      "id": "103",
+      "filename": "103_attached_056bb15bf6d6c82e.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 97191,
+        "assemble": 2,
+        "total": 110706
+      },
+      "archetype": "x-post",
+      "layerCountExtracted": 5,
+      "parsePath": "loose",
+      "background": "#000000",
+      "cutoutCandidates": 1,
+      "layersApplied": 3,
+      "verify": {
+        "ready": false
+      },
+      "pixelScore": 77.2,
+      "pixelError": null,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/103/side-by-side.png"
+    }
+  ]
+}

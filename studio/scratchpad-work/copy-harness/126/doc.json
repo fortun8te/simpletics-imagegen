@@ -1,0 +1,190 @@
+{
+  "id": "harness_126_0ce69e31",
+  "name": "copy-harness harness_126_0ce69e31",
+  "canvas": {
+    "w": 1080,
+    "h": 1962
+  },
+  "layers": [
+    {
+      "id": "base-mr6mqs86-26",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1962
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#161616"
+      }
+    },
+    {
+      "id": "group-mr6mqs86-1y",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 43,
+        "y": 216,
+        "w": 972,
+        "h": 314
+      },
+      "children": [
+        {
+          "id": "username-mr6mqs86-1z",
+          "type": "text",
+          "role": "username",
+          "name": "username",
+          "text": "Evan",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 216,
+            "w": 324,
+            "h": 59
+          },
+          "style": {
+            "color": "#f0f0f0",
+            "fontSize": 30,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "handle-mr6mqs86-20",
+          "type": "text",
+          "role": "handle",
+          "name": "handle",
+          "text": "@Evan",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 275,
+            "w": 324,
+            "h": 59
+          },
+          "style": {
+            "color": "#7a7a7a",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "verified-mr6mqs86-21",
+          "type": "text",
+          "role": "verified",
+          "name": "verified",
+          "text": "✓",
+          "autoH": true,
+          "box": {
+            "x": 518,
+            "y": 235,
+            "w": 40,
+            "h": 39
+          },
+          "style": {
+            "color": "#1d9bf0",
+            "fontSize": 30,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6mqs86-22",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "My hair's been flat my whole life. Two sprays of this and I finally have real texture. Wish I found it sooner.",
+          "autoH": true,
+          "box": {
+            "x": 43,
+            "y": 373,
+            "w": 734,
+            "h": 157
+          },
+          "style": {
+            "color": "#f0f0f0",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "rect-mr6mqs86-23",
+      "type": "image",
+      "role": "rect",
+      "name": "Cut-out · man with textured hair",
+      "box": {
+        "x": 65,
+        "y": 549,
+        "w": 950,
+        "h": 1275
+      },
+      "style": {
+        "crop": {
+          "x": 0.06,
+          "y": 0.28,
+          "w": 0.88,
+          "h": 0.65
+        },
+        "radius": 33
+      },
+      "src": "/refasset?id=harness-126"
+    },
+    {
+      "id": "avatar-mr6mqs86-24",
+      "type": "shape",
+      "role": "avatar",
+      "name": "Blurred · blurred profile pic",
+      "box": {
+        "x": 43,
+        "y": 196,
+        "w": 108,
+        "h": 98
+      },
+      "style": {
+        "background": "#444444",
+        "shapeKind": "ellipse",
+        "blur": 6
+      }
+    },
+    {
+      "id": "timestamp-mr6mqs86-25",
+      "type": "text",
+      "role": "timestamp",
+      "name": "timestamp",
+      "text": "2:14 PM · 11/09/2025 · 647 Views",
+      "autoH": true,
+      "box": {
+        "x": 65,
+        "y": 1844,
+        "w": 626,
+        "h": 59
+      },
+      "style": {
+        "color": "#7a7a7a",
+        "fontSize": 30,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6mqs86y7z9",
+  "updatedAt": 1783185731430
+}

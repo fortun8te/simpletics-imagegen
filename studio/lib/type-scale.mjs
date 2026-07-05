@@ -155,20 +155,19 @@ export function repairTextLayer(node, doc) {
     if (!node.style.lineHeight) node.style.lineHeight = role === 'headline' ? 1.05 : 1.25;
   }
 
-  // autoH: grow box.h to fit text (server can't measure exactly — over-estimate slightly)
-  if (node.autoH !== false) {
+  // autoH: RE-MEASURE box.h to the reflowed text height — grow AND shrink so the stored box
+  // stays in sync with what the renderer actually paints after a text edit (parity with the
+  // frontend Stage.tsx commitEdit, which measures the true rendered height on blur and writes
+  // box.h in both directions). Previously this only grew, so shortening text left a stale, too-tall
+  // box and subsequent ops / verifyDesign read dishonest bounds. estimateTextBoxH mirrors
+  // textMetrics.ts, so editor and agent agree. A ±2px deadband avoids churn on no-op re-measures.
+  if (node.autoH !== false && node.box) {
     node.autoH = true;
     const need = estimateTextBoxH(node);
-    if ((node.box?.h || 0) < need - 2) {
+    if (Math.abs((node.box.h || 0) - need) > 2) {
       notes.push(`h ${node.box.h}→${need}`);
       node.box.h = need;
     }
   }
   return notes;
-}
-
-/** Stamp autoH on textual skeleton/extracted layers. */
-export function stampAutoH(node) {
-  if (isTextual(node)) node.autoH = true;
-  return node;
 }

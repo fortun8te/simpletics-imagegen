@@ -1,0 +1,33 @@
+{
+  "id": "012",
+  "filename": "012_attached_fc26c4754b888b55.webp",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 0,
+    "assemble": 14645,
+    "total": 26333
+  },
+  "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "headline fontSize: 92 → 74 (2 ink lines, block 158px)",
+    "headline box: y362 h180 → y350 h206 (tight ink rows + 24px pad)",
+    "reviews-pill: center-x snapped x205 → x204 (canvas center)",
+    "headline: left margin x65 → x62 (sibling group mode)"
+  ],
+  "archetype": "benefit-list",
+  "layerCountExtracted": 15,
+  "parsePath": "loose",
+  "background": "#E9F3EB",
+  "cutoutCandidates": 7,
+  "layersApplied": 15,
+  "leavesInResult": 16,
+  "verify": {
+    "ready": true
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 94.1,
+  "pixelScore": 94.1,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/012/side-by-side.png"
+}

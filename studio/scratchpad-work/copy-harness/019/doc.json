@@ -1,0 +1,289 @@
+{
+  "id": "harness_019_2792e872",
+  "name": "copy-harness harness_019_2792e872",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6mmzz9-m",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#1a1a1a"
+      }
+    },
+    {
+      "id": "group-mr6mmzz9-9",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 1,
+        "y": 3,
+        "w": 44,
+        "h": 184
+      },
+      "children": [
+        {
+          "id": "caption-mr6mmzz9-a",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "EARPLUG AND BOX",
+          "box": {
+            "x": 5,
+            "y": 41,
+            "w": 40,
+            "h": 32
+          },
+          "style": {
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "headline-mr6mmzz9-b",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "World's Most Advanced Earplugs",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 3,
+            "w": 40,
+            "h": 269
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6mmzz9-c",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "20dB",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 81,
+            "w": 40,
+            "h": 68
+          },
+          "style": {
+            "color": "#f5f5f5",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "badge-mr6mmzz9-d",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "reddot winner 2024",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 119,
+            "w": 40,
+            "h": 94
+          },
+          "style": {
+            "color": "#e83a3a",
+            "fontSize": 26,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6mmzz9-e",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Hears Earplugs",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 157,
+            "w": 40,
+            "h": 72
+          },
+          "style": {
+            "color": "#f5f5f5",
+            "fontSize": 30,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6mmzz9-f",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 86,
+        "y": 634,
+        "w": 940,
+        "h": 845
+      },
+      "children": [
+        {
+          "id": "rect-mr6mmzz9-g",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · product packaging box",
+          "box": {
+            "x": 540,
+            "y": 634,
+            "w": 486,
+            "h": 845
+          },
+          "style": {
+            "crop": {
+              "x": 0.5,
+              "y": 0.33,
+              "w": 0.45,
+              "h": 0.44
+            },
+            "radius": 17
+          },
+          "src": "/refasset?id=harness-019"
+        },
+        {
+          "id": "subhead-mr6mmzz9-h",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Up to 200% reduction of fight or flight state",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 730,
+            "w": 486,
+            "h": 154
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6mmzz9-i",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "20dB noise reduction",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 979,
+            "w": 486,
+            "h": 115
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 41,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6mmzz9-j",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 5,
+        "y": 6,
+        "w": 341,
+        "h": 1395
+      },
+      "children": [
+        {
+          "id": "product-mr6mmzz9-k",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · Earplug and box",
+          "box": {
+            "x": 5,
+            "y": 6,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#f0f0f059",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.03 C 0.6417 0.03 0.845 -0.0033 0.925 0.075 C 1.005 0.1533 0.98 0.3583 0.98 0.5 C 0.98 0.6417 1.005 0.8467 0.925 0.925 C 0.845 1.0033 0.6417 0.97 0.5 0.97 C 0.3583 0.97 0.155 1.0033 0.075 0.925 C -0.005 0.8467 0.02 0.6417 0.02 0.5 C 0.02 0.3583 -0.005 0.1533 0.075 0.075 C 0.155 -0.0033 0.3583 0.03 0.5 0.03 Z",
+            "stroke": {
+              "color": "#f0f0f0",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "logo-mr6mmzz9-l",
+          "type": "image",
+          "role": "logo",
+          "name": "Logo · red dot award logo",
+          "box": {
+            "x": 216,
+            "y": 1286,
+            "w": 130,
+            "h": 115
+          },
+          "style": {
+            "crop": {
+              "x": 0.2,
+              "y": 0.67,
+              "w": 0.12,
+              "h": 0.06
+            },
+            "radius": 14
+          },
+          "src": "/refasset?id=harness-019"
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6mmzz9g5uo",
+  "updatedAt": 1783185554854
+}

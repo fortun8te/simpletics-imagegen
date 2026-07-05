@@ -1,0 +1,133 @@
+{
+  "id": "harness_010_cd97026c",
+  "name": "copy-harness harness_010_cd97026c",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr8apbkh-h",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#FFFFFF"
+      }
+    },
+    {
+      "id": "avatar-mr8apbkh-c",
+      "type": "image",
+      "role": "avatar",
+      "box": {
+        "x": 118,
+        "y": 368,
+        "w": 130,
+        "h": 132
+      },
+      "style": {
+        "crop": {
+          "x": 0.109,
+          "y": 0.192,
+          "w": 0.12,
+          "h": 0.069
+        },
+        "shapeKind": "ellipse"
+      },
+      "src": "/refasset?id=harness-010",
+      "name": "Avatar (cut out)"
+    },
+    {
+      "id": "meta-mr8apbkh-d",
+      "type": "text",
+      "role": "meta",
+      "text": "UPFRONT",
+      "box": {
+        "x": 272,
+        "y": 408,
+        "w": 220,
+        "h": 33
+      },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 700,
+        "color": "#0F1419",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "icon-mr8apbkh-e",
+      "type": "shape",
+      "role": "logo",
+      "box": {
+        "x": 446,
+        "y": 398,
+        "w": 42,
+        "h": 42
+      },
+      "style": {
+        "shapeKind": "path",
+        "path": "M 0.2827 0.2917 L 0.3185 0.2917 L 0.3482 0.3155 L 0.3661 0.3155 L 0.4137 0.3631 L 0.5 0.3631 L 0.5089 0.381 L 0.5476 0.4077 L 0.5625 0.4345 L 0.5714 0.4375 L 0.5714 0.5208 L 0.619 0.5685 L 0.619 0.5863 L 0.6429 0.6161 L 0.6429 0.6518 L 0.619 0.6815 L 0.619 0.6994 L 0.5714 0.747 L 0.5714 0.8304 L 0.5625 0.8393 Q 0.5491 0.8348 0.5536 0.8482 L 0.5268 0.881 L 0.506 0.8869 L 0.497 0.9048 L 0.4137 0.9048 L 0.3661 0.9524 L 0.3482 0.9524 L 0.3185 0.9762 L 0.2827 0.9762 Q 0.2708 0.9524 0.2351 0.9524 L 0.1875 0.9048 L 0.1012 0.9048 L 0.0923 0.8869 L 0.0536 0.8601 L 0.0298 0.8244 L 0.0298 0.747 L 0.0149 0.7321 L 0 0.7292 L 0 0.5357 Q 0.0228 0.5402 0.0298 0.5208 L 0.0298 0.4375 L 0.0387 0.4345 L 0.0744 0.3869 L 0.1012 0.372 L 0.1042 0.3631 L 0.1875 0.3631 L 0.2351 0.3155 Q 0.2748 0.3195 0.2827 0.2917 Z M 0.4048 0.5179 L 0.3869 0.5238 L 0.3869 0.5357 L 0.2857 0.6369 L 0.2857 0.6429 L 0.2619 0.6607 Q 0.2679 0.6726 0.244 0.6667 L 0.1905 0.6071 L 0.1607 0.619 Q 0.1369 0.625 0.1429 0.6667 L 0.1607 0.6726 L 0.1667 0.6905 L 0.1845 0.6964 L 0.1905 0.7143 L 0.2083 0.7202 L 0.2143 0.7381 L 0.2321 0.744 L 0.2381 0.7619 L 0.2619 0.7679 L 0.3155 0.6964 L 0.3393 0.6845 Q 0.3333 0.6667 0.3512 0.6726 L 0.4464 0.5655 L 0.4464 0.5417 Q 0.4405 0.5119 0.4048 0.5179 Z",
+        "background": "#1d9bf0"
+      },
+      "name": "Logo (vectorized)"
+    },
+    {
+      "id": "meta-mr8apbkh-f",
+      "type": "text",
+      "role": "meta",
+      "text": "@UpfrontFood",
+      "box": {
+        "x": 272,
+        "y": 446,
+        "w": 250,
+        "h": 34
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 400,
+        "color": "#909090",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    },
+    {
+      "id": "body-mr8apbkh-g",
+      "type": "text",
+      "role": "body",
+      "text": "WAT. EEN. JAAR. 🥹😮‍💨🤝\n\nVan een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🤝🏼",
+      "box": {
+        "x": 120,
+        "y": 552,
+        "w": 840,
+        "h": 745
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#0F1419",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      },
+      "autoH": false,
+      "sizeLocked": true
+    }
+  ],
+  "skeletonId": "skel_mr8apbkhrd7e",
+  "updatedAt": 1783286440171
+}

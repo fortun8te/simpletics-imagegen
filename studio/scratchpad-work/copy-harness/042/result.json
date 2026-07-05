@@ -1,0 +1,36 @@
+{
+  "id": "042",
+  "filename": "042_attached_c1524c109cdc2a15.webp",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 0,
+    "assemble": 1,
+    "total": 11870
+  },
+  "readSource": "scene-file",
+  "sceneTruthCorrections": [
+    "blurred-username fill: #6E6E6E → #0a0a0a (interior median of 7 patches, Δ0.39)",
+    "x-watermark fontSize: 34 → 44 (1 ink line, block 32px)",
+    "x-watermark box: y240 h44 → y237 h42 (tight ink rows + 5px pad)",
+    "tweet-body box: y355 h100 → y360 h85 (tight ink rows + 10px pad)",
+    "timestamp-meta fontSize: 32 → 29 (1 ink line, block 21px)",
+    "timestamp-meta box: y1658 h44 → y1671 h29 (tight ink rows + 4px pad)",
+    "timestamp-meta: left margin x60 → x50 (sibling group mode)"
+  ],
+  "archetype": "social-post",
+  "layerCountExtracted": 6,
+  "parsePath": "loose",
+  "background": "#000000",
+  "cutoutCandidates": 2,
+  "layersApplied": 6,
+  "leavesInResult": 7,
+  "verify": {
+    "ready": false
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 99.1,
+  "pixelScore": 99.1,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/042/side-by-side.png"
+}

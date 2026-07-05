@@ -7,9 +7,10 @@
 // Saving a keyless config for a provider that needs a key is ALLOWED — hasLlm() in llm.mjs
 // reflects reality (no key + default DeepSeek base ⇒ false). Zero-dep (node:* only).
 
-import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeAtomic } from './atomic-write.mjs';
 
 const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CONFIG_FILE = join(STUDIO, '.state', 'llm-config.json');
@@ -20,21 +21,9 @@ const CONFIG_FILE = join(STUDIO, '.state', 'llm-config.json');
 export const DEFAULT_BASE = 'https://api.deepseek.com';
 export const DEFAULT_MODEL = 'deepseek-v4-flash';
 
-/** The STATED default is vision-first: LM Studio with whatever gemma (or other VL model) is
- *  loaded — the agent editor wants a model that can SEE the canvas. DeepSeek is the explicit
- *  text-only fallback, not the headline default. */
-export const DEFAULT_PRESET_ID = 'lm-studio';
-
-/** Presets the config UI offers, vision-capable default first. `needsKey` drives the "key
- *  missing" hint client-side — saving without a key is still allowed (hasLlm() simply stays
- *  false for keyed providers). `vision` marks presets whose model can see renders; `isDefault`
- *  marks the recommended default the UI should lead with. */
-export const PRESETS = [
-  { id: 'lm-studio', label: 'LM Studio (local · vision: gemma-4-e4b / gemma-4-12b) — default', baseUrl: 'http://localhost:1234', model: '', needsKey: false, vision: true, isDefault: true },
-  { id: 'deepseek-v4-flash', label: 'DeepSeek v4 Flash (text-only fallback)', baseUrl: DEFAULT_BASE, model: 'deepseek-v4-flash', needsKey: true, vision: false },
-  { id: 'deepseek-v4-pro', label: 'DeepSeek v4 Pro (text-only)', baseUrl: DEFAULT_BASE, model: 'deepseek-v4-pro', needsKey: true, vision: false },
-  { id: 'custom', label: 'Custom endpoint', baseUrl: '', model: '', needsKey: false },
-];
+// DEAD-17: the PRESETS / DEFAULT_PRESET_ID exports were removed here — they had zero importers
+// after the ModelSelector UI was deleted (the /api/llm-config server route builds its own inline
+// preset list). Keeping them would have re-implied a picker that no longer exists.
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '0.0.0.0', '::1', '[::1]']);
 
@@ -81,8 +70,7 @@ export function setLlmConfig(cfg, { file = CONFIG_FILE } = {}) {
   const apiKey = String(cfg.apiKey || '').trim();
   if (apiKey) out.apiKey = apiKey;
   if (cfg.label) out.label = String(cfg.label).trim().slice(0, 60);
-  mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, JSON.stringify(out, null, 2));
+  writeAtomic(file, JSON.stringify(out, null, 2));
   return getLlmConfig({ file });
 }
 

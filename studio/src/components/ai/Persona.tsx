@@ -27,7 +27,11 @@ export function Persona({ state = 'idle', variant = 'obsidian', size = 22, class
       aria-label={`AI ${state}`}
       ref={onReady ? (() => onReady()) as never : undefined}
     >
-      <span className={styles.core} />
+      <span className={styles.glow} aria-hidden="true" />
+      <span className={styles.core}>
+        <span className={styles.sheen} aria-hidden="true" />
+        <span className={styles.swirl} aria-hidden="true" />
+      </span>
       <span className={styles.ring} />
     </span>
   );

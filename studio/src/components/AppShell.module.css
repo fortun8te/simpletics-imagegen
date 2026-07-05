@@ -8,6 +8,9 @@
   display: grid;
   grid-template-columns: 256px minmax(0, 1fr);
   grid-template-rows: 60px minmax(0, 1fr);
+  /* Sidebar fold: the first column animates between the full sidebar and a slim icon rail. The
+     content column (minmax(0,1fr)) reflows into the freed space automatically. */
+  transition: grid-template-columns var(--dur-3, 260ms) var(--ease, ease);
   /* Bento: the whole app floats in a clean outer window over the live AppAura. Equal gaps between
      every panel (sidebar / topbar / content) and equal padding to the outer border, all showing the
      aura. Outer window is transparent — no blur, no darkening — just a hairline border + radius. */
@@ -21,6 +24,11 @@
   border-radius: 20px;
   color: var(--ink);
   z-index: 1;
+}
+
+/* Collapsed: the sidebar folds to a slim icon rail; the content column reflows to fill the gap. */
+.shell[data-sidebar='rail'] {
+  grid-template-columns: 56px minmax(0, 1fr);
 }
 
 /* Sidebar spans both rows in column 1, fixed width, owns its own scroll (set inside Sidebar.module.css). */
@@ -51,6 +59,7 @@
   overflow: auto;
   min-height: 0;
   min-width: 0;
+  display: block;
   /* Inner content panel — same dark-glass card as the sidebar + topbar (equal grid gaps handle the
      spacing). Rounded + hairline border; the aura shows in the gutters around it. */
   padding: var(--space-7);
@@ -69,4 +78,28 @@
   margin: 0 auto;
   min-width: 0;
   background: transparent;
+}
+
+/* Design mode: <main> becomes a fixed-height fill container (no page scroll) and the rail drops
+   its measure cap + fills the full height so the editor's flex layout resolves against a definite
+   height instead of guessing with 100vh math. The editor owns its own internal scrolling. */
+.main[data-fill] {
+  overflow: hidden;
+  display: flex;
+}
+.rail[data-fill] {
+  max-width: none;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* BatchView renders each pane as a bare <div> child; in design mode the visible one must fill the
+   rail's height so the editor inside resolves 100% heights (the hidden panes are display:none and
+   drop out of layout). */
+.rail[data-fill] > div {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
