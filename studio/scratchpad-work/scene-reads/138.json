@@ -1,0 +1,136 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "product-hero",
+  "background": "#FFFFFF",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "bg-gradient",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "gradient": {
+          "type": "linear",
+          "angle": 90,
+          "stops": [
+            {
+              "color": "#FEFCF8",
+              "pos": 0
+            },
+            {
+              "color": "#EA5226",
+              "pos": 0.3
+            },
+            {
+              "color": "#F29B27",
+              "pos": 0.55
+            },
+            {
+              "color": "#F7D44C",
+              "pos": 0.8
+            },
+            {
+              "color": "#FEF8EC",
+              "pos": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "product-can",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 148,
+        "y": 462,
+        "w": 400,
+        "h": 1035
+      },
+      "style": {
+        "shadow": true
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.137,
+          "y": 0.241,
+          "w": 0.37,
+          "h": 0.539
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "Consistency",
+      "box": {
+        "x": 577,
+        "y": 920,
+        "w": 425,
+        "h": 78
+      },
+      "style": {
+        "fontSize": 74,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "subhead",
+      "type": "text",
+      "role": "subhead",
+      "text": "Starts With The Right Inputs",
+      "box": {
+        "x": 605,
+        "y": 1002,
+        "w": 370,
+        "h": 110
+      },
+      "style": {
+        "fontSize": 46,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "brand-logo",
+      "type": "shape",
+      "role": "logo",
+      "box": {
+        "x": 722,
+        "y": 1430,
+        "w": 126,
+        "h": 44
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.669,
+          "y": 0.745,
+          "w": 0.117,
+          "h": 0.023
+        },
+        "shape": "logo"
+      }
+    }
+  ]
+}

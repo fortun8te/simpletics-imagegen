@@ -1,13 +1,13 @@
 {
-  "id": "harness_012_682801fa",
-  "name": "copy-harness harness_012_682801fa",
+  "id": "harness_012_6eec11ac",
+  "name": "copy-harness harness_012_6eec11ac",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr87w8zb-4a",
+      "id": "base-mr89sttc-17",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,234 +19,291 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#d4e4d4"
+        "background": "#E9F3EB"
       }
     },
     {
-      "id": "headline-mr87w8zb-40",
+      "id": "headline-mr89sttc-s",
       "type": "text",
       "role": "headline",
-      "name": "headline",
-      "text": "Poop More While On a GLP-1",
-      "autoH": true,
+      "text": "Poop More While\nOn a GLP-1",
       "box": {
-        "x": 194,
-        "y": 355,
-        "w": 691,
-        "h": 135
+        "x": 65,
+        "y": 362,
+        "w": 745,
+        "h": 290
       },
       "style": {
-        "color": "#1a2e1a",
-        "fontSize": 56,
+        "fontSize": 92,
         "fontWeight": 800,
+        "color": "#153A20",
         "align": "left",
+        "lineHeight": 1.05,
         "uppercase": false,
-        "lineHeight": 1.2
-      }
-    },
-    {
-      "id": "group-mr87w8zb-41",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 108,
-        "y": 634,
-        "w": 896,
-        "h": 864
+        "italic": true
       },
-      "children": [
-        {
-          "id": "rect-mr87w8zb-42",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · green gummy bear",
-          "box": {
-            "x": 518,
-            "y": 634,
-            "w": 486,
-            "h": 864
-          },
-          "style": {},
-          "src": "/refasset?id=harness-012m056d53b1"
-        },
-        {
-          "id": "badge-mr87w8zb-43",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "More Fiber Than 2 cups of Broccoli",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 634,
-            "w": 454,
-            "h": 96
-          },
-          "style": {
-            "color": "#b1d0bd",
-            "background": "#2e7d32",
-            "fontSize": 26,
-            "fontWeight": 600,
-            "align": "left",
-            "radius": 540,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "badge-mr87w8zb-44",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "20+ Vitamins & Minerals",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 768,
-            "w": 454,
-            "h": 96
-          },
-          "style": {
-            "color": "#b3d9c5",
-            "background": "#2e7d32",
-            "fontSize": 26,
-            "fontWeight": 600,
-            "align": "left",
-            "radius": 540,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "badge-mr87w8zb-45",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "Organic Fruits & Veggies",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 902,
-            "w": 454,
-            "h": 96
-          },
-          "style": {
-            "color": "#cfe8db",
-            "background": "#2e7d32",
-            "fontSize": 26,
-            "fontWeight": 600,
-            "align": "left",
-            "radius": 540,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "badge-mr87w8zb-46",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "Prebiotics",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 1037,
-            "w": 454,
-            "h": 96
-          },
-          "style": {
-            "color": "#d2e6db",
-            "background": "#2e7d32",
-            "fontSize": 26,
-            "fontWeight": 600,
-            "align": "left",
-            "radius": 540,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "badge-mr87w8zb-47",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "Adaptogens",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 1171,
-            "w": 454,
-            "h": 96
-          },
-          "style": {
-            "color": "#d6e7dd",
-            "background": "#2e7d32",
-            "fontSize": 26,
-            "fontWeight": 600,
-            "align": "left",
-            "radius": 540,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "badge-mr87w8zb-48",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "0 Sugar",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 1306,
-            "w": 454,
-            "h": 96
-          },
-          "style": {
-            "color": "#2c8b5b",
-            "background": "#2e7d32",
-            "fontSize": 26,
-            "fontWeight": 600,
-            "align": "left",
-            "radius": 540,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        }
-      ]
+      "autoH": true
     },
     {
-      "id": "cta-mr87w8zb-49",
-      "type": "button",
-      "role": "cta",
-      "name": "cta",
-      "text": "55,000+ ★★★★★ reviews",
-      "autoH": true,
+      "id": "benefit-mr89sttc-t",
+      "type": "badge",
+      "role": "benefit",
+      "text": "More Fiber Than\n2 cups of Broccoli",
       "box": {
-        "x": 281,
-        "y": 1430,
-        "w": 518,
-        "h": 77
+        "x": 62,
+        "y": 645,
+        "w": 560,
+        "h": 96
       },
       "style": {
-        "color": "#1a2e1a",
-        "background": "#f0c040",
-        "fontSize": 32,
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "icon-mr89sttc-u",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 656,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012m8cd755cc",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr89sttc-v",
+      "type": "badge",
+      "role": "benefit",
+      "text": "20+ Vitamins & Minerals",
+      "box": {
+        "x": 62,
+        "y": 765,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "icon-mr89sttc-w",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 776,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012m44e1b9a4",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr89sttc-x",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Organic Fruits & Veggies",
+      "box": {
+        "x": 62,
+        "y": 885,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "icon-mr89sttc-y",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 896,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012m96ce255b",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr89sttc-z",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Prebiotics",
+      "box": {
+        "x": 62,
+        "y": 1003,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "icon-mr89sttc-10",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1014,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012mca29c963",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr89sttc-11",
+      "type": "badge",
+      "role": "benefit",
+      "text": "Adaptogens",
+      "box": {
+        "x": 62,
+        "y": 1121,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "icon-mr89sttc-12",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1132,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012mcf426af6",
+      "name": "Cut-out"
+    },
+    {
+      "id": "benefit-mr89sttc-13",
+      "type": "badge",
+      "role": "benefit",
+      "text": "0 Sugar",
+      "box": {
+        "x": 62,
+        "y": 1239,
+        "w": 560,
+        "h": 96
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 500,
+        "color": "#FFFFFF",
+        "background": "#1F7A33",
+        "align": "left",
+        "radius": 48,
+        "lineHeight": 1.15,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "icon-mr89sttc-14",
+      "type": "image",
+      "role": "icon",
+      "box": {
+        "x": 76,
+        "y": 1250,
+        "w": 74,
+        "h": 74
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012m5da3017a",
+      "name": "Cut-out"
+    },
+    {
+      "id": "product-mr89sttc-15",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 532,
+        "y": 598,
+        "w": 505,
+        "h": 750
+      },
+      "style": {},
+      "src": "/refasset?id=harness-012mc1c153ef",
+      "name": "Cut-out"
+    },
+    {
+      "id": "social-proof-mr89sttc-16",
+      "type": "badge",
+      "role": "social-proof",
+      "text": "55,000+ ★★★★★ reviews",
+      "box": {
+        "x": 205,
+        "y": 1492,
+        "w": 672,
+        "h": 98
+      },
+      "style": {
+        "fontSize": 42,
         "fontWeight": 700,
+        "color": "#1F7A33",
+        "background": "#FFD43B",
         "align": "center",
-        "radius": 540,
-        "uppercase": false,
-        "lineHeight": 1.2,
-        "padding": 16
-      }
+        "radius": 49,
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": true
     }
   ],
-  "skeletonId": "skel_mr87w8zbxyws",
-  "updatedAt": 1783281726000
+  "skeletonId": "skel_mr89sttcr96v",
+  "updatedAt": 1783284936860
 }

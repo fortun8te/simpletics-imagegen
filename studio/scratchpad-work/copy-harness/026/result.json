@@ -4,23 +4,24 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 62678,
-    "assemble": 2809,
-    "total": 72895
+    "extract": 0,
+    "assemble": 2,
+    "total": 8262
   },
-  "archetype": "comparison",
-  "layerCountExtracted": 18,
+  "readSource": "scene-file",
+  "archetype": "us-vs-them",
+  "layerCountExtracted": 20,
   "parsePath": "loose",
-  "background": "#f7f7f7",
-  "cutoutCandidates": 2,
-  "layersApplied": 2,
-  "leavesInResult": 19,
+  "background": "#FFFFFF",
+  "cutoutCandidates": 1,
+  "layersApplied": 20,
+  "leavesInResult": 21,
   "verify": {
     "ready": false
   },
   "pixelError": null,
-  "textPileOverlaps": 0,
-  "pixelScoreRaw": 90.7,
-  "pixelScore": 90.7,
+  "textPileOverlaps": 1,
+  "pixelScoreRaw": 97,
+  "pixelScore": 94,
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/026/side-by-side.png"
 }

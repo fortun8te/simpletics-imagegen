@@ -1,488 +1,414 @@
 {
   "ok": true,
-  "layers": [
-    {
-      "id": "grp-mr889tg4-r",
-      "type": "group",
-      "name": "Header",
-      "box": {
-        "x": 0,
-        "y": 0,
-        "w": 1080,
-        "h": 1920
-      },
-      "children": [
-        {
-          "id": "ext-mr889tfy-0",
-          "type": "shape",
-          "role": "panel",
-          "name": "panel",
-          "box": {
-            "x": 0,
-            "y": 0,
-            "w": 540,
-            "h": 1920
-          },
-          "style": {
-            "color": "#f7f7f7",
-            "background": "#f7f7f7",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "ext-mr889tg2-1",
-          "type": "shape",
-          "role": "panel",
-          "name": "panel",
-          "box": {
-            "x": 540,
-            "y": 0,
-            "w": 540,
-            "h": 1920
-          },
-          "style": {
-            "color": "#f0f0f0",
-            "background": "#f0f0f0",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "ext-mr889tg3-8",
-          "type": "shape",
-          "role": "badge",
-          "name": "badge",
-          "box": {
-            "x": 454,
-            "y": 192,
-            "w": 173,
-            "h": 77
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
-            "fontSize": 22,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "ellipse"
-          }
-        },
-        {
-          "id": "ext-mr889tg3-2",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "DORE & ROSE",
-          "autoH": true,
-          "box": {
-            "x": 108,
-            "y": 124,
-            "w": 324,
-            "h": 27
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 19,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg3-3",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "Silk",
-          "autoH": true,
-          "box": {
-            "x": 162,
-            "y": 154,
-            "w": 216,
-            "h": 96
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 43,
-            "fontWeight": 700,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg3-4",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "✓",
-          "autoH": true,
-          "box": {
-            "x": 238,
-            "y": 58,
-            "w": 65,
-            "h": 58
-          },
-          "style": {
-            "color": "#4a6a8a",
-            "fontSize": 27,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg3-5",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "OTHERS'",
-          "autoH": true,
-          "box": {
-            "x": 648,
-            "y": 124,
-            "w": 324,
-            "h": 27
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 19,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg3-6",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "Satin",
-          "autoH": true,
-          "box": {
-            "x": 702,
-            "y": 154,
-            "w": 216,
-            "h": 96
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg3-7",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "✗",
-          "autoH": true,
-          "box": {
-            "x": 778,
-            "y": 58,
-            "w": 65,
-            "h": 58
-          },
-          "style": {
-            "color": "#c44a4a",
-            "fontSize": 27,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "grp-mr889tg4-s",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 54,
-        "y": 384,
-        "w": 1004,
-        "h": 1107
-      },
-      "children": [
-        {
-          "id": "ext-mr889tg3-9",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · silk pillowcase",
-          "box": {
-            "x": 54,
-            "y": 422,
-            "w": 432,
-            "h": 672
-          },
-          "style": {
-            "background": "#8a7a6a59",
-            "radius": 22,
-            "stroke": {
-              "color": "#8a7a6a",
-              "width": 3
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.05,
-              "y": 0.22,
-              "w": 0.4,
-              "h": 0.35
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr889tg3-a",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · satin pillowcase",
-          "box": {
-            "x": 540,
-            "y": 384,
-            "w": 518,
-            "h": 730
-          },
-          "style": {
-            "background": "#8a8a8a59",
-            "radius": 22,
-            "stroke": {
-              "color": "#8a8a8a",
-              "width": 4
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.5,
-              "y": 0.2,
-              "w": 0.48,
-              "h": 0.38
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr889tg3-b",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Premium Silk",
-          "autoH": true,
-          "box": {
-            "x": 86,
-            "y": 1152,
-            "w": 378,
-            "h": 77
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 35,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg4-c",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Pillowcase",
-          "autoH": true,
-          "box": {
-            "x": 86,
-            "y": 1229,
-            "w": 216,
-            "h": 27
-          },
-          "style": {
-            "color": "#6a6a6a",
-            "fontSize": 19,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg4-d",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Satin",
-          "autoH": true,
-          "box": {
-            "x": 648,
-            "y": 1152,
-            "w": 378,
-            "h": 77
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 35,
-            "fontWeight": 700,
-            "align": "right",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg4-e",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Pillowcase",
-          "autoH": true,
-          "box": {
-            "x": 702,
-            "y": 1229,
-            "w": 324,
-            "h": 27
-          },
-          "style": {
-            "color": "#6a6a6a",
-            "fontSize": 19,
-            "fontWeight": 400,
-            "align": "right",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg4-f",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "✗ Synthetic fabrics",
-          "autoH": true,
-          "box": {
-            "x": 594,
-            "y": 1344,
-            "w": 432,
-            "h": 32
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 22,
-            "fontWeight": 400,
-            "align": "right",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg4-g",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "✓ Antibacterial",
-          "autoH": true,
-          "box": {
-            "x": 86,
-            "y": 1459,
-            "w": 378,
-            "h": 32
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 22,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr889tg4-h",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "✗ Bacterial breeding ground",
-          "autoH": true,
-          "box": {
-            "x": 594,
-            "y": 1421,
-            "w": 432,
-            "h": 32
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 22,
-            "fontWeight": 400,
-            "align": "right",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    }
-  ],
   "canvas": {
     "w": 1080,
     "h": 1920
   },
-  "archetype": "comparison",
-  "background": "#f7f7f7",
+  "archetype": "us-vs-them",
+  "background": "#FFFFFF",
   "backgroundIsPhoto": false,
-  "backgroundConfidence": "high",
   "theme": "light",
-  "dominantPalette": [
+  "layers": [
     {
-      "hex": "#fcfcfc",
-      "share": 0.5
+      "id": "right-panel",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 540,
+        "y": 0,
+        "w": 540,
+        "h": 1920
+      },
+      "style": {
+        "background": "#EEEEEC"
+      }
     },
     {
-      "hex": "#ebebec",
-      "share": 0.25
+      "id": "top-check",
+      "type": "text",
+      "role": "icon",
+      "text": "✓",
+      "box": {
+        "x": 232,
+        "y": 66,
+        "w": 70,
+        "h": 60
+      },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#7C9FE3",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": false
+      }
     },
     {
-      "hex": "#948f90",
-      "share": 0.125
+      "id": "top-cross",
+      "type": "text",
+      "role": "icon",
+      "text": "✗",
+      "box": {
+        "x": 795,
+        "y": 66,
+        "w": 70,
+        "h": 60
+      },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#D5566B",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": false
+      }
     },
     {
-      "hex": "#232020",
-      "share": 0.063
+      "id": "eyebrow-left",
+      "type": "text",
+      "role": "eyebrow",
+      "text": "DORE & ROSE",
+      "box": {
+        "x": 140,
+        "y": 142,
+        "w": 250,
+        "h": 42
+      },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 600,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
     },
     {
-      "hex": "#756b69",
-      "share": 0.063
+      "id": "eyebrow-right",
+      "type": "text",
+      "role": "eyebrow",
+      "text": "OTHERS'",
+      "box": {
+        "x": 735,
+        "y": 142,
+        "w": 165,
+        "h": 42
+      },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 600,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "headline-silk",
+      "type": "text",
+      "role": "headline",
+      "text": "Silk",
+      "box": {
+        "x": 145,
+        "y": 190,
+        "w": 230,
+        "h": 125
+      },
+      "style": {
+        "fontSize": 110,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": false,
+        "italic": true
+      }
+    },
+    {
+      "id": "vs-pill",
+      "type": "badge",
+      "role": "badge",
+      "text": "VS",
+      "box": {
+        "x": 488,
+        "y": 203,
+        "w": 102,
+        "h": 102
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#7C9FE3",
+        "align": "center",
+        "radius": 51,
+        "lineHeight": 1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "headline-satin",
+      "type": "text",
+      "role": "headline",
+      "text": "Satin",
+      "box": {
+        "x": 672,
+        "y": 190,
+        "w": 275,
+        "h": 125
+      },
+      "style": {
+        "fontSize": 110,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": false,
+        "italic": true
+      }
+    },
+    {
+      "id": "pillow-photo",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 60,
+        "y": 385,
+        "w": 980,
+        "h": 610
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.056,
+          "y": 0.201,
+          "w": 0.907,
+          "h": 0.318
+        },
+        "shape": "media"
+      }
+    },
+    {
+      "id": "subhead-left",
+      "type": "text",
+      "role": "subhead",
+      "text": "Premium Silk",
+      "box": {
+        "x": 95,
+        "y": 1048,
+        "w": 340,
+        "h": 62
+      },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "caption-left",
+      "type": "text",
+      "role": "caption",
+      "text": "Pillowcase",
+      "box": {
+        "x": 95,
+        "y": 1118,
+        "w": 200,
+        "h": 44
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 600,
+        "color": "#8B8B8B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "subhead-right",
+      "type": "text",
+      "role": "subhead",
+      "text": "Satin",
+      "box": {
+        "x": 800,
+        "y": 1048,
+        "w": 190,
+        "h": 62
+      },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "caption-right",
+      "type": "text",
+      "role": "caption",
+      "text": "Pillowcase",
+      "box": {
+        "x": 810,
+        "y": 1118,
+        "w": 180,
+        "h": 44
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 600,
+        "color": "#8B8B8B",
+        "align": "right",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-left-1",
+      "type": "text",
+      "role": "benefit",
+      "text": "✓ Premium silk",
+      "box": {
+        "x": 95,
+        "y": 1182,
+        "w": 320,
+        "h": 56
+      },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-left-2",
+      "type": "text",
+      "role": "benefit",
+      "text": "✓ Antibacterial",
+      "box": {
+        "x": 95,
+        "y": 1288,
+        "w": 340,
+        "h": 56
+      },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-left-3",
+      "type": "text",
+      "role": "benefit",
+      "text": "✓ Protects skin & hair",
+      "box": {
+        "x": 95,
+        "y": 1392,
+        "w": 310,
+        "h": 116
+      },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-right-1",
+      "type": "text",
+      "role": "drawback",
+      "text": "Synthetic fabrics ✗",
+      "box": {
+        "x": 570,
+        "y": 1182,
+        "w": 420,
+        "h": 56
+      },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-right-2",
+      "type": "text",
+      "role": "drawback",
+      "text": "Bacterial breeding ground ✗",
+      "box": {
+        "x": 590,
+        "y": 1262,
+        "w": 400,
+        "h": 116
+      },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-right-3",
+      "type": "text",
+      "role": "drawback",
+      "text": "Causes friction with skin & hair ✗",
+      "box": {
+        "x": 550,
+        "y": 1392,
+        "w": 440,
+        "h": 116
+      },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "cta-button",
+      "type": "button",
+      "role": "cta",
+      "text": "100 Nights Risk Free Trial",
+      "box": {
+        "x": 255,
+        "y": 1628,
+        "w": 572,
+        "h": 112
+      },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 600,
+        "color": "#FFFFFF",
+        "background": "#0B0B0B",
+        "align": "center",
+        "radius": 26,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
     }
-  ],
-  "selfCheck": {
-    "matched": false,
-    "score": 35,
-    "corrections": [],
-    "applied": 0,
-    "iterations": 3,
-    "totalCorrections": 15
-  },
-  "error": null,
-  "passes": 2
+  ]
 }

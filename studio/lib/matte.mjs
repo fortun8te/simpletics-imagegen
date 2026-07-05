@@ -32,6 +32,8 @@ export function matteCacheKey(srcBuf, cropFrac) {
   const h = createHash('sha256');
   h.update(srcBuf);
   h.update(JSON.stringify({ x: cropFrac.x, y: cropFrac.y, w: cropFrac.w, h: cropFrac.h }));
+  h.update('gate-v2'); // quality-gate version salt — bump when judging rules change so cached
+                       // mattes approved under OLD rules (e.g. pre-translucency-gate ghosts) miss
   return h.digest('hex').slice(0, 24);
 }
 
@@ -109,6 +111,16 @@ export async function matteCutout(srcPngPath, cropFrac, outPath, opts = {}) {
     const { data, info } = await sharp(mattedPng).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     for (let i = 3; i < data.length; i += 4) if (data[i] < 60) data[i] = 0;
     subjectFrac = alphaFraction(data, info.width * info.height);
+    // TRANSLUCENCY GATE (ad 076): a matte can pass the AREA thresholds while its subject is
+    // GHOSTLY — large regions of half-alpha (the model was unsure) render as a washed-out
+    // see-through product, which looks worse than the plain rect crop. Judge subject SOLIDITY:
+    // among kept pixels (alpha > 60 post-cleanup), require most to be confidently opaque.
+    let kept = 0, solid = 0;
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] > 60) { kept++; if (data[i] > 200) solid++; }
+    }
+    const solidity = kept ? solid / kept : 0;
+    if (kept && solidity < 0.72) return fail('matte too translucent (ghost subject)', { subjectFrac, solidity: Math.round(solidity * 100) / 100 });
     mattedPng = await sharp(data, { raw: { width: info.width, height: info.height, channels: 4 } }).png().toBuffer();
   } catch (e) { return fail(`inspect: ${e.message}`); }
   if (!judgeSubjectFrac(subjectFrac)) return fail('matte failed thresholds', { subjectFrac });

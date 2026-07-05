@@ -1,0 +1,304 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "us-vs-them",
+  "background": "#FFFFFF",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "right-panel",
+      "type": "shape",
+      "role": "card",
+      "box": { "x": 540, "y": 0, "w": 540, "h": 1920 },
+      "style": { "background": "#EEEEEC" }
+    },
+    {
+      "id": "top-check",
+      "type": "text",
+      "role": "icon",
+      "text": "✓",
+      "box": { "x": 232, "y": 66, "w": 70, "h": 60 },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#7C9FE3",
+        "align": "center",
+        "lineHeight": 1.0,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "top-cross",
+      "type": "text",
+      "role": "icon",
+      "text": "✗",
+      "box": { "x": 795, "y": 66, "w": 70, "h": 60 },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#D5566B",
+        "align": "center",
+        "lineHeight": 1.0,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "eyebrow-left",
+      "type": "text",
+      "role": "eyebrow",
+      "text": "DORE & ROSE",
+      "box": { "x": 140, "y": 142, "w": 250, "h": 42 },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 600,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "eyebrow-right",
+      "type": "text",
+      "role": "eyebrow",
+      "text": "OTHERS'",
+      "box": { "x": 735, "y": 142, "w": 165, "h": 42 },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 600,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "headline-silk",
+      "type": "text",
+      "role": "headline",
+      "text": "Silk",
+      "box": { "x": 145, "y": 190, "w": 230, "h": 125 },
+      "style": {
+        "fontSize": 110,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1.0,
+        "uppercase": false,
+        "italic": true
+      }
+    },
+    {
+      "id": "vs-pill",
+      "type": "badge",
+      "role": "badge",
+      "text": "VS",
+      "box": { "x": 488, "y": 203, "w": 102, "h": 102 },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#7C9FE3",
+        "align": "center",
+        "radius": 51,
+        "lineHeight": 1.0,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "headline-satin",
+      "type": "text",
+      "role": "headline",
+      "text": "Satin",
+      "box": { "x": 672, "y": 190, "w": 275, "h": 125 },
+      "style": {
+        "fontSize": 110,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "center",
+        "lineHeight": 1.0,
+        "uppercase": false,
+        "italic": true
+      }
+    },
+    {
+      "id": "pillow-photo",
+      "type": "shape",
+      "role": "product",
+      "box": { "x": 60, "y": 385, "w": 980, "h": 610 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.056, "y": 0.201, "w": 0.907, "h": 0.318 },
+        "shape": "media"
+      }
+    },
+    {
+      "id": "subhead-left",
+      "type": "text",
+      "role": "subhead",
+      "text": "Premium Silk",
+      "box": { "x": 95, "y": 1048, "w": 340, "h": 62 },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "caption-left",
+      "type": "text",
+      "role": "caption",
+      "text": "Pillowcase",
+      "box": { "x": 95, "y": 1118, "w": 200, "h": 44 },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 600,
+        "color": "#8B8B8B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "subhead-right",
+      "type": "text",
+      "role": "subhead",
+      "text": "Satin",
+      "box": { "x": 800, "y": 1048, "w": 190, "h": 62 },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 700,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "caption-right",
+      "type": "text",
+      "role": "caption",
+      "text": "Pillowcase",
+      "box": { "x": 810, "y": 1118, "w": 180, "h": 44 },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 600,
+        "color": "#8B8B8B",
+        "align": "right",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-left-1",
+      "type": "text",
+      "role": "benefit",
+      "text": "✓ Premium silk",
+      "box": { "x": 95, "y": 1182, "w": 320, "h": 56 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-left-2",
+      "type": "text",
+      "role": "benefit",
+      "text": "✓ Antibacterial",
+      "box": { "x": 95, "y": 1288, "w": 340, "h": 56 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-left-3",
+      "type": "text",
+      "role": "benefit",
+      "text": "✓ Protects skin & hair",
+      "box": { "x": 95, "y": 1392, "w": 310, "h": 116 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "left",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-right-1",
+      "type": "text",
+      "role": "drawback",
+      "text": "Synthetic fabrics ✗",
+      "box": { "x": 570, "y": 1182, "w": 420, "h": 56 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-right-2",
+      "type": "text",
+      "role": "drawback",
+      "text": "Bacterial breeding ground ✗",
+      "box": { "x": 590, "y": 1262, "w": 400, "h": 116 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "list-right-3",
+      "type": "text",
+      "role": "drawback",
+      "text": "Causes friction with skin & hair ✗",
+      "box": { "x": 550, "y": 1392, "w": 440, "h": 116 },
+      "style": {
+        "fontSize": 44,
+        "fontWeight": 500,
+        "color": "#111418",
+        "align": "right",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "cta-button",
+      "type": "button",
+      "role": "cta",
+      "text": "100 Nights Risk Free Trial",
+      "box": { "x": 255, "y": 1628, "w": 572, "h": 112 },
+      "style": {
+        "fontSize": 42,
+        "fontWeight": 600,
+        "color": "#FFFFFF",
+        "background": "#0B0B0B",
+        "align": "center",
+        "radius": 26,
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    }
+  ]
+}

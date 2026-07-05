@@ -1,0 +1,523 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "data-stat",
+  "background": "#F2F1EF",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "bg-gradient",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "gradient": {
+          "type": "linear",
+          "angle": 180,
+          "stops": [
+            {
+              "color": "#F6F5F3",
+              "pos": 0
+            },
+            {
+              "color": "#EDECEA",
+              "pos": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "stat-icon",
+      "type": "shape",
+      "role": "logo",
+      "box": {
+        "x": 283,
+        "y": 400,
+        "w": 82,
+        "h": 82
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.262,
+          "y": 0.208,
+          "w": 0.076,
+          "h": 0.043
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "stat-number",
+      "type": "text",
+      "role": "headline",
+      "text": "58%",
+      "box": {
+        "x": 375,
+        "y": 338,
+        "w": 395,
+        "h": 165
+      },
+      "style": {
+        "fontSize": 155,
+        "fontWeight": 500,
+        "color": "#131313",
+        "align": "left",
+        "lineHeight": 1.0,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "Of Athletes Are Chronically Underhydrated",
+      "box": {
+        "x": 130,
+        "y": 523,
+        "w": 820,
+        "h": 165
+      },
+      "style": {
+        "fontSize": 62,
+        "fontWeight": 400,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "source-line",
+      "type": "text",
+      "role": "caption",
+      "text": "Journal Of Applied Physiology, 2025",
+      "box": {
+        "x": 378,
+        "y": 696,
+        "w": 325,
+        "h": 34
+      },
+      "style": {
+        "fontSize": 25,
+        "fontWeight": 700,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "grid-line-1",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 172,
+        "y": 815,
+        "w": 735,
+        "h": 2
+      },
+      "style": {
+        "background": "#D9D8D5",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "grid-line-2",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 172,
+        "y": 920,
+        "w": 735,
+        "h": 2
+      },
+      "style": {
+        "background": "#D9D8D5",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "grid-line-3",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 172,
+        "y": 1025,
+        "w": 735,
+        "h": 2
+      },
+      "style": {
+        "background": "#D9D8D5",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "grid-line-4",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 172,
+        "y": 1130,
+        "w": 735,
+        "h": 2
+      },
+      "style": {
+        "background": "#D9D8D5",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "grid-line-5",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 172,
+        "y": 1235,
+        "w": 735,
+        "h": 2
+      },
+      "style": {
+        "background": "#D9D8D5",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "grid-line-6",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 172,
+        "y": 1340,
+        "w": 735,
+        "h": 2
+      },
+      "style": {
+        "background": "#D9D8D5",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "chart-area",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 172,
+        "y": 790,
+        "w": 735,
+        "h": 550
+      },
+      "style": {
+        "gradient": {
+          "type": "linear",
+          "angle": 180,
+          "stops": [
+            {
+              "color": "#F0952F",
+              "pos": 0
+            },
+            {
+              "color": "#F7E9D5",
+              "pos": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "data-seg-1",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 235,
+        "y": 1210,
+        "w": 150,
+        "h": 65
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "data-seg-2",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 385,
+        "y": 1045,
+        "w": 150,
+        "h": 165
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "data-seg-3",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 535,
+        "y": 890,
+        "w": 150,
+        "h": 155
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "data-seg-4-arrow",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 685,
+        "y": 788,
+        "w": 222,
+        "h": 102
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "arrow"
+      }
+    },
+    {
+      "id": "dot-1",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 226,
+        "y": 1266,
+        "w": 18,
+        "h": 18
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "ellipse"
+      }
+    },
+    {
+      "id": "dot-2",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 376,
+        "y": 1201,
+        "w": 18,
+        "h": 18
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "ellipse"
+      }
+    },
+    {
+      "id": "dot-3",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 526,
+        "y": 1036,
+        "w": 18,
+        "h": 18
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "ellipse"
+      }
+    },
+    {
+      "id": "dot-4",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 676,
+        "y": 881,
+        "w": 18,
+        "h": 18
+      },
+      "style": {
+        "background": "#131313",
+        "shapeKind": "ellipse"
+      }
+    },
+    {
+      "id": "product-sachet",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 788,
+        "y": 845,
+        "w": 106,
+        "h": 468
+      },
+      "style": {
+        "shadow": true
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.73,
+          "y": 0.44,
+          "w": 0.098,
+          "h": 0.244
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "week-label-1",
+      "type": "text",
+      "role": "caption",
+      "text": "WEEK 1",
+      "box": {
+        "x": 170,
+        "y": 1352,
+        "w": 130,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 25,
+        "fontWeight": 400,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "week-label-2",
+      "type": "text",
+      "role": "caption",
+      "text": "WEEK 2",
+      "box": {
+        "x": 320,
+        "y": 1352,
+        "w": 130,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 25,
+        "fontWeight": 400,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "week-label-3",
+      "type": "text",
+      "role": "caption",
+      "text": "WEEK 3",
+      "box": {
+        "x": 470,
+        "y": 1352,
+        "w": 130,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 25,
+        "fontWeight": 400,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "week-label-4",
+      "type": "text",
+      "role": "caption",
+      "text": "WEEK 4",
+      "box": {
+        "x": 620,
+        "y": 1352,
+        "w": 130,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 25,
+        "fontWeight": 400,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "week-label-5",
+      "type": "text",
+      "role": "caption",
+      "text": "WEEK 5",
+      "box": {
+        "x": 775,
+        "y": 1352,
+        "w": 130,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 25,
+        "fontWeight": 400,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "hydration-badge",
+      "type": "badge",
+      "role": "badge",
+      "text": "DAILY HYDRATION",
+      "box": {
+        "x": 389,
+        "y": 1398,
+        "w": 302,
+        "h": 58
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "background": "#F6891F",
+        "align": "center",
+        "radius": 4,
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "bottom-caption",
+      "type": "text",
+      "role": "body",
+      "text": "Most athletes think they're hydrating properly. Research says otherwise. And they don't even feel thirsty.",
+      "box": {
+        "x": 195,
+        "y": 1483,
+        "w": 690,
+        "h": 145
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 400,
+        "color": "#131313",
+        "align": "center",
+        "lineHeight": 1.3,
+        "uppercase": false
+      }
+    }
+  ]
+}

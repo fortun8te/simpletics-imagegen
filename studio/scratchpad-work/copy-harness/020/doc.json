@@ -1,13 +1,13 @@
 {
-  "id": "harness_020_fe921097",
-  "name": "copy-harness harness_020_fe921097",
+  "id": "harness_020_a42a2781",
+  "name": "copy-harness harness_020_a42a2781",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr884zn2-5m",
+      "id": "base-mr89thh6-1q",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,145 +19,170 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#e0e0e0"
+        "background": "#F5F5F3"
       }
     },
     {
-      "id": "group-mr884zn1-5f",
-      "type": "group",
-      "name": "Header",
+      "id": "headline-mr89thh6-1j",
+      "type": "text",
+      "role": "headline",
+      "text": "BLACK",
       "box": {
-        "x": 46,
-        "y": 140,
-        "w": 1034,
-        "h": 940
+        "x": 190,
+        "y": 52,
+        "w": 700,
+        "h": 170
       },
-      "children": [
-        {
-          "id": "rect-mr884zn1-5g",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · magazine cover",
-          "box": {
-            "x": 238,
-            "y": 140,
-            "w": 842,
-            "h": 940
-          },
-          "style": {},
-          "src": "/refasset?id=harness-020mc66ed9ab"
-        },
-        {
-          "id": "headline-mr884zn1-5h",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "House Beautiful",
-          "autoH": true,
-          "box": {
-            "x": 46,
-            "y": 214,
-            "w": 638,
-            "h": 210
-          },
-          "style": {
-            "color": "#f5f5f5",
-            "fontSize": 70,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2,
-            "pill": true,
-            "background": "rgba(0,0,0,0.62)",
-            "padding": 39
-          }
-        }
-      ]
+      "style": {
+        "fontSize": 170,
+        "fontWeight": 900,
+        "color": "#2B3BEB",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true
+      },
+      "autoH": true
     },
     {
-      "id": "group-mr884zn1-5i",
-      "type": "group",
-      "name": "Body",
+      "id": "headline-mr89thh6-1k",
+      "type": "text",
+      "role": "headline",
+      "text": "FRIDAY",
       "box": {
-        "x": 173,
-        "y": 335,
-        "w": 907,
-        "h": 417
+        "x": 150,
+        "y": 218,
+        "w": 780,
+        "h": 213
       },
-      "children": [
-        {
-          "id": "headline-mr884zn1-5j",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "BLACK FRIDAY",
-          "autoH": true,
-          "box": {
-            "x": 173,
-            "y": 335,
-            "w": 907,
-            "h": 317
-          },
-          "style": {
-            "color": "#1a1aff",
-            "fontSize": 132,
-            "fontWeight": 900,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "subhead-mr884zn1-5k",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "Your loveliest Christmas ever!",
-          "autoH": true,
-          "box": {
-            "x": 343,
-            "y": 613,
-            "w": 612,
-            "h": 89
-          },
-          "style": {
-            "color": "#b2aa93",
-            "fontSize": 37,
-            "fontWeight": 800,
-            "align": "left",
-            "uppercase": false,
-            "fontFamily": "Georgia",
-            "serif": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "badge-mr884zn1-5l",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "60 REAL HOMES DRESSED FOR THE HOLIDAYS",
-          "autoH": true,
-          "box": {
-            "x": 424,
-            "y": 686,
-            "w": 247,
-            "h": 94
-          },
-          "style": {
-            "color": "#f5f5f5",
-            "fontSize": 26,
-            "fontWeight": 800,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        }
-      ]
+      "style": {
+        "fontSize": 170,
+        "fontWeight": 900,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "shadow": true,
+        "pill": true,
+        "background": "rgba(0,0,0,0.62)",
+        "padding": 94
+      },
+      "autoH": true
+    },
+    {
+      "id": "decor-mr89thh6-1l",
+      "type": "text",
+      "role": "decor",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 390,
+        "w": 700,
+        "h": 213
+      },
+      "style": {
+        "fontSize": 170,
+        "fontWeight": 900,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true,
+        "pill": true,
+        "background": "rgba(0,0,0,0.62)",
+        "padding": 94
+      },
+      "autoH": true
+    },
+    {
+      "id": "decor-mr89thh6-1m",
+      "type": "text",
+      "role": "decor",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 558,
+        "w": 756,
+        "h": 213
+      },
+      "style": {
+        "fontSize": 170,
+        "fontWeight": 900,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true,
+        "pill": true,
+        "background": "rgba(0,0,0,0.62)",
+        "padding": 94
+      },
+      "autoH": true
+    },
+    {
+      "id": "decor-mr89thh6-1n",
+      "type": "text",
+      "role": "decor",
+      "text": "BLACK",
+      "box": {
+        "x": 190,
+        "y": 728,
+        "w": 700,
+        "h": 213
+      },
+      "style": {
+        "fontSize": 170,
+        "fontWeight": 900,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true,
+        "shadow": true,
+        "pill": true,
+        "background": "rgba(0,0,0,0.62)",
+        "padding": 94
+      },
+      "autoH": true
+    },
+    {
+      "id": "decor-mr89thh6-1o",
+      "type": "text",
+      "role": "decor",
+      "text": "FRIDAY",
+      "box": {
+        "x": 150,
+        "y": 898,
+        "w": 756,
+        "h": 170
+      },
+      "style": {
+        "fontSize": 170,
+        "fontWeight": 900,
+        "color": "#2B3BEB",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": true,
+        "outline": true
+      },
+      "autoH": true
+    },
+    {
+      "id": "product-mr89thh6-1p",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 225,
+        "y": 160,
+        "w": 660,
+        "h": 750
+      },
+      "style": {},
+      "src": "/refasset?id=harness-020m7e5c6cf5",
+      "name": "Cut-out"
     }
   ],
-  "skeletonId": "skel_mr884zn1m8kr",
-  "updatedAt": 1783282134870
+  "skeletonId": "skel_mr89thh60vut",
+  "updatedAt": 1783284958313
 }

@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "canvas": { "w": 1080, "h": 1920 },
+  "archetype": "x-post",
+  "background": "#FFFFFF",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "avatar",
+      "type": "shape",
+      "role": "avatar",
+      "box": { "x": 118, "y": 368, "w": 130, "h": 132 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.109, "y": 0.192, "w": 0.12, "h": 0.069 },
+        "shape": "avatar"
+      }
+    },
+    {
+      "id": "display-name",
+      "type": "text",
+      "role": "meta",
+      "text": "UPFRONT",
+      "box": { "x": 272, "y": 392, "w": 220, "h": 50 },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 700,
+        "color": "#0F1419",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "verified-badge",
+      "type": "shape",
+      "role": "icon",
+      "box": { "x": 446, "y": 398, "w": 42, "h": 42 },
+      "style": {},
+      "cutoutCandidate": {
+        "region": { "x": 0.413, "y": 0.207, "w": 0.039, "h": 0.022 },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "handle",
+      "type": "text",
+      "role": "meta",
+      "text": "@UpfrontFood",
+      "box": { "x": 272, "y": 446, "w": 250, "h": 46 },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 400,
+        "color": "#536471",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "post-body",
+      "type": "text",
+      "role": "body",
+      "text": "WAT. EEN. JAAR. 🥹😮‍💨🤝\n\nVan een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🤝🏼",
+      "box": { "x": 128, "y": 552, "w": 840, "h": 745 },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#0F1419",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      }
+    }
+  ]
+}

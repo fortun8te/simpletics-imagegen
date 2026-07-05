@@ -1,13 +1,13 @@
 {
-  "id": "harness_010_19f8e0f6",
-  "name": "copy-harness harness_010_19f8e0f6",
+  "id": "harness_010_a6f793e3",
+  "name": "copy-harness harness_010_a6f793e3",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr87sp5h-3o",
+      "id": "base-mr89smzt-r",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,386 +19,112 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#ffffff"
+        "background": "#FFFFFF"
       }
     },
     {
-      "id": "card-mr87sp5h-38",
-      "type": "shape",
-      "role": "card",
-      "name": "Post bg",
+      "id": "avatar-mr89smzt-m",
+      "type": "image",
+      "role": "avatar",
       "box": {
-        "x": 0,
-        "y": 0,
-        "w": 1080,
-        "h": 1920
+        "x": 118,
+        "y": 368,
+        "w": 130,
+        "h": 132
       },
       "style": {
-        "background": "#ffffff"
+        "crop": {
+          "x": 0.109,
+          "y": 0.192,
+          "w": 0.12,
+          "h": 0.069
+        },
+        "shapeKind": "ellipse"
       },
-      "tpl": "x-post-ad",
-      "template": {
-        "id": "x-post-ad",
-        "params": {
-          "name": "UPFRONT",
-          "handle": "@UpfrontFood",
-          "body": "Van een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🙏",
-          "followLabel": "Volgend",
-          "timestamp": " ",
-          "views": " ",
-          "viewsLabel": "views",
-          "replies": " ",
-          "reposts": " ",
-          "likes": " ",
-          "bookmarks": " ",
-          "verified": true,
-          "blurAvatar": false,
-          "avatarEffect": "none",
-          "showActions": false,
-          "theme": "light",
-          "media": "",
-          "photo": "attached photo",
-          "quoteName": "Simpletics",
-          "quoteHandle": "@simpletics",
-          "quoteText": "the texture powder is genuinely the only thing that gave my flat hair volume"
-        }
-      }
+      "src": "/refasset?id=harness-010",
+      "name": "Avatar (cut out)"
     },
     {
-      "id": "group-mr87sp5h-39",
-      "type": "group",
-      "name": "Nav",
+      "id": "meta-mr89smzt-n",
+      "type": "text",
+      "role": "meta",
+      "text": "UPFRONT",
       "box": {
-        "x": 54,
-        "y": 47,
-        "w": 972,
-        "h": 78
+        "x": 272,
+        "y": 392,
+        "w": 220,
+        "h": 50
       },
-      "children": [
-        {
-          "id": "caption-mr87sp5h-3a",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Back",
-          "text": "←",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 54,
-            "w": 108,
-            "h": 71
-          },
-          "style": {
-            "fontSize": 59,
-            "fontWeight": 700,
-            "color": "#0f1419",
-            "align": "left",
-            "lineHeight": 1,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr87sp5h-3b",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Nav title",
-          "text": "Post",
-          "sizeLocked": true,
-          "box": {
-            "x": 216,
-            "y": 54,
-            "w": 648,
-            "h": 71
-          },
-          "style": {
-            "fontSize": 54,
-            "fontWeight": 800,
-            "color": "#0f1419",
-            "align": "center",
-            "lineHeight": 1.15,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr87sp5h-3c",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "More",
-          "text": "⋯",
-          "sizeLocked": true,
-          "box": {
-            "x": 918,
-            "y": 47,
-            "w": 108,
-            "h": 71
-          },
-          "style": {
-            "fontSize": 59,
-            "fontWeight": 800,
-            "color": "#0f1419",
-            "align": "right",
-            "lineHeight": 1,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        }
-      ],
-      "tpl": "x-post-ad"
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 700,
+        "color": "#0F1419",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      "autoH": true
     },
     {
-      "id": "group-mr87sp5h-3d",
-      "type": "group",
-      "name": "Header",
+      "id": "icon-mr89smzt-o",
+      "type": "shape",
+      "role": "logo",
       "box": {
-        "x": 54,
-        "y": 183,
-        "w": 972,
-        "h": 140
+        "x": 446,
+        "y": 398,
+        "w": 42,
+        "h": 42
       },
-      "children": [
-        {
-          "id": "avatar-mr87sp5h-3e",
-          "type": "image",
-          "role": "avatar",
-          "name": "Avatar",
-          "box": {
-            "x": 54,
-            "y": 183,
-            "w": 140,
-            "h": 140
-          },
-          "style": {
-            "crop": {
-              "x": 0.1,
-              "y": 0.18,
-              "w": 0.12,
-              "h": 0.07
-            },
-            "shapeKind": "ellipse"
-          },
-          "tpl": "x-post-ad",
-          "src": "/refasset?id=harness-010"
-        },
-        {
-          "id": "caption-mr87sp5h-3f",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Name",
-          "text": "UPFRONT",
-          "sizeLocked": true,
-          "box": {
-            "x": 226,
-            "y": 202,
-            "w": 227,
-            "h": 61
-          },
-          "style": {
-            "fontSize": 45,
-            "fontWeight": 800,
-            "color": "#0f1419",
-            "align": "left",
-            "lineHeight": 1.2,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad",
-          "tplRef": {
-            "key": "name"
-          }
-        },
-        {
-          "id": "badge-mr87sp5h-3g",
-          "type": "shape",
-          "role": "badge",
-          "name": "Verified",
-          "box": {
-            "x": 463,
-            "y": 205,
-            "w": 45,
-            "h": 45
-          },
-          "style": {
-            "shapeKind": "path",
-            "path": "M0.927091 0.5c-0.000818 -0.029364 -0.009773 -0.057955 -0.025909 -0.082545 -0.016091 -0.024545 -0.038727 -0.044182 -0.065364 -0.056636 0.010136 -0.027591 0.012273 -0.057455 0.006364 -0.086227 -0.005955 -0.028818 -0.019864 -0.055364 -0.040091 -0.076682 -0.021364 -0.020227 -0.047864 -0.034091 -0.076682 -0.040091 -0.028773 -0.005909 -0.058636 -0.003773 -0.086227 0.006364 -0.012409 -0.026682 -0.032 -0.049364 -0.056591 -0.065455S0.529409 0.073636 0.5 0.072909c-0.029364 0.000773 -0.057864 0.009682 -0.082409 0.025818s-0.044045 0.038818 -0.056364 0.065455c-0.027636 -0.010136 -0.057591 -0.012364 -0.086455 -0.006364 -0.028864 0.005909 -0.055455 0.019818 -0.076818 0.040091 -0.020227 0.021364 -0.034045 0.047955 -0.039909 0.076727 -0.005909 0.028773 -0.003636 0.058636 0.006545 0.086182 -0.026682 0.012455 -0.049409 0.032045 -0.065591 0.056591 -0.016182 0.024545 -0.025227 0.053182 -0.026091 0.082591 0.000909 0.029409 0.009909 0.058 0.026091 0.082591 0.016182 0.024545 0.038909 0.044182 0.065591 0.056591 -0.010182 0.027545 -0.012455 0.057409 -0.006545 0.086182 0.005909 0.028818 0.019682 0.055364 0.039864 0.076727 0.021364 0.020136 0.047909 0.033955 0.076682 0.039909 0.028773 0.006 0.058636 0.003818 0.086227 -0.006182 0.012455 0.026636 0.032045 0.049273 0.056636 0.065409 0.024545 0.016091 0.053182 0.025045 0.082545 0.025864 0.029409 -0.000727 0.058 -0.009682 0.082591 -0.025773s0.044182 -0.038818 0.056591 -0.065455c0.027455 0.010864 0.057545 0.013455 0.0865 0.007455 0.028909 -0.006 0.055455 -0.020318 0.076364 -0.041227 0.020909 -0.020909 0.035273 -0.047455 0.041273 -0.076409s0.003409 -0.059045 -0.0075 -0.0865c0.026636 -0.012455 0.049273 -0.032045 0.065409 -0.056636 0.016091 -0.024545 0.025045 -0.053182 0.025864 -0.082545zM0.439182 0.675l-0.155864 -0.155818 0.058773 -0.059182 0.094182 0.094182 0.2 -0.217909 0.061227 0.056636z",
-            "background": "#1d9bf0"
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr87sp5h-3h",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Handle",
-          "text": "@UpfrontFood",
-          "sizeLocked": true,
-          "box": {
-            "x": 226,
-            "y": 258,
-            "w": 540,
-            "h": 53
-          },
-          "style": {
-            "fontSize": 39,
-            "fontWeight": 400,
-            "color": "#536471",
-            "align": "left",
-            "lineHeight": 1.2,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad",
-          "tplRef": {
-            "key": "handle"
-          }
-        },
-        {
-          "id": "cta-mr87sp5h-3i",
-          "type": "text",
-          "autoH": true,
-          "role": "cta",
-          "name": "Following",
-          "text": "Volgend",
-          "sizeLocked": true,
-          "box": {
-            "x": 728,
-            "y": 208,
-            "w": 298,
-            "h": 90
-          },
-          "style": {
-            "fontSize": 39,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "background": "#0f1419",
-            "radius": 90,
-            "align": "center",
-            "lineHeight": 1,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad",
-          "tplRef": {
-            "key": "followLabel"
-          }
-        }
-      ],
-      "tpl": "x-post-ad"
+      "style": {
+        "shapeKind": "path",
+        "path": "M 0.2827 0.2917 L 0.3185 0.2917 L 0.3482 0.3155 L 0.3661 0.3155 L 0.4137 0.3631 L 0.5 0.3631 L 0.5089 0.381 L 0.5476 0.4077 L 0.5625 0.4345 L 0.5714 0.4375 L 0.5714 0.5208 L 0.619 0.5685 L 0.619 0.5863 L 0.6429 0.6161 L 0.6429 0.6518 L 0.619 0.6815 L 0.619 0.6994 L 0.5714 0.747 L 0.5714 0.8304 L 0.5625 0.8393 Q 0.5491 0.8348 0.5536 0.8482 L 0.5268 0.881 L 0.506 0.8869 L 0.497 0.9048 L 0.4137 0.9048 L 0.3661 0.9524 L 0.3482 0.9524 L 0.3185 0.9762 L 0.2827 0.9762 Q 0.2708 0.9524 0.2351 0.9524 L 0.1875 0.9048 L 0.1012 0.9048 L 0.0923 0.8869 L 0.0536 0.8601 L 0.0298 0.8244 L 0.0298 0.747 L 0.0149 0.7321 L 0 0.7292 L 0 0.5357 Q 0.0228 0.5402 0.0298 0.5208 L 0.0298 0.4375 L 0.0387 0.4345 L 0.0744 0.3869 L 0.1012 0.372 L 0.1042 0.3631 L 0.1875 0.3631 L 0.2351 0.3155 Q 0.2748 0.3195 0.2827 0.2917 Z M 0.4048 0.5179 L 0.3869 0.5238 L 0.3869 0.5357 L 0.2857 0.6369 L 0.2857 0.6429 L 0.2619 0.6607 Q 0.2679 0.6726 0.244 0.6667 L 0.1905 0.6071 L 0.1607 0.619 Q 0.1369 0.625 0.1429 0.6667 L 0.1607 0.6726 L 0.1667 0.6905 L 0.1845 0.6964 L 0.1905 0.7143 L 0.2083 0.7202 L 0.2143 0.7381 L 0.2321 0.744 L 0.2381 0.7619 L 0.2619 0.7679 L 0.3155 0.6964 L 0.3393 0.6845 Q 0.3333 0.6667 0.3512 0.6726 L 0.4464 0.5655 L 0.4464 0.5417 Q 0.4405 0.5119 0.4048 0.5179 Z",
+        "background": "#1d9bf0"
+      },
+      "name": "Logo (vectorized)"
     },
     {
-      "id": "group-mr87sp5h-3j",
-      "type": "group",
-      "name": "Body",
+      "id": "meta-mr89smzt-p",
+      "type": "text",
+      "role": "meta",
+      "text": "@UpfrontFood",
       "box": {
-        "x": 54,
-        "y": 390,
-        "w": 972,
-        "h": 886
+        "x": 272,
+        "y": 446,
+        "w": 250,
+        "h": 46
       },
-      "children": [
-        {
-          "id": "headline-mr87sp5h-3k",
-          "type": "text",
-          "autoH": true,
-          "role": "headline",
-          "name": "Body ¶1",
-          "text": "Van een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 390,
-            "w": 972,
-            "h": 204
-          },
-          "style": {
-            "fontSize": 48,
-            "fontWeight": 400,
-            "color": "#0f1419",
-            "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr87sp5h-3l",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Body ¶2",
-          "text": "Stap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 640,
-            "w": 972,
-            "h": 204
-          },
-          "style": {
-            "fontSize": 48,
-            "fontWeight": 400,
-            "color": "#0f1419",
-            "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr87sp5h-3m",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Body ¶3",
-          "text": "Om 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 890,
-            "w": 972,
-            "h": 204
-          },
-          "style": {
-            "fontSize": 48,
-            "fontWeight": 400,
-            "color": "#0f1419",
-            "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        },
-        {
-          "id": "caption-mr87sp5h-3n",
-          "type": "text",
-          "autoH": true,
-          "role": "caption",
-          "name": "Body ¶4",
-          "text": "Zo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🙏",
-          "sizeLocked": true,
-          "box": {
-            "x": 54,
-            "y": 1140,
-            "w": 972,
-            "h": 136
-          },
-          "style": {
-            "fontSize": 48,
-            "fontWeight": 400,
-            "color": "#0f1419",
-            "align": "left",
-            "lineHeight": 1.42,
-            "fontFamily": ""
-          },
-          "tpl": "x-post-ad"
-        }
-      ],
-      "tpl": "x-post-ad"
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 400,
+        "color": "#536471",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89smzt-q",
+      "type": "text",
+      "role": "body",
+      "text": "WAT. EEN. JAAR. 🥹😮‍💨🤝\n\nVan een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🤝🏼",
+      "box": {
+        "x": 128,
+        "y": 552,
+        "w": 756,
+        "h": 821
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#0F1419",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      },
+      "autoH": true
     }
   ],
-  "skeletonId": "skel_mr87sp5h0yyp",
-  "updatedAt": 1783281558870
+  "skeletonId": "skel_mr89smztbqnt",
+  "updatedAt": 1783284915314
 }

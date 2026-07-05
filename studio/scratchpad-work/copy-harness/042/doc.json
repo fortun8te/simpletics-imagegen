@@ -1,13 +1,13 @@
 {
-  "id": "harness_042_2b9b2c25",
-  "name": "copy-harness harness_042_2b9b2c25",
+  "id": "harness_042_a25b92ec",
+  "name": "copy-harness harness_042_a25b92ec",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr88lp5x-8b",
+      "id": "base-mr89twuq-2i",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,140 +23,128 @@
       }
     },
     {
-      "id": "group-mr88lp5x-84",
-      "type": "group",
-      "name": "Header",
-      "box": {
-        "x": 54,
-        "y": 192,
-        "w": 994,
-        "h": 346
-      },
-      "children": [
-        {
-          "id": "caption-mr88lp5x-85",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
-          "autoH": true,
-          "box": {
-            "x": 54,
-            "y": 346,
-            "w": 734,
-            "h": 192
-          },
-          "style": {
-            "color": "#EAEAEA",
-            "fontSize": 38,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "badge-mr88lp5x-86",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "X .com",
-          "autoH": true,
-          "box": {
-            "x": 918,
-            "y": 230,
-            "w": 130,
-            "h": 58
-          },
-          "style": {
-            "color": "#EAEAEA",
-            "fontSize": 27,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "headline-mr88lp5x-87",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "Wavy",
-          "autoH": true,
-          "box": {
-            "x": 162,
-            "y": 192,
-            "w": 432,
-            "h": 68
-          },
-          "style": {
-            "color": "#757575",
-            "fontSize": 56,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "blur": 11
-          }
-        },
-        {
-          "id": "caption-mr88lp5x-88",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "@wavyhair",
-          "autoH": true,
-          "box": {
-            "x": 162,
-            "y": 250,
-            "w": 432,
-            "h": 36
-          },
-          "style": {
-            "color": "#71767b",
-            "fontSize": 30,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "blur": 11
-          }
-        }
-      ]
-    },
-    {
-      "id": "rect-mr88lp5x-89",
+      "id": "avatar-mr89twuq-2c",
       "type": "image",
-      "role": "rect",
-      "name": "Cut-out · man in office",
-      "box": {
-        "x": 32,
-        "y": 480,
-        "w": 1015,
-        "h": 1421
-      },
-      "style": {},
-      "src": "/refasset?id=harness-042m14c4ad3b"
-    },
-    {
-      "id": "avatar-mr88lp5x-8a",
-      "type": "shape",
       "role": "avatar",
-      "name": "Blurred · profile picture",
       "box": {
-        "x": 32,
-        "y": 192,
-        "w": 130,
-        "h": 192
+        "x": 62,
+        "y": 203,
+        "w": 98,
+        "h": 98
       },
       "style": {
-        "background": "#8a9baebf",
-        "shapeKind": "ellipse",
-        "blur": 8
+        "crop": {
+          "x": 0.057,
+          "y": 0.106,
+          "w": 0.091,
+          "h": 0.051
+        },
+        "shapeKind": "ellipse"
+      },
+      "src": "/refasset?id=harness-042",
+      "name": "Avatar (cut out)"
+    },
+    {
+      "id": "decor-mr89twuq-2d",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 205,
+        "y": 215,
+        "w": 215,
+        "h": 80
+      },
+      "style": {
+        "background": "#6E6E6E",
+        "radius": 8
       }
+    },
+    {
+      "id": "watermark-mr89twuq-2e",
+      "type": "text",
+      "role": "watermark",
+      "text": "X.com",
+      "box": {
+        "x": 905,
+        "y": 240,
+        "w": 115,
+        "h": 44
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 400,
+        "color": "#E7E9EA",
+        "align": "right",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89twuq-2f",
+      "type": "text",
+      "role": "body",
+      "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
+      "box": {
+        "x": 50,
+        "y": 355,
+        "w": 756,
+        "h": 141
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "align": "left",
+        "lineHeight": 1.3,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "photo-mr89twuq-2g",
+      "type": "image",
+      "role": "photo",
+      "box": {
+        "x": 55,
+        "y": 480,
+        "w": 970,
+        "h": 1160
+      },
+      "style": {
+        "crop": {
+          "x": 0.051,
+          "y": 0.25,
+          "w": 0.898,
+          "h": 0.604
+        },
+        "radius": 34
+      },
+      "src": "/refasset?id=harness-042",
+      "name": "Cut-out"
+    },
+    {
+      "id": "meta-mr89twuq-2h",
+      "type": "text",
+      "role": "meta",
+      "text": "14:27 - 07/10/2025 - 757 Views",
+      "box": {
+        "x": 60,
+        "y": 1658,
+        "w": 470,
+        "h": 71
+      },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 400,
+        "color": "#8B8B8B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": true
     }
   ],
-  "skeletonId": "skel_mr88lp5wosub",
-  "updatedAt": 1783282914619
+  "skeletonId": "skel_mr89twuq2lhc",
+  "updatedAt": 1783284974739
 }

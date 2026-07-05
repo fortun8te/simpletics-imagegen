@@ -1,0 +1,423 @@
+{
+  "id": "harness_132_a07c0d1a",
+  "name": "copy-harness harness_132_a07c0d1a",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr89vcd8-5e",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#FFFFFF"
+      }
+    },
+    {
+      "id": "headline-mr89vcd8-4v",
+      "type": "text",
+      "role": "headline",
+      "text": "mfs are just always ready to hate 💀",
+      "box": {
+        "x": 172,
+        "y": 328,
+        "w": 700,
+        "h": 135
+      },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 400,
+        "color": "#1C1C1E",
+        "align": "left",
+        "lineHeight": 1.2,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "card-mr89vcd8-4w",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 178,
+        "y": 430,
+        "w": 724,
+        "h": 1200
+      },
+      "style": {
+        "background": "#15171B",
+        "radius": 36
+      }
+    },
+    {
+      "id": "photo-mr89vcd8-4x",
+      "type": "image",
+      "role": "photo",
+      "box": {
+        "x": 310,
+        "y": 430,
+        "w": 168,
+        "h": 252
+      },
+      "style": {
+        "crop": {
+          "x": 0.287,
+          "y": 0.224,
+          "w": 0.156,
+          "h": 0.131
+        },
+        "radius": 8
+      },
+      "src": "/refasset?id=harness-132",
+      "name": "Cut-out"
+    },
+    {
+      "id": "avatar-mr89vcd8-4y",
+      "type": "image",
+      "role": "avatar",
+      "box": {
+        "x": 205,
+        "y": 712,
+        "w": 58,
+        "h": 58
+      },
+      "style": {
+        "crop": {
+          "x": 0.19,
+          "y": 0.371,
+          "w": 0.054,
+          "h": 0.03
+        },
+        "shapeKind": "ellipse"
+      },
+      "src": "/refasset?id=harness-132",
+      "name": "Avatar (cut out)"
+    },
+    {
+      "id": "bubble-mr89vcd8-4z",
+      "type": "text",
+      "role": "bubble",
+      "text": "buddy really got a perm 😭",
+      "box": {
+        "x": 283,
+        "y": 700,
+        "w": 415,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 31,
+        "fontWeight": 400,
+        "color": "#F2F2F2",
+        "background": "#26292F",
+        "align": "left",
+        "radius": 36,
+        "lineHeight": 1.2,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "bubble-mr89vcd8-50",
+      "type": "text",
+      "role": "bubble",
+      "text": "swiping up on another man's story to hate is diabolical lol",
+      "box": {
+        "x": 392,
+        "y": 793,
+        "w": 496,
+        "h": 117
+      },
+      "style": {
+        "fontSize": 31,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "background": "#7B4FF2",
+        "align": "left",
+        "radius": 36,
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "bubble-mr89vcd8-51",
+      "type": "text",
+      "role": "bubble",
+      "text": "and it's not a perm 🖕🏽",
+      "box": {
+        "x": 540,
+        "y": 913,
+        "w": 348,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 31,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "background": "#7A52F4",
+        "align": "left",
+        "radius": 36,
+        "lineHeight": 1.2,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "decor-mr89vcd8-52",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 215,
+        "y": 1014,
+        "w": 240,
+        "h": 2
+      },
+      "style": {
+        "background": "#3A3D42",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "meta-mr89vcd8-53",
+      "type": "text",
+      "role": "meta",
+      "text": "New Messages",
+      "box": {
+        "x": 455,
+        "y": 1000,
+        "w": 170,
+        "h": 66
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#8E9297",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "decor-mr89vcd8-54",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 635,
+        "y": 1014,
+        "w": 240,
+        "h": 2
+      },
+      "style": {
+        "background": "#3A3D42",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "avatar-mr89vcd8-55",
+      "type": "image",
+      "role": "avatar",
+      "box": {
+        "x": 205,
+        "y": 1076,
+        "w": 58,
+        "h": 58
+      },
+      "style": {
+        "crop": {
+          "x": 0.19,
+          "y": 0.56,
+          "w": 0.054,
+          "h": 0.03
+        },
+        "shapeKind": "ellipse"
+      },
+      "src": "/refasset?id=harness-132",
+      "name": "Avatar (cut out)"
+    },
+    {
+      "id": "bubble-mr89vcd8-56",
+      "type": "text",
+      "role": "bubble",
+      "text": "you're not fooling anyone bro 💀",
+      "box": {
+        "x": 283,
+        "y": 1063,
+        "w": 482,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 31,
+        "fontWeight": 400,
+        "color": "#F2F2F2",
+        "background": "#26292F",
+        "align": "left",
+        "radius": 36,
+        "lineHeight": 1.2,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "meta-mr89vcd8-57",
+      "type": "text",
+      "role": "meta",
+      "text": "Replied to you",
+      "box": {
+        "x": 308,
+        "y": 1158,
+        "w": 200,
+        "h": 66
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#8E9297",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "decor-mr89vcd8-58",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 283,
+        "y": 1205,
+        "w": 3,
+        "h": 78
+      },
+      "style": {
+        "background": "#3A3D42",
+        "shapeKind": "line"
+      }
+    },
+    {
+      "id": "bubble-mr89vcd8-59",
+      "type": "text",
+      "role": "bubble",
+      "text": "and it's not a perm 🖕🏽",
+      "box": {
+        "x": 310,
+        "y": 1210,
+        "w": 315,
+        "h": 70
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#E8E4F5",
+        "background": "#3F3466",
+        "align": "left",
+        "radius": 34,
+        "lineHeight": 1.2,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "avatar-mr89vcd8-5a",
+      "type": "image",
+      "role": "avatar",
+      "box": {
+        "x": 205,
+        "y": 1316,
+        "w": 58,
+        "h": 58
+      },
+      "style": {
+        "crop": {
+          "x": 0.19,
+          "y": 0.683,
+          "w": 0.054,
+          "h": 0.03
+        },
+        "shapeKind": "ellipse"
+      },
+      "src": "/refasset?id=harness-132",
+      "name": "Avatar (cut out)"
+    },
+    {
+      "id": "bubble-mr89vcd8-5b",
+      "type": "text",
+      "role": "bubble",
+      "text": "then what is it? gods work?",
+      "box": {
+        "x": 283,
+        "y": 1302,
+        "w": 405,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 31,
+        "fontWeight": 400,
+        "color": "#F2F2F2",
+        "background": "#26292F",
+        "align": "left",
+        "radius": 36,
+        "lineHeight": 1.2,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "bubble-mr89vcd8-5c",
+      "type": "text",
+      "role": "bubble",
+      "text": "just search based texture powder in amazon",
+      "box": {
+        "x": 367,
+        "y": 1395,
+        "w": 521,
+        "h": 112
+      },
+      "style": {
+        "fontSize": 31,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "background": "#4B55EE",
+        "align": "left",
+        "radius": 36,
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "bubble-mr89vcd8-5d",
+      "type": "text",
+      "role": "bubble",
+      "text": "get out my dm's your worst than my girl",
+      "box": {
+        "x": 367,
+        "y": 1512,
+        "w": 521,
+        "h": 110
+      },
+      "style": {
+        "fontSize": 31,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "background": "#3E66F3",
+        "align": "left",
+        "radius": 36,
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    }
+  ],
+  "skeletonId": "skel_mr89vcd88nzz",
+  "updatedAt": 1783285041500
+}

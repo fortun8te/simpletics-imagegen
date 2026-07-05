@@ -1,35 +1,371 @@
 {
-  "at": "2026-07-05T20:44:33.104Z",
-  "n": 1,
-  "okN": 1,
-  "avgScore": 96.2,
+  "at": "2026-07-05T20:57:40.721Z",
+  "n": 13,
+  "okN": 13,
+  "avgScore": 89.8,
   "results": [
     {
-      "id": "052",
-      "filename": "052_attached_6e7a2d035eee1c7e.webp",
+      "id": "009",
+      "filename": "009_attached_885c19be02ccf229.png",
       "ok": true,
       "error": null,
       "ms": {
         "extract": 0,
-        "assemble": 1799,
-        "total": 9655
+        "assemble": 248,
+        "total": 7600
       },
       "readSource": "scene-file",
-      "archetype": "before-after",
-      "layerCountExtracted": 8,
+      "archetype": "x-post",
+      "layerCountExtracted": 21,
       "parsePath": "loose",
-      "background": "#8CA084",
-      "cutoutCandidates": 3,
-      "layersApplied": 8,
-      "leavesInResult": 9,
+      "background": "#000000",
+      "cutoutCandidates": 9,
+      "layersApplied": 21,
+      "leavesInResult": 22,
       "verify": {
         "ready": false
       },
       "pixelError": null,
       "textPileOverlaps": 0,
-      "pixelScoreRaw": 96.2,
-      "pixelScore": 96.2,
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/052/side-by-side.png",
+      "pixelScoreRaw": 94.8,
+      "pixelScore": 94.8,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/009/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "010",
+      "filename": "010_attached_d1da6c1ffd909d18.png",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 10,
+        "total": 8709
+      },
+      "readSource": "scene-file",
+      "archetype": "x-post",
+      "layerCountExtracted": 5,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 2,
+      "layersApplied": 5,
+      "leavesInResult": 6,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 96.9,
+      "pixelScore": 96.9,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/010/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "012",
+      "filename": "012_attached_fc26c4754b888b55.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 12716,
+        "total": 20921
+      },
+      "readSource": "scene-file",
+      "archetype": "benefit-list",
+      "layerCountExtracted": 15,
+      "parsePath": "loose",
+      "background": "#E9F3EB",
+      "cutoutCandidates": 7,
+      "layersApplied": 15,
+      "leavesInResult": 16,
+      "verify": {
+        "ready": true
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 93.6,
+      "pixelScore": 93.6,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/012/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "014",
+      "filename": "014_attached_2adf9ca38ca05726.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 2,
+        "total": 9695
+      },
+      "readSource": "scene-file",
+      "archetype": "annotated-photo",
+      "layerCountExtracted": 11,
+      "parsePath": "loose",
+      "background": "photo",
+      "cutoutCandidates": 0,
+      "layersApplied": 11,
+      "leavesInResult": 12,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 1,
+      "pixelScoreRaw": 92.3,
+      "pixelScore": 89.3,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/014/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "020",
+      "filename": "020_attached_7ba93f7f655ce950.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 3503,
+        "total": 11670
+      },
+      "readSource": "scene-file",
+      "archetype": "type-stack-promo",
+      "layerCountExtracted": 7,
+      "parsePath": "loose",
+      "background": "#F5F5F3",
+      "cutoutCandidates": 1,
+      "layersApplied": 7,
+      "leavesInResult": 8,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 79.9,
+      "pixelScore": 79.9,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/020/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "026",
+      "filename": "026_attached_84a042d29cdfff93.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 2,
+        "total": 8262
+      },
+      "readSource": "scene-file",
+      "archetype": "us-vs-them",
+      "layerCountExtracted": 20,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 1,
+      "layersApplied": 20,
+      "leavesInResult": 21,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 1,
+      "pixelScoreRaw": 97,
+      "pixelScore": 94,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/026/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "042",
+      "filename": "042_attached_c1524c109cdc2a15.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 1,
+        "total": 8957
+      },
+      "readSource": "scene-file",
+      "archetype": "social-post",
+      "layerCountExtracted": 6,
+      "parsePath": "loose",
+      "background": "#000000",
+      "cutoutCandidates": 2,
+      "layersApplied": 6,
+      "leavesInResult": 7,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 98.7,
+      "pixelScore": 98.7,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/042/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "076",
+      "filename": "076_attached_b34a40f272166f73.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 2976,
+        "total": 11655
+      },
+      "readSource": "scene-file",
+      "archetype": "social-proof",
+      "layerCountExtracted": 26,
+      "parsePath": "loose",
+      "background": "#FAEFD8",
+      "cutoutCandidates": 5,
+      "layersApplied": 26,
+      "leavesInResult": 28,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 8,
+      "pixelScoreRaw": 89.1,
+      "pixelScore": 65.1,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/076/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "081",
+      "filename": "081_attached_ee0a249d71015c51.png",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 4623,
+        "total": 20364
+      },
+      "readSource": "scene-file",
+      "archetype": "comparison",
+      "layerCountExtracted": 8,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 3,
+      "layersApplied": 8,
+      "leavesInResult": 9,
+      "verify": {
+        "ready": true
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 95.1,
+      "pixelScore": 95.1,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/081/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "101",
+      "filename": "101_attached_56ab0ef10323548d.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 6286,
+        "total": 16615
+      },
+      "readSource": "scene-file",
+      "archetype": "comparison",
+      "layerCountExtracted": 18,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 3,
+      "layersApplied": 18,
+      "leavesInResult": 19,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 1,
+      "pixelScoreRaw": 93.5,
+      "pixelScore": 90.5,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/101/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "107",
+      "filename": "107_attached_3fba9647f2f90bf8.png",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 1749,
+        "total": 9157
+      },
+      "readSource": "scene-file",
+      "archetype": "data-stat",
+      "layerCountExtracted": 28,
+      "parsePath": "loose",
+      "background": "#F2F1EF",
+      "cutoutCandidates": 2,
+      "layersApplied": 28,
+      "leavesInResult": 29,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 93.9,
+      "pixelScore": 93.9,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/107/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "132",
+      "filename": "132_attached_1231217a91f1d39c.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 0,
+        "assemble": 2,
+        "total": 8842
+      },
+      "readSource": "scene-file",
+      "archetype": "ig-dm",
+      "layerCountExtracted": 19,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 4,
+      "layersApplied": 19,
+      "leavesInResult": 20,
+      "verify": {
+        "ready": true
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 98.1,
+      "pixelScore": 98.1,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/132/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "138",
+      "filename": "138_attached_c02489900cd1b34c.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 1,
+        "assemble": 2662,
+        "total": 10503
+      },
+      "readSource": "scene-file",
+      "archetype": "product-hero",
+      "layerCountExtracted": 5,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 2,
+      "layersApplied": 5,
+      "leavesInResult": 6,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 77.7,
+      "pixelScore": 77.7,
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/138/side-by-side.png",
       "attempts": 1
     }
   ]

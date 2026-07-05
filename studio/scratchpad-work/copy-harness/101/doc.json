@@ -1,0 +1,383 @@
+{
+  "id": "harness_101_6071a84a",
+  "name": "copy-harness harness_101_6071a84a",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base-mr89usfz-41",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#FFFFFF"
+      }
+    },
+    {
+      "id": "card-mr89usfy-3j",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 540,
+        "y": 0,
+        "w": 540,
+        "h": 1080
+      },
+      "style": {
+        "background": "#2AA5B6"
+      }
+    },
+    {
+      "id": "watermark-mr89usfy-3k",
+      "type": "text",
+      "role": "watermark",
+      "text": "craft cadence",
+      "box": {
+        "x": 10,
+        "y": 8,
+        "w": 230,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 500,
+        "color": "#DDDDDD",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "headline-mr89usfy-3l",
+      "type": "text",
+      "role": "headline",
+      "text": "NOT ALL TPU TUBES ARE BUILT THE SAME!",
+      "box": {
+        "x": 150,
+        "y": 59,
+        "w": 780,
+        "h": 130
+      },
+      "style": {
+        "fontSize": 55,
+        "fontWeight": 800,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": true
+      },
+      "autoH": true
+    },
+    {
+      "id": "logo-mr89usfy-3m",
+      "type": "image",
+      "role": "logo",
+      "box": {
+        "x": 113,
+        "y": 400,
+        "w": 173,
+        "h": 67
+      },
+      "style": {},
+      "src": "/refasset?id=harness-101m91c7a51d",
+      "name": "Cut-out"
+    },
+    {
+      "id": "product-mr89usfz-3n",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 184,
+        "y": 227,
+        "w": 205,
+        "h": 448
+      },
+      "style": {},
+      "src": "/refasset?id=harness-101m670a3b22",
+      "name": "Cut-out"
+    },
+    {
+      "id": "badge-mr89usfz-3o",
+      "type": "badge",
+      "role": "badge",
+      "text": "BUY 3, GET 1 FREE!",
+      "box": {
+        "x": 310,
+        "y": 451,
+        "w": 82,
+        "h": 120
+      },
+      "style": {
+        "fontSize": 26,
+        "fontWeight": 700,
+        "color": "#FFFFFF",
+        "background": "#2AA5B6",
+        "align": "center",
+        "radius": 41,
+        "lineHeight": 1.15,
+        "uppercase": true
+      },
+      "autoH": true
+    },
+    {
+      "id": "product-mr89usfz-3p",
+      "type": "image",
+      "role": "product",
+      "box": {
+        "x": 734,
+        "y": 232,
+        "w": 162,
+        "h": 443
+      },
+      "style": {},
+      "src": "/refasset?id=harness-101mbdd16708",
+      "name": "Cut-out"
+    },
+    {
+      "id": "decor-mr89usfz-3q",
+      "type": "text",
+      "role": "decor",
+      "text": "?",
+      "box": {
+        "x": 729,
+        "y": 335,
+        "w": 108,
+        "h": 175
+      },
+      "style": {
+        "fontSize": 140,
+        "fontWeight": 800,
+        "color": "#FFFFFF",
+        "align": "center",
+        "lineHeight": 1,
+        "uppercase": false,
+        "pill": true,
+        "background": "rgba(0,0,0,0.62)",
+        "padding": 77
+      },
+      "autoH": true
+    },
+    {
+      "id": "subhead-mr89usfz-3r",
+      "type": "text",
+      "role": "subhead",
+      "text": "CRAFT CADENCE TPU TUBE",
+      "box": {
+        "x": 76,
+        "y": 697,
+        "w": 389,
+        "h": 84
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      "autoH": true
+    },
+    {
+      "id": "subhead-mr89usfz-3s",
+      "type": "text",
+      "role": "subhead",
+      "text": "TYPICAL TPU TUBE",
+      "box": {
+        "x": 680,
+        "y": 697,
+        "w": 260,
+        "h": 84
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": true
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-3t",
+      "type": "text",
+      "role": "body",
+      "text": "✅ 50% thicker for better durability",
+      "box": {
+        "x": 65,
+        "y": 756,
+        "w": 410,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-3u",
+      "type": "text",
+      "role": "body",
+      "text": "✅ Aluminium valve built to last",
+      "box": {
+        "x": 65,
+        "y": 846,
+        "w": 410,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-3v",
+      "type": "text",
+      "role": "body",
+      "text": "✅ Compatible with electric mini pumps",
+      "box": {
+        "x": 65,
+        "y": 889,
+        "w": 410,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-3w",
+      "type": "text",
+      "role": "body",
+      "text": "✅ Removable valve core for repairs & sealant use",
+      "box": {
+        "x": 65,
+        "y": 975,
+        "w": 410,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-3x",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Ultra-thin walls prone to punctures",
+      "box": {
+        "x": 610,
+        "y": 756,
+        "w": 415,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-3y",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Weak resin valves that can melt",
+      "box": {
+        "x": 610,
+        "y": 840,
+        "w": 415,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-3z",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Not safe for use with e-pumps",
+      "box": {
+        "x": 610,
+        "y": 916,
+        "w": 415,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    },
+    {
+      "id": "body-mr89usfz-40",
+      "type": "text",
+      "role": "body",
+      "text": "❌ Fixed core. Can't repair slow leaks!",
+      "box": {
+        "x": 610,
+        "y": 970,
+        "w": 415,
+        "h": 75
+      },
+      "style": {
+        "fontSize": 30,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.25,
+        "uppercase": false
+      },
+      "autoH": true
+    }
+  ],
+  "skeletonId": "skel_mr89usfykoea",
+  "updatedAt": 1783285021964
+}

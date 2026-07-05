@@ -1,400 +1,519 @@
 {
   "ok": true,
-  "layers": [
-    {
-      "id": "grp-mr893sn4-19",
-      "type": "group",
-      "name": "Header",
-      "box": {
-        "x": 22,
-        "y": 41,
-        "w": 1037,
-        "h": 553
-      },
-      "children": [
-        {
-          "id": "ext-mr893smv-2",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
-          "box": {
-            "x": 0,
-            "y": 161.99999999999997,
-            "w": 454.00000000000006,
-            "h": 405.00000000000006
-          },
-          "style": {
-            "color": "#F8EDDD",
-            "background": "#F8EDDD",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "left",
-            "radius": 22,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "ext-mr893smx-6",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
-          "box": {
-            "x": 248.80000000000018,
-            "y": 243,
-            "w": 497,
-            "h": 351
-          },
-          "style": {
-            "color": "#F8EDDD",
-            "background": "#F8EDDD",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "left",
-            "radius": 22,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "ext-mr893smv-0",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "What they say about us...",
-          "autoH": true,
-          "box": {
-            "x": 130,
-            "y": 41,
-            "w": 821,
-            "h": 70
-          },
-          "style": {
-            "color": "#1D1D1D",
-            "fontSize": 49,
-            "fontWeight": 800,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr893smx-3",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "My go-to gels for marathon training and race day",
-          "autoH": true,
-          "box": {
-            "x": 43,
-            "y": 207,
-            "w": 410,
-            "h": 68
-          },
-          "style": {
-            "color": "#1D1D1D",
-            "fontSize": 19,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr893smx-4",
-          "type": "text",
-          "role": "stars",
-          "name": "stars",
-          "text": "★★★★★",
-          "autoH": true,
-          "box": {
-            "x": 43,
-            "y": 169,
-            "w": 108,
-            "h": 30
-          },
-          "style": {
-            "color": "#F0A815",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr893smx-5",
-          "type": "badge",
-          "role": "badge",
-          "name": "badge",
-          "text": "REVIEWED ON JUN1P",
-          "autoH": true,
-          "box": {
-            "x": 107.79999999999981,
-            "y": 149,
-            "w": 197.00000000000006,
-            "h": 95.00000000000001
-          },
-          "style": {
-            "color": "#E2D883",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "center",
-            "radius": 540,
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr893smy-7",
-          "type": "text",
-          "role": "stars",
-          "name": "stars",
-          "text": "★★★★★",
-          "autoH": true,
-          "box": {
-            "x": 583,
-            "y": 257,
-            "w": 108,
-            "h": 30
-          },
-          "style": {
-            "color": "#F0A815",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "grp-mr893sn4-1a",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 22,
-        "y": 351,
-        "w": 1037,
-        "h": 999
-      },
-      "children": [
-        {
-          "id": "ext-mr893smy-9",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
-          "box": {
-            "x": 248.80000000000018,
-            "y": 662,
-            "w": 497,
-            "h": 324.00000000000006
-          },
-          "style": {
-            "color": "#F8EDDD",
-            "background": "#F8EDDD",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "left",
-            "radius": 22,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "ext-mr893sn3-d",
-          "type": "shape",
-          "role": "card",
-          "name": "card",
-          "box": {
-            "x": 140.8,
-            "y": 1053,
-            "w": 605.0000000000001,
-            "h": 270
-          },
-          "style": {
-            "color": "#F8EDDD",
-            "background": "#F8EDDD",
-            "fontSize": 43,
-            "fontWeight": 400,
-            "align": "left",
-            "radius": 22,
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "padding": 16,
-            "shapeKind": "rect"
-          }
-        },
-        {
-          "id": "ext-mr893smv-1",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · honey energy gel",
-          "box": {
-            "x": 22,
-            "y": 486,
-            "w": 497,
-            "h": 864
-          },
-          "style": {
-            "background": "#F0A81559",
-            "radius": 22,
-            "stroke": {
-              "color": "#F0A815",
-              "width": 4
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.02,
-              "y": 0.36,
-              "w": 0.46,
-              "h": 0.64
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr893smy-8",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Love the original honey pack! Great taste! Perfect amount! Easy to open while running or competing! Can't wait to try some of the others!\nTamara R, verified customer",
-          "autoH": true,
-          "box": {
-            "x": 396.65,
-            "y": 338.125,
-            "w": 567.5,
-            "h": 128.75
-          },
-          "style": {
-            "color": "#555555",
-            "fontSize": 23,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr893sn3-a",
-          "type": "text",
-          "role": "stars",
-          "name": "stars",
-          "text": "★★★★★",
-          "autoH": true,
-          "box": {
-            "x": 583,
-            "y": 675,
-            "w": 108,
-            "h": 30
-          },
-          "style": {
-            "color": "#F0A815",
-            "fontSize": 18,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr893sn3-b",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "Awesome",
-          "autoH": true,
-          "box": {
-            "x": 583,
-            "y": 709,
-            "w": 454,
-            "h": 27
-          },
-          "style": {
-            "color": "#1D1D1D",
-            "fontSize": 19,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr893sn3-c",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Amazing gels. Great taste, easy to digest, no G.I. issues whatsoever. I use them for my runs and also for hockey! Makes a big difference for my energy levels. 10/10 would recommend.\nJonathan C, verified customer",
-          "autoH": true,
-          "box": {
-            "x": 418.25,
-            "y": 745.375,
-            "w": 567.5,
-            "h": 236.25
-          },
-          "style": {
-            "color": "#555555",
-            "fontSize": 23,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    }
-  ],
   "canvas": {
     "w": 1080,
     "h": 1350
   },
-  "archetype": "offer-hero",
-  "background": null,
-  "backgroundIsPhoto": true,
-  "backgroundConfidence": "normal",
+  "archetype": "social-proof",
+  "background": "#FAEFD8",
+  "backgroundIsPhoto": false,
   "theme": "light",
-  "dominantPalette": [
+  "layers": [
     {
-      "hex": "#f8ecd0",
-      "share": 0.25
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "What they say about us...",
+      "box": {
+        "x": 130,
+        "y": 78,
+        "w": 820,
+        "h": 70
+      },
+      "style": {
+        "fontSize": 62,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "center",
+        "lineHeight": 1.1,
+        "uppercase": false,
+        "fontFamily": "Georgia"
+      }
     },
     {
-      "hex": "#ffffff",
-      "share": 0.25
+      "id": "card-1",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 30,
+        "y": 195,
+        "w": 493,
+        "h": 353
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 20
+      }
     },
     {
-      "hex": "#977c49",
-      "share": 0.25
+      "id": "stamp-1",
+      "type": "shape",
+      "role": "badge",
+      "box": {
+        "x": 455,
+        "y": 170,
+        "w": 92,
+        "h": 92
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.421,
+          "y": 0.126,
+          "w": 0.085,
+          "h": 0.068
+        },
+        "shape": "logo"
+      }
     },
     {
-      "hex": "#fbe8c2",
-      "share": 0.125
+      "id": "stars-1",
+      "type": "text",
+      "role": "rating",
+      "text": "★★★★★",
+      "box": {
+        "x": 60,
+        "y": 225,
+        "w": 155,
+        "h": 30
+      },
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 400,
+        "color": "#FFA800",
+        "align": "left",
+        "lineHeight": 1,
+        "uppercase": false
+      }
     },
     {
-      "hex": "#fefbf5",
-      "share": 0.125
+      "id": "title-1",
+      "type": "text",
+      "role": "subhead",
+      "text": "My go-to gels for marathon training and race day",
+      "box": {
+        "x": 60,
+        "y": 272,
+        "w": 420,
+        "h": 64
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "body-1",
+      "type": "text",
+      "role": "body",
+      "text": "These are the only gels I buy! I love that they have so few ingredients, taste good and provide effective energy. They're also a good size/shape for sneaking into small pockets. Totally recommend!",
+      "box": {
+        "x": 60,
+        "y": 350,
+        "w": 428,
+        "h": 130
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 400,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "author-1",
+      "type": "text",
+      "role": "author",
+      "text": "Kathryn",
+      "box": {
+        "x": 60,
+        "y": 495,
+        "w": 150,
+        "h": 26
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 700,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "card-2",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 552,
+        "y": 240,
+        "w": 498,
+        "h": 305
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 20
+      }
+    },
+    {
+      "id": "stamp-2",
+      "type": "shape",
+      "role": "badge",
+      "box": {
+        "x": 985,
+        "y": 218,
+        "w": 88,
+        "h": 88
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.912,
+          "y": 0.161,
+          "w": 0.081,
+          "h": 0.065
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "stars-2",
+      "type": "text",
+      "role": "rating",
+      "text": "★★★★★",
+      "box": {
+        "x": 585,
+        "y": 278,
+        "w": 155,
+        "h": 30
+      },
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 400,
+        "color": "#FFA800",
+        "align": "left",
+        "lineHeight": 1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "title-2",
+      "type": "text",
+      "role": "subhead",
+      "text": "Love the original honey...",
+      "box": {
+        "x": 585,
+        "y": 325,
+        "w": 310,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "body-2",
+      "type": "text",
+      "role": "body",
+      "text": "Love the original honey pack! Great taste! Perfect amount! Easy to open while running or competing! Can't wait to try some of the others!",
+      "box": {
+        "x": 585,
+        "y": 368,
+        "w": 435,
+        "h": 112
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 400,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "author-2",
+      "type": "text",
+      "role": "author",
+      "text": "Tamara R, verified customer",
+      "box": {
+        "x": 585,
+        "y": 492,
+        "w": 280,
+        "h": 26
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 700,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "product-pack",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 0,
+        "y": 455,
+        "w": 505,
+        "h": 895
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0,
+          "y": 0.337,
+          "w": 0.468,
+          "h": 0.663
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "card-3",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 482,
+        "y": 600,
+        "w": 520,
+        "h": 318
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 20
+      }
+    },
+    {
+      "id": "stamp-3",
+      "type": "shape",
+      "role": "badge",
+      "box": {
+        "x": 935,
+        "y": 578,
+        "w": 86,
+        "h": 86
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.866,
+          "y": 0.428,
+          "w": 0.08,
+          "h": 0.064
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "stars-3",
+      "type": "text",
+      "role": "rating",
+      "text": "★★★★★",
+      "box": {
+        "x": 513,
+        "y": 640,
+        "w": 155,
+        "h": 30
+      },
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 400,
+        "color": "#FFA800",
+        "align": "left",
+        "lineHeight": 1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "title-3",
+      "type": "text",
+      "role": "subhead",
+      "text": "Awesome",
+      "box": {
+        "x": 513,
+        "y": 690,
+        "w": 200,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "body-3",
+      "type": "text",
+      "role": "body",
+      "text": "Amazing gels. Great taste, easy to digest, no G.I. issues whatsoever. I use them for my runs and also for hockey! Makes a big difference for my energy levels. 10/10 would recommend.",
+      "box": {
+        "x": 513,
+        "y": 735,
+        "w": 455,
+        "h": 115
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 400,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "author-3",
+      "type": "text",
+      "role": "author",
+      "text": "Jonathan C, verified customer",
+      "box": {
+        "x": 513,
+        "y": 865,
+        "w": 290,
+        "h": 26
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 700,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "card-4",
+      "type": "shape",
+      "role": "card",
+      "box": {
+        "x": 460,
+        "y": 960,
+        "w": 575,
+        "h": 270
+      },
+      "style": {
+        "background": "#FFFFFF",
+        "radius": 20
+      }
+    },
+    {
+      "id": "stamp-4",
+      "type": "shape",
+      "role": "badge",
+      "box": {
+        "x": 963,
+        "y": 935,
+        "w": 85,
+        "h": 85
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.892,
+          "y": 0.693,
+          "w": 0.079,
+          "h": 0.063
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "stars-4",
+      "type": "text",
+      "role": "rating",
+      "text": "★★★★★",
+      "box": {
+        "x": 492,
+        "y": 995,
+        "w": 155,
+        "h": 30
+      },
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 400,
+        "color": "#FFA800",
+        "align": "left",
+        "lineHeight": 1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "title-4",
+      "type": "text",
+      "role": "subhead",
+      "text": "The consistencies of these...",
+      "box": {
+        "x": 492,
+        "y": 1045,
+        "w": 390,
+        "h": 32
+      },
+      "style": {
+        "fontSize": 27,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.2,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "body-4",
+      "type": "text",
+      "role": "body",
+      "text": "The consistencies of these honey gels are great and they sit really well in the stomach.",
+      "box": {
+        "x": 492,
+        "y": 1092,
+        "w": 480,
+        "h": 72
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 400,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.35,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "author-4",
+      "type": "text",
+      "role": "author",
+      "text": "Daniel C, verified customer",
+      "box": {
+        "x": 492,
+        "y": 1175,
+        "w": 280,
+        "h": 26
+      },
+      "style": {
+        "fontSize": 22,
+        "fontWeight": 700,
+        "color": "#333333",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
     }
-  ],
-  "selfCheck": {
-    "matched": false,
-    "score": 65,
-    "corrections": [],
-    "applied": 32,
-    "iterations": 3,
-    "totalCorrections": 15
-  },
-  "error": null,
-  "passes": 2
+  ]
 }

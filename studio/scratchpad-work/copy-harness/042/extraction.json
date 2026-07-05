@@ -1,195 +1,132 @@
 {
   "ok": true,
-  "layers": [
-    {
-      "id": "grp-mr88jvtu-y",
-      "type": "group",
-      "name": "Header",
-      "box": {
-        "x": 54,
-        "y": 192,
-        "w": 994,
-        "h": 346
-      },
-      "children": [
-        {
-          "id": "ext-mr88jvpb-2",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
-          "autoH": true,
-          "box": {
-            "x": 54,
-            "y": 346,
-            "w": 972,
-            "h": 192
-          },
-          "style": {
-            "color": "#EAEAEA",
-            "fontSize": 38,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr88jvpb-3",
-          "type": "text",
-          "role": "badge",
-          "name": "badge",
-          "text": "X .com",
-          "autoH": true,
-          "box": {
-            "x": 918,
-            "y": 230,
-            "w": 130,
-            "h": 58
-          },
-          "style": {
-            "color": "#EAEAEA",
-            "fontSize": 27,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr88jvpb-4",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "Wavy",
-          "autoH": true,
-          "box": {
-            "x": 162,
-            "y": 192,
-            "w": 432,
-            "h": 35
-          },
-          "style": {
-            "color": "#757575",
-            "fontSize": 24,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "blur": 11
-          }
-        },
-        {
-          "id": "ext-mr88jvtu-5",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "@wavyhair",
-          "autoH": true,
-          "box": {
-            "x": 162,
-            "y": 250,
-            "w": 432,
-            "h": 27
-          },
-          "style": {
-            "color": "#71767b",
-            "fontSize": 19,
-            "fontWeight": 400,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "blur": 11
-          }
-        }
-      ]
-    },
-    {
-      "id": "ext-mr88jvpb-0",
-      "type": "shape",
-      "role": "rect",
-      "name": "Cut-out · man in office",
-      "box": {
-        "x": 32,
-        "y": 480,
-        "w": 1015,
-        "h": 1421
-      },
-      "style": {
-        "background": "#8e96a059",
-        "radius": 22,
-        "stroke": {
-          "color": "#8e96a0",
-          "width": 8
-        }
-      },
-      "cutoutCandidate": {
-        "region": {
-          "x": 0.03,
-          "y": 0.25,
-          "w": 0.94,
-          "h": 0.74
-        },
-        "shape": "rect"
-      }
-    },
-    {
-      "id": "ext-mr88jvpb-1",
-      "type": "shape",
-      "role": "avatar",
-      "name": "Blurred · profile picture",
-      "box": {
-        "x": 32,
-        "y": 192,
-        "w": 130,
-        "h": 192
-      },
-      "style": {
-        "background": "#8a9baebf",
-        "shapeKind": "ellipse",
-        "blur": 8
-      }
-    }
-  ],
   "canvas": {
     "w": 1080,
     "h": 1920
   },
-  "archetype": "x-post",
+  "archetype": "social-post",
   "background": "#000000",
   "backgroundIsPhoto": false,
-  "backgroundConfidence": "normal",
   "theme": "dark",
-  "dominantPalette": [
+  "layers": [
     {
-      "hex": "#b8b7ba",
-      "share": 0.5
+      "id": "profile-avatar",
+      "type": "shape",
+      "role": "avatar",
+      "box": {
+        "x": 62,
+        "y": 203,
+        "w": 98,
+        "h": 98
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.057,
+          "y": 0.106,
+          "w": 0.091,
+          "h": 0.051
+        },
+        "shape": "avatar"
+      }
     },
     {
-      "hex": "#000000",
-      "share": 0.25
+      "id": "blurred-username",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 205,
+        "y": 215,
+        "w": 215,
+        "h": 80
+      },
+      "style": {
+        "background": "#6E6E6E",
+        "radius": 8
+      }
     },
     {
-      "hex": "#000000",
-      "share": 0.125
+      "id": "x-watermark",
+      "type": "text",
+      "role": "watermark",
+      "text": "X.com",
+      "box": {
+        "x": 905,
+        "y": 240,
+        "w": 115,
+        "h": 44
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 400,
+        "color": "#E7E9EA",
+        "align": "right",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
     },
     {
-      "hex": "#010101",
-      "share": 0.063
+      "id": "tweet-body",
+      "type": "text",
+      "role": "body",
+      "text": "Saw how good my hair looked and had to take a picture. Been using the Wavy creme for a week now. Never going back!",
+      "box": {
+        "x": 50,
+        "y": 355,
+        "w": 920,
+        "h": 100
+      },
+      "style": {
+        "fontSize": 36,
+        "fontWeight": 400,
+        "color": "#FFFFFF",
+        "align": "left",
+        "lineHeight": 1.3,
+        "uppercase": false
+      }
     },
     {
-      "hex": "#343941",
-      "share": 0.063
+      "id": "main-photo",
+      "type": "shape",
+      "role": "photo",
+      "box": {
+        "x": 55,
+        "y": 480,
+        "w": 970,
+        "h": 1160
+      },
+      "style": {
+        "radius": 28
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.051,
+          "y": 0.25,
+          "w": 0.898,
+          "h": 0.604
+        },
+        "shape": "media"
+      }
+    },
+    {
+      "id": "timestamp-meta",
+      "type": "text",
+      "role": "meta",
+      "text": "14:27 - 07/10/2025 - 757 Views",
+      "box": {
+        "x": 60,
+        "y": 1658,
+        "w": 470,
+        "h": 44
+      },
+      "style": {
+        "fontSize": 32,
+        "fontWeight": 400,
+        "color": "#8B8B8B",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
     }
-  ],
-  "selfCheck": {
-    "matched": null,
-    "score": null,
-    "corrections": [],
-    "applied": 0,
-    "iterations": 2,
-    "totalCorrections": 2
-  },
-  "error": null,
-  "passes": 2
+  ]
 }

@@ -1,324 +1,208 @@
 {
   "ok": true,
-  "layers": [
-    {
-      "id": "ext-mr87yppp-0",
-      "type": "text",
-      "role": "headline",
-      "name": "headline",
-      "text": "NUTRITIONAL SUPPORT DURING PERIMENOPAUSE",
-      "autoH": true,
-      "box": {
-        "x": 54,
-        "y": 173,
-        "w": 972,
-        "h": 346
-      },
-      "style": {
-        "color": "#f0e8d0",
-        "background": "rgba(0,0,0,0)",
-        "fontSize": 81,
-        "fontWeight": 800,
-        "align": "center",
-        "uppercase": true,
-        "lineHeight": 1.2,
-        "padding": 16
-      }
-    },
-    {
-      "id": "grp-mr87yppq-h",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 65,
-        "y": 518,
-        "w": 971,
-        "h": 903
-      },
-      "children": [
-        {
-          "id": "ext-mr87yppp-3",
-          "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
-          "box": {
-            "x": 324,
-            "y": 614,
-            "w": 216,
-            "h": 96
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
-          }
-        },
-        {
-          "id": "ext-mr87yppp-5",
-          "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
-          "box": {
-            "x": 680,
-            "y": 691,
-            "w": 162,
-            "h": 96
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
-          }
-        },
-        {
-          "id": "ext-mr87yppp-7",
-          "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
-          "box": {
-            "x": 302,
-            "y": 1018,
-            "w": 162,
-            "h": 96
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
-          }
-        },
-        {
-          "id": "ext-mr87yppp-9",
-          "type": "shape",
-          "role": "arrow",
-          "name": "arrow",
-          "box": {
-            "x": 767,
-            "y": 1190,
-            "w": 108,
-            "h": 96
-          },
-          "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
-            "fontSize": 43,
-            "fontWeight": 600,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "opacity": 1,
-            "shapeKind": "arrow"
-          }
-        },
-        {
-          "id": "ext-mr87yppp-1",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · green gummy bear",
-          "box": {
-            "x": 302,
-            "y": 557,
-            "w": 475,
-            "h": 768
-          },
-          "style": {
-            "background": "#2e7d3259",
-            "shapeKind": "ellipse",
-            "stroke": {
-              "color": "#2e7d32",
-              "width": 4
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.28,
-              "y": 0.29,
-              "w": 0.44,
-              "h": 0.4
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr87yppp-2",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Vitamin D3 and K2 support bone health*",
-          "autoH": true,
-          "box": {
-            "x": 65,
-            "y": 518,
-            "w": 259,
-            "h": 115
-          },
-          "style": {
-            "color": "#f0e8d0",
-            "background": "rgba(0,0,0,0)",
-            "fontSize": 19,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr87yppp-4",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "B vitamins support cognitive health, mood and energy*",
-          "autoH": true,
-          "box": {
-            "x": 713,
-            "y": 576,
-            "w": 302,
-            "h": 115
-          },
-          "style": {
-            "color": "#f0e8d0",
-            "background": "rgba(0,0,0,0)",
-            "fontSize": 19,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr87yppp-6",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Fiber supports gut health*",
-          "autoH": true,
-          "box": {
-            "x": 65,
-            "y": 1094,
-            "w": 216,
-            "h": 96
-          },
-          "style": {
-            "color": "#f0e8d0",
-            "background": "rgba(0,0,0,0)",
-            "fontSize": 19,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr87yppp-8",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "Vitamins E & B9 help support hot flashes and night sweats*",
-          "autoH": true,
-          "box": {
-            "x": 734,
-            "y": 1190,
-            "w": 302,
-            "h": 134
-          },
-          "style": {
-            "color": "#f0e8d0",
-            "background": "rgba(0,0,0,0)",
-            "fontSize": 19,
-            "fontWeight": 700,
-            "align": "left",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        },
-        {
-          "id": "ext-mr87yppp-a",
-          "type": "text",
-          "role": "caption",
-          "name": "caption",
-          "text": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
-          "autoH": true,
-          "box": {
-            "x": 0,
-            "y": 1267,
-            "w": 1080,
-            "h": 231
-          },
-          "style": {
-            "color": "#f0e8d0",
-            "background": "rgba(0,0,0,0)",
-            "fontSize": 54,
-            "fontWeight": 400,
-            "align": "center",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "padding": 16
-          }
-        }
-      ]
-    }
-  ],
   "canvas": {
     "w": 1080,
     "h": 1920
   },
-  "archetype": "generic",
+  "archetype": "annotated-photo",
   "background": null,
   "backgroundIsPhoto": true,
-  "backgroundConfidence": "normal",
-  "theme": "light",
-  "dominantPalette": [
+  "theme": "dark",
+  "layers": [
     {
-      "hex": "#165f8f",
-      "share": 0.5
+      "id": "vignette-overlay",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 0,
+        "y": 1250,
+        "w": 1080,
+        "h": 670
+      },
+      "style": {
+        "background": "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.45) 100%)"
+      }
     },
     {
-      "hex": "#343738",
-      "share": 0.125
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "NUTRITIONAL\nSUPPORT DURING\nPERIMENOPAUSE",
+      "box": {
+        "x": 145,
+        "y": 138,
+        "w": 790,
+        "h": 300
+      },
+      "style": {
+        "fontSize": 96,
+        "fontWeight": 800,
+        "color": "#F3E9C9",
+        "align": "center",
+        "lineHeight": 1.05,
+        "uppercase": true
+      }
     },
     {
-      "hex": "#61684b",
-      "share": 0.125
+      "id": "callout-1",
+      "type": "text",
+      "role": "caption",
+      "text": "Vitamin D3\nand K2 support\nbone health*",
+      "box": {
+        "x": 55,
+        "y": 528,
+        "w": 275,
+        "h": 108
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
     },
     {
-      "hex": "#4c84b0",
-      "share": 0.125
+      "id": "arrow-1",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 222,
+        "y": 652,
+        "w": 80,
+        "h": 72
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
     },
     {
-      "hex": "#e3e1d1",
-      "share": 0.125
+      "id": "callout-2",
+      "type": "text",
+      "role": "caption",
+      "text": "B vitamins support\ncognitive health,\nmood and energy*",
+      "box": {
+        "x": 685,
+        "y": 585,
+        "w": 350,
+        "h": 110
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-2",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 718,
+        "y": 742,
+        "w": 92,
+        "h": 68
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "arrow-3",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 200,
+        "y": 1038,
+        "w": 100,
+        "h": 70
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "callout-3",
+      "type": "text",
+      "role": "caption",
+      "text": "Fiber supports\ngut health*",
+      "box": {
+        "x": 60,
+        "y": 1112,
+        "w": 255,
+        "h": 85
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "arrow-4",
+      "type": "shape",
+      "role": "decor",
+      "box": {
+        "x": 818,
+        "y": 1122,
+        "w": 60,
+        "h": 95
+      },
+      "style": {
+        "shapeKind": "arrow",
+        "color": "#FFFFFF"
+      }
+    },
+    {
+      "id": "callout-4",
+      "type": "text",
+      "role": "caption",
+      "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
+      "box": {
+        "x": 605,
+        "y": 1210,
+        "w": 435,
+        "h": 115
+      },
+      "style": {
+        "fontSize": 34,
+        "fontWeight": 700,
+        "color": "#EFE289",
+        "align": "center",
+        "lineHeight": 1.15,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "disclaimer",
+      "type": "text",
+      "role": "legal",
+      "text": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
+      "box": {
+        "x": 72,
+        "y": 1342,
+        "w": 940,
+        "h": 66
+      },
+      "style": {
+        "fontSize": 24,
+        "fontWeight": 400,
+        "color": "#F2EDDD",
+        "align": "center",
+        "lineHeight": 1.25,
+        "uppercase": false,
+        "shadow": true
+      }
     }
-  ],
-  "selfCheck": {
-    "matched": true,
-    "score": 85,
-    "corrections": [],
-    "applied": 2,
-    "iterations": 3,
-    "totalCorrections": 13
-  },
-  "error": null,
-  "passes": 2
+  ]
 }
