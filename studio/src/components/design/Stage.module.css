@@ -14,14 +14,21 @@
   display: flex;
 }
 
-/* Agent run in flight — read-only. The shell's stageWrap[data-locked] already sets
-   pointer-events:none on this whole subtree; `cursor: wait` here is purely cosmetic
-   (a not-allowed/wait affordance the instant a pointer enters the canvas) since a
-   pointer-events:none element can't itself show a cursor to descendants that ignore
-   events — set on .artboard too so the user sees it over the actual content. */
+/* Agent run in flight — read-only, BUT the scroll container itself stays interactive so ⌘/ctrl-
+   wheel zoom + native pan keep working while you watch the agent edit (the wheel handler is bound
+   to this container; a blanket pointer-events:none would kill it). The edit LOCK is enforced two
+   ways that don't touch zoom: (1) every editing gesture in Stage.tsx early-returns on `locked`,
+   and (2) the per-node edit surfaces below go pointer-events:none so a stray click can't even
+   begin a gesture. `cursor: wait` signals the read-only state over the content. */
 .stage[data-locked],
 .stage[data-locked] .artboard {
   cursor: wait;
+}
+/* Neutralize only the editable node surfaces + resize handles — NOT the scroll container — so
+   clicking/dragging a layer does nothing mid-run while wheel-zoom/pan on the container stay live. */
+.stage[data-locked] .layer,
+.stage[data-locked] .handle {
+  pointer-events: none;
 }
 
 /* Space held: any drag will marquee-select regardless of what's under the cursor — crosshair

@@ -1,0 +1,271 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6nm4t3-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Poop More While On a GLP-1",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 288,
+        "w": 810,
+        "h": 230
+      },
+      "style": {
+        "color": "#0d2a1a",
+        "fontSize": 63,
+        "fontWeight": 800,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "grp-mr6nm4xl-i",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 480,
+        "w": 1005,
+        "h": 1152
+      },
+      "children": [
+        {
+          "id": "ext-mr6nm4t3-1",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · green gummy bear",
+          "box": {
+            "x": 454,
+            "y": 480,
+            "w": 605,
+            "h": 1152
+          },
+          "style": {
+            "background": "#2a5e3a59",
+            "radius": 22,
+            "stroke": {
+              "color": "#2a5e3a",
+              "width": 5
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.42,
+              "y": 0.25,
+              "w": 0.56,
+              "h": 0.6
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6nm4t3-2",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "More Fiber Than 2 cups of Broccoli",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 576,
+            "w": 518,
+            "h": 96
+          },
+          "style": {
+            "color": "#10824b",
+            "background": "#1b7340",
+            "fontSize": 23,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6nm4xg-3",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "20+ Vitamins & Minerals",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 710,
+            "w": 518,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 23,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6nm4xh-4",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Organic Fruits & Veggies",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 845,
+            "w": 518,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 23,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6nm4xj-5",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Prebiotics",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 979,
+            "w": 518,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 23,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6nm4xj-6",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Adaptogens",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 1114,
+            "w": 518,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 23,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6nm4xk-7",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "0 Sugar",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 1248,
+            "w": 518,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 23,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6nm4xl-8",
+      "type": "badge",
+      "role": "badge",
+      "name": "badge",
+      "text": "55,000+ ⭐⭐⭐⭐⭐ reviews",
+      "autoH": true,
+      "box": {
+        "x": 194,
+        "y": 1613,
+        "w": 691,
+        "h": 96
+      },
+      "style": {
+        "color": "#0d2a1a",
+        "background": "#f4d04d",
+        "fontSize": 27,
+        "fontWeight": 700,
+        "align": "center",
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#dce8e3",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#bedacb",
+      "share": 0.25
+    },
+    {
+      "hex": "#dfecd6",
+      "share": 0.25
+    },
+    {
+      "hex": "#f7fbf9",
+      "share": 0.25
+    },
+    {
+      "hex": "#0b7541",
+      "share": 0.125
+    },
+    {
+      "hex": "#415739",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

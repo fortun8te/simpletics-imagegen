@@ -1,0 +1,340 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6ml7tc-9",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 0,
+        "y": 3,
+        "w": 1059,
+        "h": 247
+      },
+      "children": [
+        {
+          "id": "ext-mr6ml7nw-2",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · User photo",
+          "box": {
+            "x": 0,
+            "y": 5,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#5c4d3d59",
+            "radius": 22,
+            "stroke": {
+              "color": "#5c4d3d",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 0.01,
+              "h": 0.01
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6ml7nw-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Been training hard and still waking up heavy.\nStarted using Cadence Sleep Hydration and finally feel\nlike I'm actually recovering",
+          "autoH": true,
+          "box": {
+            "x": 0,
+            "y": 3,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ml7tc-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "14:07 · 26/09/2025 · 6.9K Views",
+          "autoH": true,
+          "box": {
+            "x": 0,
+            "y": 193,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#6e767d",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ml7tc-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Cadence",
+          "autoH": true,
+          "box": {
+            "x": 6,
+            "y": 117,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ml7tc-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "RECOVER\nSLEEP\nPotassium\nMagnesium\nL-Glycine\nCherry",
+          "autoH": true,
+          "box": {
+            "x": 7,
+            "y": 155,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": true,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ml7tc-7",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Sampele",
+          "autoH": true,
+          "box": {
+            "x": 6,
+            "y": 79,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ml7tc-8",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Heaths & Son",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 41,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ml7tc-9",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "X.com",
+          "autoH": true,
+          "box": {
+            "x": 886,
+            "y": 192,
+            "w": 173,
+            "h": 58
+          },
+          "style": {
+            "color": "#cdcdcd",
+            "fontSize": 27,
+            "fontWeight": 700,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6ml7tc-a",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · candle and bottle",
+      "box": {
+        "x": 43,
+        "y": 538,
+        "w": 994,
+        "h": 1056
+      },
+      "style": {
+        "background": "#5c5a5559",
+        "radius": 22,
+        "stroke": {
+          "color": "#5c5a55",
+          "width": 8
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.04,
+          "y": 0.28,
+          "w": 0.92,
+          "h": 0.55
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "grp-mr6ml7tc-a",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 0,
+        "y": 1,
+        "w": 49,
+        "h": 30
+      },
+      "children": [
+        {
+          "id": "ext-mr6ml7nw-0",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Avatar · User avatar",
+          "box": {
+            "x": 0,
+            "y": 1,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#88888859",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#888888",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0
+            },
+            "shape": "avatar"
+          }
+        },
+        {
+          "id": "ext-mr6ml7nw-1",
+          "type": "shape",
+          "role": "logo",
+          "name": "Logo · Platform logo",
+          "box": {
+            "x": 9,
+            "y": 1,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#ffffff59",
+            "radius": 22,
+            "stroke": {
+              "color": "#ffffff",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.01,
+              "y": 0,
+              "w": 0,
+              "h": 0
+            },
+            "shape": "logo"
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "x-post",
+  "background": "#000000",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#010101",
+      "share": 0.5
+    },
+    {
+      "hex": "#c5c1b7",
+      "share": 0.125
+    },
+    {
+      "hex": "#443d34",
+      "share": 0.125
+    },
+    {
+      "hex": "#6b6156",
+      "share": 0.125
+    },
+    {
+      "hex": "#8e897f",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

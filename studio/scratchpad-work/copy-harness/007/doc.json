@@ -1,0 +1,166 @@
+{
+  "id": "harness_007_cec5706d",
+  "name": "copy-harness harness_007_cec5706d",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6nks5u-2i",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#e2d5ce"
+      }
+    },
+    {
+      "id": "group-mr6nks5u-2b",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 65,
+        "y": 0,
+        "w": 1015,
+        "h": 1920
+      },
+      "children": [
+        {
+          "id": "rect-mr6nks5u-2c",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · Mango Chili flavored can",
+          "box": {
+            "x": 432,
+            "y": 0,
+            "w": 648,
+            "h": 1920
+          },
+          "style": {
+            "crop": {
+              "x": 0.4,
+              "y": 0,
+              "w": 0.6,
+              "h": 1
+            },
+            "radius": 23
+          },
+          "src": "/refasset?id=harness-007"
+        },
+        {
+          "id": "headline-mr6nks5u-2d",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "20 MEI\n20:00",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 365,
+            "w": 562,
+            "h": 312
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 130,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6nks5u-2e",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 65,
+        "y": 1018,
+        "w": 497,
+        "h": 230
+      },
+      "children": [
+        {
+          "id": "subhead-mr6nks5u-2f",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Allerlaatste site-wide sale van 2026.",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 1018,
+            "w": 475,
+            "h": 99
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 41,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "price-mr6nks5u-2g",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "20% korting op het volledige assortiment",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 1133,
+            "w": 497,
+            "h": 115
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 45,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "cta-mr6nks5u-2h",
+      "type": "badge",
+      "role": "cta",
+      "name": "cta",
+      "text": "Schrijf je nu in, mis geen enkele update.",
+      "autoH": true,
+      "box": {
+        "x": 113,
+        "y": 714,
+        "w": 380,
+        "h": 148
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "background": "#f0ece6",
+        "fontSize": 32,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6nks5uzrd9",
+  "updatedAt": 1783187131027
+}

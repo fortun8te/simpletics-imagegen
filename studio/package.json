@@ -8,7 +8,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
+    "test": "node --test test/*.test.mjs",
     "test:agent": "node --test test/design-agent-v3.test.mjs test/elements-v2.test.mjs test/templates.test.mjs",
+    "test:figma": "tsx scripts/figma-roundtrip.test.mjs",
+    "test:cutout": "node --experimental-strip-types --test scripts/cutout-parity.test.mjs",
     "test:inspo": "node scripts/design-agent-inspo-loop.mjs",
     "test:inspo:live": "node scripts/design-agent-inspo-loop.mjs --live"
   },
@@ -30,6 +33,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
+    "tsx": "^4.23.0",
     "typescript": "^5.5.4",
     "vite": "^5.4.8"
   }

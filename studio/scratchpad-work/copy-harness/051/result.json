@@ -1,0 +1,24 @@
+{
+  "id": "051",
+  "filename": "051_attached_1ac4d30bd048ab70.webp",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 20356,
+    "assemble": 1,
+    "total": 27993
+  },
+  "archetype": "story-native",
+  "layerCountExtracted": 8,
+  "parsePath": "loose",
+  "background": "photo",
+  "cutoutCandidates": 3,
+  "layersApplied": 3,
+  "leavesInResult": 9,
+  "verify": {
+    "ready": false
+  },
+  "pixelScore": 95.3,
+  "pixelError": null,
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/051/side-by-side.png"
+}

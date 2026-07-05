@@ -218,7 +218,10 @@ function ModelsPool({
   );
 }
 
-export default function PlanView() {
+// `active` — is this the visible top-level pane? BatchView keeps Plan/Grid/Design mounted at once
+// (STATE-2) and toggles them with `display:none`, so the hidden pane's IntersectionObserver and
+// adCursor writes must be gated (STATE-24) or they fight the visible view over the shared cursor.
+export default function PlanView({ active = true }: { active?: boolean }) {
   const config = useStore((s) => s.config);
   const state = useStore((s) => s.state);
   const brand = useStore((s) => s.brand);
@@ -252,10 +255,11 @@ export default function PlanView() {
 
   // Publish the scroll cursor to the TopBar; clear it when the view unmounts.
   useEffect(() => {
+    if (!active) return; // only the visible pane owns the shared adCursor
     setUI({
       adCursor: activeAd ? { index: activeIndex, total: ads.length, title: activeAd.title } : null,
     });
-  }, [activeAd, activeIndex, ads.length, setUI]);
+  }, [activeAd, activeIndex, ads.length, setUI, active]);
   useEffect(() => () => { useStore.getState().setUI({ adCursor: null }); }, []);
 
   const onPromptSaved = useCallback(() => {
@@ -268,6 +272,7 @@ export default function PlanView() {
   }, [ads, activeAdId]);
 
   useEffect(() => {
+    if (!active) return; // hidden pane: don't observe (display:none subtree, and it'd fight the cursor)
     const nodes = [...sectionRefs.current.values()];
     if (!nodes.length) return;
     const observer = new IntersectionObserver(
@@ -280,7 +285,7 @@ export default function PlanView() {
     );
     for (const node of nodes) observer.observe(node);
     return () => observer.disconnect();
-  }, [ads]);
+  }, [ads, active]);
 
   if (!plan?.ads.length) {
     return (

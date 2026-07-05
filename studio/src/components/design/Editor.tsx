@@ -41,6 +41,7 @@ import { api } from '../../api';
 import { Icon } from '../Icon';
 import Stage, { type UnderlayState } from './Stage';
 import AgentPanel from './AgentPanel';
+import ReferenceLibrary, { type PickedReference } from './ReferenceLibrary';
 import BrandKitPanel from './BrandKitPanel';
 import { WorkingIndicator } from '../WorkingIndicator';
 import { ELEMENTS, ELEMENT_CATEGORIES, buildElement, findElementInstance, type ElementDef, type ParamSpec, type ParamValue } from './elements';
@@ -50,8 +51,8 @@ import { rasterizeDesign } from './raster';
 import { copyForFigma } from './figmaClipboard';
 import { remeasureAutoHeights } from './textMetrics';
 import {
-  isGroup, layerId, resolveGradient, skeletonFromDoc, validateDesign,
-  type DesignDoc, type GradientFill, type GroupNode, type Layer, type LayerStyle, type SceneNode,
+  CANVAS_PRESETS, isComponent, isGroup, isLeafLayer, layerId, resizeDocCanvas, resolveGradient, skeletonFromDoc, validateDesign,
+  type CanvasPresetId, type ComponentLayer, type DesignDoc, type GradientFill, type GroupNode, type Layer, type LayerStyle, type SceneNode,
 } from '../../lib/sceneGraph';
 import {
   findNode, findParentGroup, findParentList, groupNodes, leaves, normalizeGroups,
@@ -90,6 +91,61 @@ function collectLiveDiff(prev: DesignDoc, next: DesignDoc): LiveNode[] {
   return changed;
 }
 
+/** Load an image URL and resolve its natural pixel size. Never rejects AND never hangs (a broken/
+ *  blocked/slow ref resolves 0×0 so callers skip the resize rather than throw OR stall the run):
+ *   • a hard TIMEOUT (default 2.5s) resolves 0×0 if the image never fires load/error — a hanging
+ *     fetch or a CORS-stalled anonymous load must NEVER block the copy run from starting;
+ *   • crossOrigin is set ONLY for genuinely cross-origin URLs. Forcing crossOrigin='anonymous' on a
+ *     SAME-ORIGIN ref (/refasset, /img, a relative or same-host absolute URL) makes the browser do a
+ *     CORS preflight the server may not answer with the right headers, which stalls the load until
+ *     the timeout — the root cause of "reference copy doesn't work / doesn't resize quickly". */
+function measureImageUrl(url: string, timeoutMs = 2500): Promise<{ w: number; h: number }> {
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = (r: { w: number; h: number }) => { if (!settled) { settled = true; clearTimeout(t); resolve(r); } };
+    const t = setTimeout(() => done({ w: 0, h: 0 }), timeoutMs);
+    const img = new Image();
+    // Only opt into CORS for a truly cross-origin URL; same-origin refs must load without it.
+    let crossOrigin = false;
+    try { crossOrigin = new URL(url, window.location.href).origin !== window.location.origin; } catch { /* relative/blob → same-origin */ }
+    if (crossOrigin) img.crossOrigin = 'anonymous';
+    img.onload = () => done({ w: img.naturalWidth || 0, h: img.naturalHeight || 0 });
+    img.onerror = () => done({ w: 0, h: 0 });
+    img.src = url;
+  });
+}
+
+/** Turn a reference's natural dims into a canvas size. Snap to a standard ad ratio (1:1 / 4:5 /
+ *  9:16 / 16:9 …) when the reference is within ~4% of one — thumbnails/exports rarely carry exact
+ *  integer ratios — else keep the exact aspect. Long edge capped at 1080 so we ship an ad-shaped
+ *  comp. Returns null when the dims are unusable (0×0) so the caller leaves the canvas alone. */
+function canvasSizeForReference(w: number, h: number): { w: number; h: number } | null {
+  if (!(w > 0) || !(h > 0)) return null;
+  const KNOWN: [number, number][] = [
+    [1, 1], [4, 5], [9, 16], [16, 9], [3, 4], [4, 3], [2, 3], [3, 2],
+  ];
+  const r = w / h;
+  let best: [number, number] | null = null;
+  let bestErr = 0.04; // 4% tolerance
+  for (const [rw, rh] of KNOWN) {
+    const err = Math.abs(r - rw / rh) / (rw / rh);
+    if (err < bestErr) { best = [rw, rh]; bestErr = err; }
+  }
+  let cw = w;
+  let ch = h;
+  if (best) {
+    // materialise the snapped ratio at ad resolution (1080 on the long edge)
+    const [rw, rh] = best;
+    if (rw >= rh) { cw = 1080; ch = Math.round((1080 * rh) / rw); }
+    else { ch = 1080; cw = Math.round((1080 * rw) / rh); }
+  } else {
+    const scale = 1080 / Math.max(w, h);
+    cw = Math.max(1, Math.round(w * scale));
+    ch = Math.max(1, Math.round(h * scale));
+  }
+  return { w: cw, h: ch };
+}
+
 type UnderlayMode = 'off' | 'over' | 'side';
 
 // ── concept-level element catalog ──
@@ -113,6 +169,19 @@ const CANONICAL_ELEMENTS: ElementDef[] = (() => {
 interface EditorProps {
   initialDoc: DesignDoc;
   onClose: () => void;
+  /**
+   * Auto-kick a "copy this reference" agent run the moment the editor opens (drop/paste a
+   * reference → editor + copy run in one motion). The reference image is already uploaded as a
+   * ref id; the run goes through the SAME /api/design/agent reference path as any in-chat copy,
+   * so it streams into the Agent panel's live feed and is stoppable there. Fired once per mount.
+   */
+  autoRun?: { reference: { ref: string; label?: string }; instruction?: string } | null;
+  /**
+   * Fresh "New comp" → open the editor and GREET: show an on-canvas prompt offering to attach/drop
+   * a reference to copy, or start blank (with the 1:1 / 4:5 / 9:16 size choice). No standalone
+   * screen — the choice happens inside design mode. Dismissed the moment either path is taken.
+   */
+  greet?: boolean;
 }
 
 /** Done render images of the current batch — the batch-apply targets (used by gallery too). */
@@ -334,7 +403,7 @@ function ParamForm({ def, params, brandColors, onChange }: {
   );
 }
 
-export default function Editor({ initialDoc, onClose }: EditorProps) {
+export default function Editor({ initialDoc, onClose, autoRun = null, greet = false }: EditorProps) {
   const config = useStore((s) => s.config);
   const storeBrand = useStore((s) => s.brand);
   const storeBatch = useStore((s) => s.batch);
@@ -376,6 +445,11 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
   const agentBusyRef = useRef(false);
   agentBusyRef.current = agentBusy;
 
+  // Queued "copy this reference" run handed to the AgentPanel, which runs it through its own LIVE
+  // run path (streaming feed + Stop + revert). The nonce makes each attach a fresh run; the panel
+  // consumes it (onCopyConsumed clears this) and drives agentBusy via onRunStart/onRunEnd.
+  const [pendingCopy, setPendingCopy] = useState<{ nonce: number; ref: string; label?: string; instruction?: string } | null>(null);
+
   // Live agent feed → overlay label + canvas flash targets (targetId = real node id per op).
   const designEvents = useStore((s) => s.ui.designEvents);
   const agentStepLabel = useMemo(() => {
@@ -398,6 +472,13 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
   // live sync: a newer copy of this doc was saved elsewhere while we have local edits
   const [remoteUpdate, setRemoteUpdate] = useState<number | null>(null);
   const [renamingId, setRenamingId] = useState<string | null>(null);
+  // LAYER-1/2 rename UX: Escape cancels (restores old name) instead of committing on the ensuing
+  // blur; and if a whole-doc replace lands mid-rename (agent apply → new `doc` identity), the
+  // in-progress rename is dropped rather than written back as a stale name onto the fresh doc.
+  const cancelRename = useRef(false);
+  // Drop any in-flight rename when the doc object identity changes under us (agent doc-replace /
+  // remote reload). The next blur becomes a no-op — the fresh doc keeps its own name.
+  useEffect(() => { if (renamingId) { cancelRename.current = true; setRenamingId(null); } }, [doc]); // eslint-disable-line react-hooks/exhaustive-deps
   const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
   const dragRowId = useRef<string | null>(null);
   const [drop, setDrop] = useState<{ id: string; mode: 'above' | 'into' } | null>(null);
@@ -555,7 +636,11 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
   }, [doc, enteredGroupId]);
 
   const selected = selectedIds.length === 1 ? findNode(doc, selectedIds[0]) : null;
-  const selectedLeaf = selected && !isGroup(selected) ? selected : null;
+  // A leaf Layer excludes BOTH groups AND native ComponentLayers — the inspector below reads
+  // .style/.text/.autoH/.src, none of which a ComponentLayer has (reading them was LAYER-22/23:
+  // a real undefined-read when a component leaf was selected). Components get their own stub panel.
+  const selectedLeaf: Layer | null = selected && isLeafLayer(selected) ? selected : null;
+  const selectedComponent: ComponentLayer | null = selected && isComponent(selected) ? selected : null;
 
   // ── persistence + exports ──
   const dirtyRef = useRef(dirty);
@@ -573,7 +658,10 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
       ? await rasterizeDesign(docRef.current, 360 / docRef.current.canvas.w).catch(() => null)
       : null;
     if (thumb) lastThumbAt.current = Date.now();
-    const r = await api.saveDesign(docRef.current, thumb);
+    // Optimistic concurrency (ERR-16): tell the server which version this edit was based on so a
+    // save from ANOTHER tab in the meantime is rejected (409 conflict) instead of silently
+    // clobbered. lastSavedAt tracks the last version this tab loaded or successfully saved.
+    const r = await api.saveDesign(docRef.current, thumb, lastSavedAt.current || docRef.current.updatedAt);
     setBusy(null);
     if (r.ok && r.design) {
       lastSavedAt.current = r.design.updatedAt; // before setDoc renders — the SSE echo races it
@@ -581,6 +669,14 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
       setDirty(false);
       if (!silent) flash('Saved');
       return true;
+    }
+    if (r.conflict) {
+      // Another tab saved a newer version. Don't overwrite it and don't retry-loop the autosave:
+      // surface the same "updated in another tab" affordance the SSE path uses so the user can
+      // reload (their unsaved delta stays on screen until they choose).
+      setRemoteUpdate(r.serverUpdatedAt || Date.now());
+      flash('Not saved — this comp was updated in another tab. Reload to pick up the latest.');
+      return false;
     }
     flash(r.error || 'save failed');
     return false;
@@ -686,6 +782,107 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
     setDoc(next);
     setDirty(false); // the server already persisted this doc
   }, [pushHistory]);
+
+  // ── copy-from-reference as an in-editor agent run ──
+  // The copy is a FIRST-CLASS live run driven by the Agent panel: we attach the reference, kick a
+  // FAST non-blocking aspect resize, switch to the Agent tab, and QUEUE the copy (setPendingCopy).
+  // The panel runs it through the SAME path a chat edit takes — so it streams into the feed
+  // ("copying… extracting… building N layers…"), is stoppable via the SAME Stop control, and gets a
+  // "revert this run" checkpoint. This is the fix for "the copy is invisible in the agent chat":
+  // the panel (not this callback) owns the run, sets running=true, and saves before the run.
+  //
+  // ASPECT SPEED: the resize runs in the background off a BOUNDED measure (measureImageUrl has a
+  // 2.5s timeout + no forced CORS), so a 9:16 reference flips the canvas promptly and NEVER blocks
+  // the copy from starting. The panel's ensureSaved() persists the resized doc before the run.
+  const runCopyReference = useCallback((ref: { ref: string; url?: string; label?: string }, instruction?: string) => {
+    if (agentBusyRef.current || !ref?.ref) return;
+    setRightTab('agent');
+    if (ref.url) {
+      setDoc((d) => ({ ...d, reference: { kind: 'upload', ref: ref.ref, url: ref.url!, label: ref.label || 'Reference' } }));
+      setDirty(true);
+      // Fire-and-forget aspect resize — bounded + non-blocking so the canvas converts fast and the
+      // copy run can start immediately. resizeDocCanvas scales existing layers into the new frame.
+      void (async () => {
+        const dims = await measureImageUrl(ref.url!);
+        const size = canvasSizeForReference(dims.w, dims.h);
+        const cur = docRef.current.canvas;
+        if (size && (size.w !== cur.w || size.h !== cur.h)) {
+          const resized = resizeDocCanvas(docRef.current, size);
+          docRef.current = resized; // keep the ref the panel's save reads in lockstep
+          setDoc(resized);
+          setDirty(true);
+        }
+      })();
+    }
+    // Hand the run to the Agent panel (it saves first, streams, is stoppable + revertable).
+    setPendingCopy({ nonce: Date.now(), ref: ref.ref, label: ref.label, instruction });
+    // setRightTab / setPendingCopy / setDoc are stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Drop/paste a reference → editor opens → kick the copy run once per mount.
+  const autoRunStarted = useRef(false);
+  useEffect(() => {
+    if (autoRunStarted.current || !autoRun?.reference?.ref) return;
+    autoRunStarted.current = true;
+    runCopyReference(autoRun.reference, autoRun.instruction);
+  }, [autoRun, runCopyReference]);
+
+  // Upload a raw image file (drop / paste / picker) → refs store → copy-reference run. This is the
+  // single entry every "attach a reference" affordance funnels through.
+  const attachAndCopyFile = useCallback((file: File) => {
+    if (!file || agentBusyRef.current) return;
+    // 30MB cap BEFORE readAsDataURL — base64-encoding a huge file in memory can hang the tab, and
+    // the server rejects >48MB bodies with a misleading "expected a data URL" error anyway (ERR-5).
+    if (file.size > 30 * 1024 * 1024) { flash(`"${file.name}" is too large (${Math.round(file.size / 1e6)}MB) — max 30MB`); return; }
+    setGreetDismissed(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const r = await api.uploadRef(String(reader.result));
+      if (r.ok && r.id && r.url) runCopyReference({ ref: r.id, url: r.url, label: file.name || 'Reference' });
+      else flash('Reference upload failed');
+    };
+    reader.readAsDataURL(file);
+  }, [runCopyReference]);
+
+  // ── onboarding greeting: fresh "New comp" asks attach-a-reference OR start-blank (size) ──
+  // Dismissed the moment either path is chosen (a copy run, a size pick, or an explicit skip).
+  const [greetDismissed, setGreetDismissed] = useState(false);
+  const showGreeting = greet && !greetDismissed && !agentBusy && !autoRun;
+  const refFileInput = useRef<HTMLInputElement>(null);
+
+  // Change the blank comp's canvas to a size preset (in-editor size choice — no upfront screen).
+  const resizeToPreset = useCallback((presetId: CanvasPresetId) => {
+    const preset = CANVAS_PRESETS.find((p) => p.id === presetId);
+    if (!preset) return;
+    commit((d) => {
+      const resized = resizeDocCanvas(d, { w: preset.w, h: preset.h });
+      d.canvas = resized.canvas;
+      d.layers = resized.layers;
+    });
+  }, [commit]);
+
+  // In-editor reference-library picker ("Browse reference library" from the greeting / attach).
+  const [refPickerOpen, setRefPickerOpen] = useState(false);
+  const onPickReference = useCallback((picked: PickedReference) => {
+    setRefPickerOpen(false);
+    setGreetDismissed(true);
+    runCopyReference(picked);
+  }, [runCopyReference]);
+
+  // Drop / paste a reference IMAGE anywhere in the editor → attach + copy run. (Figma-clipboard
+  // paste-import stays a gallery concern; here a pasted image is always a reference to copy.)
+  const [refDropActive, setRefDropActive] = useState(false);
+  useEffect(() => {
+    const onPaste = (e: ClipboardEvent) => {
+      const el = document.activeElement as HTMLElement | null;
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return;
+      const file = [...(e.clipboardData?.items || [])].find((i) => i.type.startsWith('image/'))?.getAsFile();
+      if (file) { e.preventDefault(); attachAndCopyFile(file); }
+    };
+    window.addEventListener('paste', onPaste);
+    return () => window.removeEventListener('paste', onPaste);
+  }, [attachAndCopyFile]);
 
   // ── structure ops ──
   const groupSelection = useCallback(() => {
@@ -943,7 +1140,7 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
     if (!selectedLeaf) return;
     const apply = (d: DesignDoc) => {
       const n = findNode(d, selectedLeaf.id);
-      if (n && !isGroup(n)) fn(n);
+      if (n && isLeafLayer(n)) fn(n);
     };
     if (live) onStreamChange(apply, false);
     else onStreamChange(apply, true);
@@ -957,10 +1154,12 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
     if (!nodes.length) return;
     commit((d) => { d.layers.push(...(JSON.parse(JSON.stringify(nodes)) as SceneNode[])); });
     // select the parametric instance root (its param form is the whole point of inserting) and
-    // land in the Design tab so the settings are immediately visible
+    // land in the Design tab so the settings are immediately visible — but NEVER yank the user
+    // away from the Agent tab while a run is live (that involuntary switch used to be the main
+    // way agent-tab state got destroyed mid-run — bug CHAT-23).
     const inst = nodes.find((n) => (n as SceneNode & { element?: unknown }).element) || nodes[nodes.length - 1];
     setSelectedIds([inst.id]);
-    setRightTab('design');
+    if (!agentBusyRef.current) setRightTab('design');
   };
 
   /** One-click preset: build a whole-ad archetype into the doc as ONE grouped, undoable step.
@@ -983,13 +1182,14 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
     });
     if (groupId) setSelectedIds([groupId]);
     setEnteredGroupId(null);
-    setRightTab('design');
+    if (!agentBusyRef.current) setRightTab('design'); // never yank away from a live agent run (CHAT-23)
     flash(replace ? `${name} preset applied` : `${name} preset added`);
   };
 
   /** Insert a NEW image layer or swap the src of an existing one (imageFileTarget). */
   const onImageFile = (file: File | null) => {
     if (!file) return;
+    if (file.size > 30 * 1024 * 1024) { flash(`"${file.name}" is too large (${Math.round(file.size / 1e6)}MB) — max 30MB`); return; } // ERR-5
     const reader = new FileReader();
     reader.onload = async () => {
       const r = await api.uploadRef(String(reader.result));
@@ -1005,7 +1205,7 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
       } else {
         commit((d) => {
           const n = findNode(d, target);
-          if (n && !isGroup(n)) n.src = r.url;
+          if (n && isLeafLayer(n)) n.src = r.url;
         });
         flash('Image replaced');
       }
@@ -1168,98 +1368,110 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
   // ── render ──
   return (
     <div className={styles.editor}>
-      {/* ── top strip ── */}
+      {/* ── top strip: LEFT (back + name) · CENTER (size + zoom) · RIGHT (ref compare · save · history · export) ── */}
       <div className={styles.topStrip}>
-        <button type="button" className={styles.backBtn} onClick={onClose}>← Comps</button>
-        <input
-          className={styles.nameInput}
-          value={doc.name}
-          onChange={(e) => { setDoc((d) => ({ ...d, name: e.target.value })); setDirty(true); }}
-          spellCheck={false}
-          aria-label="Comp name"
-        />
-
-        <span
-          className={styles.underlayLabel}
-          title="Aspect ratio is locked — set upfront when the comp was created"
-        >
-          {doc.canvas.w}×{doc.canvas.h}
-        </span>
-
-        <div className={styles.zoomGroup}>
-          <button type="button" className={styles.zoomBtn} onClick={() => setZoom('fit')} data-active={zoom === 'fit' || undefined}>Fit</button>
-          <button type="button" className={styles.zoomBtn} onClick={() => setZoom(1)} data-active={zoom === 1 || undefined}>100%</button>
+        {/* LEFT — back + editable name */}
+        <div className={styles.topLeft}>
+          <button type="button" className={styles.backBtn} onClick={onClose} title="Back to comps" aria-label="Back to comps">
+            <Icon name="chevron-right" size={14} className={styles.backChev} />
+            <span className={styles.backLabel}>Comps</span>
+          </button>
+          <input
+            className={styles.nameInput}
+            value={doc.name}
+            onChange={(e) => { setDoc((d) => ({ ...d, name: e.target.value })); setDirty(true); }}
+            spellCheck={false}
+            aria-label="Comp name"
+          />
         </div>
 
-        {/* frame background — visible whenever the base is a solid-color shape */}
-        {(() => {
-          const base = doc.layers.find((l) => !isGroup(l) && l.role === 'base') as Layer | undefined;
-          if (!base || base.type !== 'shape') return null;
-          const cur = typeof base.style?.background === 'string' && /^#[0-9a-fA-F]{6}$/.test(base.style.background)
-            ? base.style.background : '#ffffff';
-          return (
-            <label className={styles.frameColorWrap} title="Frame background color">
-              <input
-                type="color" value={cur} className={styles.frameColor}
-                aria-label="Frame background color"
-                onChange={(e) => onStreamChange((d) => {
-                  const b = d.layers.find((l) => !isGroup(l) && (l as Layer).role === 'base') as Layer | undefined;
-                  if (b) b.style = { ...b.style, background: e.target.value };
-                }, false)}
-                onBlur={() => onStreamChange(() => {}, true)}
-              />
-            </label>
-          );
-        })()}
+        {/* CENTER — canvas size + zoom controls */}
+        <div className={styles.topCenter}>
+          <span
+            className={styles.dimsTag}
+            title="Aspect ratio is locked — set upfront when the comp was created"
+          >
+            {doc.canvas.w}×{doc.canvas.h}
+          </span>
 
-        <button
-          type="button" className={styles.iconBtn}
-          data-active={xray || undefined}
-          title="X-ray — show how this ad is built"
-          aria-label="Toggle X-ray"
-          aria-pressed={xray}
-          onClick={() => setXray((v) => !v)}
-        >
-          <Icon name={xray ? 'eye-off' : 'eye'} size={14} />
-        </button>
-
-        {doc.reference ? (
-          <div className={styles.underlayGroup}>
-            <span className={styles.underlayLabel}>Ref</span>
-            {/* Side-by-side compare: the reference shown in a panel BESIDE the canvas. */}
-            <button
-              type="button" className={styles.zoomBtn}
-              data-active={underlayMode === 'side' || undefined}
-              aria-pressed={underlayMode === 'side'}
-              title="Compare side by side — reference beside the canvas"
-              onClick={() => setUnderlayMode((m) => (m === 'side' ? 'off' : 'side'))}
-            >
-              <Icon name="columns" size={13} />
-              Side by side
-            </button>
-            {/* Tracing-paper overlay: the reference faint ON the canvas. */}
-            <button
-              type="button" className={styles.zoomBtn}
-              data-active={underlayMode === 'over' || undefined}
-              aria-pressed={underlayMode === 'over'}
-              title="Overlay on canvas — the reference as tracing paper"
-              onClick={() => setUnderlayMode((m) => (m === 'over' ? 'off' : 'over'))}
-            >
-              <Icon name="copy" size={13} />
-              Overlay
-            </button>
-            {underlayMode === 'over' ? (
-              <input
-                type="range" min={10} max={100} value={Math.round(underlayOpacity * 100)}
-                className={styles.opacitySlider}
-                onChange={(e) => setUnderlayOpacity(Number(e.target.value) / 100)}
-                aria-label="Underlay opacity"
-              />
-            ) : null}
+          <div className={styles.segGroup}>
+            <button type="button" className={styles.segBtn} onClick={() => setZoom('fit')} data-active={zoom === 'fit' || undefined}>Fit</button>
+            <button type="button" className={styles.segBtn} onClick={() => setZoom(1)} data-active={zoom === 1 || undefined}>100%</button>
           </div>
-        ) : null}
 
-        <div className={styles.topActions}>
+          {/* frame background — visible whenever the base is a solid-color shape */}
+          {(() => {
+            const base = doc.layers.find((l) => !isGroup(l) && l.role === 'base') as Layer | undefined;
+            if (!base || base.type !== 'shape') return null;
+            const cur = typeof base.style?.background === 'string' && /^#[0-9a-fA-F]{6}$/.test(base.style.background)
+              ? base.style.background : '#ffffff';
+            return (
+              <label className={styles.frameColorWrap} title="Frame background color">
+                <input
+                  type="color" value={cur} className={styles.frameColor}
+                  aria-label="Frame background color"
+                  onChange={(e) => onStreamChange((d) => {
+                    const b = d.layers.find((l) => !isGroup(l) && (l as Layer).role === 'base') as Layer | undefined;
+                    if (b) b.style = { ...b.style, background: e.target.value };
+                  }, false)}
+                  onBlur={() => onStreamChange(() => {}, true)}
+                />
+              </label>
+            );
+          })()}
+
+          <button
+            type="button" className={styles.iconBtn}
+            data-active={xray || undefined}
+            title="X-ray — show how this ad is built"
+            aria-label="Toggle X-ray"
+            aria-pressed={xray}
+            onClick={() => setXray((v) => !v)}
+          >
+            <Icon name={xray ? 'eye-off' : 'eye'} size={14} />
+          </button>
+        </div>
+
+        {/* RIGHT — ref compare (only with a reference) · save status · history · export */}
+        <div className={styles.topRight}>
+          {doc.reference ? (
+            <>
+              <div className={styles.segGroup} role="group" aria-label="Compare reference">
+                {/* Side-by-side compare: the reference shown in a panel BESIDE the canvas. */}
+                <button
+                  type="button" className={styles.segBtn}
+                  data-active={underlayMode === 'side' || undefined}
+                  aria-pressed={underlayMode === 'side'}
+                  title="Compare side by side — reference beside the canvas"
+                  onClick={() => setUnderlayMode((m) => (m === 'side' ? 'off' : 'side'))}
+                >
+                  <Icon name="columns" size={13} />
+                  <span className={styles.segLabel}>Side by side</span>
+                </button>
+                {/* Tracing-paper overlay: the reference faint ON the canvas. */}
+                <button
+                  type="button" className={styles.segBtn}
+                  data-active={underlayMode === 'over' || undefined}
+                  aria-pressed={underlayMode === 'over'}
+                  title="Overlay on canvas — the reference as tracing paper"
+                  onClick={() => setUnderlayMode((m) => (m === 'over' ? 'off' : 'over'))}
+                >
+                  <Icon name="copy" size={13} />
+                  <span className={styles.segLabel}>Overlay</span>
+                </button>
+              </div>
+              {underlayMode === 'over' ? (
+                <input
+                  type="range" min={10} max={100} value={Math.round(underlayOpacity * 100)}
+                  className={styles.opacitySlider}
+                  onChange={(e) => setUnderlayOpacity(Number(e.target.value) / 100)}
+                  aria-label="Underlay opacity"
+                />
+              ) : null}
+              <span className={styles.groupDivider} aria-hidden="true" />
+            </>
+          ) : null}
+
           {remoteUpdate ? (
             <button type="button" className={styles.remoteChip} title="This comp was saved elsewhere — click to load the newer version (your unsaved edits are replaced)"
               onClick={() => void reloadRemote()}>
@@ -1272,16 +1484,27 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
             title="Autosaved — ⌘S forces a save"
           >
             <span className={styles.saveDot} />
-            {busy === 'save' ? 'Saving…' : dirty ? 'Unsaved changes' : 'Saved'}
+            <span className={styles.saveLabel}>{busy === 'save' ? 'Saving…' : dirty ? 'Unsaved changes' : 'Saved'}</span>
           </span>
-          <button type="button" className={styles.iconBtn} onClick={undo} title="Undo (⌘Z)"><Icon name="undo" size={14} /></button>
-          <button type="button" className={styles.iconBtn} onClick={redo} title="Redo (⇧⌘Z)"><Icon name="redo" size={14} /></button>
-          <span className={styles.actionDivider} />
-          <button type="button" className={styles.ghostBtn} onClick={downloadPng} disabled={busy !== null} title="Download as PNG">PNG</button>
-          <button type="button" className={styles.primaryBtn} onClick={doFigmaCopy} disabled={busy !== null} title="Copy to clipboard as native Figma layers — then paste in Figma (⌘V)">
-            <Icon name="figma" size={13} />
-            {busy === 'figma' ? 'Copying…' : 'Copy to Figma'}
-          </button>
+
+          <div className={styles.iconGroup} role="group" aria-label="History">
+            <button type="button" className={styles.iconBtn} onClick={undo} title="Undo (⌘Z)" aria-label="Undo"><Icon name="undo" size={14} /></button>
+            <button type="button" className={styles.iconBtn} onClick={redo} title="Redo (⇧⌘Z)" aria-label="Redo"><Icon name="redo" size={14} /></button>
+          </div>
+
+          <span className={styles.groupDivider} aria-hidden="true" />
+
+          {/* export group — quiet PNG + primary Copy to Figma */}
+          <div className={styles.exportGroup}>
+            <button type="button" className={styles.ghostBtn} onClick={downloadPng} disabled={busy !== null} title="Download as PNG" aria-label="Download PNG">
+              <Icon name="download" size={13} />
+              <span className={styles.exportLabel}>PNG</span>
+            </button>
+            <button type="button" className={styles.primaryBtn} onClick={doFigmaCopy} disabled={busy !== null} title="Copy to clipboard as native Figma layers — then paste in Figma (⌘V)">
+              <Icon name="figma" size={13} />
+              <span className={styles.exportLabel}>{busy === 'figma' ? 'Copying…' : 'Copy to Figma'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1397,11 +1620,21 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
                     className={styles.renameInput}
                     defaultValue={n.name || n.role || n.type}
                     autoFocus
-                    onBlur={(e) => { commit((d) => { const x = findNode(d, n.id); if (x) x.name = e.target.value || x.name; }); setRenamingId(null); }}
-                    onKeyDown={(e) => { e.stopPropagation(); if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                    onBlur={(e) => {
+                      // Escape (or a doc-replace effect) armed the cancel flag → discard, don't commit.
+                      if (cancelRename.current) { cancelRename.current = false; setRenamingId(null); return; }
+                      const v = e.target.value.trim();
+                      commit((d) => { const x = findNode(d, n.id); if (x) x.name = v || x.name; });
+                      setRenamingId(null);
+                    }}
+                    onKeyDown={(e) => {
+                      e.stopPropagation();
+                      if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+                      else if (e.key === 'Escape') { cancelRename.current = true; (e.target as HTMLInputElement).blur(); }
+                    }}
                   />
                 ) : (
-                  <span className={styles.layerName}>{n.name || n.role || n.type}</span>
+                  <span className={styles.layerName} title={n.name || n.role || n.type}>{n.name || n.role || n.type}</span>
                 )}
                 <span className={styles.layerBtns}>
                   <button
@@ -1548,6 +1781,15 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
             className={styles.stageWrap}
             data-fit={zoom === 'fit' || undefined}
             data-locked={agentBusy || undefined}
+            data-drop={refDropActive || undefined}
+            onDragOver={(e) => {
+              if ([...e.dataTransfer.items].some((i) => i.kind === 'file')) { e.preventDefault(); setRefDropActive(true); }
+            }}
+            onDragLeave={(e) => { if (e.currentTarget === e.target) setRefDropActive(false); }}
+            onDrop={(e) => {
+              const file = [...e.dataTransfer.files].find((f) => f.type.startsWith('image/'));
+              if (file) { e.preventDefault(); setRefDropActive(false); attachAndCopyFile(file); }
+            }}
           >
             {agentBusy ? (
               <div className={styles.agentOverlay}>
@@ -1556,6 +1798,47 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
                 </span>
               </div>
             ) : null}
+
+            {/* ── greeting: fresh "New comp" — attach/drop a reference to copy, or start blank ── */}
+            {showGreeting ? (
+              <div className={styles.greetOverlay}>
+                <div className={styles.greetCard}>
+                  <p className={styles.greetTitle}>Start this comp</p>
+                  <p className={styles.greetSub}>
+                    Attach a reference and the agent copies its layout here — or start from a blank canvas.
+                  </p>
+                  <div className={styles.greetActions}>
+                    <button type="button" className={styles.greetPrimary} onClick={() => refFileInput.current?.click()}>
+                      <Icon name="photo" size={14} /> Attach a reference to copy
+                    </button>
+                    <button type="button" className={styles.greetGhost} onClick={() => setRefPickerOpen(true)}>
+                      <Icon name="layout-grid" size={13} /> Browse reference library
+                    </button>
+                  </div>
+                  <p className={styles.greetHint}>or drop / paste an image anywhere</p>
+                  <div className={styles.greetDivider}><span>or start blank</span></div>
+                  <div className={styles.greetSizes}>
+                    {CANVAS_PRESETS.map((p) => (
+                      <button
+                        key={p.id} type="button" className={styles.greetSize}
+                        data-active={doc.canvas.w === p.w && doc.canvas.h === p.h || undefined}
+                        onClick={() => { resizeToPreset(p.id); setGreetDismissed(true); }}
+                        title={`Blank ${p.name}`}
+                      >
+                        {p.name.split(' · ')[0]}
+                      </button>
+                    ))}
+                    <button type="button" className={styles.greetSkip} onClick={() => setGreetDismissed(true)}>
+                      Keep {doc.canvas.w === 1080 && doc.canvas.h === 1080 ? '1:1' : `${doc.canvas.w}×${doc.canvas.h}`}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+            <input
+              ref={refFileInput} type="file" accept="image/*" hidden
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) attachAndCopyFile(f); e.target.value = ''; }}
+            />
             <Stage
               doc={doc}
               selectedIds={selectedIds}
@@ -1595,7 +1878,13 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
             </button>
           </div>
 
-          {rightTab === 'agent' ? (
+          {/* BOTH tab panes stay MOUNTED across Design↔Agent switches. The old ternary here fully
+              unmounted AgentPanel on every switch, wiping ~15 pieces of its local state — chat
+              draft, optimistic localEcho (failed/stopped turns), attachments, the running flag +
+              Stop button, the revert snapshot — which read to the user as "the entire chat
+              disappears" (bug CHAT-1). `display:contents` keeps AgentPanel laying out as a direct
+              child of the aside; `display:none` hides without unmounting. */}
+          <div style={{ display: rightTab === 'agent' ? 'contents' : 'none' }}>
             <AgentPanel
               docId={doc.id}
               ensureSaved={() => save(true)}
@@ -1605,6 +1894,9 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
               onUndoRun={undo}
               flash={flash}
               brand={kitBrand}
+              reference={doc.reference ?? null}
+              pendingCopy={pendingCopy}
+              onCopyConsumed={() => setPendingCopy(null)}
               selection={selectedIds
                 .map((id) => {
                   const n = findNode(doc, id);
@@ -1612,7 +1904,8 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
                 })
                 .filter((s): s is { id: string; name: string } => s !== null)}
             />
-          ) : (
+          </div>
+          {rightTab === 'agent' ? null : (
             <div className={styles.designTab}>
           {/* element instance — auto param form at the very top */}
           {instNode && elInst && elDef ? (
@@ -1658,7 +1951,9 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
             <div className={styles.linkPreview}>
               {linkedCopy.slice(0, 2).map((c) => (
                 <span key={c.label} className={styles.linkCopyLine} title={c.text}>
-                  <b>{c.label}:</b> {c.text.slice(0, 70)}{c.text.length > 70 ? '…' : ''}
+                  {/* LAYER-9: iterate by code point so a truncation never splits an emoji
+                      surrogate pair (which renders as a broken ▯). Array.from handles astral chars. */}
+                  <b>{c.label}:</b> {Array.from(c.text).slice(0, 70).join('')}{Array.from(c.text).length > 70 ? '…' : ''}
                 </span>
               ))}
               <button
@@ -1735,6 +2030,14 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
                     onLive={(v) => mutateSelected((l) => { l.rotation = v || undefined; }, true)}
                     onDone={(v) => mutateSelected((l) => { l.rotation = v || undefined; })} />
                 </div>
+              ) : null}
+
+              {/* Native component leaf — no style/text/effects inspector (its own HTML/CSS owns
+                  layout). Only its outer box (Position, above) is editable here. */}
+              {selectedComponent ? (
+                <p className={styles.hint} style={{ marginTop: 'var(--space-2)' }}>
+                  Native component (<code>{selectedComponent.component}</code>) — edit via its params.
+                </p>
               ) : null}
 
               {selectedLeaf?.type === 'image' ? (
@@ -2021,20 +2324,24 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
                   Use as mask
                 </button>
               ) : null}
-              <div className={styles.effectRow}>
-                <span className={styles.effectLabel}>Opacity</span>
-                <input type="range" min={0} max={100}
-                  value={Math.round(((isGroup(selected) ? selected.style?.opacity : selected.style?.opacity) ?? 1) * 100)}
-                  onChange={(e) => {
-                    const v = Number(e.target.value) / 100;
-                    onStreamChange((d) => {
-                      const n = findNode(d, selected.id);
-                      if (n) n.style = { ...n.style, opacity: v };
-                    }, false);
-                  }}
-                  onPointerUp={() => onStreamChange(() => {}, true)}
-                />
-              </div>
+              {/* Opacity lives on GroupNode.style and Layer.style; a native ComponentLayer has no
+                  `style` (its own CSS owns opacity), so this control is leaf/group-only. */}
+              {!isComponent(selected) ? (
+                <div className={styles.effectRow}>
+                  <span className={styles.effectLabel}>Opacity</span>
+                  <input type="range" min={0} max={100}
+                    value={Math.round((selected.style?.opacity ?? 1) * 100)}
+                    onChange={(e) => {
+                      const v = Number(e.target.value) / 100;
+                      onStreamChange((d) => {
+                        const n = findNode(d, selected.id);
+                        if (n && !isComponent(n)) n.style = { ...n.style, opacity: v };
+                      }, false);
+                    }}
+                    onPointerUp={() => onStreamChange(() => {}, true)}
+                  />
+                </div>
+              ) : null}
               {selectedLeaf && selectedLeaf.type !== 'image' && selectedLeaf.type !== 'vignette' ? (
                 <div className={styles.rowSplit}>
                   <button type="button" className={styles.pillToggle}
@@ -2105,6 +2412,12 @@ export default function Editor({ initialDoc, onClose }: EditorProps) {
           )}
         </aside>
       </div>
+
+      {/* In-editor reference library — the old standalone Copy-from-Reference library, reachable
+          from the greeting / attach affordance. Picking closes it straight into a copy run. */}
+      {refPickerOpen ? (
+        <ReferenceLibrary onPick={onPickReference} onClose={() => setRefPickerOpen(false)} />
+      ) : null}
     </div>
   );
 

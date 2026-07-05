@@ -23,8 +23,10 @@ register(new URL(`data:text/javascript,${encodeURIComponent(woff2Hook)}`));
 const {
   buildFigmaClipboardHtml,
   gradientTransformFromAngle,
+  loadOneImage,
   FIGMA_PATH_PLUGIN_ID,
   FIGMA_PATH_PLUGIN_KEY,
+  FIGMA_AUTOH_PLUGIN_KEY,
 } = await import('../src/components/design/figmaClipboard.ts');
 const {
   parseFigmaClipboard,
@@ -332,6 +334,27 @@ check('autoH text roundtrips', () => {
   assert.equal(sub.text, 'Auto height text that wraps');
 });
 
+check('text geometry: NO textAutoResize:HEIGHT + textAlignVertical:CENTER contradiction on the wire', () => {
+  // The "massive text issue": auto-height (HEIGHT) discards our fixed box height, so a vertical
+  // CENTER has nothing to center in and the run jumps to a different y than our centered design.
+  // Every TEXT node must ship a FIXED box (textAutoResize NONE) so Figma reproduces our box and
+  // our vertical centering verbatim.
+  const texts = changes.filter((c) => c.type === 'TEXT');
+  assert.ok(texts.length >= 2, `expected several TEXT nodes, got ${texts.length}`);
+  for (const t of texts) {
+    assert.equal(t.textAutoResize, 'NONE', `"${t.name}" must be NONE, got ${t.textAutoResize}`);
+    assert.equal(t.textAlignVertical, 'CENTER', `"${t.name}" vertical align must be CENTER`);
+    // size must be our real box, not a 1x1 stub — Figma centers within exactly this height.
+    assert.ok(t.size && t.size.x > 1 && t.size.y > 1, `"${t.name}" needs a real fixed box`);
+  }
+  // The autoH text still declares NONE on the wire but carries the autoH flag in pluginData,
+  // which is what re-hydrates Layer.autoH on copy-back (asserted above).
+  const auto = changes.find((c) => c.type === 'TEXT' && c.name === 'Auto height text that wraps');
+  assert.equal(auto.textAutoResize, 'NONE', 'autoH text no longer signals HEIGHT');
+  const pd = (auto.pluginData || []).find((p) => p.pluginID === FIGMA_PATH_PLUGIN_ID && p.key === FIGMA_AUTOH_PLUGIN_KEY);
+  assert.ok(pd && pd.value === '1', 'autoH must ride in pluginData for lossless copy-back');
+});
+
 check('group child coords back to ABSOLUTE canvas space', () => {
   const shape = findByName(nodes, 'Gradient Shape');
   assert.deepEqual(shape.box, { x: 100, y: 420, w: 880, h: 300 });
@@ -623,6 +646,222 @@ check('fonts: plain text doc → ONE family (Inter, Figma-native) and ≤2 minim
   for (const s of styles) assert.ok(MINIMAL.has(s), `style "${s}" outside the minimal Inter set`);
 });
 
+// ── TEXT-RENDERS-CORRECTLY proof: a styled TEXT node + a named FRAME, encoded → decoded, must
+//    carry every style field Figma needs to render WHAT WE DESIGNED (not defaults), each with its
+//    override Tag so the editor actually applies it, and the frame must keep its intended name. ──
+check('styled TEXT node: all style fields + override tags present & correct on the wire', () => {
+  const styledDoc = {
+    id: 'comp_styled', name: 'Named Artboard', canvas: { w: 800, h: 600 },
+    layers: [
+      {
+        id: 'hl', type: 'text', name: 'Hero Headline', text: 'Buy Now',
+        box: { x: 40, y: 40, w: 720, h: 120 },
+        style: {
+          fontSize: 96, fontWeight: 700, color: '#ff8800', align: 'center',
+          lineHeight: 1.1, letterSpacing: 4, fontFamily: 'Poppins',
+        },
+      },
+    ],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const wire = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(styledDoc, new Map())).message.nodeChanges;
+  const t = wire.find((c) => c.type === 'TEXT');
+  assert.ok(t, 'styled TEXT node on the wire');
+
+  // characters
+  assert.equal(t.textData?.characters, 'Buy Now', 'characters');
+  // fontSize (px, verbatim) + tag
+  assert.equal(t.fontSize, 96, 'fontSize');
+  assert.equal(t.fontSizeTag, 1, 'fontSizeTag applies the override');
+  // fontName: Poppins is a real Figma family → literal; weight 700 → Bold; tag present
+  assert.equal(t.fontName?.family, 'Poppins', 'fontName.family');
+  assert.equal(t.fontName?.style, 'Bold', 'fontName.style (weight 700 → Bold)');
+  assert.equal(t.fontNameTag, 1, 'fontNameTag applies the override');
+  // lineHeight: editor multiplier 1.1 → PERCENT 110
+  assert.deepEqual(t.lineHeight, { value: 110 * 1, units: 'PERCENT' }, 'lineHeight 1.1 → 110%');
+  assert.equal(t.lineHeightTag, 1, 'lineHeightTag applies the override');
+  // letterSpacing: editor px → PIXELS verbatim
+  assert.deepEqual(t.letterSpacing, { value: 4, units: 'PIXELS' }, 'letterSpacing 4px');
+  // fill color: #ff8800 → { r:1, g:0.533, b:0, a:1 }
+  const fill = (t.fillPaints || [])[0];
+  assert.ok(fill && fill.type === 'SOLID', 'solid fill present');
+  assert.ok(Math.abs(fill.color.r - 1) < 1e-6 && Math.abs(fill.color.g - 0x88 / 255) < 1e-6
+    && Math.abs(fill.color.b - 0) < 1e-6 && fill.color.a === 1, `fill color #ff8800, got ${JSON.stringify(fill.color)}`);
+  assert.equal(t.fillPaintsTag, 1, 'fillPaintsTag applies the fill override');
+  // alignment + tags
+  assert.equal(t.textAlignHorizontal, 'CENTER', 'align center');
+  assert.equal(t.textAlignHorizontalTag, 1, 'textAlignHorizontalTag');
+  // autoRename OFF so the name we assigned survives paste
+  assert.equal(t.autoRename, false, 'autoRename must be false so names are not clobbered');
+  // plain text nodes are named by content (existing behavior) — a meaningful name, not a slug
+  assert.equal(t.name, 'Buy Now', 'text node named by its characters');
+
+  // the artboard FRAME carries the doc name (a meaningful name, not "Frame")
+  const frame = wire.find((c) => c.type === 'FRAME' && c.name === 'Named Artboard');
+  assert.ok(frame, 'top-level FRAME named after the doc, not a generic "Frame"');
+});
+
+check('frame naming: no exported FRAME/GROUP pastes as a bare generic default', () => {
+  // A group with only a role (no explicit name) must paste as a humanized name, never a bare
+  // lowercase slug or an empty string that Figma would fall back to "Group"/"Frame" for.
+  const roleDoc = {
+    id: 'comp_roles', name: 'Roles', canvas: { w: 400, h: 400 },
+    layers: [
+      {
+        id: 'g', type: 'group', role: 'price-badge', // no name
+        box: { x: 10, y: 10, w: 200, h: 100 },
+        children: [
+          { id: 'c', type: 'shape', name: 'chip', box: { x: 10, y: 10, w: 200, h: 100 }, style: { background: '#fff' } },
+        ],
+      },
+    ],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const wire = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(roleDoc, new Map())).message.nodeChanges;
+  const grp = wire.find((c) => c.type === 'GROUP');
+  assert.ok(grp, 'group on the wire');
+  assert.equal(grp.name, 'Price Badge', `role fallback humanized, got "${grp.name}"`);
+  for (const c of wire) {
+    if (c.type === 'FRAME' || c.type === 'GROUP') {
+      assert.ok(c.name && !['Frame', 'Group', ''].includes(c.name) && c.name === c.name.trim(),
+        `container name "${c.name}" is generic/empty`);
+    }
+  }
+});
+
+// ── REPRESENTATIVE CURRENT COMP: text + image + crop-cutout + native component + group ──────────
+// The "Figma export is not working" report is about a WHOLE current comp — one that mixes every
+// newer scene-graph capability at once: a styled TEXT node, a plain IMAGE, a CROP-CUTOUT image
+// (style.crop → baked transparent PNG whose alpha is the shape), a native ComponentLayer
+// (type:'component' — has no style/text), and a GROUP. This asserts the full walk runs without
+// throwing and every node lands on the wire correctly styled, named, and (for the cut-out) baked.
+check('current comp (text + image + crop-cutout + component + group): full payload, nothing dropped', () => {
+  const compDoc = {
+    id: 'comp_current', name: 'Current Comp', canvas: { w: 1080, h: 1350 },
+    layers: [
+      {
+        id: 'hl', type: 'text', role: 'headline', name: 'Headline', text: 'Buy Now',
+        box: { x: 60, y: 80, w: 960, h: 140 },
+        style: { fontSize: 88, fontWeight: 700, color: '#ff8800', align: 'center' },
+      },
+      {
+        id: 'photo', type: 'image', name: 'Hero Photo',
+        src: 'data:image/png;base64,PLAIN',
+        box: { x: 100, y: 260, w: 400, h: 300 }, style: { radius: 24 },
+      },
+      {
+        // CROP-CUTOUT: circular avatar. style.crop makes loadImageInputs bake a transparent PNG;
+        // the pure builder can't fetch, so we mark the id in cutoutBaked (what copyForFigma passes).
+        id: 'avatar', type: 'image', name: 'Avatar Cutout',
+        src: 'data:image/png;base64,CUT',
+        box: { x: 560, y: 260, w: 200, h: 200 },
+        style: { shapeKind: 'ellipse', crop: { x: 0.25, y: 0.25, w: 0.5, h: 0.5 } },
+      },
+      {
+        // NATIVE COMPONENT: type:'component' — no style/text. The walk must NOT read undefined
+        // style/text (a silent drop / empty TEXT); it emits a labeled placeholder rectangle.
+        id: 'xp', type: 'component', component: 'x-post', name: 'Tweet Card',
+        box: { x: 100, y: 620, w: 880, h: 300 }, params: { handle: '@brand' },
+      },
+      {
+        id: 'grp', type: 'group', name: 'CTA Group',
+        box: { x: 100, y: 980, w: 400, h: 100 },
+        children: [
+          {
+            id: 'cta', type: 'button', name: 'CTA', text: 'SHOP NOW',
+            box: { x: 100, y: 980, w: 400, h: 100 },
+            style: { fontSize: 40, color: '#000000', background: '#ffffff', radius: 20, align: 'center' },
+          },
+        ],
+      },
+    ],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const compImages = new Map([
+    ['photo', { bytes: TINY_PNG, hash: new Uint8Array(20).fill(1), width: 1, height: 1 }],
+    ['avatar', { bytes: TINY_PNG, hash: new Uint8Array(20).fill(2), width: 1, height: 1 }],
+  ]);
+  const wire = decodeFigmaClipboardHtml(
+    buildFigmaClipboardHtml(compDoc, compImages, new Set(['avatar'])),
+  ).message;
+  const changes = wire.nodeChanges;
+  const byName = (n) => changes.find((c) => c.name === n);
+
+  // TEXT: characters + fill + fontName resolvable + override tags applied.
+  const hl = byName('Buy Now');
+  assert.ok(hl && hl.type === 'TEXT', 'headline TEXT present');
+  assert.equal(hl.textData?.characters, 'Buy Now', 'headline characters');
+  assert.equal(hl.fontSizeTag, 1, 'fontSize override tag applied');
+  assert.equal(hl.fontNameTag, 1, 'fontName override tag applied');
+  assert.ok(hl.fontName?.family && hl.fontName.family.length > 0, 'fontName.family resolvable');
+  const hlFill = (hl.fillPaints || [])[0];
+  assert.ok(hlFill?.type === 'SOLID' && Math.abs(hlFill.color.r - 1) < 1e-6, 'headline fill #ff8800');
+
+  // PLAIN IMAGE: keeps its rounded-rect shape + IMAGE fill (blob present).
+  const photo = byName('Hero Photo');
+  assert.ok(photo && photo.type === 'ROUNDED_RECTANGLE', 'plain image node present');
+  const photoFill = (photo.fillPaints || []).find((p) => p.type === 'IMAGE');
+  assert.ok(photoFill, 'plain image IMAGE fill');
+  assert.equal(photo.cornerRadius, 24, 'plain image keeps its corner radius');
+  assert.ok((wire.blobs[photoFill.image.dataBlob]?.bytes?.length ?? 0) > 0, 'plain image blob has bytes');
+
+  // CROP-CUTOUT: emitted as a PLAIN rect (shape erased — radius 0, no ellipse) with an IMAGE fill;
+  // the shape lives in the baked PNG's alpha, and FILL scale mode (never FIT).
+  const av = byName('Avatar Cutout');
+  assert.ok(av, 'cut-out node present (not dropped)');
+  assert.equal(av.type, 'ROUNDED_RECTANGLE', 'cut-out emits a plain rect, not an ELLIPSE');
+  assert.equal(av.cornerRadius, 0, 'cut-out corner radius erased (shape is in the alpha)');
+  const avFill = (av.fillPaints || []).find((p) => p.type === 'IMAGE');
+  assert.ok(avFill, 'cut-out IMAGE fill present');
+  assert.equal(avFill.imageScaleMode, 'FILL', 'cut-out fills its box (baked bytes already box-sized)');
+  assert.ok((wire.blobs[avFill.image.dataBlob]?.bytes?.length ?? 0) > 0, 'cut-out baked PNG bytes present');
+
+  // NATIVE COMPONENT: labeled placeholder rectangle, sized to the box — NOT dropped, NOT empty text.
+  const comp = byName('Tweet Card (component)');
+  assert.ok(comp, 'component placeholder present (not silently dropped)');
+  assert.equal(comp.type, 'ROUNDED_RECTANGLE', 'component → placeholder rect');
+  assert.deepEqual(comp.size, { x: 880, y: 300 }, 'placeholder sized to component box');
+
+  // GROUP: real GROUP node, named, with its child (bg rect + text) nested under it.
+  const grp = byName('CTA Group');
+  assert.ok(grp && grp.type === 'GROUP', 'CTA group is a real GROUP node');
+  const ctaText = byName('SHOP NOW');
+  assert.ok(ctaText && ctaText.type === 'TEXT', 'CTA text present under the group');
+  assert.deepEqual(ctaText.parentIndex.guid, grp.guid, 'CTA text nested under the group');
+
+  // Naming discipline across the whole comp: no empty names anywhere.
+  for (const c of changes) {
+    assert.ok(typeof c.name === 'string' && c.name.length > 0,
+      `node ${c.type} has empty name`);
+  }
+  // No node vanished: DOCUMENT + CANVAS + FRAME + headline + photo + avatar + component
+  //                   + group + cta-bg + cta-text = 10 nodes.
+  assert.equal(changes.length, 10, `expected 10 wire nodes, got ${changes.length}: ${changes.map((c) => c.name).join(', ')}`);
+});
+
+check('image with missing bytes emits a labeled placeholder (never a silent vanish)', () => {
+  // Regression net for "some layers just disappear in Figma": if an image layer's bytes are
+  // absent (fetch failed / crop bake threw), the walk must still emit a visible, named placeholder
+  // for it — not skip it entirely. Pass an EMPTY images map so 'photo' has no bytes.
+  const missDoc = {
+    id: 'comp_miss', name: 'Missing Image', canvas: { w: 400, h: 400 },
+    layers: [
+      { id: 'photo', type: 'image', name: 'Broken Photo', src: 'data:image/png;base64,X',
+        box: { x: 40, y: 40, w: 200, h: 200 }, style: { radius: 12 } },
+    ],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const wire = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(missDoc, new Map())).message.nodeChanges;
+  const ph = wire.find((c) => c.name === 'Broken Photo (image missing)');
+  assert.ok(ph, 'missing image emits a labeled placeholder (not dropped)');
+  assert.equal(ph.type, 'ROUNDED_RECTANGLE', 'placeholder is a rect');
+  assert.deepEqual(ph.size, { x: 200, y: 200 }, 'placeholder sized to the image box');
+  assert.ok((ph.fillPaints || [])[0]?.type === 'SOLID', 'placeholder has a solid fill (no broken IMAGE paint)');
+  assert.ok(!(ph.fillPaints || []).some((p) => p.type === 'IMAGE'), 'no dangling IMAGE fill');
+  assert.equal(wire.filter((c) => c.type !== 'DOCUMENT' && c.type !== 'CANVAS' && c.type !== 'FRAME').length, 1,
+    'exactly one content node — the placeholder — nothing vanished, nothing duplicated');
+});
+
 await checkAsync('Figma VECTOR imports as locked placeholder + passthrough (stale blob index dropped)', async () => {
   // Hand-built payload: a VECTOR node the way Figma would send one (vectorData with a
   // vectorNetworkBlob index). We can't rebuild the blob on export, so the stash must carry the
@@ -755,6 +994,150 @@ for (const elId of ['starburst-sticker', 'wave-swoosh-bg', 'qa-sticker', 'blob-b
   base.layers = buildElement(elId, base);
   await sweepDoc(`element:${elId}`, base);
 }
+
+// ── FULLY-STYLED TEXT roundtrip (audit item 3: mixed-style-run regression net) ───────────────────
+// The scene graph carries ONE uniform style per text layer (no per-range styling), so a layer that
+// would conceptually hold mixed formatting collapses to a single style — that's expected. What we
+// guard here is that a text layer with EVERY style field set at once survives encode→decode intact,
+// so no field silently drops when several are combined.
+await checkAsync('fully-styled TEXT layer: every style field survives encode→decode exactly', async () => {
+  const styledDoc = {
+    id: 'comp_full', name: 'Full Style', canvas: { w: 800, h: 400 },
+    layers: [
+      {
+        id: 'ft', type: 'text', name: 'Fully Styled', text: 'Every Field',
+        box: { x: 40, y: 40, w: 720, h: 120 },
+        style: {
+          color: '#ff8800',
+          fontSize: 72,
+          fontWeight: 700,        // → "Bold" → 700 (a weight that survives the style-name roundtrip)
+          lineHeight: 1.2,        // → PERCENT 120 → 1.2
+          letterSpacing: 6,       // → PIXELS 6 → 6
+          uppercase: true,
+          strikethrough: true,
+          align: 'center',
+        },
+      },
+    ],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const back = await parseFigmaClipboard(buildFigmaClipboardHtml(styledDoc, new Map()));
+  const t = findByName(back.nodes, 'Every Field');
+  assert.ok(t && t.type === 'text', 'styled text imported');
+  assert.equal(t.style.color, '#ff8800', 'color');
+  assert.equal(t.style.fontSize, 72, 'fontSize');
+  assert.equal(t.style.fontWeight, 700, 'fontWeight');
+  assert.ok(Math.abs(t.style.lineHeight - 1.2) < 1e-6, `lineHeight ${t.style.lineHeight} !≈ 1.2`);
+  assert.ok(Math.abs(t.style.letterSpacing - 6) < 1e-6, `letterSpacing ${t.style.letterSpacing} !≈ 6`);
+  assert.equal(t.style.uppercase, true, 'uppercase');
+  assert.equal(t.style.strikethrough, true, 'strikethrough');
+  assert.equal(t.style.align, 'center', 'align');
+});
+
+// ── IMAGE ERROR HANDLING (audit item 4a): loadOneImage NEVER throws; a 404 / thrown fetch / corrupt
+//    blob resolves to null → the id is omitted from the images map → emitSceneNode draws a labeled
+//    placeholder rect. Assert both halves: (1) loadOneImage returns null without throwing, and
+//    (2) the decoded payload for that layer is the labeled placeholder, NOT a dropped node and NOT a
+//    whole-doc SVG fallback. copyForFigma's real fetch/createImageBitmap can't run headless, so we
+//    drive loadOneImage directly with a stubbed global fetch.
+const realFetch = globalThis.fetch;
+await checkAsync('loadOneImage: HTTP 404 → null (no throw), decodes to labeled placeholder', async () => {
+  globalThis.fetch = async () => ({ ok: false, status: 404, async blob() { throw new Error('unreachable'); } });
+  try {
+    const layer = { id: 'p404', type: 'image', name: '404 Photo', src: 'https://x/missing.png',
+      box: { x: 40, y: 40, w: 200, h: 200 }, style: { radius: 12 } };
+    const input = await loadOneImage(layer);
+    assert.equal(input, null, '404 fetch must resolve to null (never throw)');
+    // Build the doc with an EMPTY images map (what loadImageInputs would produce) → placeholder path.
+    const missDoc = { id: 'comp_404', name: '404 Doc', canvas: { w: 400, h: 400 },
+      layers: [layer], createdAt: 0, updatedAt: 0, schemaVersion: 3 };
+    const wire = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(missDoc, new Map())).message.nodeChanges;
+    const ph = wire.find((c) => c.name === '404 Photo (image missing)');
+    assert.ok(ph, 'labeled placeholder present (not dropped)');
+    assert.equal(ph.type, 'ROUNDED_RECTANGLE', 'placeholder is a rect');
+    assert.deepEqual(ph.size, { x: 200, y: 200 }, 'placeholder sized to the image box');
+    assert.ok(!(ph.fillPaints || []).some((p) => p.type === 'IMAGE'), 'no dangling IMAGE fill (not SVG fallback)');
+    assert.ok((ph.fillPaints || [])[0]?.type === 'SOLID', 'solid placeholder fill');
+  } finally { globalThis.fetch = realFetch; }
+});
+
+await checkAsync('loadOneImage: THROWN fetch (CORS/abort) → null, not a rejected promise', async () => {
+  globalThis.fetch = async () => { throw new TypeError('Failed to fetch'); };
+  try {
+    const layer = { id: 'pcors', type: 'image', name: 'CORS Photo', src: 'https://blocked/x.png',
+      box: { x: 0, y: 0, w: 100, h: 100 } };
+    let threw = false;
+    let input;
+    try { input = await loadOneImage(layer); } catch { threw = true; }
+    assert.equal(threw, false, 'a thrown fetch must NOT reject loadOneImage (LAYER-27)');
+    assert.equal(input, null, 'thrown fetch degrades this one image to null');
+  } finally { globalThis.fetch = realFetch; }
+});
+
+await checkAsync('loadOneImage: corrupt blob that fails decode → null, not a rejected promise (LAYER-28)', async () => {
+  // Fetch succeeds and yields a blob, but createImageBitmap is absent/throws in Node → the final
+  // bytes/hash/bmp construction must be caught, degrading this one image, not the whole doc.
+  globalThis.fetch = async () => ({ ok: true, status: 200, async blob() { return { async arrayBuffer() { return new ArrayBuffer(4); } }; } });
+  const realCIB = globalThis.createImageBitmap;
+  globalThis.createImageBitmap = async () => { throw new Error('corrupt image data'); };
+  try {
+    const layer = { id: 'pbad', type: 'image', name: 'Corrupt Photo', src: 'https://x/corrupt.png',
+      box: { x: 0, y: 0, w: 100, h: 100 } };
+    let threw = false;
+    let input;
+    try { input = await loadOneImage(layer); } catch { threw = true; }
+    assert.equal(threw, false, 'a failed createImageBitmap must NOT reject loadOneImage (LAYER-28)');
+    assert.equal(input, null, 'corrupt blob degrades this one image to null');
+  } finally { globalThis.fetch = realFetch; globalThis.createImageBitmap = realCIB; }
+});
+
+// ── DEEP NESTING (audit item 4b): group ⊃ group ⊃ group with absolute-coord children survives with
+//    correct relative transforms — children come back in ABSOLUTE canvas space after the nested
+//    encode (relative-to-parent on the wire) → decode (re-absolutized) round trip.
+await checkAsync('deep nesting: group⊃group⊃group with absolute children → correct relative transforms', async () => {
+  const deepDoc = {
+    id: 'comp_deep', name: 'Deep Nest', canvas: { w: 1000, h: 1000 },
+    layers: [
+      {
+        id: 'g1', type: 'group', name: 'L1', box: { x: 100, y: 100, w: 800, h: 800 },
+        children: [
+          {
+            id: 'g2', type: 'group', name: 'L2', box: { x: 250, y: 250, w: 500, h: 500 },
+            children: [
+              {
+                id: 'g3', type: 'group', name: 'L3', box: { x: 400, y: 400, w: 200, h: 200 },
+                children: [
+                  { id: 'leaf', type: 'shape', name: 'Leaf', box: { x: 450, y: 460, w: 100, h: 80 },
+                    style: { background: '#22cc88', radius: 8 } },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  // Wire: each nested container parents under the one above (relative transforms on the wire).
+  const wire = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(deepDoc, new Map())).message.nodeChanges;
+  const wireByName = (n) => wire.find((c) => c.name === n);
+  const w1 = wireByName('L1'), w2 = wireByName('L2'), w3 = wireByName('L3'), wl = wireByName('Leaf');
+  assert.ok(w1 && w2 && w3 && wl, 'all four levels on the wire');
+  assert.deepEqual(w2.parentIndex.guid, w1.guid, 'L2 nested under L1');
+  assert.deepEqual(w3.parentIndex.guid, w2.guid, 'L3 nested under L2');
+  assert.deepEqual(wl.parentIndex.guid, w3.guid, 'Leaf nested under L3');
+  // Import: the tree comes back three-deep and the leaf's box is re-absolutized correctly.
+  const back = await parseFigmaClipboard(buildFigmaClipboardHtml(deepDoc, new Map()));
+  const L1 = findByName(back.nodes, 'L1');
+  assert.ok(L1 && L1.type === 'group', 'L1 group back');
+  const L2 = L1.children.find((c) => c.name === 'L2');
+  assert.ok(L2 && L2.type === 'group', 'L2 group nested');
+  const L3 = L2.children.find((c) => c.name === 'L3');
+  assert.ok(L3 && L3.type === 'group', 'L3 group nested three-deep');
+  const leaf = L3.children.find((c) => c.name === 'Leaf');
+  assert.ok(leaf, 'leaf survives three levels of nesting');
+  assert.deepEqual(leaf.box, { x: 450, y: 460, w: 100, h: 80 }, 'leaf back in ABSOLUTE canvas space');
+});
 
 console.log(failures ? `\n${failures} failure(s)` : '\nall checks passed');
 process.exit(failures ? 1 : 0);

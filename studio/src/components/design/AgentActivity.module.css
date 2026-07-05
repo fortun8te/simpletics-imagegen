@@ -1,0 +1,198 @@
+/* AgentActivity — the ONE shared agent-working feed (design-edit agent + copy-from-reference
+   build render this identically). Calm, dark, monochrome, generous line-height; DiamondLoader +
+   TextShimmer supply the loading glyph + shimmer. Theme tokens only. */
+
+.activity {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 8px 2px 4px;
+  /* same fail-visible entrance as the old .runningTurn — transition + @starting-style, never an
+     opacity keyframe (the idle power-saver pauses #root animations and would freeze a keyframe). */
+  opacity: 1;
+  transition: opacity 0.3s var(--ease);
+}
+@starting-style { .activity { opacity: 0; } }
+
+/* Keep the diamond + shimmers alive while the app-idle / tab-hidden power-saver pauses #root
+   animations — a live run IS activity (same override as AgentCursorOverlay/SkeletonLoader). */
+:global(html[data-app-idle='true'] #root) .activity,
+:global(html[data-app-idle='true'] #root) .activity *,
+:global(html[data-tab-hidden='true'] #root) .activity,
+:global(html[data-tab-hidden='true'] #root) .activity * {
+  animation-play-state: running !important;
+}
+
+/* ── TLDR narrative header ── */
+/* ONE status header row: diamond + the single current-action/status line + a live elapsed timer.
+   Replaces the old stacked eyebrow ("Thinking…") + separate answer ("Working…") that read as two
+   simultaneous states. */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+/* the ONE current first-person action / status — plain body text, shimmer on top, grows + truncates */
+.currentLine {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font: 400 12.5px/1.5 var(--font-sans);
+  color: var(--ink);
+  word-break: break-word;
+}
+/* live "12s" / "1:04" task timer, quiet + monospaced so it doesn't jump as it ticks */
+.elapsed {
+  flex: none;
+  font: 500 11px/1 var(--font-mono);
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── tool-call "look" chips ── */
+.chipRow { display: flex; flex-wrap: wrap; gap: 5px; }
+.toolChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.toolChip > :global(svg) { flex: none; color: var(--faint); }
+.toolChipLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+/* ── sub-agent list (the reference screenshot look) ── */
+.workers {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.worker {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+/* the animated loading glyph on the left; a hair of top offset so it sits on the title baseline */
+.workerGlyph {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+.worker[data-status='done'] .workerGlyph { color: var(--muted); }
+.worker[data-status='error'] .workerGlyph { color: var(--danger, #e5484d); }
+
+/* the row body is now a real button (UI-7 disclosure) — click to expand the full untruncated
+   title + phase. Reset button chrome so it still reads as plain text, not a control. */
+.workerBody {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+/* bold title + a quiet inline model label (reference look — Cursor shows "Composer 2.5" after the
+   title; supersedes the earlier removal that called it redundant with the composer footer). */
+.workerTitleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  min-width: 0;
+}
+.workerTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 600 13px/1.45 var(--font-sans);
+  letter-spacing: -0.006em;
+  color: var(--ink);
+}
+.workerModel {
+  flex: none;
+  font: 500 10px/1 var(--font-mono);
+  color: var(--faint);
+}
+/* expanded (UI-7): let the title wrap instead of truncating */
+.workerTitle[data-open] {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+}
+/* faint substatus line under the title — shimmers while running, static once done */
+.workerSub,
+.workerSubStatic {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+.workerSubStatic { color: var(--faint); }
+.workerSub[data-open],
+.workerSubStatic[data-open] {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* muted "+N more" line under the capped 3-row list — surfaces the true worker count instead of
+   silently dropping the rest (UI-4/6). */
+.workersMore {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+/* ── muted summary recap lines + "Waiting Ns" timer ── */
+.summaryLines {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 2px;
+}
+.summaryLine {
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--faint);
+  word-break: break-word;
+}
+.waiting {
+  margin-top: 1px;
+  font: 500 11px/1.5 var(--font-mono);
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.cot { padding-top: 2px; }

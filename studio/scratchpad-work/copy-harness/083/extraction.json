@@ -1,0 +1,178 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6mphfq-b",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 192,
+        "w": 972,
+        "h": 672
+      },
+      "children": [
+        {
+          "id": "ext-mr6mphfn-1",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · creatine sachet box",
+          "box": {
+            "x": 594,
+            "y": 326,
+            "w": 432,
+            "h": 538
+          },
+          "style": {
+            "background": "#e5e5e559",
+            "radius": 22,
+            "stroke": {
+              "color": "#e5e5e5",
+              "width": 3
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.55,
+              "y": 0.17,
+              "w": 0.4,
+              "h": 0.28
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mphbr-0",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "We spent all our money on product development",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 192,
+            "w": 540,
+            "h": 422
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 65,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6mphfo-2",
+      "type": "text",
+      "role": "subhead",
+      "name": "subhead",
+      "text": "(so we couldn't pay our designers)",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 864,
+        "w": 486,
+        "h": 115
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 50,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "ext-mr6mphfp-3",
+      "type": "text",
+      "role": "cta",
+      "name": "cta",
+      "text": "Please buy our Creatine",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 1190,
+        "w": 950,
+        "h": 173
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 76,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#ffffff",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#ffffff",
+      "share": 0.5
+    },
+    {
+      "hex": "#ffffff",
+      "share": 0.25
+    },
+    {
+      "hex": "#fefefe",
+      "share": 0.125
+    },
+    {
+      "hex": "#594e47",
+      "share": 0.063
+    },
+    {
+      "hex": "#dbd9c0",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 35,
+    "corrections": [
+      {
+        "layer": "background",
+        "problem": "The background is solid white, while the reference uses a dark background with a white card element.",
+        "fix": "Change background color to #1a1a1a and add a white card element with rounded corners behind the main text and product image placeholder."
+      },
+      {
+        "layer": "headline",
+        "problem": "The text 'We spent all our money on product development' is positioned in the top left corner, but in the reference it is centered inside a white card.",
+        "fix": "Move the headline text to be centered horizontally and vertically within the white card element, and set the text color to #1a1a1a."
+      },
+      {
+        "layer": "subheadline",
+        "problem": "The text '(so we couldn't pay our designers)' is positioned below the main headline in the top left, but in the reference it is part of the white card content.",
+        "fix": "Move the subheadline text to be positioned below the main headline within the white card element, and ensure it remains in #1a1a1a color."
+      },
+      {
+        "layer": "CTA button",
+        "problem": "The 'Please buy our Creatine' text is positioned in the bottom left corner, but in the reference it is a prominent call-to-action element below the white card.",
+        "fix": "Move the CTA text to be centered horizontally below the white card element, set the text color to #1a1a1a, and ensure proper spacing from the card above."
+      },
+      {
+        "layer": "product image",
+        "problem": "The placeholder rectangle is positioned on the right side of the layout, but in the reference the product image is centered within the white card.",
+        "fix": "Move the product image placeholder to be centered within the white card element, and scale it appropriately to fit within the card boundaries."
+      }
+    ],
+    "applied": 4
+  },
+  "error": null,
+  "passes": 2
+}

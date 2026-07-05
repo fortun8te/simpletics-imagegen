@@ -1,0 +1,143 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "caption-mr6f45rg-32",
+      "type": "text",
+      "autoH": true,
+      "role": "caption",
+      "name": "Hook pill",
+      "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+      "box": {
+        "x": 76,
+        "y": 125,
+        "w": 929,
+        "h": 182
+      },
+      "style": {
+        "fontSize": 63,
+        "fontWeight": 700,
+        "lineHeight": 1.15,
+        "letterSpacing": -0.2,
+        "color": "#0a0a0a",
+        "background": "#ffffff",
+        "pill": true,
+        "padding": 32,
+        "radius": 19,
+        "align": "center"
+      },
+      "sizeLocked": true,
+      "paramRef": {
+        "key": "text"
+      },
+      "element": {
+        "id": "ig-caption",
+        "params": {
+          "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+          "hook": "",
+          "items": [],
+          "style": "light",
+          "preset": "pill",
+          "align": "center",
+          "size": 5.8,
+          "tight": false
+        },
+        "v": 2
+      },
+      "tpl": "story-native",
+      "tplRef": {
+        "key": "hook"
+      },
+      "template": {
+        "id": "story-native",
+        "params": {
+          "hook": "Vor 8 Wochen - vor 4 Wochen - Heute",
+          "hook2": "72,6 kg",
+          "style": "light"
+        }
+      }
+    },
+    {
+      "id": "caption-mr6f45rg-33",
+      "type": "text",
+      "autoH": true,
+      "role": "caption",
+      "name": "Sub-hook pill",
+      "text": "72,6 kg",
+      "box": {
+        "x": 419,
+        "y": 384,
+        "w": 242,
+        "h": 150
+      },
+      "style": {
+        "fontSize": 52,
+        "fontWeight": 700,
+        "lineHeight": 1.15,
+        "letterSpacing": -0.2,
+        "color": "#0a0a0a",
+        "background": "#ffffff",
+        "pill": true,
+        "padding": 26,
+        "radius": 16,
+        "align": "center"
+      },
+      "sizeLocked": true,
+      "paramRef": {
+        "key": "text"
+      },
+      "element": {
+        "id": "ig-caption",
+        "params": {
+          "text": "72,6 kg",
+          "hook": "",
+          "items": [],
+          "style": "light",
+          "preset": "pill",
+          "align": "center",
+          "size": 4.8,
+          "tight": false
+        },
+        "v": 2
+      },
+      "tpl": "story-native",
+      "tplRef": {
+        "key": "hook2"
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "story-native",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#56533c",
+      "share": 0.25
+    },
+    {
+      "hex": "#d8d3c3",
+      "share": 0.25
+    },
+    {
+      "hex": "#1b160e",
+      "share": 0.25
+    },
+    {
+      "hex": "#9c7757",
+      "share": 0.125
+    },
+    {
+      "hex": "#baa37f",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

@@ -16,6 +16,8 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { inflateSync, deflateSync } from 'node:zlib';
 import { fontFaceStyleTag } from './font-faces.mjs';
+import { writeAtomic } from './atomic-write.mjs';
+import { walkNodes, leaves, groupBounds } from './scene-tree.mjs';
 
 const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DESIGNS = join(STUDIO, '.state', 'designs');
@@ -70,7 +72,7 @@ export function saveDesign(doc) {
   } else {
     delete clean.tags;
   }
-  writeFileSync(join(DESIGNS, `${clean.id}.json`), JSON.stringify(clean, null, 2));
+  writeAtomic(join(DESIGNS, `${clean.id}.json`), JSON.stringify(clean, null, 2));
   return clean;
 }
 
@@ -109,7 +111,7 @@ export function saveThumb(id, dataUrl) {
   if (!m) return false;
   ensureDirs();
   try {
-    writeFileSync(join(DESIGNS, `${safeId(id)}.png`), Buffer.from(m[1], 'base64'));
+    writeAtomic(join(DESIGNS, `${safeId(id)}.png`), Buffer.from(m[1], 'base64'));
     return true;
   } catch { return false; }
 }
@@ -158,8 +160,7 @@ export function appendChat(docId, message) {
   chat.messages.push({ at: Date.now(), ...message, text: String(message.text || '').slice(0, 2000) });
   chat.messages = chat.messages.slice(-MAX_CHAT_MESSAGES);
   try {
-    mkdirSync(CHATS, { recursive: true });
-    writeFileSync(join(CHATS, `${safeId(docId)}.json`), JSON.stringify(chat, null, 2));
+    writeAtomic(join(CHATS, `${safeId(docId)}.json`), JSON.stringify(chat, null, 2));
   } catch { /* chat persistence is best-effort */ }
   return chat;
 }
@@ -222,6 +223,30 @@ function cornerCssJs(s, fallback = 0) {
   }
   if (s.radius) return `${s.radius}px`;
   return fallback ? `${fallback}px` : '';
+}
+
+/** style.crop (cut-out): normalize to a sane in-bounds sub-rect, or null for missing / identity /
+ *  degenerate — PARITY with src/lib/sceneGraph.ts resolveCrop (kept in sync; a doc with no crop
+ *  renders byte-identically to before). Fractions 0..1 of the SOURCE image. */
+function resolveCropJs(crop) {
+  if (!crop) return null;
+  const num = (v, d) => (Number.isFinite(Number(v)) ? Number(v) : d);
+  let x = Math.min(Math.max(num(crop.x, 0), 0), 1);
+  let y = Math.min(Math.max(num(crop.y, 0), 0), 1);
+  let w = Math.min(Math.max(num(crop.w, 1), 0), 1 - x);
+  let h = Math.min(Math.max(num(crop.h, 1), 0), 1 - y);
+  if (!(w > 0) || !(h > 0)) return null;
+  if (x < 1e-6 && y < 1e-6 && w > 1 - 1e-6 && h > 1 - 1e-6) return null;
+  const r = (v) => Math.round(v * 1e6) / 1e6;
+  return { x: r(x), y: r(y), w: r(w), h: r(h) };
+}
+
+/** The oversized-offset <img> geometry that shows ONLY the crop sub-rect inside a box, scaled to
+ *  FILL it — PARITY with src/lib/sceneGraph.ts cropImageCss and the Stage editor. Returns px. */
+function cropImageCssJs(crop, box) {
+  const width = box.w / crop.w;
+  const height = box.h / crop.h;
+  return { width, height, left: -crop.x * width, top: -crop.y * height };
 }
 
 /** style.fontFamily prepended to the base stack — Inter (embedded via @font-face, see
@@ -429,6 +454,45 @@ function pixelateDataUrlServer(src, blockSize) {
   } catch { return src; }
 }
 
+/** Crop raw decoded pixels to a SUB-RECT (fractions 0..1 of the source) resampled into a box-sized
+ *  RGBA buffer via nearest-neighbor. Alpha channel preserved. Used only for the crop+pixelate combo
+ *  server-side (the sharp crop uses the CSS offset-<img> path, which matches Stage and handles
+ *  JPEG/remote srcs the decoder can't). Returns { width, height, channels, data }. */
+function cropPixels({ width, height, channels, data }, crop, boxW, boxH) {
+  const w = Math.max(1, Math.round(boxW));
+  const h = Math.max(1, Math.round(boxH));
+  const sx = crop.x * width;
+  const sy = crop.y * height;
+  const sw = Math.max(1, crop.w * width);
+  const sh = Math.max(1, crop.h * height);
+  const out = Buffer.alloc(w * h * channels);
+  for (let y = 0; y < h; y++) {
+    const srcY = Math.min(height - 1, Math.floor(sy + (y / h) * sh));
+    for (let x = 0; x < w; x++) {
+      const srcX = Math.min(width - 1, Math.floor(sx + (x / w) * sw));
+      const sp = (srcY * width + srcX) * channels;
+      const dp = (y * w + x) * channels;
+      for (let ch = 0; ch < channels; ch++) out[dp + ch] = data[sp + ch];
+    }
+  }
+  return { width: w, height: h, channels, data: out };
+}
+
+/** Bake a crop (and optional pixelate) into a box-sized PNG data URL server-side. Returns the
+ *  ORIGINAL src unchanged when it isn't a decodable PNG data URL (JPEG/remote/exotic PNG) — the
+ *  caller then falls back to the CSS offset-<img> crop, which still shows the right sub-rect. */
+function cropDataUrlServer(src, crop, boxW, boxH, blockSize) {
+  try {
+    const m = /^data:image\/png;base64,(.+)$/.exec(String(src || ''));
+    if (!m) return src;
+    const decoded = decodePngBuffer(Buffer.from(m[1], 'base64'));
+    if (!decoded) return src;
+    let out = cropPixels(decoded, crop, boxW, boxH);
+    if (blockSize) out = pixelatePixels(out, blockSize);
+    return `data:image/png;base64,${encodePngBuffer(out).toString('base64')}`;
+  } catch { return src; }
+}
+
 function styleFor(layer) {
   const s = layer.style || {};
   const b = layer.box;
@@ -510,42 +574,77 @@ function styleFor(layer) {
 }
 
 /** Render the doc to a standalone HTML string. `resolveImage(src) -> dataUrl|src` lets the
- *  export inline same-origin images as data URLs; pass identity for a live-server preview. */
+ *  export inline same-origin images as data URLs; pass identity for a live-server preview.
+ *  v2: adds data-layer-name and data-layer-type attributes for Figma html-to.design import,
+ *  and wraps semantic groups in named wrapper divs with data-layer-name. */
 export function renderDesignHtml(doc, resolveImage = (s) => s) {
   // Flatten the v3 tree in paint order — child coords are absolute, so groups only contribute
-  // opacity (multiplied into each leaf) and ordering.
+  // opacity (multiplied into each leaf) and ordering. v2: track group context for data attrs.
   const flat = [];
-  const collect = (nodes, groupOpacity) => {
+  const collect = (nodes, groupOpacity, groupName) => {
     for (const n of nodes || []) {
       if (!n || n.hidden) continue;
       if (n.type === 'group') {
-        collect(n.children, groupOpacity * (n.style && n.style.opacity != null ? n.style.opacity : 1));
+        const gOpacity = groupOpacity * (n.style && n.style.opacity != null ? n.style.opacity : 1);
+        collect(n.children, gOpacity, n.name || groupName);
       } else if (groupOpacity < 1) {
         const s = { ...(n.style || {}) };
         s.opacity = (s.opacity == null ? 1 : s.opacity) * groupOpacity;
-        flat.push({ ...n, style: s });
+        const clone = { ...n, style: s };
+        if (groupName) clone._groupName = groupName;
+        flat.push(clone);
       } else {
-        flat.push(n);
+        const clone = groupName ? { ...n, _groupName: groupName } : n;
+        flat.push(clone);
       }
     }
   };
-  collect(doc.layers, 1);
+  collect(doc.layers, 1, null);
+
+  /** Data attributes for Figma import: every layer gets data-layer-name + data-layer-type
+   *  so html-to.design recreates them as named, typed Figma layers. */
+  const dataAttrs = (layer) => {
+    const name = esc(layer.name || layer.role || layer.type || '');
+    const layerType = esc(layer.type || 'shape');
+    return ` data-layer-name="${name}" data-layer-type="${layerType}"`;
+  };
   const layers = flat.map((layer) => {
+    const da = dataAttrs(layer);
     if (layer.type === 'image') {
       const is = layer.style || {};
       let resolved = resolveImage(layer.src || '');
-      // style.pixelate: true mosaic censoring server-side too (e.g. a face/username in a real
-      // photo/avatar), decoded+downsampled+re-encoded as PNG entirely in Node — see
-      // pixelateDataUrlServer above. Falls through to the sharp image (documented gap) when the
-      // resolved src isn't a decodable PNG data URL (JPEG-sourced or unresolved/remote images).
       const blockSize = pixelateBlockSize(is);
-      if (blockSize) resolved = pixelateDataUrlServer(resolved, blockSize);
-      const src = esc(resolved);
       // PARITY: Stage puts borderRadius on the <img> (ellipse → 50%, else radiusCorners/radius);
       // raster clips drawImage to that geometry; designSvg clips the <image>. Was square before.
       const imgRadius = is.shapeKind === 'ellipse' ? '50%' : cornerCssJs(is);
       const radiusCss = imgRadius ? `;border-radius:${imgRadius}` : '';
-      return `  <div style="${styleFor(layer)}"><img src="${src}" alt="" style="width:100%;height:100%;object-fit:${layer.fit || 'cover'};display:block${radiusCss}"/></div>`;
+      // style.crop (cut-out): show ONLY this sub-rect of the SOURCE image, scaled to FILL the box,
+      // clipped to the shape. Two server-side paths, both PARITY with Stage/raster/designSvg:
+      //  1) decodable PNG → bake a box-sized cropped (+ optional pixelate) PNG, then a plain
+      //     box-filling <img> with the shape radius (same result as raster's drawImage src-rect).
+      //  2) JPEG/remote/exotic (can't decode) → CSS offset-<img>: size the <img> to box/crop and
+      //     shift by −crop·(box/crop) inside the overflow:hidden box, radius on the WRAPPER (the
+      //     <img> overflows, so the shape clip must live on the box). Same geometry as Stage.
+      const crop = resolveCropJs(is.crop);
+      if (crop) {
+        const baked = cropDataUrlServer(resolved, crop, layer.box.w, layer.box.h, blockSize);
+        if (baked !== resolved) {
+          const src = esc(baked);
+          return `  <div style="${styleFor(layer)}"${da}><img src="${src}" alt="" style="width:100%;height:100%;object-fit:fill;display:block${radiusCss}"/></div>`;
+        }
+        // Fallback: CSS offset-<img> (radius on the overflow:hidden wrapper).
+        const c = cropImageCssJs(crop, layer.box);
+        const src = esc(resolved);
+        const wrap = `${styleFor(layer)}${imgRadius ? `;border-radius:${imgRadius}` : ''}`;
+        return `  <div style="${wrap}"${da}><img src="${src}" alt="" style="position:absolute;left:${c.left}px;top:${c.top}px;width:${c.width}px;height:${c.height}px;max-width:none;object-fit:fill;display:block"/></div>`;
+      }
+      // style.pixelate: true mosaic censoring server-side too (e.g. a face/username in a real
+      // photo/avatar), decoded+downsampled+re-encoded as PNG entirely in Node — see
+      // pixelateDataUrlServer above. Falls through to the sharp image (documented gap) when the
+      // resolved src isn't a decodable PNG data URL (JPEG-sourced or unresolved/remote images).
+      if (blockSize) resolved = pixelateDataUrlServer(resolved, blockSize);
+      const src = esc(resolved);
+      return `  <div style="${styleFor(layer)}"${da}><img src="${src}" alt="" style="width:100%;height:100%;object-fit:${layer.fit || 'cover'};display:block${radiusCss}"/></div>`;
     }
     if (layer.type === 'shape' || layer.type === 'vignette') {
       const s = layer.style || {};
@@ -555,14 +654,14 @@ export function renderDesignHtml(doc, resolveImage = (s) => s) {
         // 0..1 in box space; bake translate·scale into the inline <svg> so the box-local d-string
         // fills at the right place. Fill = gradient||background; optional stroke.
         const b = layer.box;
-        if (!s.path) return `  <div style="${styleFor(layer)}"></div>`;
+        if (!s.path) return `  <div style="${styleFor(layer)}"${da}></div>`;
         // NOTE: SVG <path> fill can't take a CSS gradient string — solid background only here
         // (raster/designSvg support gradient path fills); noted approximation for the HTML export.
         const fill = esc(s.background || '#000');
         const strokeAttr = s.stroke && s.stroke.width > 0
           ? ` stroke="${esc(s.stroke.color)}" stroke-width="${s.stroke.width}" vector-effect="non-scaling-stroke"` : '';
         const inner = `<path d="${esc(s.path)}" transform="translate(0 0) scale(${b.w} ${b.h})" fill="${fill}"${strokeAttr}/>`;
-        return `  <div style="${styleFor(layer)}"><svg width="${b.w}" height="${b.h}" viewBox="0 0 ${b.w} ${b.h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">${inner}</svg></div>`;
+        return `  <div style="${styleFor(layer)}"${da}><svg width="${b.w}" height="${b.h}" viewBox="0 0 ${b.w} ${b.h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">${inner}</svg></div>`;
       }
       if (kind === 'polyline') {
         // PARITY: raster.ts drawShape polyline / designSvg.ts <polyline> — style.points are
@@ -571,7 +670,7 @@ export function renderDesignHtml(doc, resolveImage = (s) => s) {
         // inline <svg> child in box-local coords, like arrow/line below.
         const b = layer.box;
         const pts = Array.isArray(s.points) ? s.points : [];
-        if (pts.length < 4) return `  <div style="${styleFor(layer)}"></div>`;
+        if (pts.length < 4) return `  <div style="${styleFor(layer)}"${da}></div>`;
         const mapped = [];
         for (let i = 0; i + 1 < pts.length; i += 2) {
           mapped.push(`${Math.round(pts[i] * b.w * 100) / 100},${Math.round(pts[i + 1] * b.h * 100) / 100}`);
@@ -579,7 +678,7 @@ export function renderDesignHtml(doc, resolveImage = (s) => s) {
         const wdt = (s.stroke && s.stroke.width) || Math.max(2, Math.min(b.w, b.h) * 0.02);
         const color = esc(s.background || s.color || '#111');
         const inner = `<polyline points="${mapped.join(' ')}" fill="none" stroke="${color}" stroke-width="${wdt}" stroke-linejoin="round" stroke-linecap="round"/>`;
-        return `  <div style="${styleFor(layer)}"><svg width="${b.w}" height="${b.h}" viewBox="0 0 ${b.w} ${b.h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">${inner}</svg></div>`;
+        return `  <div style="${styleFor(layer)}"${da}><svg width="${b.w}" height="${b.h}" viewBox="0 0 ${b.w} ${b.h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">${inner}</svg></div>`;
       }
       if (kind === 'arrow' || kind === 'line') {
         // PARITY: duplicates arrowGeometry in src/components/design/fills.ts (diagonal + head
@@ -599,9 +698,9 @@ export function renderDesignHtml(doc, resolveImage = (s) => s) {
           inner += seg(x2, y2, x2 - headLen * Math.cos(ang - spread), y2 - headLen * Math.sin(ang - spread));
           inner += seg(x2, y2, x2 - headLen * Math.cos(ang + spread), y2 - headLen * Math.sin(ang + spread));
         }
-        return `  <div style="${styleFor(layer)}"><svg width="${b.w}" height="${b.h}" viewBox="0 0 ${b.w} ${b.h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">${inner}</svg></div>`;
+        return `  <div style="${styleFor(layer)}"${da}><svg width="${b.w}" height="${b.h}" viewBox="0 0 ${b.w} ${b.h}" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">${inner}</svg></div>`;
       }
-      return `  <div style="${styleFor(layer)}"></div>`;
+      return `  <div style="${styleFor(layer)}"${da}></div>`;
     }
     const text = esc(layer.text || '');
     const st = layer.style || {};
@@ -613,11 +712,11 @@ export function renderDesignHtml(doc, resolveImage = (s) => s) {
         `background:${st.background};border-radius:${st.radius || 10}px;` +
         `padding:${Math.round(padX * 0.55)}px ${padX}px;display:inline;` +
         `box-decoration-break:clone;-webkit-box-decoration-break:clone;white-space:pre-wrap`;
-      return `  <div style="${styleFor(layer)};background:transparent;padding:0;line-height:${(st.lineHeight || 1.2) * 1.25}">` +
+      return `  <div style="${styleFor(layer)};background:transparent;padding:0;line-height:${(st.lineHeight || 1.2) * 1.25}"${da}>` +
         `<span style="display:block;width:100%;text-align:${st.align || 'left'}">` +
         `<span style="${pillSpan}">${text}</span></span></div>`;
     }
-    return `  <div style="${styleFor(layer)}"><span style="width:100%">${text}</span></div>`;
+    return `  <div style="${styleFor(layer)}"${da}><span style="width:100%">${text}</span></div>`;
   });
   // Embed Inter as @font-face (base64 woff2, cached in-process by font-faces.mjs) so this HTML
   // renders with real fonts offline and server-side — qlmanage (sandboxed, can't see the host's
@@ -702,4 +801,95 @@ export function exportDesign(doc, { resolveImage, pngBase64 = null, svg = null }
   writeFileSync(join(dir, 'FIGMA.md'), FIGMA_MD);
   files.figmaMd = join(dir, 'FIGMA.md');
   return { dir, files };
+}
+
+// ── Figma-optimized export ─────────────────────────────────────────────────────────────────────
+// `exportForFigma(doc)` produces a document structure optimized for Figma import via
+// html-to.design or SVG paste: meaningful layer names at all levels, proper nesting depth (max 3),
+// groups with descriptive names, no overlapping ungrouped layers, and a clean hierarchy that maps
+// directly to Figma's layer panel.
+
+/** Derive a Figma-safe layer name from a node. Figma has a 255-char limit but names must be unique
+ *  within their parent group. We cap at 60 chars and include the layer type for disambiguation. */
+function figmaLayerName(node) {
+  const base = node.name || node.role || node.type || 'Layer';
+  return base.slice(0, 60);
+}
+
+/** Flatten groups deeper than maxDepth by inlining their children into the parent. This ensures
+ *  the Figma export never exceeds 3 levels of nesting (Figma-optimal). Mutates a COPY. */
+function flattenDeepGroups(nodes, maxDepth, depth = 0) {
+  if (!Array.isArray(nodes)) return nodes;
+  const out = [];
+  for (const n of nodes) {
+    if (!n) continue;
+    if (n.type === 'group' && Array.isArray(n.children) && depth >= maxDepth) {
+      // Flatten: push children directly into this level, preserving paint order
+      out.push(...flattenDeepGroups(n.children, maxDepth, depth));
+    } else if (n.type === 'group' && Array.isArray(n.children)) {
+      out.push({
+        ...n,
+        name: figmaLayerName(n),
+        children: flattenDeepGroups(n.children, maxDepth, depth + 1),
+      });
+    } else {
+      out.push({ ...n, name: figmaLayerName(n) });
+    }
+  }
+  return out;
+}
+
+/** Ensure all groups have bounds encompassing their children and unique names within siblings. */
+function fixGroupBoundsAndNames(nodes, parentName = '') {
+  if (!Array.isArray(nodes)) return nodes;
+  const nameCounts = new Map();
+  const out = [];
+  for (const n of nodes) {
+    if (!n) continue;
+    if (n.type === 'group' && Array.isArray(n.children)) {
+      // Fix bounds
+      const bounds = groupBounds(n.children);
+      if (bounds) n.box = bounds;
+      // Fix children recursively
+      n.children = fixGroupBoundsAndNames(n.children, n.name || '');
+      // Ensure unique name within parent
+      const baseName = figmaLayerName(n);
+      const count = nameCounts.get(baseName) || 0;
+      nameCounts.set(baseName, count + 1);
+      if (count > 0) n.name = `${baseName} ${count + 1}`;
+      else n.name = baseName;
+    } else {
+      // Ensure unique name for leaves too
+      const baseName = figmaLayerName(n);
+      const count = nameCounts.get(baseName) || 0;
+      nameCounts.set(baseName, count + 1);
+      if (count > 0) n.name = `${baseName} ${count + 1}`;
+      else n.name = baseName;
+    }
+    out.push(n);
+  }
+  return out;
+}
+
+/**
+ * Export a doc optimized for Figma: flattens deep nesting, ensures meaningful names at all levels,
+ * fixes group bounds, and returns a clean doc structure ready for html-to.design or SVG paste.
+ *
+ * Returns { doc, html } where doc is the Figma-optimized scene graph and html is the standalone
+ * HTML render with data attributes for Figma import.
+ */
+export function exportForFigma(doc, resolveImage = (s) => s) {
+  // Deep clone to avoid mutating the original
+  const figmaDoc = JSON.parse(JSON.stringify(doc));
+
+  // 1. Flatten groups deeper than 3 levels (Figma optimal nesting)
+  figmaDoc.layers = flattenDeepGroups(figmaDoc.layers, 3);
+
+  // 2. Fix group bounds and ensure unique names at each level
+  figmaDoc.layers = fixGroupBoundsAndNames(figmaDoc.layers, '');
+
+  // 3. Generate the HTML render with data attributes for Figma import
+  const html = renderDesignHtml(figmaDoc, resolveImage);
+
+  return { doc: figmaDoc, html };
 }

@@ -1,0 +1,206 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6nlqo7-g",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 54,
+        "y": 211,
+        "w": 983,
+        "h": 384
+      },
+      "children": [
+        {
+          "id": "ext-mr6nlqo6-0",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "< Notes",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 211,
+            "w": 151,
+            "h": 58
+          },
+          "style": {
+            "color": "#ccaa00",
+            "fontSize": 26,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nlqo6-1",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Done",
+          "autoH": true,
+          "box": {
+            "x": 907,
+            "y": 211,
+            "w": 130,
+            "h": 58
+          },
+          "style": {
+            "color": "#ccaa00",
+            "fontSize": 26,
+            "fontWeight": 400,
+            "align": "right",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nlqo6-2",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Things Men Can Do to Support Their Reproductive Health",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 365,
+            "w": 864,
+            "h": 230
+          },
+          "style": {
+            "color": "#222222",
+            "fontSize": 52,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6nlqo7-h",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 97,
+        "y": 614,
+        "w": 951,
+        "h": 1267
+      },
+      "children": [
+        {
+          "id": "ext-mr6nlqo6-4",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · green gummies",
+          "box": {
+            "x": 454,
+            "y": 998,
+            "w": 594,
+            "h": 883
+          },
+          "style": {
+            "background": "#2b663359",
+            "radius": 22,
+            "stroke": {
+              "color": "#2b6633",
+              "width": 5
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.42,
+              "y": 0.52,
+              "w": 0.55,
+              "h": 0.46
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6nlqo6-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "• Strength train regularly\n• Prioritize sleep\n• Prioritize nutrition by taking Grüns.\nPacked with zinc, selenium, vitamin C +\nE support male reproductive health*\n• Limit alcohol",
+          "autoH": true,
+          "box": {
+            "x": 140,
+            "y": 614,
+            "w": 799,
+            "h": 422
+          },
+          "style": {
+            "color": "#222222",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nlqo6-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "*This statement has not been evaluated by the\nFood and Drug Administration. This product is\nnot intended to diagnose, treat, cure, or\nprevent any disease.",
+          "autoH": true,
+          "box": {
+            "x": 97,
+            "y": 1402,
+            "w": 540,
+            "h": 154
+          },
+          "style": {
+            "color": "#222222",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "apple-notes",
+  "background": "#ffffff",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#ffffff",
+      "share": 0.5
+    },
+    {
+      "hex": "#ffffff",
+      "share": 0.25
+    },
+    {
+      "hex": "#fdfbf5",
+      "share": 0.125
+    },
+    {
+      "hex": "#2d5e27",
+      "share": 0.063
+    },
+    {
+      "hex": "#607f63",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

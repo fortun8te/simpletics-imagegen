@@ -1,0 +1,340 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6fehq3-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Nature's Energy Gel\n2 ingredients",
+      "autoH": true,
+      "box": {
+        "x": 76,
+        "y": 65,
+        "w": 994,
+        "h": 151
+      },
+      "style": {
+        "color": "#0a0a0a",
+        "fontSize": 63,
+        "fontWeight": 800,
+        "align": "center",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "grp-mr6fehsn-5",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 86,
+        "y": 324,
+        "w": 886,
+        "h": 410
+      },
+      "children": [
+        {
+          "id": "ext-mr6fehq3-1-lb",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": false,
+          "sizeLocked": true,
+          "text": "HONEY SHOT TUBE",
+          "box": {
+            "x": 378,
+            "y": 499,
+            "w": 324,
+            "h": 72
+          },
+          "style": {
+            "fontSize": 32,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "ext-mr6fehq3-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pure Honey",
+          "autoH": true,
+          "box": {
+            "x": 130,
+            "y": 324,
+            "w": 194,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6fehq3-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pink Salt",
+          "autoH": true,
+          "box": {
+            "x": 778,
+            "y": 324,
+            "w": 194,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6fehq3-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "100% Natural",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 562,
+            "w": 238,
+            "h": 65
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6fehq3-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "stomach friendly",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 626,
+            "w": 238,
+            "h": 108
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 49,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6fehso-6",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 378,
+        "y": 238,
+        "w": 616,
+        "h": 799
+      },
+      "children": [
+        {
+          "id": "ext-mr6fehq3-1",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · honey shot tube",
+          "box": {
+            "x": 378,
+            "y": 238,
+            "w": 324,
+            "h": 594
+          },
+          "style": {
+            "background": "#f0c74e59",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
+            "stroke": {
+              "color": "#f0c74e",
+              "width": 3
+            }
+          }
+        },
+        {
+          "id": "ext-mr6fehsm-8",
+          "type": "shape",
+          "role": "logo",
+          "name": "Logo · hornet energy logo",
+          "box": {
+            "x": 864,
+            "y": 886,
+            "w": 130,
+            "h": 151
+          },
+          "style": {
+            "background": "#0a0a0a59",
+            "radius": 22,
+            "stroke": {
+              "color": "#0a0a0a",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.8,
+              "y": 0.82,
+              "w": 0.12,
+              "h": 0.14
+            },
+            "shape": "logo"
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6fehso-7",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 65,
+        "y": 886,
+        "w": 378,
+        "h": 162
+      },
+      "children": [
+        {
+          "id": "ext-mr6fehq3-6",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "24 servings for",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 886,
+            "w": 378,
+            "h": 76
+          },
+          "style": {
+            "color": "#0a0a0a",
+            "fontSize": 45,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6fehq3-7",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "$1.99 per serve",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 972,
+            "w": 378,
+            "h": 76
+          },
+          "style": {
+            "color": "#101111",
+            "background": "#0a0a0a",
+            "fontSize": 41,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "offer-hero",
+  "background": "#f0f2f5",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#f5f4f5",
+      "share": 0.5
+    },
+    {
+      "hex": "#f4f6fa",
+      "share": 0.25
+    },
+    {
+      "hex": "#ececec",
+      "share": 0.125
+    },
+    {
+      "hex": "#090a0b",
+      "share": 0.063
+    },
+    {
+      "hex": "#987534",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 65,
+    "corrections": [
+      {
+        "layer": "Header/Chrome",
+        "problem": "The generated image includes a full app interface header (title 'Nature's Energy Gel 2', search icon) and a tab navigation bar ('Ingredients', 'Reviews', 'Shipping') that are completely absent in the ",
+        "fix": "Remove the top UI chrome entirely: delete the app header bar, search icon, and the first row of tabs."
+      },
+      {
+        "layer": "Headline",
+        "problem": "The main headline text is reduced to just 'Nature's Energy Gel 2' inside a small header bar. The reference features 'Nature's Energy Gel 2 ingredients' as the large, centered primary headline.",
+        "fix": "Promote the word 'ingredients' to be part of the main centered headline at the top of the frame. Set text to '#1a1a1a', bold, large scale (approx 36-40pt), centered horizontally."
+      },
+      {
+        "layer": "Product Card / Container",
+        "problem": "The central product area is enclosed in a white rounded card with a subtle shadow/border, and there is a second row of tabs ('Details', 'Reviews', 'Shipping') below it. The reference has no container ",
+        "fix": "Remove the white card background/shadow surrounding the product image and delete the bottom tab navigation row. Expand the layout so elements sit directly on the light gray background."
+      },
+      {
+        "layer": "Bottom Right Element",
+        "problem": "There is a gray rounded square placeholder in the bottom right corner that does not exist in the reference.",
+        "fix": "Delete the gray rounded rectangle element in the bottom right corner."
+      },
+      {
+        "layer": "Text Labels (Flanking)",
+        "problem": "The flanking text ('Pure Honey', '100% Natural', 'Pink Salt', 'stomach friendly') appears slightly smaller and constrained within the card's width compared to the reference where they float freely wit",
+        "fix": "Increase font size of flanking labels to match reference hierarchy (approx 24-28pt bold). Ensure vertical alignment matches the reference: 'Pure Honey' top-left, '100% Natural' mid-left, 'Pink Salt' t"
+      }
+    ],
+    "applied": 0
+  },
+  "error": null,
+  "passes": 2
+}

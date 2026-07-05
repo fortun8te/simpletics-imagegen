@@ -48,6 +48,7 @@ import {
   BLEND_TO_FIGMA,
   FIGMA_PATH_PLUGIN_ID,
   FIGMA_PATH_PLUGIN_KEY,
+  FIGMA_AUTOH_PLUGIN_KEY,
   type BlendKeyword,
 } from './figmaClipboard';
 
@@ -444,6 +445,14 @@ function convertNode(tree: DecodedTree, origin: { x: number; y: number }): Scene
         return ls.units === 'PERCENT' ? (ls.value / 100) * fontSize : ls.value;
       })(),
     };
+    // autoH rides in our pluginData (export no longer uses textAutoResize:HEIGHT for it — that
+    // mode fought fixed-box vertical centering). Fall back to a HEIGHT signal for text that
+    // originated in Figma itself. Consume our own pluginData entry so it doesn't leak to the stash.
+    const tPlugin = node.pluginData as Array<{ pluginID?: string; key?: string; value?: string }> | undefined;
+    const autoHEntry = Array.isArray(tPlugin)
+      ? tPlugin.find((p) => p?.pluginID === FIGMA_PATH_PLUGIN_ID && p?.key === FIGMA_AUTOH_PLUGIN_KEY)
+      : undefined;
+    const autoH = autoHEntry ? true : node.textAutoResize === 'HEIGHT' || undefined;
     const layer: Layer = {
       id: layerId('text'),
       type: 'text',
@@ -452,11 +461,12 @@ function convertNode(tree: DecodedTree, origin: { x: number; y: number }): Scene
       box,
       rotation,
       style,
-      autoH: node.textAutoResize === 'HEIGHT' || undefined,
+      autoH,
       isMask: node.mask === true || undefined,
       figma: figmaStash(node, [...CONSUMED_COMMON, ...CONSUMED_MASK, ...(blendConsumed ? ['blendMode'] : []),
         'fontSize', 'fontName', 'textAlignHorizontal', 'textAlignVertical', 'textAutoResize',
-        'textCase', 'textDecoration', 'lineHeight', 'letterSpacing', 'textData', 'fontWeight']),
+        'textCase', 'textDecoration', 'lineHeight', 'letterSpacing', 'textData', 'fontWeight',
+        ...(autoHEntry ? ['pluginData'] : [])]),
     };
     return layer;
   }

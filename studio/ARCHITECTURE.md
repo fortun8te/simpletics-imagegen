@@ -78,8 +78,11 @@ become locked placeholders; unknown fields go into the `figma` passthrough).
   brand kit, workspace memory, attached-image descriptions. `mode:'improve'` runs a
   deterministic lint (overlaps, edge-hugging, contrast, hierarchy) and hands the model a
   concrete numbered fix list. Fallback chain: LLM → codex CLI → deterministic layout.
-- Vision (reading reference ads) stays on the codex CLI (`lib/layout-extract.mjs`) until
-  DeepSeek ships API image input; extraction results are cached as Skeletons forever.
+- Vision (reading reference ads) is the configured endpoint's vision ONLY — in practice ornith
+  (`ornith-1.0-9b`) via LM Studio (`llmVision` in `lib/llm.mjs`), since DeepSeek's API is
+  text-only. The codex CLI is NOT used for vision. Extraction results are cached as Skeletons
+  forever; per-attempt vision renders are cached in `.state/vision-tmp/` keyed by source path +
+  mtime.
 
 ## Parametric elements
 
@@ -96,7 +99,8 @@ ONLY from the shared primitives, so every renderer and the Figma export work for
 designs/ (docs + thumb PNGs) · skeletons/ · elements.json · brandkits/ · agent-chats/ ·
 memory/ (per-brand notes) · refs/ (uploads + cached vision descriptions) · trendtrack-cache/
 (1 credit per row — local search is free, live import is explicit) · llm-usage.jsonl ·
-daily-cap.json · taste.json · jobs.json.
+daily-cap.json · taste.json · jobs.json · vision-tmp/ (per-attempt self-vision renders, keyed
+by source path + mtime — see `lib/self-vision.mjs` / `lib/llm.mjs`).
 
 SSE channels on `/events`: `state`/`queue` (jobs), `plan` + `design` (agent step streams),
 `doc` (any design/skeleton/element/brandkit change → live cross-tab sync).
@@ -109,3 +113,7 @@ SSE channels on `/events`: `state`/`queue` (jobs), `plan` + `design` (agent step
 - Undo/redo = whole-doc JSON snapshots; the Stage streams gestures with `commit=false`
   frames and exactly one `commit=true`, so one gesture = one undo step.
 - Workspace scoping: docs/skeletons/brand kits carry `brand`; lists filter server-side.
+- `npm test` runs the stable `test/*.test.mjs` suite. `test/design-agent-v3.test.mjs` is run
+  separately via `npm run test:agent` — as of 2026-07 it has 2 known-red token-budget
+  assertions (turn/context-window estimates a touch over their cap) while `lib/design-agent.mjs`
+  is under active work; re-fold it into `test` once those are green again.

@@ -1,0 +1,233 @@
+{
+  "id": "harness_050_ed7a0a80",
+  "name": "copy-harness harness_050_ed7a0a80",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base-mr6miz4g-1z",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#181818"
+      }
+    },
+    {
+      "id": "group-mr6miz4g-1p",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 1,
+        "y": 1,
+        "w": 41,
+        "h": 144
+      },
+      "children": [
+        {
+          "id": "rect-mr6miz4g-1q",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · curly hair photo",
+          "box": {
+            "x": 1,
+            "y": 3,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 0.01,
+              "h": 0.01
+            },
+            "radius": 8
+          },
+          "src": "/refasset?id=harness-050"
+        },
+        {
+          "id": "headline-mr6miz4g-1r",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Anthony",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 39,
+            "w": 40,
+            "h": 68
+          },
+          "style": {
+            "color": "#e1e1e1",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6miz4g-1s",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@anthony23",
+          "autoH": true,
+          "box": {
+            "x": 2,
+            "y": 77,
+            "w": 40,
+            "h": 36
+          },
+          "style": {
+            "color": "#71767b",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6miz4g-1t",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 1,
+            "w": 40,
+            "h": 912
+          },
+          "style": {
+            "color": "#e1e1e1",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 21
+          }
+        },
+        {
+          "id": "caption-mr6miz4g-1u",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "10:44 -04/10/2026 -647 Views",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 115,
+            "w": 40,
+            "h": 144
+          },
+          "style": {
+            "color": "#71767b",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "rect-mr6miz4g-1v",
+      "type": "image",
+      "role": "rect",
+      "name": "Cut-out · curly hair selfie",
+      "box": {
+        "x": 43,
+        "y": 281,
+        "w": 994,
+        "h": 734
+      },
+      "style": {
+        "crop": {
+          "x": 0.04,
+          "y": 0.26,
+          "w": 0.92,
+          "h": 0.68
+        },
+        "radius": 26
+      },
+      "src": "/refasset?id=harness-050"
+    },
+    {
+      "id": "group-mr6miz4g-1w",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 1,
+        "y": 0,
+        "w": 107,
+        "h": 91
+      },
+      "children": [
+        {
+          "id": "avatar-mr6miz4g-1x",
+          "type": "image",
+          "role": "avatar",
+          "name": "Avatar · profile picture",
+          "box": {
+            "x": 1,
+            "y": 0,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "crop": {
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0
+            },
+            "shapeKind": "ellipse"
+          },
+          "src": "/refasset?id=harness-050"
+        },
+        {
+          "id": "avatar-mr6miz4g-1y",
+          "type": "image",
+          "role": "avatar",
+          "name": "Avatar · Anthony profile picture",
+          "box": {
+            "x": 43,
+            "y": 32,
+            "w": 65,
+            "h": 59
+          },
+          "style": {
+            "crop": {
+              "x": 0.04,
+              "y": 0.03,
+              "w": 0.06,
+              "h": 0.06
+            },
+            "shapeKind": "ellipse"
+          },
+          "src": "/refasset?id=harness-050"
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6miz4gxf71",
+  "updatedAt": 1783185367120
+}

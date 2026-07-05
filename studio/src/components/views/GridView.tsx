@@ -11,7 +11,12 @@ import type { AdNode, Slot } from '../../types';
 import { variationRelDir } from '../../paths';
 import styles from './GridView.module.css';
 
-export default function GridView() {
+// `active` — is this view the visible top-level pane? BatchView now keeps Grid/Plan/Design all
+// mounted at once (STATE-2) and toggles them with CSS `display:none`, so a hidden view's
+// IntersectionObserver would otherwise keep firing against a zero-size (display:none) subtree and
+// fight the visible view for the shared adCursor. Gating the observer on `active` (STATE-24) means
+// only the visible pane tracks scroll; the hidden one disconnects until it becomes active again.
+export default function GridView({ active = true }: { active?: boolean }) {
   const state = useStore((s) => s.state);
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
@@ -53,6 +58,7 @@ export default function GridView() {
   const sectionRefs = useRef(new Map<string, HTMLElement>());
 
   useEffect(() => {
+    if (!active) return; // hidden pane: don't observe (display:none subtree, and it'd fight the cursor)
     const nodes = [...sectionRefs.current.values()];
     if (!nodes.length) return;
     const observer = new IntersectionObserver(
@@ -65,13 +71,14 @@ export default function GridView() {
     );
     for (const node of nodes) observer.observe(node);
     return () => observer.disconnect();
-  }, [ads]);
+  }, [ads, active]);
 
   useEffect(() => {
+    if (!active) return; // only the visible pane owns the shared adCursor
     const idx = Math.max(0, ads.findIndex((a) => a.id === activeAdId));
     const ad = ads[idx];
     setUI({ adCursor: ad ? { index: idx, total: ads.length, title: ad.title || ad.id } : null });
-  }, [activeAdId, ads, setUI]);
+  }, [activeAdId, ads, setUI, active]);
   useEffect(() => () => { useStore.getState().setUI({ adCursor: null }); }, []);
 
   if (!state) return null;

@@ -7,7 +7,7 @@
 //   • sibling order in every array = paint order, bottom → top
 
 import {
-  isGroup, layerId, scaleStyle,
+  isGroup, isLeafLayer, layerId, scaleStyle,
   type DesignDoc, type GroupNode, type Layer, type LayerBox, type SceneNode,
 } from './sceneGraph';
 
@@ -24,13 +24,15 @@ export function walk(
   }
 }
 
-/** All leaf layers in paint order (what raster/snap iterate). Skips hidden subtrees. */
+/** All renderable leaf layers in paint order (what raster/snap iterate). Skips hidden subtrees
+ *  and native ComponentLayers (no renderer consumes those yet — they carry their own HTML/CSS,
+ *  not a `style`/`text` leaf shape the raster/SVG/DOM leaf renderers understand). */
 export function leaves(nodes: SceneNode[], includeHidden = false): Layer[] {
   const out: Layer[] = [];
   for (const n of nodes) {
     if (n.hidden && !includeHidden) continue;
     if (isGroup(n)) out.push(...leaves(n.children, includeHidden));
-    else out.push(n);
+    else if (isLeafLayer(n)) out.push(n);
   }
   return out;
 }
@@ -141,7 +143,8 @@ export function scaleNodeInto(n: SceneNode, from: LayerBox, to: LayerBox): void 
       h: Math.max(1, Math.round(node.box.h * sy)),
     };
     if (isGroup(node)) node.children.forEach(map);
-    else node.style = scaleStyle(node.style, sx);
+    else if (isLeafLayer(node)) node.style = scaleStyle(node.style, sx);
+    // ComponentLayer: no `style`/typography — its own HTML/CSS owns layout; box already scaled.
   };
   map(n);
 }

@@ -1,0 +1,433 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6mkjuu-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Nature’s Energy Gel\n2 ingredients",
+      "autoH": true,
+      "box": {
+        "x": 65,
+        "y": 54,
+        "w": 950,
+        "h": 162
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 69,
+        "fontWeight": 900,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "grp-mr6mkjuu-7",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 292,
+        "w": 918,
+        "h": 580
+      },
+      "children": [
+        {
+          "id": "ext-mr6mkjuu-4",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · honey energy gel packet",
+          "box": {
+            "x": 389,
+            "y": 292,
+            "w": 302,
+            "h": 562
+          },
+          "style": {
+            "background": "#daa52059",
+            "radius": 22,
+            "stroke": {
+              "color": "#daa520",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.36,
+              "y": 0.27,
+              "w": 0.28,
+              "h": 0.52
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-1",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Pure Honey",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 378,
+            "w": 238,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-2",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Pink Salt",
+          "autoH": true,
+          "box": {
+            "x": 810,
+            "y": 378,
+            "w": 216,
+            "h": 43
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "stomach\nfriendly",
+          "autoH": true,
+          "box": {
+            "x": 799,
+            "y": 626,
+            "w": 216,
+            "h": 54
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 25,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "HORNET\nENERGY",
+          "autoH": true,
+          "box": {
+            "x": 421,
+            "y": 302,
+            "w": 216,
+            "h": 54
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 24,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "100% NATURAL GEL",
+          "autoH": true,
+          "box": {
+            "x": 432,
+            "y": 626,
+            "w": 216,
+            "h": 32
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 19,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-7",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "HONEY\nSHOT",
+          "autoH": true,
+          "box": {
+            "x": 421,
+            "y": 659,
+            "w": 238,
+            "h": 65
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 41,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-8",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "GEL 100% NATUREL",
+          "autoH": true,
+          "box": {
+            "x": 421,
+            "y": 724,
+            "w": 238,
+            "h": 32
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-9",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "27g\nCARBOHYDRATES\nGLUCIDES",
+          "autoH": true,
+          "box": {
+            "x": 410,
+            "y": 756,
+            "w": 108,
+            "h": 54
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-a",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "150mg\nELECTROLYTES",
+          "autoH": true,
+          "box": {
+            "x": 518,
+            "y": 756,
+            "w": 130,
+            "h": 54
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-b",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "ORIGINAL",
+          "autoH": true,
+          "box": {
+            "x": 464,
+            "y": 821,
+            "w": 151,
+            "h": 30
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-c",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "33g",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 842,
+            "w": 65,
+            "h": 30
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "right",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6mkjuu-f",
+      "type": "shape",
+      "role": "logo",
+      "name": "Logo · hornet energy logo",
+      "box": {
+        "x": 886,
+        "y": 950,
+        "w": 108,
+        "h": 86
+      },
+      "style": {
+        "background": "#1a1a1a59",
+        "shapeKind": "ellipse",
+        "stroke": {
+          "color": "#1a1a1a",
+          "width": 2
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.82,
+          "y": 0.88,
+          "w": 0.1,
+          "h": 0.08
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "grp-mr6mkjuu-8",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 65,
+        "y": 907,
+        "w": 432,
+        "h": 108
+      },
+      "children": [
+        {
+          "id": "ext-mr6mkjuu-d",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "24 servings for",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 907,
+            "w": 432,
+            "h": 54
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 49,
+            "fontWeight": 900,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mkjuu-e",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "$1.99 per serve",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 961,
+            "w": 367,
+            "h": 54
+          },
+          "style": {
+            "color": "#f4f4f4",
+            "background": "#1a1a1a",
+            "fontSize": 23,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "offer-hero",
+  "background": "#f4f4f4",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#f5f4f5",
+      "share": 0.5
+    },
+    {
+      "hex": "#f4f6fa",
+      "share": 0.25
+    },
+    {
+      "hex": "#ececec",
+      "share": 0.125
+    },
+    {
+      "hex": "#090a0b",
+      "share": 0.063
+    },
+    {
+      "hex": "#987534",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

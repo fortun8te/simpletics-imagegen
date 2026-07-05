@@ -530,8 +530,42 @@
 }
 
 /* variant stacks — same-set comps collapse into one row of small cards */
-.stackRow { margin-bottom: var(--space-3); }
-.stackHead { margin: 0 0 var(--space-2); font-size: 12px; font-weight: 600; color: var(--muted); }
+.stackRow { margin-bottom: var(--space-3); border-radius: var(--r-md); }
+/* whole-set selected: a quiet accent wash so the row reads as one selected unit */
+.stackRow[data-selected] {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+  padding: var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
+  margin-right: calc(var(--space-2) * -1);
+}
+/* head is now a row: set checkbox + label; the checkbox always shows (it's the set's
+   primary select affordance, mirroring the always-visible bar-level select on comps) */
+.stackHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.stackHeadLabel { min-width: 0; }
+.stackSelCount { color: var(--accent-ink); font-weight: 600; }
+/* set-level checkbox: inline (not absolute like the per-card ones), always visible so a whole
+   set is as obviously selectable as a single comp. Partial = some-but-not-all members selected. */
+.selBoxSet {
+  position: static;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  opacity: 1;
+}
+.selBoxSet[data-partial] {
+  background: color-mix(in srgb, var(--accent) 30%, rgba(0,0,0,0.5));
+  border-color: var(--accent);
+  color: var(--on-accent);
+}
 .stackCards { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .stackCard {
   position: relative;
@@ -662,10 +696,20 @@
 /* live selected count in the section head */
 .sectionCount[data-selcount] { color: var(--accent-ink); }
 
-/* rubber-band marquee rectangle (fixed overlay in client coords) */
-.marquee {
+/* Marquee overlay: a fixed, full-viewport layer the rubber-band rect is drawn inside. It shares
+   whatever containing block the shell establishes (e.g. <main>'s backdrop-filter), so subtracting
+   its own viewport offset in JS (marqueeStyle) cancels that offset exactly — the rect then tracks
+   the cursor at any scroll position. Never interactive. */
+.marqueeLayer {
   position: fixed;
+  inset: 0;
   z-index: 60;
+  pointer-events: none;
+}
+
+/* rubber-band marquee rectangle (absolute inside .marqueeLayer; coords are overlay-relative) */
+.marquee {
+  position: absolute;
   border: 1px solid color-mix(in srgb, var(--accent) 80%, transparent);
   background: color-mix(in srgb, var(--accent) 14%, transparent);
   border-radius: var(--r-xs);

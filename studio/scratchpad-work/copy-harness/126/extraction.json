@@ -1,0 +1,239 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6mqj85-d",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 43,
+        "y": 216,
+        "w": 972,
+        "h": 314
+      },
+      "children": [
+        {
+          "id": "ext-mr6mqj85-1",
+          "type": "text",
+          "role": "username",
+          "name": "username",
+          "text": "Evan",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 216,
+            "w": 324,
+            "h": 59
+          },
+          "style": {
+            "color": "#f0f0f0",
+            "fontSize": 27,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mqj85-2",
+          "type": "text",
+          "role": "handle",
+          "name": "handle",
+          "text": "@Evan",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 275,
+            "w": 324,
+            "h": 59
+          },
+          "style": {
+            "color": "#7a7a7a",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mqj85-3",
+          "type": "text",
+          "role": "verified",
+          "name": "verified",
+          "text": "✓",
+          "autoH": true,
+          "box": {
+            "x": 518,
+            "y": 235,
+            "w": 40,
+            "h": 39
+          },
+          "style": {
+            "color": "#1d9bf0",
+            "fontSize": 22,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mqj85-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "My hair's been flat my whole life. Two sprays of this and I finally have real texture. Wish I found it sooner.",
+          "autoH": true,
+          "box": {
+            "x": 43,
+            "y": 373,
+            "w": 972,
+            "h": 157
+          },
+          "style": {
+            "color": "#f0f0f0",
+            "fontSize": 35,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6mqj85-5",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · man with textured hair",
+      "box": {
+        "x": 65,
+        "y": 549,
+        "w": 950,
+        "h": 1275
+      },
+      "style": {
+        "background": "#8b6d4a59",
+        "radius": 22,
+        "stroke": {
+          "color": "#8b6d4a",
+          "width": 8
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.06,
+          "y": 0.28,
+          "w": 0.88,
+          "h": 0.65
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "ext-mr6mqj85-0",
+      "type": "shape",
+      "role": "avatar",
+      "name": "Blurred · blurred profile pic",
+      "box": {
+        "x": 43,
+        "y": 196,
+        "w": 108,
+        "h": 98
+      },
+      "style": {
+        "background": "#444444",
+        "shapeKind": "ellipse",
+        "blur": 6
+      }
+    },
+    {
+      "id": "ext-mr6mqj85-6",
+      "type": "text",
+      "role": "timestamp",
+      "name": "timestamp",
+      "text": "2:14 PM · 11/09/2025 · 647 Views",
+      "autoH": true,
+      "box": {
+        "x": 65,
+        "y": 1844,
+        "w": 626,
+        "h": 59
+      },
+      "style": {
+        "color": "#7a7a7a",
+        "fontSize": 22,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1962
+  },
+  "archetype": "x-post",
+  "background": "#161616",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "normal",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#e0e7f1",
+      "share": 0.25
+    },
+    {
+      "hex": "#000000",
+      "share": 0.25
+    },
+    {
+      "hex": "#9e6d58",
+      "share": 0.25
+    },
+    {
+      "hex": "#3b2e28",
+      "share": 0.125
+    },
+    {
+      "hex": "#030202",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 30,
+    "corrections": [
+      {
+        "layer": "background",
+        "problem": "Missing the dark, slightly textured background of the reference. The render has a solid, flat, dark background that doesn't match the subtle texture.",
+        "fix": "set background to #121212 with a subtle, low-opacity noise texture overlay"
+      },
+      {
+        "layer": "product image",
+        "problem": "Missing the central product image. The reference shows a dark, rectangular product (likely a hair spray bottle) with a visible texture/label. The render has only a dark brown rectangle placeholder.",
+        "fix": "render the product image as a dark, slightly glossy rectangle with a subtle horizontal texture pattern and soft top-edge highlight, centered within the golden border"
+      },
+      {
+        "layer": "headline",
+        "problem": "The headline text is positioned too far from the top. In the reference, the headline starts roughly at the 20% mark from the top. In the render, it's too high, closer to 15%.",
+        "fix": "move headline down 5% from current position"
+      },
+      {
+        "layer": "CTA button",
+        "problem": "Missing the call-to-action button or link below the product image that's present in the reference (the 'View Product' or similar element).",
+        "fix": "add a subtle 'View Product' text link or button below the product image, centered, with color #a0885c"
+      },
+      {
+        "layer": "avatar",
+        "problem": "The user avatar is missing its subtle circular border that provides contrast against the background in the reference.",
+        "fix": "add a thin, 1px solid border in color #444444 around the circular avatar"
+      }
+    ],
+    "applied": 1
+  },
+  "error": null,
+  "passes": 2
+}

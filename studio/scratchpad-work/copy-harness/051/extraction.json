@@ -1,0 +1,277 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6moerj-6",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 108,
+        "y": 22,
+        "w": 800,
+        "h": 712
+      },
+      "children": [
+        {
+          "id": "ext-mr6moeoa-0",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · green toiletry bag",
+          "box": {
+            "x": 108,
+            "y": 22,
+            "w": 594,
+            "h": 302
+          },
+          "style": {
+            "background": "#4a5e5259",
+            "radius": 22,
+            "stroke": {
+              "color": "#4a5e52",
+              "width": 5
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.1,
+              "y": 0.02,
+              "w": 0.55,
+              "h": 0.28
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6moerj-3",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · wavy hair creme",
+          "box": {
+            "x": 670,
+            "y": 97,
+            "w": 238,
+            "h": 637
+          },
+          "style": {
+            "background": "#d1d1c159",
+            "radius": 22,
+            "stroke": {
+              "color": "#d1d1c1",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.62,
+              "y": 0.09,
+              "w": 0.22,
+              "h": 0.59
+            },
+            "shape": "rect"
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6moerj-7",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 238,
+        "w": 1026,
+        "h": 842
+      },
+      "children": [
+        {
+          "id": "ext-mr6moerj-5",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · hand receiving creme",
+          "box": {
+            "x": 508,
+            "y": 443,
+            "w": 572,
+            "h": 637
+          },
+          "style": {
+            "background": "#8a685059",
+            "radius": 22,
+            "stroke": {
+              "color": "#8a6850",
+              "width": 5
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.47,
+              "y": 0.41,
+              "w": 0.53,
+              "h": 0.59
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6moerj-1",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Getting lots of questions about Wavy, so here's my personal take:",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 238,
+            "w": 508,
+            "h": 162
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6moerj-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "It's a game changer for curls, here's why 🌀:",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 410,
+            "w": 508,
+            "h": 130
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6moerj-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "No more frizz and crazy hair",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 572,
+            "w": 432,
+            "h": 108
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6moerj-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Just one hair product (Instead of 5 I used before)",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 713,
+            "w": 486,
+            "h": 151
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6moerj-7",
+      "type": "text",
+      "role": "caption",
+      "name": "caption",
+      "text": "All day definition - Curls last all day",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 896,
+        "w": 486,
+        "h": 130
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "background": "rgba(255, 255, 255, 0.85)",
+        "fontSize": 41,
+        "fontWeight": 700,
+        "align": "left",
+        "radius": 11,
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "story-native",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#eae7e7",
+      "share": 0.5
+    },
+    {
+      "hex": "#1f2e22",
+      "share": 0.125
+    },
+    {
+      "hex": "#70462e",
+      "share": 0.125
+    },
+    {
+      "hex": "#85644c",
+      "share": 0.125
+    },
+    {
+      "hex": "#ab9f91",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

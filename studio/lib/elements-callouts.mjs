@@ -79,8 +79,6 @@ function widestLine(str, fontSize, fontWeight = 600) {
   return Math.max(1, ...lines.map((l) => l.length)) * cw;
 }
 
-export const CALLOUT_CATEGORIES = ['Callouts', 'Social'];
-
 /** @type {ElementDef[]} */
 export const CALLOUT_ELEMENTS = [
 

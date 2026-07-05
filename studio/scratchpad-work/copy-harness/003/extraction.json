@@ -1,0 +1,217 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6mmbkv-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "UPFRONT CREATINE",
+      "autoH": true,
+      "box": {
+        "x": 108,
+        "y": 326,
+        "w": 864,
+        "h": 115
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 70,
+        "fontWeight": 900,
+        "align": "center",
+        "uppercase": true,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "grp-mr6mmbot-0",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 238,
+        "y": 461,
+        "w": 605,
+        "h": 1017
+      },
+      "children": [
+        {
+          "id": "ext-mr6mmbkv-2",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · creatine jar",
+          "box": {
+            "x": 324,
+            "y": 576,
+            "w": 432,
+            "h": 672
+          },
+          "style": {
+            "background": "#f5f5f559",
+            "radius": 22,
+            "stroke": {
+              "color": "#f5f5f5",
+              "width": 3
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.3,
+              "y": 0.3,
+              "w": 0.4,
+              "h": 0.35
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mmbkv-1",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Waar je voorheen stopte, begin je nu.",
+          "autoH": true,
+          "box": {
+            "x": 238,
+            "y": 461,
+            "w": 605,
+            "h": 58
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mmbos-3",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "€8",
+          "autoH": true,
+          "box": {
+            "x": 464,
+            "y": 1037,
+            "w": 151,
+            "h": 96
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#ffffff",
+            "fontSize": 59,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mmbos-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Sophie",
+          "autoH": true,
+          "box": {
+            "x": 454,
+            "y": 1190,
+            "w": 173,
+            "h": 58
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mmbos-5",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Met het dagelijkse gebruik merk ik een forse verbetering van mijn krachtprestaties en spieropbouw.",
+          "autoH": true,
+          "box": {
+            "x": 259,
+            "y": 1248,
+            "w": 562,
+            "h": 192
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#f0f0f0",
+            "fontSize": 26,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mmbos-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "★★★★★",
+          "autoH": true,
+          "box": {
+            "x": 454,
+            "y": 1440,
+            "w": 173,
+            "h": 38
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 32,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#e8e8e8",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#dfdede",
+      "share": 0.5
+    },
+    {
+      "hex": "#d3d3d3",
+      "share": 0.25
+    },
+    {
+      "hex": "#cdcdcc",
+      "share": 0.125
+    },
+    {
+      "hex": "#6f6f6f",
+      "share": 0.063
+    },
+    {
+      "hex": "#c5c5c5",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

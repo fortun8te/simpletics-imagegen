@@ -1,7 +1,6 @@
 // WorkingIndicator — canonical live-work UI for **image generation** (Codex / queue).
 // Pulsing accent dot + label. Do not use in Design mode agents (separate redesign).
 // See studio/docs/WORKING-INDICATOR.md
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import styles from './WorkingIndicator.module.css';
 
 export type WorkingTone = 'active' | 'waiting' | 'queued' | 'paused' | 'failed';
@@ -51,21 +50,5 @@ export function WorkingIndicator({
       </span>
       {meta ? <span className={styles.meta}>{meta}</span> : null}
     </span>
-  );
-}
-
-/** Glass pill shell — pass children (usually WorkingIndicator contents). */
-export function WorkingPill({
-  children,
-  className,
-  ...rest
-}: {
-  children: ReactNode;
-  className?: string;
-} & ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button type="button" className={[styles.pill, className].filter(Boolean).join(' ')} {...rest}>
-      {children}
-    </button>
   );
 }

@@ -1,0 +1,263 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6dh2hu-3",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 108,
+        "y": 65,
+        "w": 972,
+        "h": 194
+      },
+      "children": [
+        {
+          "id": "ext-mr6dh2et-2",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Anthony",
+          "autoH": true,
+          "box": {
+            "x": 216,
+            "y": 65,
+            "w": 108,
+            "h": 32
+          },
+          "style": {
+            "color": "#cdcdcd",
+            "fontSize": 27,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6dh2ht-3",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "@anthony23",
+          "autoH": true,
+          "box": {
+            "x": 216,
+            "y": 103,
+            "w": 130,
+            "h": 30
+          },
+          "style": {
+            "color": "#b0b0b0",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6dh2ht-4",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "X.com",
+          "autoH": true,
+          "box": {
+            "x": 864,
+            "y": 65,
+            "w": 86,
+            "h": 30
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6dh2ht-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Recently started using the wavy curl creme, has been a game changer for my curly hair..",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 151,
+            "w": 972,
+            "h": 108
+          },
+          "style": {
+            "color": "#f2f2f2",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6dh2et-1",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · curly hair selfie",
+      "box": {
+        "x": 108,
+        "y": 259,
+        "w": 864,
+        "h": 702
+      },
+      "style": {
+        "background": "#2c2c2c59",
+        "radius": 22,
+        "stroke": {
+          "color": "#2c2c2c",
+          "width": 7
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.1,
+          "y": 0.24,
+          "w": 0.8,
+          "h": 0.65
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "grp-mr6dh2hu-4",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 108,
+        "y": 54,
+        "w": 972,
+        "h": 1026
+      },
+      "children": [
+        {
+          "id": "ext-mr6dh2es-0",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Avatar · profile picture",
+          "box": {
+            "x": 108,
+            "y": 54,
+            "w": 86,
+            "h": 86
+          },
+          "style": {
+            "background": "#2c2c2c59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#2c2c2c",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.1,
+              "y": 0.05,
+              "w": 0.08,
+              "h": 0.08
+            },
+            "shape": "avatar"
+          }
+        },
+        {
+          "id": "ext-mr6dh2ht-7",
+          "type": "shape",
+          "role": "avatar",
+          "name": "Avatar · man with curly hair selfie",
+          "box": {
+            "x": 1040,
+            "y": 1050,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#3e302559",
+            "radius": 22,
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#3e3025",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 1,
+              "y": 1,
+              "w": 1,
+              "h": 1
+            },
+            "shape": "avatar"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6dh2ht-6",
+      "type": "text",
+      "role": "caption",
+      "name": "caption",
+      "text": "10:44 -04/10/2026 -647 Views",
+      "autoH": true,
+      "box": {
+        "x": 108,
+        "y": 1004,
+        "w": 540,
+        "h": 32
+      },
+      "style": {
+        "color": "#a8a8a8",
+        "fontSize": 18,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "x-post",
+  "background": "#1a1a1a",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#151414",
+      "share": 0.5
+    },
+    {
+      "hex": "#312c2d",
+      "share": 0.125
+    },
+    {
+      "hex": "#6b5e58",
+      "share": 0.125
+    },
+    {
+      "hex": "#958e85",
+      "share": 0.125
+    },
+    {
+      "hex": "#ddaea3",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

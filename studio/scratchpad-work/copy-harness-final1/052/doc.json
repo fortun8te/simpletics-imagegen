@@ -1,0 +1,304 @@
+{
+  "id": "harness_052_219b8ab1",
+  "name": "copy-harness harness_052_219b8ab1",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base_mr6f1erw",
+      "type": "image",
+      "role": "base",
+      "name": "Background (reference photo)",
+      "src": "/refasset?id=harness-052",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "group-mr6f1erv-2e",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 14,
+        "y": 24,
+        "w": 150,
+        "h": 376
+      },
+      "children": [
+        {
+          "id": "rect-mr6f1erv-2f",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · man curly hair before",
+          "box": {
+            "x": 20,
+            "y": 118,
+            "w": 76,
+            "h": 282
+          },
+          "style": {
+            "crop": {
+              "x": 0.02,
+              "y": 0.11,
+              "w": 0.07,
+              "h": 0.26
+            },
+            "radius": 8
+          },
+          "src": "/refasset?id=harness-052"
+        },
+        {
+          "id": "rect-mr6f1erv-2g",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · man styled hair after",
+          "box": {
+            "x": 86,
+            "y": 118,
+            "w": 78,
+            "h": 282
+          },
+          "style": {
+            "crop": {
+              "x": 0.08,
+              "y": 0.11,
+              "w": 0.07,
+              "h": 0.26
+            },
+            "radius": 8
+          },
+          "src": "/refasset?id=harness-052"
+        },
+        {
+          "id": "headline-mr6f1erv-2h",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "No need to ruin your hair",
+          "autoH": true,
+          "box": {
+            "x": 15,
+            "y": 114,
+            "w": 139,
+            "h": 504
+          },
+          "style": {
+            "color": "#FFFFFF",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "serif": true,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 31
+          }
+        },
+        {
+          "id": "subhead-mr6f1erv-2i",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "to have perfect curls",
+          "autoH": true,
+          "box": {
+            "x": 29,
+            "y": 152,
+            "w": 125,
+            "h": 183
+          },
+          "style": {
+            "color": "#FFFFFF",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6f1erv-2j",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "No need to ruin your hair to have perfect curls",
+          "autoH": true,
+          "box": {
+            "x": 14,
+            "y": 24,
+            "w": 142,
+            "h": 672
+          },
+          "style": {
+            "color": "#bfcfc0",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6f1erv-2k",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 15,
+        "y": 351,
+        "w": 153,
+        "h": 125
+      },
+      "children": [
+        {
+          "id": "subhead-mr6f1erv-2l",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "This natural curl cream",
+          "autoH": true,
+          "box": {
+            "x": 36,
+            "y": 408,
+            "w": 132,
+            "h": 183
+          },
+          "style": {
+            "color": "#4A6E55",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6f1erv-2m",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "is all you need",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 446,
+            "w": 112,
+            "h": 183
+          },
+          "style": {
+            "color": "#4A6E55",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6f1erv-2n",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "This natural curl cream is all you need",
+          "autoH": true,
+          "box": {
+            "x": 15,
+            "y": 351,
+            "w": 139,
+            "h": 320
+          },
+          "style": {
+            "color": "#4a6b52",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6f1erv-2o",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 398,
+        "y": 1050,
+        "w": 682,
+        "h": 30
+      },
+      "children": [
+        {
+          "id": "badge-mr6f1erv-2p",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Before",
+          "autoH": true,
+          "box": {
+            "x": 398,
+            "y": 1050,
+            "w": 40,
+            "h": 33
+          },
+          "style": {
+            "color": "#3A6B52",
+            "fontSize": 27,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": true,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "badge-mr6f1erv-2q",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "After",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1050,
+            "w": 40,
+            "h": 33
+          },
+          "style": {
+            "color": "#3A6B52",
+            "fontSize": 27,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": true,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6f1erv8idv",
+  "updatedAt": 1783172790284
+}

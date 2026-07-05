@@ -1,0 +1,210 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6nkk4g-c",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 65,
+        "y": 0,
+        "w": 1015,
+        "h": 1920
+      },
+      "children": [
+        {
+          "id": "ext-mr6nkjxs-0",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Mango Chili flavored can",
+          "box": {
+            "x": 432,
+            "y": 0,
+            "w": 648,
+            "h": 1920
+          },
+          "style": {
+            "background": "#e6ddd459",
+            "radius": 22,
+            "stroke": {
+              "color": "#e6ddd4",
+              "width": 5
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.4,
+              "y": 0,
+              "w": 0.6,
+              "h": 1
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6nkk4g-1",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "20 MEI\n20:00",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 365,
+            "w": 562,
+            "h": 307
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 130,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6nkk4g-d",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 65,
+        "y": 1018,
+        "w": 497,
+        "h": 230
+      },
+      "children": [
+        {
+          "id": "ext-mr6nkk4g-3",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Allerlaatste site-wide sale van 2026.",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 1018,
+            "w": 475,
+            "h": 96
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 41,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nkk4g-4",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "20% korting op het volledige assortiment",
+          "autoH": true,
+          "box": {
+            "x": 65,
+            "y": 1133,
+            "w": 497,
+            "h": 115
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 45,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6nkk4g-2",
+      "type": "badge",
+      "role": "cta",
+      "name": "cta",
+      "text": "Schrijf je nu in, mis geen enkele update.",
+      "autoH": true,
+      "box": {
+        "x": 112.5,
+        "y": 713.8,
+        "w": 380,
+        "h": 30.400000000000002
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "background": "#f0ece6",
+        "fontSize": 17,
+        "fontWeight": 400,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#e2d5ce",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#ecdacf",
+      "share": 0.5
+    },
+    {
+      "hex": "#d3d0d3",
+      "share": 0.25
+    },
+    {
+      "hex": "#d6c1b6",
+      "share": 0.125
+    },
+    {
+      "hex": "#34312e",
+      "share": 0.063
+    },
+    {
+      "hex": "#a6aab0",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": {
+    "matched": false,
+    "score": 85,
+    "corrections": [
+      {
+        "layer": "header text",
+        "problem": "The date '20 MEI' and time '20:00' are positioned too far left and lack the vertical space separation from the CTA bar seen in the reference.",
+        "fix": "Move the date/time block down 15% and right 10% to create proper margins."
+      },
+      {
+        "layer": "background",
+        "problem": "The background is a flat, uniform color. The reference has a subtle vertical gradient or lighting effect that gives depth.",
+        "fix": "Add a subtle vertical gradient from #e5dbd5 at top to #f0e8e1 at bottom to match the reference's lighting."
+      },
+      {
+        "layer": "CTA button",
+        "problem": "The 'Schrijf je nu in' bar is too wide and lacks the reference's subtle shadow or border definition.",
+        "fix": "Reduce width by 20% and add a 1px solid #d5cdc6 border for better definition."
+      },
+      {
+        "layer": "footer text",
+        "problem": "The sale text is positioned too high and lacks the reference's generous top margin from the CTA bar.",
+        "fix": "Move the footer text block down 10% to create proper vertical rhythm."
+      }
+    ],
+    "applied": 1
+  },
+  "error": null,
+  "passes": 2
+}

@@ -1,0 +1,202 @@
+{
+  "id": "harness_003_cd074d03",
+  "name": "copy-harness harness_003_cd074d03",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6mmbpb-8",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#e8e8e8"
+      }
+    },
+    {
+      "id": "headline-mr6mmbpb-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "UPFRONT CREATINE",
+      "autoH": true,
+      "box": {
+        "x": 108,
+        "y": 326,
+        "w": 864,
+        "h": 115
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 70,
+        "fontWeight": 900,
+        "align": "center",
+        "uppercase": true,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "group-mr6mmbpb-1",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 238,
+        "y": 461,
+        "w": 605,
+        "h": 1017
+      },
+      "children": [
+        {
+          "id": "rect-mr6mmbpb-2",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · creatine jar",
+          "box": {
+            "x": 324,
+            "y": 576,
+            "w": 432,
+            "h": 672
+          },
+          "style": {
+            "crop": {
+              "x": 0.3,
+              "y": 0.3,
+              "w": 0.4,
+              "h": 0.35
+            },
+            "radius": 15
+          },
+          "src": "/refasset?id=harness-003"
+        },
+        {
+          "id": "subhead-mr6mmbpb-3",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Waar je voorheen stopte, begin je nu.",
+          "autoH": true,
+          "box": {
+            "x": 238,
+            "y": 461,
+            "w": 605,
+            "h": 92
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "price-mr6mmbpb-4",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "€8",
+          "autoH": true,
+          "box": {
+            "x": 464,
+            "y": 1037,
+            "w": 151,
+            "h": 103
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#ffffff",
+            "fontSize": 59,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6mmbpb-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Sophie",
+          "autoH": true,
+          "box": {
+            "x": 454,
+            "y": 1190,
+            "w": 173,
+            "h": 58
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 19
+          }
+        },
+        {
+          "id": "badge-mr6mmbpb-6",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Met het dagelijkse gebruik merk ik een forse verbetering van mijn krachtprestaties en spieropbouw.",
+          "autoH": true,
+          "box": {
+            "x": 259,
+            "y": 1248,
+            "w": 454,
+            "h": 192
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "#f0f0f0",
+            "fontSize": 26,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6mmbpb-7",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "★★★★★",
+          "autoH": true,
+          "box": {
+            "x": 454,
+            "y": 1440,
+            "w": 173,
+            "h": 38
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "fontSize": 32,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6mmbpbcl1z",
+  "updatedAt": 1783185523394
+}

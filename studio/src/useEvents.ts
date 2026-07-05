@@ -62,16 +62,24 @@ export function useEvents(onChange: () => void) {
       es.addEventListener('design', (e) => {
         try { useStore.getState().pushAgentEvent('design', JSON.parse((e as MessageEvent).data)); } catch { /* bad frame */ }
       });
+      // Orchestrator-worker fan-out: one frame per sub-agent lifecycle (start/update/done). Carries
+      // {id,title,model,status,phase,parentRunId} so the activity panel can list 2-3 workers. This
+      // is ADDITIVE — the same worker also arrives as a `subagent` step inside the `design` stream;
+      // this dedicated channel lets a fan-out list subscribe without parsing every design step.
+      es.addEventListener('subagent', (e) => {
+        try { useStore.getState().pushSubAgentEvent(JSON.parse((e as MessageEvent).data)); } catch { /* bad frame */ }
+      });
       // Document-change pings ({kind:'design'|'skeleton'|'element'|'brandkit', id, updatedAt?}).
       // Latest-only: the store keeps a single tick; views debounce their own refetch off it.
       es.addEventListener('doc', (e) => {
         try {
-          const d = JSON.parse((e as MessageEvent).data) as { kind?: unknown; id?: unknown; updatedAt?: unknown };
+          const d = JSON.parse((e as MessageEvent).data) as { kind?: unknown; id?: unknown; updatedAt?: unknown; deleted?: unknown };
           if (d && typeof d.kind === 'string' && typeof d.id === 'string') {
             useStore.getState().setDocTick({
               kind: d.kind,
               id: d.id,
               updatedAt: typeof d.updatedAt === 'number' ? d.updatedAt : undefined,
+              deleted: d.deleted === true || undefined,
               at: Date.now(),
             });
           }

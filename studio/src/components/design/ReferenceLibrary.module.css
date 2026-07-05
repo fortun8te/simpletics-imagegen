@@ -1,0 +1,167 @@
+/* ReferenceLibrary — the in-editor "copy a reference" picker (TrendTrack cache + upload). */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.modal {
+  width: 720px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--r-xl);
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+}
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.title { margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
+.sub { font-size: 12px; color: var(--muted); }
+.closeBtn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.closeBtn:hover { color: var(--ink); background: var(--surface-2); }
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.ghostBtn:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
+.ghostBtn:disabled { opacity: 0.5; cursor: default; }
+.searchInput {
+  flex: 1 1 220px;
+  min-width: 180px;
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--glass-border);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-size: 12px;
+}
+.searchInput::placeholder { color: var(--faint); }
+.searchInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 50%, var(--glass-border)); }
+.creditChip {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+.liveBtn {
+  padding: 8px 12px;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--glass-border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+.liveBtn:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
+.liveBtn:disabled { opacity: 0.5; cursor: default; }
+
+.empty { font-size: 12px; color: var(--muted); padding: var(--space-4) 0; text-align: center; }
+
+/* Inline error line — file-too-large, upload/fetch failures (ERR-5, ERR-55/56). */
+.errorNote {
+  font-size: 12px;
+  color: var(--err);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--r-md);
+  background: var(--err-soft);
+  border: 1px solid color-mix(in srgb, var(--err) 35%, var(--glass-border));
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-2);
+  overflow-y: auto;
+  padding-right: 2px;
+}
+.cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.12s ease;
+}
+.cell:hover:not(:disabled) { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.cell:disabled { cursor: default; }
+.cell[data-busy] { border-color: var(--accent); }
+.cell img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+}
+.cellLabel {
+  display: block;
+  padding: 6px 8px;
+  font-size: 11px;
+  line-height: 1.3;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cellLabel b { color: var(--ink); font-weight: 600; }
+.cellSpinner {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-top-color: var(--accent);
+  animation: refspin 0.7s linear infinite;
+}
+@keyframes refspin { to { transform: rotate(360deg); } }

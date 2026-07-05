@@ -1,0 +1,351 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6nqu7v-2",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "THE 10 SECOND",
+      "autoH": true,
+      "box": {
+        "x": 86,
+        "y": 340,
+        "w": 594,
+        "h": 109
+      },
+      "style": {
+        "color": "#ffffff",
+        "fontSize": 63,
+        "fontWeight": 700,
+        "align": "left",
+        "uppercase": true,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "grp-mr6nqu81-t",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 22,
+        "y": 406,
+        "w": 1058,
+        "h": 763
+      },
+      "children": [
+        {
+          "id": "ext-mr6nqu80-6",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Black earplug",
+          "box": {
+            "x": 702,
+            "y": 748,
+            "w": 378,
+            "h": 340
+          },
+          "style": {
+            "background": "#2a2a2a59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#2a2a2a",
+              "width": 3
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.65,
+              "y": 0.55,
+              "w": 0.35,
+              "h": 0.25
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6nqu7v-1-lb",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": false,
+          "sizeLocked": true,
+          "text": "WHITE EARPLUG",
+          "box": {
+            "x": 670,
+            "y": 406,
+            "w": 324,
+            "h": 72
+          },
+          "style": {
+            "fontSize": 32,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "ext-mr6nqu7x-3-lb",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": false,
+          "sizeLocked": true,
+          "text": "BLUE EARPLUG",
+          "box": {
+            "x": 22,
+            "y": 651,
+            "w": 324,
+            "h": 72
+          },
+          "style": {
+            "fontSize": 32,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "ext-mr6nqu7x-4",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "PARTY",
+          "autoH": true,
+          "box": {
+            "x": 432,
+            "y": 612,
+            "w": 238,
+            "h": 109
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 63,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nqu7z-5",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "UPGRADE",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 884,
+            "w": 594,
+            "h": 109
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 63,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6nqu80-7",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Perfect Fit | 20dB Reduction | 5 Styles",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 1115,
+            "w": 864,
+            "h": 54
+          },
+          "style": {
+            "color": "#e0e0e0",
+            "fontSize": 24,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6nqu81-u",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 22,
+        "y": 136,
+        "w": 972,
+        "h": 721
+      },
+      "children": [
+        {
+          "id": "ext-mr6nqu7v-1",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · White earplug",
+          "box": {
+            "x": 670,
+            "y": 272,
+            "w": 324,
+            "h": 340
+          },
+          "style": {
+            "background": "#e0e0e059",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#e0e0e0",
+              "width": 3
+            }
+          }
+        },
+        {
+          "id": "ext-mr6nqu7x-3",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · Blue earplug",
+          "box": {
+            "x": 22,
+            "y": 517,
+            "w": 324,
+            "h": 340
+          },
+          "style": {
+            "background": "#4a5a6a59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#4a5a6a",
+              "width": 3
+            }
+          }
+        },
+        {
+          "id": "ext-mr6nqu54-0",
+          "type": "text",
+          "role": "logo",
+          "name": "logo",
+          "text": "Hears Earplugs",
+          "autoH": true,
+          "box": {
+            "x": 292,
+            "y": 136,
+            "w": 497,
+            "h": 68
+          },
+          "style": {
+            "color": "#8a8a8a",
+            "fontSize": 27,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6nqu81-v",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 324,
+        "y": 1224,
+        "w": 432,
+        "h": 136
+      },
+      "children": [
+        {
+          "id": "ext-mr6nqu80-8",
+          "type": "button",
+          "role": "cta",
+          "name": "cta",
+          "text": "Up To 30% Off",
+          "autoH": true,
+          "box": {
+            "x": 324,
+            "y": 1224,
+            "w": 432,
+            "h": 68
+          },
+          "style": {
+            "color": "#dddddd",
+            "background": "#ffffff",
+            "fontSize": 22,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6nqu81-9",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "reddot winner 2024",
+          "autoH": true,
+          "box": {
+            "x": 432,
+            "y": 1319,
+            "w": 216,
+            "h": 41
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1360
+  },
+  "archetype": "offer-hero",
+  "background": "#0d0d0d",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#1b1b1b",
+      "share": 0.5
+    },
+    {
+      "hex": "#303030",
+      "share": 0.25
+    },
+    {
+      "hex": "#3a3b3c",
+      "share": 0.125
+    },
+    {
+      "hex": "#f5f4f3",
+      "share": 0.063
+    },
+    {
+      "hex": "#7b7b79",
+      "share": 0.062
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

@@ -272,11 +272,6 @@ export function isAuthBlocked() {
   return lastAuthFailureAt > 0 && (Date.now() - lastAuthFailureAt) < AUTH_BLOCK_MS;
 }
 
-/** The honest session-work signal (images generated this process). */
-export function getSessionGenerated() {
-  return sessionGenerated;
-}
-
 // Read the codex account/plan from ~/.codex/auth.json (best-effort). Returns { email, plan } or {}.
 // We decode the id_token's middle (JWT payload) only to label the meter — no quota number lives here.
 function readAccount() {

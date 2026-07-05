@@ -1,0 +1,228 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6mjz60-0",
+      "type": "shape",
+      "role": "rect",
+      "name": "Cut-out · window view",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "background": "#6b8f6a59",
+        "radius": 22,
+        "stroke": {
+          "color": "#6b8f6a",
+          "width": 9
+        }
+      },
+      "cutoutCandidate": {
+        "region": {
+          "x": 0,
+          "y": 0,
+          "w": 1,
+          "h": 1
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "grp-mr6mjzcr-6",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 173,
+        "y": 787,
+        "w": 756,
+        "h": 345
+      },
+      "children": [
+        {
+          "id": "ext-mr6mjz60-1",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+          "autoH": true,
+          "box": {
+            "x": 173,
+            "y": 787,
+            "w": 756,
+            "h": 77
+          },
+          "style": {
+            "color": "#d1c3b4",
+            "background": "#000000",
+            "fontSize": 28,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mjzcm-2",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "72,6 kg",
+          "autoH": true,
+          "box": {
+            "x": 216,
+            "y": 864,
+            "w": 205,
+            "h": 77
+          },
+          "style": {
+            "color": "#c5bebb",
+            "background": "#000000",
+            "fontSize": 28,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mjzco-3",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "68,2kg",
+          "autoH": true,
+          "box": {
+            "x": 443,
+            "y": 864,
+            "w": 205,
+            "h": 77
+          },
+          "style": {
+            "color": "#c9ad9a",
+            "background": "#000000",
+            "fontSize": 28,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mjzcp-4",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "66,1kg",
+          "autoH": true,
+          "box": {
+            "x": 680,
+            "y": 864,
+            "w": 205,
+            "h": 77
+          },
+          "style": {
+            "color": "#cd5457",
+            "background": "#ff6b6b",
+            "fontSize": 28,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mjzcr-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Ganz Ehrlich: ich habe null damit\ngerechnet 😂🙈",
+          "autoH": true,
+          "box": {
+            "x": 216,
+            "y": 960,
+            "w": 670,
+            "h": 115
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#000000",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mjzcr-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "@vitafant_natural",
+          "autoH": true,
+          "box": {
+            "x": 432,
+            "y": 1094,
+            "w": 259,
+            "h": 38
+          },
+          "style": {
+            "color": "#2a1d13",
+            "background": "#000000",
+            "fontSize": 18,
+            "fontWeight": 500,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "story-native",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#56533c",
+      "share": 0.25
+    },
+    {
+      "hex": "#d8d3c3",
+      "share": 0.25
+    },
+    {
+      "hex": "#1b160e",
+      "share": 0.25
+    },
+    {
+      "hex": "#9c7757",
+      "share": 0.125
+    },
+    {
+      "hex": "#baa37f",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

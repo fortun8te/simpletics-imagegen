@@ -114,7 +114,34 @@ test('detection + aliases reach the new presets', () => {
   assert.equal(detectTemplate('a checklist note screenshot'), 'notes-checklist');
   assert.equal(detectTemplate('an imessage thread with mom'), 'imessage');
   assert.equal(buildTemplate('ig-post', mkDoc({ w: 1080, h: 1350 })).def.id, 'ig-feed-post');
-  assert.equal(buildTemplate('sms', mkDoc({ w: 1080, h: 1350 })).def.id, 'imessage');
+  // sms routes to the dedicated GREEN thread now — the old sms→imessage alias produced BLUE sent
+  // bubbles, which real SMS never has (research-confirmed fix).
+  assert.equal(buildTemplate('sms', mkDoc({ w: 1080, h: 1350 })).def.id, 'sms');
+  assert.equal(detectTemplate('a green bubble sms convo'), 'sms');
+  assert.equal(detectTemplate('facebook post testimonial ad'), 'fb-post');
+});
+
+test('sms template renders GREEN sent bubbles + "Text Message" composer; imessage stays blue', () => {
+  const flatten = (ns, out = []) => { ns.forEach((n) => { out.push(n); if (n.children) flatten(n.children, out); }); return out; };
+  const sms = flatten(buildTemplate('sms', mkDoc({ w: 1080, h: 1350 })).layers);
+  assert.equal(sms.find((n) => n.name === 'Sent bubble')?.style?.background, '#34c759');
+  assert.equal(sms.find((n) => n.name === 'Send button')?.style?.background, '#34c759');
+  assert.equal(sms.find((n) => n.name === 'Placeholder')?.text, 'Text Message');
+  const im = flatten(buildTemplate('imessage', mkDoc({ w: 1080, h: 1350 })).layers);
+  assert.equal(im.find((n) => n.name === 'Sent bubble')?.style?.background, '#0a84ff');
+});
+
+test('fb-post template builds the FDS structure (header/body/photo/meta/actions)', () => {
+  const { def, layers } = buildTemplate('fb-post', mkDoc({ w: 1080, h: 1350 }));
+  assert.equal(def.id, 'fb-post');
+  const names = layers.map((l) => l.name || l.role);
+  for (const part of ['Header', 'Post text', 'Meta', 'Actions']) {
+    assert.ok(names.some((n) => String(n).includes(part)), `has ${part}`);
+  }
+  const flatten = (ns, out = []) => { ns.forEach((n) => { out.push(n); if (n.children) flatten(n.children, out); }); return out; };
+  const flat = flatten(layers);
+  assert.equal(flat.find((n) => n.name === 'Post text')?.style?.color, '#050505'); // FDS primary
+  assert.equal(flat.find((n) => n.name === 'Time')?.style?.color, '#65676b');      // FDS secondary
 });
 
 test('avatar pixelate effect emits a distinct mosaic (not just blur) on x-post-ad', () => {

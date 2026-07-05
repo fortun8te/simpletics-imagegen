@@ -1,0 +1,219 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6mnsrb-4",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "children": [
+        {
+          "id": "ext-mr6mnslk-0",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · woman with headband",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 1920
+          },
+          "style": {
+            "background": "#a3949259",
+            "radius": 22,
+            "stroke": {
+              "color": "#a39492",
+              "width": 9
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mnsll-1",
+          "type": "text",
+          "role": "badge",
+          "name": "badge",
+          "text": "Ask me anything",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 115,
+            "w": 864,
+            "h": 77
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1a1a1a",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mnsr8-2",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "How long did it take to reduce your fine lines & wrinkles?",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 192,
+            "w": 864,
+            "h": 230
+          },
+          "style": {
+            "color": "#fdfdfd",
+            "background": "#f5f5f5",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6mnsrb-5",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 1286,
+        "w": 972,
+        "h": 404
+      },
+      "children": [
+        {
+          "id": "ext-mr6mnsr9-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "It wasn't overnight, but it didn't take too long either. I just used this once a week, and by week 2, my lines were smoother and skin tighter.",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 1286,
+            "w": 972,
+            "h": 269
+          },
+          "style": {
+            "color": "#615853",
+            "background": "#f5f5f5",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "ext-mr6mnsra-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "By week 4, my husband kept complimenting how younger and more radiant I looked.",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 1536,
+            "w": 864,
+            "h": 154
+          },
+          "style": {
+            "color": "#625956",
+            "background": "#f5f5f5",
+            "fontSize": 27,
+            "fontWeight": 600,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6mnsra-5",
+      "type": "text",
+      "role": "caption",
+      "name": "caption",
+      "text": "I'm leaving the link if you're interested. Here's where you can get it 👇",
+      "autoH": true,
+      "box": {
+        "x": 108,
+        "y": 1709,
+        "w": 864,
+        "h": 154
+      },
+      "style": {
+        "color": "#000000",
+        "background": "#f5f5f5",
+        "fontSize": 27,
+        "fontWeight": 600,
+        "align": "center",
+        "radius": 108,
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "story-native",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "dark",
+  "dominantPalette": [
+    {
+      "hex": "#8a837c",
+      "share": 0.25
+    },
+    {
+      "hex": "#fefefe",
+      "share": 0.25
+    },
+    {
+      "hex": "#28221e",
+      "share": 0.25
+    },
+    {
+      "hex": "#e08a8b",
+      "share": 0.125
+    },
+    {
+      "hex": "#efd4c0",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

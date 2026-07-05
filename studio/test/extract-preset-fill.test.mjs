@@ -4,7 +4,7 @@
 // Also: loose (generic) extractions get GROUPED into named region groups, never a flat pile.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fillPresetFromExtraction, groupLooseLayers } from '../lib/layout-extract.mjs';
+import { fillPresetFromExtraction, groupLooseLayers, presetGeometryMatch, toSkeletonLayers } from '../lib/layout-extract.mjs';
 import { walkNodes } from '../lib/scene-tree.mjs';
 
 const CANVAS = { w: 1080, h: 1350 };
@@ -57,6 +57,77 @@ test('unmapped params fall back to template defaults', () => {
 
 test('a generic archetype does NOT fill a preset', () => {
   assert.equal(fillPresetFromExtraction('generic', { layers: [] }, CANVAS, null), null);
+});
+
+test('preset geometry gate: a standard-arrangement x-post MATCHES its filled preset', () => {
+  // The synthetic x-post above places name/handle/body where the x-post template also puts them.
+  const raw = { archetype: 'x-post', layers: [
+    { type: 'text', role: 'name', text: 'UPFRONT', box: { x: 15, y: 6, w: 30, h: 5 } },
+    { type: 'text', role: 'handle', text: '@UpfrontFood', box: { x: 15, y: 11, w: 30, h: 4 } },
+    { type: 'text', role: 'headline', text: 'A totally normal announcement about our sale today.', box: { x: 5, y: 22, w: 90, h: 24 } },
+    { type: 'text', role: 'caption', text: '121K views · 257 replies', box: { x: 5, y: 82, w: 90, h: 5 } },
+  ] };
+  const filled = fillPresetFromExtraction('x-post', raw, CANVAS, null);
+  const gm = presetGeometryMatch(raw, filled.layers, CANVAS);
+  assert.equal(gm.match, true, `standard x-post should match its preset slots (drift ${gm.meanDist})`);
+});
+
+test('preset geometry gate: a REARRANGED layout does NOT match (keep true geometry)', () => {
+  // Same archetype/copy, but everything shoved into the bottom-right quadrant — a rearranged native
+  // ad, not the canonical x-post grid. The gate must reject the snap.
+  const raw = { archetype: 'x-post', layers: [
+    { type: 'text', role: 'name', text: 'UPFRONT', box: { x: 60, y: 70, w: 30, h: 5 } },
+    { type: 'text', role: 'handle', text: '@UpfrontFood', box: { x: 60, y: 76, w: 30, h: 4 } },
+    { type: 'text', role: 'headline', text: 'A wildly repositioned headline down here.', box: { x: 55, y: 82, w: 40, h: 12 } },
+    { type: 'text', role: 'caption', text: '121K views', box: { x: 60, y: 95, w: 30, h: 4 } },
+  ] };
+  const filled = fillPresetFromExtraction('x-post', raw, CANVAS, null);
+  const gm = presetGeometryMatch(raw, filled.layers, CANVAS);
+  assert.equal(gm.match, false, `rearranged layout should NOT match the preset (drift ${gm.meanDist})`);
+});
+
+test('preset geometry gate: a big shape/card photo region with no comparable preset slot forces the loose path (ad 026)', () => {
+  // 026-class: the model read a giant half-canvas pillow photo as two `shape/card` regions
+  // ("Left half"/"Right half") — not `type:'image'` — and only ONE short text layer ("Silk").
+  // With <2 text layers the geometry gate used to short-circuit to "trust the preset" WITHOUT
+  // running the photo-slot check at all; the comparison template's small packshot slots also
+  // happened to sit near the same columns, so even the size-agnostic photo check would have
+  // falsely "matched" a 50%-of-canvas photo against a ~16%-of-canvas packshot slot by proximity
+  // alone. Both are fixed: bigPhotoMismatch runs on the sparse-text path, and it now requires the
+  // matching slot to be comparably SIZED (>=50% of the extracted region's area), not just nearby.
+  const CANVAS_2 = { w: 1080, h: 1920 };
+  const raw = { archetype: 'comparison', layers: [
+    { type: 'shape', role: 'card', name: 'Left half', box: { x: 0, y: 0, w: 50, h: 100 }, style: { background: '#ffffff' } },
+    { type: 'shape', role: 'card', name: 'Right half', box: { x: 50, y: 0, w: 50, h: 100 }, style: { background: '#19a5b8' } },
+    { type: 'text', role: 'headline', text: 'Silk', box: { x: 44, y: 4, w: 12, h: 3.4 } },
+  ] };
+  const filled = fillPresetFromExtraction('comparison', raw, CANVAS_2, null);
+  assert.ok(filled, 'preset build succeeds');
+  const gm = presetGeometryMatch(raw, filled.layers, CANVAS_2);
+  assert.equal(gm.pairs, 0, 'too few text layers to score signals A/B (sparse-text path)');
+  assert.equal(gm.photoMismatch, true, 'big photo-ish region has no comparably-sized preset slot');
+  assert.equal(gm.match, false, 'the gate rejects the preset snap — loose path takes over');
+});
+
+test('font signals survive from raw read into the skeleton (fidelity)', () => {
+  // serif → Georgia, platform ios → SF (-apple-system), twitter → base (undefined), mono → Menlo.
+  const raw = { layers: [
+    { type: 'text', role: 'headline', text: 'Editorial', box: { x: 10, y: 10, w: 60, h: 8 }, style: { serif: true, fontSizePct: 6 } },
+    { type: 'text', role: 'caption', text: 'Notes body', box: { x: 10, y: 30, w: 60, h: 6 }, style: { platform: 'ios' } },
+    { type: 'text', role: 'name', text: 'Tweeter', box: { x: 10, y: 50, w: 40, h: 5 }, style: { platform: 'twitter' } },
+    { type: 'text', role: 'price', text: 'CODE10', box: { x: 10, y: 70, w: 40, h: 5 }, style: { mono: true } },
+  ] };
+  const out = toSkeletonLayers(raw, { w: 1080, h: 1080 });
+  const byText = (t) => out.find((l) => l.text === t);
+  assert.equal(byText('Editorial').style.fontFamily, 'Georgia', 'serif → Georgia (single token)');
+  assert.equal(byText('Editorial').style.serif, true, 'serif boolean carried through');
+  assert.equal(byText('Notes body').style.fontFamily, '-apple-system', 'ios → SF stack single token');
+  assert.equal(byText('Tweeter').style.fontFamily, undefined, 'twitter → base grotesk (unset family)');
+  assert.equal(byText('CODE10').style.fontFamily, 'Menlo', 'mono → Menlo');
+  // none of these are comma-lists (which the export renderer cannot load)
+  for (const l of out) {
+    if (l.style?.fontFamily) assert.ok(!l.style.fontFamily.includes(','), `single-token family, not a comma list: ${l.style.fontFamily}`);
+  }
 });
 
 test('loose layers group into named region buckets (no flat pile)', () => {

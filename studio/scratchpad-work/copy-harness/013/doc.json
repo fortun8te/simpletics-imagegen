@@ -1,0 +1,598 @@
+{
+  "id": "harness_013_0224f536",
+  "name": "copy-harness harness_013_0224f536",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6nmzh4-43",
+      "type": "shape",
+      "role": "base",
+      "name": "Base gradient",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "background": "#2d8c3c",
+        "gradient": {
+          "type": "linear",
+          "angle": 180,
+          "stops": [
+            {
+              "color": "#2d8c3c",
+              "pos": 0
+            },
+            {
+              "color": "#f5a623",
+              "pos": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "group-mr6nmzh2-3d",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 1,
+        "y": 2,
+        "w": 43,
+        "h": 336
+      },
+      "children": [
+        {
+          "id": "caption-mr6nmzh2-3e",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "PRODUCT BAG",
+          "box": {
+            "x": 3,
+            "y": 40,
+            "w": 40,
+            "h": 32
+          },
+          "style": {
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "headline-mr6nmzh2-3f",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "We NEVER do this!",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 2,
+            "w": 40,
+            "h": 269
+          },
+          "style": {
+            "color": "#f5a623",
+            "fontSize": 56,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "badge-mr6nmzh2-3g",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "61% OFF\n+ FREE GIFTS",
+          "autoH": true,
+          "box": {
+            "x": 1,
+            "y": 80,
+            "w": 40,
+            "h": 156
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 26,
+            "fontWeight": 900,
+            "align": "center",
+            "uppercase": true,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6nmzh2-3h",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "grüns",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 118,
+            "w": 40,
+            "h": 46
+          },
+          "style": {
+            "color": "#f5a623",
+            "fontSize": 38,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nmzh2-3i",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "COMPREHENSIVE NUTRITION",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 156,
+            "w": 40,
+            "h": 72
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": true,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6nmzh2-3j",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Superfoods\nGreens\nGummies",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 194,
+            "w": 40,
+            "h": 137
+          },
+          "style": {
+            "color": "#f5a623",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nmzh2-3k",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Fresh & Sweet Taste",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 232,
+            "w": 40,
+            "h": 144
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nmzh3-3l",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Supports*\nGut Health • Energy • Immunity • Recovery • Beauty • Cognition",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 270,
+            "w": 40,
+            "h": 468
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nmzh3-3m",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Dietary Supplement\n28 Daily Packs",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 308,
+            "w": 40,
+            "h": 180
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6nmzh3-3n",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 0,
+        "y": 384,
+        "w": 1070,
+        "h": 1017
+      },
+      "children": [
+        {
+          "id": "rect-mr6nmzh3-3o",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · grüns gummy bag",
+          "box": {
+            "x": 346,
+            "y": 691,
+            "w": 594,
+            "h": 710
+          },
+          "style": {
+            "crop": {
+              "x": 0.32,
+              "y": 0.36,
+              "w": 0.55,
+              "h": 0.37
+            },
+            "radius": 21
+          },
+          "src": "/refasset?id=harness-013"
+        },
+        {
+          "id": "caption-mr6nmzh3-3p",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "28 X 20 g PACKS | NET WT. 1.23 lb (560 g)",
+          "autoH": true,
+          "box": {
+            "x": 4,
+            "y": 384,
+            "w": 40,
+            "h": 432
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": true,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6nmzh3-3q",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "GREEN BEAR GUMMY",
+          "box": {
+            "x": 32,
+            "y": 578,
+            "w": 151,
+            "h": 34
+          },
+          "style": {
+            "fontSize": 17,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "caption-mr6nmzh3-3r",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "GREEN BEAR GUMMY",
+          "box": {
+            "x": 896,
+            "y": 595,
+            "w": 173,
+            "h": 38
+          },
+          "style": {
+            "fontSize": 19,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "caption-mr6nmzh3-3s",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "GREEN BEAR GUMMY",
+          "box": {
+            "x": 0,
+            "y": 1259,
+            "w": 162,
+            "h": 36
+          },
+          "style": {
+            "fontSize": 18,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "caption-mr6nmzh3-3t",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "GREEN BEAR GUMMY",
+          "box": {
+            "x": 194,
+            "y": 1165,
+            "w": 130,
+            "h": 32
+          },
+          "style": {
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "caption-mr6nmzh3-3u",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "GREEN BEAR GUMMY",
+          "box": {
+            "x": 886,
+            "y": 1276,
+            "w": 184,
+            "h": 40
+          },
+          "style": {
+            "fontSize": 20,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6nmzh3-3v",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 0,
+        "y": 7,
+        "w": 1070,
+        "h": 1414
+      },
+      "children": [
+        {
+          "id": "product-mr6nmzh3-3w",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · Product Bag",
+          "box": {
+            "x": 3,
+            "y": 7,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "background": "#2d8c3c59",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.14 C 0.6 0.14 0.725 0.14 0.8 0.2 C 0.875 0.26 0.925 0.375 0.95 0.5 C 0.975 0.625 1.025 0.8683 0.95 0.95 C 0.875 1.0317 0.65 0.99 0.5 0.99 C 0.35 0.99 0.125 1.0317 0.05 0.95 C -0.025 0.8683 0.025 0.625 0.05 0.5 C 0.075 0.375 0.125 0.26 0.2 0.2 C 0.275 0.14 0.4 0.14 0.5 0.14 Z",
+            "stroke": {
+              "color": "#2d8c3c",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "product-mr6nmzh3-3x",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · green bear gummy",
+          "box": {
+            "x": 32,
+            "y": 480,
+            "w": 151,
+            "h": 230
+          },
+          "style": {
+            "background": "#4a7c5c59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#4a7c5c",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "product-mr6nmzh4-3y",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · green bear gummy",
+          "box": {
+            "x": 896,
+            "y": 499,
+            "w": 173,
+            "h": 230
+          },
+          "style": {
+            "background": "#4a7c5c59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#4a7c5c",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "product-mr6nmzh4-3z",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · green bear gummy",
+          "box": {
+            "x": 0,
+            "y": 1152,
+            "w": 162,
+            "h": 250
+          },
+          "style": {
+            "background": "#4a7c5c59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#4a7c5c",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "product-mr6nmzh4-40",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · green bear gummy",
+          "box": {
+            "x": 194,
+            "y": 1075,
+            "w": 130,
+            "h": 211
+          },
+          "style": {
+            "background": "#4a7c5c59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#4a7c5c",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "product-mr6nmzh4-41",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · green bear gummy",
+          "box": {
+            "x": 886,
+            "y": 1171,
+            "w": 184,
+            "h": 250
+          },
+          "style": {
+            "background": "#4a7c5c59",
+            "shapeKind": "ellipse",
+            "stroke": {
+              "color": "#4a7c5c",
+              "width": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cta-mr6nmzh4-42",
+      "type": "button",
+      "role": "cta",
+      "name": "cta",
+      "text": "ONLINE EXCLUSIVE OFFER ENDING SOON",
+      "autoH": true,
+      "box": {
+        "x": 1,
+        "y": 346,
+        "w": 40,
+        "h": 192
+      },
+      "style": {
+        "color": "#ffffff",
+        "fontSize": 32,
+        "fontWeight": 800,
+        "align": "center",
+        "uppercase": true,
+        "fontFamily": "-apple-system",
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6nmzh2geog",
+  "updatedAt": 1783187233817
+}

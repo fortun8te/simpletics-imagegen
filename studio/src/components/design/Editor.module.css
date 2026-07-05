@@ -6,35 +6,71 @@
   flex-direction: column;
   gap: var(--space-3);
   min-height: 0;
+  /* Fill the design-mode pane so the body/panels size to a definite height (no 100vh guessing —
+     the editor never starts at the viewport top, it sits inside the padded app shell). Falls back
+     gracefully to auto height if an ancestor has no definite height. */
+  flex: 1;
+  height: 100%;
   container-type: inline-size;
 }
 
-/* ── top strip ── */
+/* ── top strip: LEFT (back + name) · CENTER (size + zoom) · RIGHT (compare · save · history · export) ──
+   One row, consistent 30px control height, quiet monochrome, hairline group dividers. The three
+   regions flex so the center stays centered and the right group hugs the edge; everything degrades
+   to icons + tooltips at narrow widths (see the container query near the bottom). */
 .topStrip {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-3);
+  gap: var(--space-3);
   min-width: 0;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--r-lg);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
 }
+.topLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 0;
+  min-width: 0;
+}
+.topCenter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 0;
+  min-width: 0;
+  justify-content: flex-end;
+}
+
 .backBtn {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 30px;
   font-size: 12px;
   font-weight: 500;
   color: var(--muted);
-  padding: 4px 8px;
+  padding: 0 8px 0 6px;
   border-radius: var(--r-sm);
   white-space: nowrap;
 }
 .backBtn:hover { color: var(--ink); background: var(--surface-2); }
+.backChev { transform: rotate(180deg); flex: none; }
+.backLabel { line-height: 1; }
 .nameInput {
   flex: 0 1 260px;
-  min-width: 120px;
-  padding: 5px 8px;
+  min-width: 90px;
+  height: 30px;
+  padding: 0 8px;
   border-radius: var(--r-md);
   border: 1px solid transparent;
   background: transparent;
@@ -46,7 +82,17 @@
 .nameInput:focus { outline: none; border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: var(--glass-bg-2); }
 .canvasTag { flex: none; font: 500 11px/1 var(--font-mono); color: var(--faint); }
 
-.zoomGroup, .underlayGroup {
+/* Monospace dims tag — quiet, tabular. */
+.dimsTag {
+  flex: none;
+  font: 500 11px/1 var(--font-mono);
+  color: var(--faint);
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+/* Segmented control shell — shared by zoom + ref-compare + any pill-group in the strip. */
+.segGroup {
   display: inline-flex;
   align-items: center;
   gap: 2px;
@@ -54,9 +100,9 @@
   border-radius: var(--r-md);
   background: var(--surface-2);
   border: 1px solid var(--line-soft);
+  flex: none;
 }
-.underlayLabel { font-size: 10px; font-weight: 600; color: var(--faint); padding: 0 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-.zoomBtn {
+.segBtn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -68,14 +114,22 @@
   color: var(--muted);
   white-space: nowrap;
 }
-.zoomBtn svg { flex: none; }
-.zoomBtn:hover { color: var(--ink); }
-.zoomBtn[data-active] { background: var(--glass-bg-3); color: var(--ink); box-shadow: var(--shadow-sm); }
-.opacitySlider { width: 70px; accent-color: var(--accent); }
+.segBtn svg { flex: none; }
+.segBtn:hover { color: var(--ink); }
+.segBtn[data-active] { background: var(--glass-bg-3); color: var(--ink); box-shadow: var(--shadow-sm); }
+.segLabel { line-height: 1; }
+.opacitySlider { width: 70px; accent-color: var(--accent); flex: none; }
 
-.topActions { margin-left: auto; display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2); min-width: 0; }
-.topActions .ghostBtn, .topActions .primaryBtn { flex: none; }
-.topActions .primaryBtn { display: inline-flex; align-items: center; gap: 6px; }
+/* Hairline vertical divider between right-side groups. */
+.groupDivider { flex: none; width: 1px; height: 20px; background: var(--line); }
+
+/* icon-only + export clusters */
+.iconGroup { display: inline-flex; align-items: center; gap: 4px; flex: none; }
+.exportGroup { display: inline-flex; align-items: center; gap: var(--space-2); flex: none; }
+.exportGroup .ghostBtn,
+.exportGroup .primaryBtn { flex: none; display: inline-flex; align-items: center; gap: 6px; }
+.exportLabel { line-height: 1; }
+.saveLabel { line-height: 1; white-space: nowrap; }
 .iconBtn {
   display: inline-flex;
   align-items: center;
@@ -95,25 +149,54 @@
 }
 .actionDivider { width: 1px; height: 18px; background: var(--line); flex: none; }
 
+/* ── top strip: graceful narrow-width collapse (labels → icons + tooltips) ──
+   Driven by the editor's own width (container query), matching the body breakpoints. Below ~1120px
+   the ref-compare + export + save labels fold away so the whole strip stays on one row without
+   wrapping; every control keeps its title tooltip so nothing loses discoverability. */
+@container (max-width: 1120px) {
+  .topStrip { gap: var(--space-2); }
+  .segLabel { display: none; }
+  .segBtn { padding: 0 7px; }
+}
+@container (max-width: 980px) {
+  .exportLabel, .saveLabel, .backLabel { display: none; }
+  .backBtn { padding: 0 6px; }
+  .exportGroup .ghostBtn, .exportGroup .primaryBtn { padding: 0 9px; }
+}
+
 /* ── body: three panels ── */
 .body {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 270px;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr) minmax(230px, 290px);
   gap: var(--space-3);
-  align-items: start;
+  align-items: stretch;
+  /* Fill the remaining editor height so the panels + stage resolve their heights from the flex
+     row rather than viewport math — this is what stops the editor's bottom chrome from clipping /
+     forcing a page scroll at 1280×800 and other laptop sizes. */
+  flex: 1;
   min-height: 0;
 }
 /* Sized by the EDITOR's width (container query), not the viewport — the app sidebar eats a
    lot of viewport, so viewport media queries lie. The stage always keeps usable room. */
-@container (max-width: 1100px) {
-  .body { grid-template-columns: 180px minmax(0, 1fr) 230px; }
+@container (max-width: 1120px) {
+  .body { grid-template-columns: minmax(160px, 190px) minmax(0, 1fr) minmax(210px, 240px); }
 }
 @container (max-width: 860px) {
-  .body { grid-template-columns: 1fr; }
+  /* Below a usable three-column floor the panels STACK; the body still fills the editor height but
+     scrolls internally as a normal document (the fill constraint is released so nothing clips). */
+  /* NOTE: must stay flex (not display:block) — .center/.left/.right below rely on `order` to put
+     the stage above the layers/inspector panels, and `order` is a no-op outside flex/grid layout. */
+  .body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
   .center { order: 1; }
   .left { order: 2; }
   .right { order: 3; }
-  .left, .right { position: static; height: auto; max-height: none; }
+  .left, .right { position: static; height: auto; max-height: none; margin-bottom: var(--space-3); }
   .right { overflow: visible; }
   .stageWrap { height: min(72vh, 640px); }
   /* single-column layout: the reference stacks above the stage — bound its height so the two
@@ -131,12 +214,11 @@
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   box-shadow: var(--inset-hi);
-  position: sticky;
-  top: 0;
-  /* v2: panels are FULL height, anchored to the bottom of the viewport — content scrolls
-     INSIDE (layers list / design tab / chat messages), never the panel itself, so the agent
-     composer and panel footers stay pinned. */
-  height: calc(100vh - 190px);
+  /* Panels fill the body row's height; content scrolls INSIDE (layers list / design tab / chat
+     messages), never the panel itself, so composer + footers stay pinned. Height comes from the
+     flex/grid row (definite), not viewport math — see .body. */
+  min-height: 0;
+  height: 100%;
 }
 
 .left { overflow-y: auto; }
@@ -297,7 +379,7 @@
 /* center: reference side panel (optional) sits FLUSH beside the stage.
    flex-wrap lets the panel stack ABOVE the stage when the column gets too narrow to
    hold both side by side, so neither side ever overflows or clips. */
-.center { display: flex; flex-wrap: wrap; gap: var(--space-3); min-width: 0; max-width: 100%; align-items: stretch; }
+.center { display: flex; flex-wrap: wrap; gap: var(--space-3); min-width: 0; max-width: 100%; height: 100%; min-height: 0; align-items: stretch; }
 
 /* ── side-by-side reference compare panel ──
    A real panel BESIDE the stage (not a tracing-paper underlay): the source ad shown large so the
@@ -312,8 +394,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  height: calc(100vh - 210px);
-  max-height: calc(100vh - 210px);
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
   padding: var(--space-3);
   border-radius: var(--r-xl);
   background: var(--glass-bg);
@@ -379,8 +462,9 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* Bounded height so numeric zoom scrolls INSIDE the stage (Stage is 100%/100% + overflow:auto). */
-.stageWrap { position: relative; flex: 1 1 auto; min-width: 0; max-width: 100%; height: calc(100vh - 210px); }
+/* Bounded height so numeric zoom scrolls INSIDE the stage (Stage is 100%/100% + overflow:auto).
+   Fills the center column's height (definite, from the flex body) — no viewport math. */
+.stageWrap { position: relative; flex: 1 1 auto; min-width: 0; max-width: 100%; height: 100%; min-height: 0; }
 /* When the reference panel precedes the stage, keep the stage from being crushed: below a
    usable floor the flex row wraps (stage drops under the panel) rather than clipping either
    side. Scoped to the sibling case so a lone stage still fills the whole column. */
@@ -803,25 +887,58 @@
 
 /* ── stage: fit-zoom stability + agent run lock ── */
 .stageWrap[data-fit] { overflow: hidden; scrollbar-gutter: stable; }
-.stageWrap[data-locked] > :not(.agentOverlay) { pointer-events: none; }
+/* NOTE: the run-lock deliberately does NOT blanket pointer-events:none over the stage scroll
+   container. That used to kill the ⌘/ctrl-wheel ZOOM + native pan mid-run (the wheel handler lives
+   on the scroll container, and pointer-events:none stops the event from ever dispatching) — the
+   owner wants to keep zooming/panning while watching the agent work. Editing is already blocked in
+   JS: every gesture in Stage.tsx early-returns when `locked`. So the lock only needs to neutralize
+   the per-NODE edit surfaces, which it does in Stage.module.css (.stage[data-locked] .layer /
+   .handle → pointer-events:none), leaving the container + wheel/zoom fully live. */
 
-/* Agent-working overlay: dimmed blurred scrim + centered glass pill with a shimmer label.
-   Motion = in-progress; the overlay fades in/out with --dur-2. */
+/* Agent-working overlay. The agent edits ops LIVE onto the canvas, so the point is to WATCH it
+   work — a full-bleed blur/scrim used to frost the whole (often dense) design and you couldn't see
+   what changed. Instead: keep the canvas fully clear and legible, and signal "the system owns this
+   right now" with a soft accent vignette hugging the frame + a breathing accent border, plus the
+   status pill parked in a CORNER (not dead-centre over the work). Pointer-lock still comes from the
+   .stageWrap[data-locked] rule; this overlay is now purely presentational (pointer-events:none). */
 .agentOverlay {
   position: absolute; inset: 0; z-index: 10;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: flex-end;
+  padding: var(--space-3);
   border-radius: var(--r-lg);
-  background: color-mix(in srgb, var(--bg) 35%, transparent);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  animation: overlayIn var(--dur-2) var(--ease);
+  pointer-events: none;
+  /* inner vignette only at the edges — the middle stays completely clear (no blur, no dim) so the
+     agent's edits are fully visible. */
+  background:
+    radial-gradient(120% 120% at 50% 50%,
+      transparent 62%,
+      color-mix(in srgb, var(--accent) 7%, transparent) 100%);
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 45%, transparent),
+    inset 0 0 22px -6px color-mix(in srgb, var(--accent) 35%, transparent);
+  animation:
+    overlayIn var(--dur-2) var(--ease),
+    agentBorderPulse 2.6s var(--ease) infinite;
 }
 @keyframes overlayIn { from { opacity: 0; } }
+/* breathing accent border — the calm "working" heartbeat, replacing the heavy blur as the signal. */
+@keyframes agentBorderPulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 40%, transparent),
+      inset 0 0 22px -6px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 70%, transparent),
+      inset 0 0 30px -4px color-mix(in srgb, var(--accent) 48%, transparent);
+  }
+}
 
 .agentPill {
   display: inline-flex; align-items: center; gap: var(--space-2);
-  max-width: min(70%, 420px);
-  padding: var(--space-2) var(--space-4);
+  max-width: min(70%, 320px);
+  padding: var(--space-1) var(--space-3);
   border-radius: var(--r-pill);
   background: var(--glass-bg-3);
   backdrop-filter: var(--glass-blur);
@@ -831,7 +948,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .agentOverlay { animation: none; }
+  .agentOverlay { animation: overlayIn var(--dur-2) var(--ease); }
+}
+/* keep the border heartbeat alive while the idle / tab power-saver pauses #root animations — an
+   agent run IS activity (same override the AgentCursorOverlay uses). */
+:global(html[data-app-idle='true'] #root) .agentOverlay,
+:global(html[data-tab-hidden='true'] #root) .agentOverlay {
+  animation-play-state: running !important;
 }
 
 /* frame background swatch in the top strip — a bare color chip, no label */
@@ -846,3 +969,113 @@
   cursor: pointer;
 }
 .frameColor:hover { border-color: var(--line-strong); }
+
+/* ── stage drop affordance: drop a reference image onto the canvas to copy it ── */
+.stageWrap[data-drop]::after {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  z-index: 40;
+  border-radius: var(--r-lg);
+  border: 2px dashed color-mix(in srgb, var(--accent) 70%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  pointer-events: none;
+}
+
+/* ── onboarding greeting: fresh "New comp" — attach a reference or start blank ── */
+.greetOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.greetCard {
+  width: 380px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--r-xl);
+  background: var(--glass-bg-3);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+  text-align: center;
+}
+.greetTitle { margin: 0; font-size: 15px; font-weight: 600; color: var(--ink); }
+.greetSub { margin: 0 0 4px; font-size: 12px; line-height: 1.45; color: var(--muted); }
+.greetActions { display: flex; flex-direction: column; gap: var(--space-2); }
+.greetPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  border: none;
+  background: var(--accent);
+  color: var(--on-accent, #fff);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.greetPrimary:hover { filter: brightness(1.06); }
+.greetGhost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.greetGhost:hover { color: var(--ink); background: var(--surface-2); }
+.greetHint { margin: 2px 0; font-size: 11px; color: var(--faint); }
+.greetDivider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 2px;
+  color: var(--faint);
+  font-size: 11px;
+}
+.greetDivider::before, .greetDivider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.greetSizes { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+.greetSize {
+  padding: 6px 12px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.greetSize:hover { color: var(--ink); background: var(--surface-2); }
+.greetSize[data-active] { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.greetSkip {
+  padding: 6px 12px;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--line);
+  background: transparent;
+  color: var(--faint);
+  font-size: 12px;
+  cursor: pointer;
+}
+.greetSkip:hover { color: var(--ink); background: var(--surface-2); }

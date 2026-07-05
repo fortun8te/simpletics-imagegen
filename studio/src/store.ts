@@ -19,10 +19,30 @@ export interface AgentEvent {
   done?: boolean;
   error?: string;
   result?: unknown;
+  // Run classification, carried on the FIRST frame of a run so a client can decide whether to lock
+  // the canvas (edit/copy) or leave it interactive (chat) the moment the run starts. `serverRunId`
+  // is the abort handle for the run (POST /api/design/agent/abort by this id, or by docId).
+  kind?: 'chat' | 'edit' | 'copy' | (string & {});
+  serverRunId?: string;
+}
+
+// One orchestrator-worker fan-out sub-agent's lifecycle frame (SSE `subagent` events — lib/
+// agent-harness.mjs runFanOut). A run spins up 2-3 of these concurrently; the UI lists them by
+// their stable `id`, keyed under `parentRunId`. `phase` is start → update* → done. Additive: the
+// same worker also arrives inside the `design` step stream, so this is a convenience projection.
+export interface SubAgentEvent {
+  id: string;               // stable across this worker's start→update→done frames
+  title: string;            // short worker label ("CTA region", "dominant palette")
+  model: string;            // model label (e.g. 'ornith')
+  status: string;           // live substatus line
+  phase: 'start' | 'update' | 'done';
+  parentRunId?: string;     // the run these workers belong to
+  runId?: string;
+  docId?: string;
+  at?: number;
 }
 export type Density = 'comfortable' | 'compact';
 export type Theme = 'dark' | 'light';
-export type GridTab = 'all' | 'generating' | 'done' | 'failed' | 'archived';
 
 // Accent preset color, as 0..1 linear-ish sRGB triples for AppAura's shader uniforms — kept as
 // plain numbers (not a CSS string) so the live WebGL render loop never has to parse CSS. Set by
@@ -38,6 +58,7 @@ export interface DocTick {
   kind: 'design' | 'skeleton' | 'element' | 'brandkit' | (string & {});
   id: string;
   updatedAt?: number;
+  deleted?: boolean; // the doc was removed (server delete route sets this) — watchers tear down
   at: number;
 }
 
@@ -57,6 +78,9 @@ export interface UIState {
   // Visible agent streams (SSE `plan` / `design` events append here; rails render them live).
   planEvents: AgentEvent[];
   designEvents: AgentEvent[];
+  // Live orchestrator-worker fan-out rows (SSE `subagent` events). Keyed by sub-agent id so a
+  // start/update/done sequence collapses onto ONE row; capped and reset per new parent run.
+  subAgentEvents: SubAgentEvent[];
   // Which ad the viewport is currently on (scroll-tracked by PlanView/GridView, shown in the TopBar).
   adCursor: { index: number; total: number; title: string } | null;
   // Latest `doc` SSE frame (see DocTick) — null until the first doc event arrives.
@@ -80,11 +104,14 @@ interface Store {
   setConfig: (c: Config) => void;
   select: (brand: string, batch: string) => void;
   setState: (s: BatchState) => void;
-  setLoading: (b: boolean) => void;
   setUI: (u: Partial<UIState>) => void;
   /** Append an SSE agent event to its stream (a `done` marker for a NEW runId resets the
    *  stream first, so each run starts a clean log). Streams are capped at 60 events. */
   pushAgentEvent: (channel: 'plan' | 'design', ev: AgentEvent) => void;
+  /** Upsert a fan-out sub-agent frame: collapses start/update/done onto one row (by id); a frame
+   *  from a NEW parent run resets the list. Capped at 12 rows (≤3 concurrent, headroom for a few
+   *  sequential fan-outs in one run). */
+  pushSubAgentEvent: (ev: SubAgentEvent) => void;
   /** Record the latest `doc` SSE event (a design/skeleton/element/brandkit changed on disk). */
   setDocTick: (t: DocTick) => void;
   setUsage: (u: CodexUsage | null) => void;
@@ -141,6 +168,7 @@ export const useStore = create<Store>((set) => ({
     planQuery: '',
     planEvents: [],
     designEvents: [],
+    subAgentEvents: [],
     adCursor: null,
     docTick: null,
     reducedMotion: readBoolPref('neuegen.reducedMotion', false),
@@ -150,7 +178,23 @@ export const useStore = create<Store>((set) => ({
   select: (brand, batch) => {
     writePref('neuegen.lastBrand', brand);
     writePref('neuegen.lastBatch', batch);
-    set((s) => ({ brand, batch, state: null, loading: true, ui: { ...s.ui, drawerRel: null } }));
+    // STATE-31: a brand/batch switch must not leave the previous selection's live agent stream
+    // rendering into the new one. Clear the SSE-fed streams (design/plan/subagent) and the doc
+    // tick alongside drawerRel so a stale run from batch A can't paint into batch B.
+    set((s) => ({
+      brand,
+      batch,
+      state: null,
+      loading: true,
+      ui: {
+        ...s.ui,
+        drawerRel: null,
+        designEvents: [],
+        planEvents: [],
+        subAgentEvents: [],
+        docTick: null,
+      },
+    }));
   },
   setState: (state) =>
     set((s) => ({
@@ -161,7 +205,6 @@ export const useStore = create<Store>((set) => ({
       codexUsage: state.codexUsage ?? s.codexUsage,
       blockers: state.blockers ?? s.blockers,
     })),
-  setLoading: (loading) => set({ loading }),
   pushAgentEvent: (channel, ev) =>
     set((s) => {
       const key = channel === 'plan' ? 'planEvents' : 'designEvents';
@@ -185,6 +228,18 @@ export const useStore = create<Store>((set) => ({
         base = cur.length && cur[0].runId !== ev.runId ? [] : cur;
       }
       return { ui: { ...s.ui, [key]: [...base, ev].slice(-60) } };
+    }),
+  pushSubAgentEvent: (ev) =>
+    set((s) => {
+      const cur = s.ui.subAgentEvents;
+      const parent = ev.parentRunId || ev.runId;
+      // A frame from a new parent run clears the prior fan-out's rows.
+      const sameParent = cur.length && (cur[0].parentRunId || cur[0].runId) === parent ? cur : [];
+      const idx = sameParent.findIndex((e) => e.id === ev.id);
+      const next = idx >= 0
+        ? sameParent.map((e, i) => (i === idx ? { ...e, ...ev } : e))
+        : [...sameParent, ev];
+      return { ui: { ...s.ui, subAgentEvents: next.slice(-12) } };
     }),
   setDocTick: (docTick) => set((s) => ({ ui: { ...s.ui, docTick } })),
 

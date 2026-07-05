@@ -1,0 +1,245 @@
+{
+  "id": "harness_051_fc4e3af9",
+  "name": "copy-harness harness_051_fc4e3af9",
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "layers": [
+    {
+      "id": "base_mr6moes6",
+      "type": "image",
+      "role": "base",
+      "name": "Background (reference photo)",
+      "src": "/refasset?id=harness-051",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "style": {
+        "fit": "cover"
+      }
+    },
+    {
+      "id": "group-mr6moes6-v",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 108,
+        "y": 22,
+        "w": 800,
+        "h": 712
+      },
+      "children": [
+        {
+          "id": "rect-mr6moes6-w",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · green toiletry bag",
+          "box": {
+            "x": 108,
+            "y": 22,
+            "w": 594,
+            "h": 302
+          },
+          "style": {
+            "crop": {
+              "x": 0.1,
+              "y": 0.02,
+              "w": 0.55,
+              "h": 0.28
+            },
+            "radius": 11
+          },
+          "src": "/refasset?id=harness-051"
+        },
+        {
+          "id": "rect-mr6moes6-x",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · wavy hair creme",
+          "box": {
+            "x": 670,
+            "y": 97,
+            "w": 238,
+            "h": 637
+          },
+          "style": {
+            "crop": {
+              "x": 0.62,
+              "y": 0.09,
+              "w": 0.22,
+              "h": 0.59
+            },
+            "radius": 8
+          },
+          "src": "/refasset?id=harness-051"
+        }
+      ]
+    },
+    {
+      "id": "group-mr6moes6-y",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 238,
+        "w": 1026,
+        "h": 842
+      },
+      "children": [
+        {
+          "id": "rect-mr6moes6-z",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · hand receiving creme",
+          "box": {
+            "x": 508,
+            "y": 443,
+            "w": 572,
+            "h": 637
+          },
+          "style": {
+            "crop": {
+              "x": 0.47,
+              "y": 0.41,
+              "w": 0.53,
+              "h": 0.59
+            },
+            "radius": 20
+          },
+          "src": "/refasset?id=harness-051"
+        },
+        {
+          "id": "caption-mr6moes6-10",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Getting lots of questions about Wavy, so here's my personal take:",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 238,
+            "w": 508,
+            "h": 162
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6moes6-11",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "It's a game changer for curls, here's why 🌀:",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 410,
+            "w": 508,
+            "h": 130
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6moes6-12",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "No more frizz and crazy hair",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 572,
+            "w": 432,
+            "h": 116
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6moes6-13",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Just one hair product (Instead of 5 I used before)",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 713,
+            "w": 486,
+            "h": 158
+          },
+          "style": {
+            "color": "#1a1a1a",
+            "background": "rgba(255, 255, 255, 0.85)",
+            "fontSize": 35,
+            "fontWeight": 700,
+            "align": "left",
+            "radius": 11,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "caption-mr6moes6-14",
+      "type": "text",
+      "role": "caption",
+      "name": "caption",
+      "text": "All day definition - Curls last all day",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 896,
+        "w": 486,
+        "h": 130
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "background": "rgba(255, 255, 255, 0.85)",
+        "fontSize": 41,
+        "fontWeight": 700,
+        "align": "left",
+        "radius": 11,
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6moes52ang",
+  "updatedAt": 1783185620694
+}

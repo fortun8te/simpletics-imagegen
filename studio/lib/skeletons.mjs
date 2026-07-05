@@ -5,9 +5,10 @@
 // here once and get stamped onto the TrendTrack ad record (layoutId) so a cached ad's design
 // is copied at zero cost forever after. Zero deps: node:* only.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { writeAtomic } from './atomic-write.mjs';
 
 const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIR = join(STUDIO, '.state', 'skeletons');
@@ -21,7 +22,7 @@ export function saveSkeleton(skeleton) {
   }
   ensureDir();
   const clean = { ...skeleton, id: safeId(skeleton.id) };
-  writeFileSync(join(DIR, `${clean.id}.json`), JSON.stringify(clean, null, 2));
+  writeAtomic(join(DIR, `${clean.id}.json`), JSON.stringify(clean, null, 2));
   return clean;
 }
 

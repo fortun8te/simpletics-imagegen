@@ -1,0 +1,313 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "group-mr6dluou-2x",
+      "type": "group",
+      "name": "Frame",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1080
+      },
+      "children": [
+        {
+          "id": "card-mr6dluou-2v",
+          "type": "shape",
+          "role": "card",
+          "name": "Background",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 1080,
+            "h": 1080
+          },
+          "style": {
+            "background": "#8fa88a"
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "card-mr6dluou-2w",
+          "type": "shape",
+          "role": "card",
+          "name": "Footer band",
+          "box": {
+            "x": 0,
+            "y": 907,
+            "w": 1080,
+            "h": 173
+          },
+          "style": {
+            "background": "#f4f2ec"
+          },
+          "tpl": "before-after"
+        }
+      ],
+      "tpl": "before-after",
+      "template": {
+        "id": "before-after",
+        "params": {
+          "headline": "No need to ruin your hair\nto have perfect curls",
+          "leftLabel": "Before panel",
+          "rightLabel": "After panel",
+          "product": "product tube",
+          "closing": "This natural curl cream\nis all you need",
+          "bg": "#8fa88a"
+        }
+      }
+    },
+    {
+      "id": "headline-mr6dluou-2y",
+      "type": "text",
+      "autoH": true,
+      "role": "headline",
+      "name": "Headline",
+      "text": "No need to ruin your hair\nto have perfect curls",
+      "sizeLocked": true,
+      "box": {
+        "x": 172,
+        "y": 59,
+        "w": 738,
+        "h": 224
+      },
+      "style": {
+        "fontSize": 63,
+        "fontWeight": 500,
+        "color": "#ffffff",
+        "align": "center",
+        "lineHeight": 1.18,
+        "fontFamily": "Georgia"
+      },
+      "tpl": "before-after",
+      "tplRef": {
+        "key": "headline"
+      }
+    },
+    {
+      "id": "group-mr6dluov-34",
+      "type": "group",
+      "name": "Panels",
+      "box": {
+        "x": 54,
+        "y": 259,
+        "w": 972,
+        "h": 389
+      },
+      "children": [
+        {
+          "id": "product-mr6dluov-2z",
+          "type": "shape",
+          "role": "product",
+          "name": "Before panel",
+          "box": {
+            "x": 54,
+            "y": 259,
+            "w": 484,
+            "h": 389
+          },
+          "style": {
+            "background": "#9aa0a6",
+            "opacity": 0.4,
+            "radius": 13
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "product-mr6dluov-30",
+          "type": "shape",
+          "role": "product",
+          "name": "After panel",
+          "box": {
+            "x": 542,
+            "y": 259,
+            "w": 484,
+            "h": 389
+          },
+          "style": {
+            "background": "#9aa0a6",
+            "opacity": 0.55,
+            "radius": 13
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "caption-mr6dluov-31",
+          "type": "shape",
+          "role": "caption",
+          "name": "Divider",
+          "box": {
+            "x": 538,
+            "y": 259,
+            "w": 4,
+            "h": 389
+          },
+          "style": {
+            "background": "#ffffff"
+          },
+          "tpl": "before-after"
+        },
+        {
+          "id": "badge-mr6dluov-32",
+          "type": "badge",
+          "autoH": true,
+          "role": "badge",
+          "name": "Before panel pill",
+          "text": "Before panel",
+          "box": {
+            "x": 208,
+            "y": 281,
+            "w": 178,
+            "h": 68
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "background": "#111111cc",
+            "radius": 43,
+            "align": "center",
+            "uppercase": true
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "leftLabel"
+          },
+          "tpl": "before-after",
+          "tplRef": {
+            "key": "leftLabel"
+          }
+        },
+        {
+          "id": "badge-mr6dluov-33",
+          "type": "badge",
+          "autoH": true,
+          "role": "badge",
+          "name": "After panel pill",
+          "text": "After panel",
+          "box": {
+            "x": 702,
+            "y": 281,
+            "w": 162,
+            "h": 68
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "background": "#111111cc",
+            "radius": 43,
+            "align": "center",
+            "uppercase": true
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "rightLabel"
+          },
+          "tpl": "before-after",
+          "tplRef": {
+            "key": "rightLabel"
+          }
+        }
+      ],
+      "element": {
+        "id": "before-after",
+        "params": {
+          "leftLabel": "Before panel",
+          "rightLabel": "After panel"
+        },
+        "v": 2
+      },
+      "tpl": "before-after"
+    },
+    {
+      "id": "product-mr6dluov-35",
+      "type": "shape",
+      "role": "product",
+      "name": "Image · product tube",
+      "box": {
+        "x": 443,
+        "y": 432,
+        "w": 194,
+        "h": 367
+      },
+      "style": {
+        "background": "#9aa0a6",
+        "opacity": 0.45,
+        "radius": 13
+      },
+      "tpl": "before-after",
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.12,
+          "y": 0.29,
+          "w": 0.45,
+          "h": 0.69
+        },
+        "shape": "rect"
+      }
+    },
+    {
+      "id": "subhead-mr6dluov-36",
+      "type": "text",
+      "autoH": true,
+      "role": "subhead",
+      "name": "Closing",
+      "text": "This natural curl cream\nis all you need",
+      "sizeLocked": true,
+      "box": {
+        "x": 288,
+        "y": 940,
+        "w": 504,
+        "h": 169
+      },
+      "style": {
+        "fontSize": 45,
+        "fontWeight": 500,
+        "color": "#5c7a56",
+        "align": "center",
+        "lineHeight": 1.25,
+        "fontFamily": "Georgia"
+      },
+      "tpl": "before-after",
+      "tplRef": {
+        "key": "closing"
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "before-after",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#799175",
+      "share": 0.25
+    },
+    {
+      "hex": "#a4a797",
+      "share": 0.25
+    },
+    {
+      "hex": "#fbf9f7",
+      "share": 0.25
+    },
+    {
+      "hex": "#3d3f3a",
+      "share": 0.125
+    },
+    {
+      "hex": "#749376",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

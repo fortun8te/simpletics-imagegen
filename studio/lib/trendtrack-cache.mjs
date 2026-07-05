@@ -200,7 +200,3 @@ export function searchCache(q, { limit = 60 } = {}) {
   out.sort((a, b) => b.score - a.score || (b.ad.fetched_at || 0) - (a.ad.fetched_at || 0));
   return out.slice(0, limit).map((x) => x.ad);
 }
-
-export function cachedAdCount() {
-  try { return readdirSync(ADS).filter((f) => f.endsWith('.json')).length; } catch { return 0; }
-}

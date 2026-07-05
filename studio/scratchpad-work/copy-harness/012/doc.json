@@ -1,0 +1,253 @@
+{
+  "id": "harness_012_37d036df",
+  "name": "copy-harness harness_012_37d036df",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6nm4y6-3c",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#dce8e3"
+      }
+    },
+    {
+      "id": "headline-mr6nm4y6-32",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Poop More While On a GLP-1",
+      "autoH": true,
+      "box": {
+        "x": 54,
+        "y": 288,
+        "w": 810,
+        "h": 230
+      },
+      "style": {
+        "color": "#0d2a1a",
+        "fontSize": 63,
+        "fontWeight": 800,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "group-mr6nm4y6-33",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 480,
+        "w": 1005,
+        "h": 1152
+      },
+      "children": [
+        {
+          "id": "rect-mr6nm4y6-34",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · green gummy bear",
+          "box": {
+            "x": 454,
+            "y": 480,
+            "w": 605,
+            "h": 1152
+          },
+          "style": {
+            "crop": {
+              "x": 0.42,
+              "y": 0.25,
+              "w": 0.56,
+              "h": 0.6
+            },
+            "radius": 21
+          },
+          "src": "/refasset?id=harness-012"
+        },
+        {
+          "id": "badge-mr6nm4y6-35",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "More Fiber Than 2 cups of Broccoli",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 576,
+            "w": 454,
+            "h": 96
+          },
+          "style": {
+            "color": "#10824b",
+            "background": "#1b7340",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "badge-mr6nm4y6-36",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "20+ Vitamins & Minerals",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 710,
+            "w": 454,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "badge-mr6nm4y6-37",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Organic Fruits & Veggies",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 845,
+            "w": 454,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "badge-mr6nm4y6-38",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Prebiotics",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 979,
+            "w": 454,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "badge-mr6nm4y6-39",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "Adaptogens",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 1114,
+            "w": 454,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "badge-mr6nm4y6-3a",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "0 Sugar",
+          "autoH": true,
+          "box": {
+            "x": 54,
+            "y": 1248,
+            "w": 454,
+            "h": 96
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#1b7340",
+            "fontSize": 26,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "badge-mr6nm4y6-3b",
+      "type": "badge",
+      "role": "badge",
+      "name": "badge",
+      "text": "55,000+ ⭐⭐⭐⭐⭐ reviews",
+      "autoH": true,
+      "box": {
+        "x": 194,
+        "y": 1613,
+        "w": 454,
+        "h": 96
+      },
+      "style": {
+        "color": "#0d2a1a",
+        "background": "#f4d04d",
+        "fontSize": 27,
+        "fontWeight": 700,
+        "align": "center",
+        "uppercase": false,
+        "lineHeight": 1.2,
+        "padding": 16
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6nm4y6b1au",
+  "updatedAt": 1783187194254
+}

@@ -43,7 +43,14 @@ const isMac =
   /Mac|iPhone|iPad|iPod/.test(navigator.platform || '');
 
 
-export default function Sidebar() {
+interface SidebarProps {
+  /** Folded to a slim icon rail (persisted + toggled by AppShell). */
+  collapsed?: boolean;
+  /** Toggle the fold state. */
+  onToggle?: () => void;
+}
+
+export default function Sidebar({ collapsed = false, onToggle }: SidebarProps) {
   const config = useStore((s) => s.config);
   const brand = useStore((s) => s.brand);
   const batch = useStore((s) => s.batch);
@@ -111,14 +118,88 @@ export default function Sidebar() {
     return filtered.sort((a, b) => (b.modifiedAt || 0) - (a.modifiedAt || 0));
   }, [batches, query]);
 
+  // ── Collapsed rail ──────────────────────────────────────────────────────
+  // A slim ~52px column: logo, an expand toggle, icon-only batch dots (kind glyph, active state,
+  // full label as a tooltip), and a settings icon. Everything stays keyboard reachable.
+  if (collapsed) {
+    return (
+      <aside className={styles.sidebar} data-collapsed>
+        <div className={styles.railTop}>
+          <span className={styles.mark} aria-hidden="true">
+            <BrandMark size={22} />
+          </span>
+          <button
+            type="button"
+            className={styles.railToggle}
+            onClick={onToggle}
+            aria-label="Expand sidebar"
+            aria-expanded={false}
+            title="Expand sidebar"
+          >
+            <Icon name="chevron-right" size={16} className={styles.chevGlyph} />
+          </button>
+        </div>
+
+        <div className={styles.divider} aria-hidden="true" />
+
+        <nav className={styles.railBatches} aria-label="Batches">
+          {visible.map((bt) => {
+            const active = bt.code === batch;
+            const kindIcon = bt.kind === 'listicle' ? 'layout-list' : 'layout-grid';
+            const label = bt.name || bt.code;
+            return (
+              <button
+                key={bt.code}
+                type="button"
+                className={styles.railDot}
+                data-active={active || undefined}
+                onClick={() => { if (brand) select(brand, bt.code); }}
+                aria-label={label}
+                aria-current={active || undefined}
+                title={label}
+              >
+                <Icon name={kindIcon} size={16} />
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className={styles.railFooter}>
+          <button
+            className={styles.railIconBtn}
+            type="button"
+            onClick={() => setUI({ settingsOpen: true })}
+            aria-label="Settings"
+            title="Settings"
+          >
+            <Icon name="settings" size={16} />
+          </button>
+          <span className={styles.userAvatar} aria-hidden="true" title={userName}>
+            {userName.charAt(0).toUpperCase()}
+          </span>
+        </div>
+      </aside>
+    );
+  }
+
   return (
     <aside className={styles.sidebar}>
-      {/* Wordmark */}
+      {/* Wordmark + fold toggle */}
       <div className={styles.brandMark}>
         <span className={styles.mark}>
           <BrandMark size={22} />
         </span>
         <span className={styles.wordmark}>NEUEGEN</span>
+        <button
+          type="button"
+          className={styles.foldToggle}
+          onClick={onToggle}
+          aria-label="Collapse sidebar"
+          aria-expanded={true}
+          title="Collapse sidebar"
+        >
+          <Icon name="chevron-right" size={16} className={styles.chevFlip} />
+        </button>
       </div>
 
       {/* Workspace — brand switcher */}

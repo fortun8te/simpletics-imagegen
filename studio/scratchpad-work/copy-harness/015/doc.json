@@ -1,0 +1,305 @@
+{
+  "id": "harness_015_38600f0a",
+  "name": "copy-harness harness_015_38600f0a",
+  "canvas": {
+    "w": 1080,
+    "h": 2348
+  },
+  "layers": [
+    {
+      "id": "base-mr6np259-4p",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 2348
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "headline-mr6np259-4c",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Pediatrician flagged why kid’s poop isn’t normal:",
+      "autoH": true,
+      "box": {
+        "x": 43,
+        "y": 282,
+        "w": 886,
+        "h": 329
+      },
+      "style": {
+        "color": "#1a1a1a",
+        "fontSize": 56,
+        "fontWeight": 700,
+        "align": "left",
+        "uppercase": false,
+        "fontFamily": "-apple-system",
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "group-mr6np259-4d",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 22,
+        "y": 657,
+        "w": 1015,
+        "h": 1503
+      },
+      "children": [
+        {
+          "id": "rect-mr6np259-4e",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · grüns Superfoods Green Gummies",
+          "box": {
+            "x": 324,
+            "y": 1362,
+            "w": 432,
+            "h": 798
+          },
+          "style": {
+            "crop": {
+              "x": 0.3,
+              "y": 0.58,
+              "w": 0.4,
+              "h": 0.34
+            },
+            "radius": 15
+          },
+          "src": "/refasset?id=harness-015"
+        },
+        {
+          "id": "checkbox-mr6np259-4f",
+          "type": "badge",
+          "role": "checkbox",
+          "name": "checkbox",
+          "text": "Turns out his gut needed more fiber (especially prebiotic fiber)",
+          "autoH": true,
+          "box": {
+            "x": 43,
+            "y": 657,
+            "w": 756,
+            "h": 164
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 33,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "checkbox-mr6np259-4g",
+          "type": "badge",
+          "role": "checkbox",
+          "name": "checkbox",
+          "text": "Recommended more whole-foods like fruits and veggies daily",
+          "autoH": true,
+          "box": {
+            "x": 43,
+            "y": 845,
+            "w": 756,
+            "h": 164
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 33,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "checkbox-mr6np259-4h",
+          "type": "badge",
+          "role": "checkbox",
+          "name": "checkbox",
+          "text": "Saw moms rave about these. gruns kids multivitamins (apparently there’s more fiber than 5 cups of raw spinach in each pack?!)",
+          "autoH": true,
+          "box": {
+            "x": 43,
+            "y": 1033,
+            "w": 756,
+            "h": 258
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 33,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "checkbox-mr6np259-4i",
+          "type": "badge",
+          "role": "checkbox",
+          "name": "checkbox",
+          "text": "Only $1.22/day so lets try it",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 1315,
+            "w": 756,
+            "h": 117
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        },
+        {
+          "id": "caption-mr6np259-4j",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Vitamins & Minerals",
+          "autoH": true,
+          "box": {
+            "x": 22,
+            "y": 1714,
+            "w": 259,
+            "h": 94
+          },
+          "style": {
+            "color": "#2e8b37",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6np259-4k",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Adaptogens",
+          "autoH": true,
+          "box": {
+            "x": 799,
+            "y": 1714,
+            "w": 238,
+            "h": 94
+          },
+          "style": {
+            "color": "#2e8b37",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6np259-4l",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 86,
+        "y": 1949,
+        "w": 843,
+        "h": 235
+      },
+      "children": [
+        {
+          "id": "caption-mr6np259-4m",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Prebiotics",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 1949,
+            "w": 194,
+            "h": 94
+          },
+          "style": {
+            "color": "#2e8b37",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6np259-4n",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Super Mushrooms",
+          "autoH": true,
+          "box": {
+            "x": 454,
+            "y": 2090,
+            "w": 302,
+            "h": 94
+          },
+          "style": {
+            "color": "#2e8b37",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6np259-4o",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Antioxidants",
+          "autoH": true,
+          "box": {
+            "x": 691,
+            "y": 1949,
+            "w": 238,
+            "h": 94
+          },
+          "style": {
+            "color": "#2e8b37",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6np2595g9c",
+  "updatedAt": 1783187330590
+}

@@ -19,7 +19,7 @@
 // Unmatched nodes are left untouched; nothing is ever added or removed on the target.
 
 import {
-  designId, isGroup, scaleStyle,
+  designId, isGroup, isLeafLayer, scaleStyle,
   type DesignDoc, type Layer, type LayerBox, type SceneNode,
 } from './sceneGraph';
 
@@ -89,7 +89,8 @@ function collectLeaves(nodes: SceneNode[], prefix = ''): LeafRef[] {
   nodes.forEach((n, i) => {
     const path = prefix ? `${prefix}/${i}` : String(i);
     if (isGroup(n)) out.push(...collectLeaves(n.children, path));
-    else out.push({ leaf: n, path });
+    else if (isLeafLayer(n)) out.push({ leaf: n, path });
+    // ComponentLayer: not a style/text leaf — variant swaps don't apply to native components.
   });
   return out;
 }

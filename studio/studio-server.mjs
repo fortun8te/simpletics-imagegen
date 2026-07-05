@@ -13,6 +13,7 @@ import { join, dirname, normalize, extname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 
+import { writeAtomic } from './lib/atomic-write.mjs';
 import { createJobStore } from './lib/jobstore.mjs';
 import { createWorker, MAX_CONCURRENT_JOBS } from './lib/worker.mjs';
 import { buildState } from './lib/state.mjs';
@@ -26,8 +27,10 @@ import { extractLayout, cancelExtraction, describeImage } from './lib/layout-ext
 import * as taste from './lib/taste.mjs';
 import { runPlan, getActiveRun, rankRefs } from './lib/planner.mjs';
 import { runDesignAgent } from './lib/design-agent.mjs';
+import { runSelfImproveLoop } from './lib/native-ui-loop.mjs';
+import { scoreFidelity as scoreFidelityFn } from './lib/self-vision.mjs';
 import { loadBrandSkill, saveBrandSkill } from './lib/brand-skills.mjs';
-import { readLlmUsage, hasLlm, llmInfo } from './lib/llm.mjs';
+import { readLlmUsage, hasLlm, llmInfo, activePreferredModel } from './lib/llm.mjs';
 import { setLlmConfig, DEFAULT_BASE, DEFAULT_MODEL } from './lib/llm-config.mjs';
 
 // ── Paths (injected into the lib modules) ────────────────────────────────────────────────────────
@@ -82,6 +85,27 @@ function pushDoc(kind, id, extra = {}) {
   ssePush('doc', { kind, id: id ?? null, updatedAt: Date.now(), ...extra });
 }
 
+// ── In-flight design-agent run registry (abortable runs) ────────────────────────────────────────
+// /api/design/agent creates one AbortController per run and registers it here keyed by a
+// server-issued runId (each entry also carries its docId). POST /api/design/agent/abort aborts by
+// runId OR docId (the client only knows the docId while a run is live — the harness mints its own
+// internal runId, returned only when the run finishes). Deleting a comp also aborts its run. The
+// entry is removed in the route's finally, so the registry reflects exactly what is running now.
+const activeAgentRuns = new Map(); // serverRunId -> { docId, controller, startedAt }
+
+/** Abort every in-flight run for a docId (or one specific serverRunId). Returns how many aborted. */
+function abortAgentRuns({ runId = null, docId = null } = {}) {
+  let n = 0;
+  for (const [id, entry] of activeAgentRuns) {
+    if ((runId && id === runId) || (docId && entry.docId === docId)) {
+      try { entry.controller.abort(); } catch { /* already settled */ }
+      activeAgentRuns.delete(id);
+      n += 1;
+    }
+  }
+  return n;
+}
+
 function sseSend(res, event, data) {
   try {
     res.write(`event: ${event}\n`);
@@ -129,9 +153,21 @@ function readBody(req) {
   });
 }
 
+// Last successfully-parsed config, kept so a momentarily-malformed config.json (e.g. another
+// process mid-write) never blanks the workspace list — a transient parse error would otherwise
+// bubble a 500 to /api/config, whose client fallback is `{ brands: [] }` = "no workspaces".
+let lastGoodConfig = null;
 function readConfig() {
-  // Read fresh every time so config edits show up without a restart.
-  return JSON.parse(readFileSync(CONFIG, 'utf8'));
+  // Read fresh every time so config edits show up without a restart. On a parse/read error,
+  // fall back to the last good copy (workspaces stay visible) rather than throwing.
+  try {
+    const parsed = JSON.parse(readFileSync(CONFIG, 'utf8'));
+    if (parsed && Array.isArray(parsed.brands)) lastGoodConfig = parsed;
+    return parsed;
+  } catch (e) {
+    if (lastGoodConfig) return lastGoodConfig;
+    throw e;
+  }
 }
 
 function findBrand(config, brandId) {
@@ -179,6 +215,20 @@ function layoutRefPath(file) {
   if (!file) return null;
   const p = join(REPO, 'assets', 'refs', file);
   return existsSync(p) ? p : null;
+}
+
+// Resolve a design reference — an explicit {kind,ref} source (trendtrack | upload | render) or a
+// doc's attached reference — to an absolute image path on disk (or null if none exists). Mirrors
+// the source-kind branches of /api/design/extract so the self-improve loop can score against the
+// SAME reference image the comp was built from. `referencePath` (an already-absolute path) wins.
+function resolveReferencePath({ referencePath = null, kind = null, ref = null } = {}) {
+  if (referencePath && existsSync(String(referencePath))) return String(referencePath);
+  if (!kind || !ref) return null;
+  let p = null;
+  if (kind === 'trendtrack') p = ttCache.imagePath(ref);
+  else if (kind === 'upload') p = join(REFS_DIR, `${part(ref)}.png`);
+  else if (kind === 'render') p = join(RENDERS, String(ref));
+  return p && existsSync(p) ? p : null;
 }
 
 function modelRenderRel(brand, batch, adId, modelId) {
@@ -669,45 +719,51 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ── LLM provider config (ModelSelector in AgentPanel / DesignView) ──
-    // GET: current effective config (lib/llm.mjs's llmInfo() — runtime override > env > DeepSeek
-    // default) + a preset list to switch between. LM Studio's entry is detected live via its own
-    // /models — we don't own lib/llm.mjs so we replicate a minimal fetch here rather than adding
-    // an export there.
+    // GET: current effective config, as a STATIC label for the frontend. The effective model is
+    // whatever LM Studio reports as LOADED (activePreferredModel — ornith when loaded), never a
+    // persisted/stale name, so the frontend never shows (or can pin) a model that would JIT-load a
+    // second one. LM Studio's preset advertises the LOADED id only.
     if (pathname === '/api/llm/config' && method === 'GET') {
       const info = llmInfo(); // { base, model, provider, source, hasKey }
       const presets = [
         { label: 'DeepSeek', baseUrl: DEFAULT_BASE, model: DEFAULT_MODEL },
       ];
       const vbase = process.env.VISION_BASE_URL ? String(process.env.VISION_BASE_URL).replace(/\/$/, '') : null;
+      let effModel = info.model;
+      let effLabel = `${info.provider} · ${info.model}`;
       if (vbase) {
-        try {
-          const r = await fetch(`${vbase}/models`, { signal: AbortSignal.timeout(2500) });
-          const j = await r.json();
-          const ids = Array.isArray(j?.data) ? j.data.map((m) => String(m.id)) : [];
-          if (ids.length) {
-            const modelId = ids[0];
-            presets.push({ label: `LM Studio (${modelId})`, baseUrl: vbase, model: modelId });
-          }
-        } catch { /* LM Studio unreachable — omit its preset */ }
+        const loaded = await activePreferredModel(vbase).catch(() => null); // loaded-only id (ornith)
+        if (loaded) {
+          presets.push({ label: `LM Studio (${loaded})`, baseUrl: vbase, model: loaded });
+          effModel = loaded;
+          effLabel = `LM Studio · ${loaded}`;
+        }
       }
       sendJson(res, 200, {
         ok: true,
-        config: { baseUrl: info.base, model: info.model, label: `${info.provider} · ${info.model}` },
+        config: { baseUrl: vbase || info.base, model: effModel, label: effLabel },
         presets,
       });
       return;
     }
 
+    // POST: the picker is being removed and this route must NOT be able to pin a non-loaded model
+    // that then gets JIT-loaded. We persist ONLY the baseUrl/apiKey (so a user can still point at a
+    // different endpoint) and DROP the `model` field entirely — the effective model always resolves
+    // to whatever LM Studio has LOADED (activePreferredModel). The echoed config shows that loaded
+    // model, not any requested name.
     if (pathname === '/api/llm/config' && method === 'POST') {
       const body = await readBody(req);
       try {
-        const saved = setLlmConfig({ baseUrl: body.baseUrl, model: body.model, apiKey: body.apiKey });
+        const saved = setLlmConfig({ baseUrl: body.baseUrl, model: '', apiKey: body.apiKey }); // model intentionally ignored
+        const vbase = process.env.VISION_BASE_URL ? String(process.env.VISION_BASE_URL).replace(/\/$/, '') : null;
+        const loaded = vbase ? await activePreferredModel(vbase).catch(() => null) : null;
         const info = llmInfo();
+        const model = loaded || info.model;
+        const label = loaded ? `LM Studio · ${loaded}` : `${info.provider} · ${model}`;
         sendJson(res, 200, {
           ok: true,
-          config: saved
-            ? { baseUrl: saved.baseUrl, model: saved.model || info.model, label: `${info.provider} · ${saved.model || info.model}` }
-            : { baseUrl: info.base, model: info.model, label: `${info.provider} · ${info.model}` },
+          config: { baseUrl: saved ? saved.baseUrl : info.base, model, label },
         });
       } catch (e) {
         sendJson(res, 400, { ok: false, error: String(e && e.message || e) });
@@ -1101,11 +1157,20 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/brandkit' && method === 'GET') {
       const b = String(q.get('brand') || '').replace(/[^a-zA-Z0-9_-]+/g, '-');
       if (!b) { sendJson(res, 400, { ok: false, error: 'brand required' }); return; }
+      const defaults = { colors: [], fonts: [], notes: '', prompt: '' };
+      const kitFile = join(STATE_DIR, 'brandkits', `${b}.json`);
+      // ERR-33: distinguish "no kit yet" (fine) from "kit exists but is corrupt" (data was lost).
+      // Both fall back to defaults so the UI stays usable, but a corrupt file sets corrupted:true so
+      // the client CAN warn instead of silently pretending the brand never had a kit.
+      if (!existsSync(kitFile)) {
+        sendJson(res, 200, { ok: true, kit: defaults });
+        return;
+      }
       try {
-        const kit = JSON.parse(readFileSync(join(STATE_DIR, 'brandkits', `${b}.json`), 'utf8'));
+        const kit = JSON.parse(readFileSync(kitFile, 'utf8'));
         sendJson(res, 200, { ok: true, kit });
       } catch {
-        sendJson(res, 200, { ok: true, kit: { colors: [], fonts: [], notes: '', prompt: '' } });
+        sendJson(res, 200, { ok: true, kit: defaults, corrupted: true });
       }
       return;
     }
@@ -1120,8 +1185,7 @@ const server = http.createServer(async (req, res) => {
         prompt: String(body.kit?.prompt || '').slice(0, 800),
       };
       const dir = join(STATE_DIR, 'brandkits');
-      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-      writeFileSync(join(dir, `${b}.json`), JSON.stringify(kit, null, 2));
+      writeAtomic(join(dir, `${b}.json`), JSON.stringify(kit, null, 2));
       pushDoc('brandkit', b, { brand: b });
       sendJson(res, 200, { ok: true, kit });
       return;
@@ -1138,8 +1202,13 @@ const server = http.createServer(async (req, res) => {
     if (pathname === '/api/design/thumb' && method === 'GET') {
       const p = designs.thumbPath(q.get('id'));
       if (!p) { res.writeHead(404); res.end(); return; }
+      // ERR-32: read the file BEFORE writeHead. If the thumb vanishes between thumbPath()'s
+      // existsSync and this read (TOCTOU), a throw after writeHead(200) would escape as
+      // ERR_HTTP_HEADERS_SENT and crash the response; reading first lets us 404 cleanly instead.
+      let png;
+      try { png = readFileSync(p); } catch { res.writeHead(404); res.end(); return; }
       res.writeHead(200, { 'Content-Type': 'image/png', 'Cache-Control': 'no-store' });
-      res.end(readFileSync(p));
+      res.end(png);
       return;
     }
     if (pathname === '/api/design' && method === 'GET') {
@@ -1149,8 +1218,24 @@ const server = http.createServer(async (req, res) => {
     }
     if (pathname === '/api/design/save' && method === 'POST') {
       const body = await readBody(req);
+      const incoming = body.design || body;
+      // ERR-16/17: optimistic concurrency. The client MAY send `baseUpdatedAt` — the `updatedAt`
+      // of the doc version it last loaded/saved. If the copy on disk was modified since (its
+      // `updatedAt` is strictly newer), another tab/session wrote in the meantime and this save
+      // would silently clobber it, so we reject with a 409-in-body conflict instead of overwriting.
+      // Backward-compatible: when `baseUpdatedAt` is absent (older client), we skip the check and
+      // save as before — nothing breaks before the client learns to send the field.
+      const baseUpdatedAt = Number(body.baseUpdatedAt);
+      if (Number.isFinite(baseUpdatedAt) && incoming && incoming.id) {
+        const current = designs.getDesign(incoming.id);
+        const serverUpdatedAt = current && Number(current.updatedAt);
+        if (Number.isFinite(serverUpdatedAt) && serverUpdatedAt > baseUpdatedAt) {
+          sendJson(res, 409, { ok: false, conflict: true, serverUpdatedAt });
+          return;
+        }
+      }
       try {
-        const saved = designs.saveDesign(body.design || body);
+        const saved = designs.saveDesign(incoming);
         if (body.thumb) designs.saveThumb(saved.id, body.thumb);
         pushDoc('design', saved.id, { brand: saved.brand ?? null, updatedAt: saved.updatedAt });
         sendJson(res, 200, { ok: true, design: saved });
@@ -1161,9 +1246,14 @@ const server = http.createServer(async (req, res) => {
     }
     if (pathname === '/api/design/delete' && method === 'POST') {
       const body = await readBody(req);
+      // Deleting a comp stops any agentic work on it: abort any in-flight run for this docId first
+      // (the harness returns promptly on the signal) so a run can't keep churning against — or
+      // re-save — a doc that no longer exists. The `doc` SSE frame below carries {deleted:true},
+      // which the client uses to tear down its own run state for the removed doc.
+      const abortedRuns = abortAgentRuns({ docId: body.id });
       const ok = designs.deleteDesign(body.id);
       if (ok) pushDoc('design', body.id, { deleted: true });
-      sendJson(res, 200, { ok });
+      sendJson(res, 200, { ok, abortedRuns });
       return;
     }
     // Live sync (Figma-style): mid-gesture box/rotation frames from one tab, fanned out to every
@@ -1241,10 +1331,10 @@ const server = http.createServer(async (req, res) => {
       }
       const note = String((req._memBody && req._memBody.text) || '').trim().slice(0, 500);
       if (!note) { sendJson(res, 400, { ok: false, error: 'text required' }); return; }
-      mkdirSync(memDir, { recursive: true });
       const line = `- ${new Date().toISOString().slice(0, 10)}: ${note.replace(/\n+/g, ' ')}\n`;
-      writeFileSync(memFile, (existsSync(memFile) ? readFileSync(memFile, 'utf8') : '') + line);
-      sendJson(res, 200, { ok: true, brand: b, text: readFileSync(memFile, 'utf8') });
+      const nextText = (existsSync(memFile) ? readFileSync(memFile, 'utf8') : '') + line;
+      writeAtomic(memFile, nextText);
+      sendJson(res, 200, { ok: true, brand: b, text: nextText });
       return;
     }
 
@@ -1274,6 +1364,9 @@ const server = http.createServer(async (req, res) => {
       const body = await readBody(req);
       const doc = designs.getDesign(body.id);
       if (!doc) { sendJson(res, 404, { ok: false, error: 'not found' }); return; }
+      // Pre-run checkpoint: the exact persisted doc BEFORE this run — returned to the client so the
+      // Agent panel's "Revert this run" can restore it as one undoable step if the result is a mess.
+      const preRunDoc = JSON.parse(JSON.stringify(doc));
       const mode = body.mode === 'improve' ? 'improve' : body.mode === 'generate' ? 'generate' : 'edit';
       if (mode === 'edit' && !String(body.instruction || '').trim()) { sendJson(res, 400, { ok: false, error: 'need instruction' }); return; }
       // Context enrichment: variation copy / ad title from config (via doc.link) and the
@@ -1325,33 +1418,239 @@ const server = http.createServer(async (req, res) => {
       const focusIds = Array.isArray(body.focusIds)
         ? body.focusIds.filter((x) => typeof x === 'string' && x).slice(0, 20)
         : null;
+      // COPY-REFERENCE as an in-editor agent run: when the caller flags a reference (an explicit
+      // body.reference {ref,label}, or an attachment + a "copy this reference" instruction), the
+      // design agent extracts + rebuilds it IN this doc, streaming the unified event vocabulary.
+      let reference = null;
+      const copyIntent = /\bcopy\b.*\b(reference|this|design|ad|layout)\b|\bmatch this\b|\brecreate this\b/i.test(String(body.instruction || ''));
+      const refCandidate = (body.reference && body.reference.ref)
+        ? String(body.reference.ref).replace(/[^\w-]+/g, '-')
+        : (copyIntent && attachments.length ? attachments[0].ref : null);
+      if (refCandidate) {
+        const refPath = join(REFS_DIR, `${refCandidate}.png`);
+        if (existsSync(refPath)) reference = { path: refPath, ref: refCandidate, label: (body.reference && body.reference.label) || 'the reference' };
+      }
+      // Abortable run: one AbortController per run, registered by a server-issued runId (+ docId).
+      // The signal is threaded into runDesignAgent (the harness honors it and returns a clean
+      // partial); POST /api/design/agent/abort (or a comp delete) aborts it. Cleaned up below.
+      const serverRunId = `srv_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+      const controller = new AbortController();
+      activeAgentRuns.set(serverRunId, { docId: doc.id, controller, startedAt: Date.now() });
+      // Tell the client its abort handle up front (header) so Stop can abort THIS run even before
+      // the JSON body arrives — the body also echoes serverRunId for the same purpose.
+      try { res.setHeader('X-Agent-Run', serverRunId); } catch { /* headers already sent — ignore */ }
       try {
         // Stamp every step/done/error frame with the doc it belongs to. `design` is a single
         // global SSE broadcast channel and MAX_CONCURRENT design-agent runs can be >1 (e.g. two
         // variant docs being edited/generated at once) — without docId, a client watching variant
         // A can't tell its own agent's steps apart from variant B's on the same wire.
-        const { doc: next, steps, source, runId, applied, lint, totals, verify } = await runDesignAgent(
+        // Sub-agent frames ALSO fan out onto a dedicated `subagent` SSE event (additive) carrying
+        // {id,title,model,status,phase,parentRunId} so a UI can list 2-3 workers with their status.
+        // The FIRST frame of a run also carries {kind} (chat|edit|copy) + serverRunId so the client
+        // can decide whether to lock the canvas (edit/copy) or not (chat) the moment a run starts.
+        let announcedKind = false;
+        const onAgentStep = (ev) => {
+          const extra = announcedKind ? {} : { serverRunId };
+          announcedKind = true;
+          ssePush('design', { docId: doc.id, ...extra, ...ev });
+          if (ev && ev.step && ev.step.kind === 'subagent' && ev.step.data) {
+            ssePush('subagent', { docId: doc.id, runId: ev.runId, parentRunId: ev.step.data.parentRunId || ev.runId, ...ev.step.data });
+          }
+        };
+        const { doc: next, steps, source, runId, applied, lint, totals, verify, kind } = await runDesignAgent(
           doc,
           mode === 'improve' ? '' : mode === 'generate' ? String(body.instruction || '') : String(body.instruction),
-          (ev) => ssePush('design', { docId: doc.id, ...ev }),
-          { brief, referenceText, kit, memory, attachments, mode, focusIds: focusIds && focusIds.length ? focusIds : null },
+          onAgentStep,
+          { brief, referenceText, kit, memory, attachments, mode, reference, focusIds: focusIds && focusIds.length ? focusIds : null, signal: controller.signal },
         );
-        const saved = designs.saveDesign(next);
-        pushDoc('design', saved.id, { brand: saved.brand ?? null, updatedAt: saved.updatedAt });
+        // Run kind: prefer the harness's explicit `kind` (chat|edit|copy); otherwise derive it from
+        // the source so the canvas-lock decision works even before the harness field lands. A chat
+        // reply ('chat' source, zero ops) must NOT lock the canvas; edits/copies do.
+        const runKind = kind
+          || (source === 'chat' ? 'chat' : source === 'copy-reference' ? 'copy' : 'edit');
+        const aborted = controller.signal.aborted;
+        // Don't resurrect a comp that was deleted mid-run: a delete aborts the run AND removes the
+        // file; if this run then re-saved `next` it would recreate the just-deleted doc. When the
+        // doc is gone, settle with the partial in-memory doc (never written back to disk).
+        const stillExists = !!designs.getDesign(doc.id);
+        const saved = stillExists ? designs.saveDesign(next) : next;
+        if (stillExists) pushDoc('design', saved.id, { brand: saved.brand ?? null, updatedAt: saved.updatedAt });
         // Chat stores the compact narration only: generated one-liners from applied ops + summary.
         const opLines = steps.filter((s) => s.kind === 'op').map((s) => s.summary).slice(-8);
         const doneStep = steps.find((s) => s.kind === 'verify');
-        designs.appendChat(saved.id, {
+        if (stillExists) designs.appendChat(saved.id, {
           role: 'agent',
           text: [...opLines, doneStep ? doneStep.summary : ''].filter(Boolean).join('\n').slice(0, 1200),
           runId,
-          result: { applied, source, model: llmInfo().model, inTok: totals.inTok, outTok: totals.outTok, turns: totals.turns, parts: totals.parts, verifyReady: verify?.ready },
+          result: { applied, source, kind: runKind, model: llmInfo().model, inTok: totals.inTok, outTok: totals.outTok, turns: totals.turns, parts: totals.parts, verifyReady: verify?.ready },
         });
-        sendJson(res, 200, { ok: true, design: saved, steps, source, runId, applied, lint: lint || undefined, totals, verify });
+        sendJson(res, 200, { ok: true, design: saved, steps, source, kind: runKind, runId, serverRunId, aborted, pre: preRunDoc, applied, lint: lint || undefined, totals, verify });
       } catch (e) {
         const msg = String(e && e.message || e);
         // 429 only for the concurrency cap — any other agent failure is a server error
-        sendJson(res, /already running/.test(msg) ? 429 : 500, { ok: false, error: msg });
+        sendJson(res, /already running/.test(msg) ? 429 : 500, { ok: false, error: msg, serverRunId });
+      } finally {
+        activeAgentRuns.delete(serverRunId);
+      }
+      return;
+    }
+
+    // Abort an in-flight design-agent run — by serverRunId (from the run's response/header) or by
+    // docId (the panel's Stop button uses this, since a live run's id isn't known client-side until
+    // it finishes). The harness sees the AbortSignal and returns promptly with a clean partial.
+    if (pathname === '/api/design/agent/abort' && method === 'POST') {
+      const body = await readBody(req);
+      const runId = typeof body.runId === 'string' && body.runId ? body.runId : null;
+      const docId = typeof body.docId === 'string' && body.docId ? body.docId : null;
+      if (!runId && !docId) { sendJson(res, 400, { ok: false, error: 'runId or docId required' }); return; }
+      const aborted = abortAgentRuns({ runId, docId });
+      sendJson(res, 200, { ok: true, aborted });
+      return;
+    }
+
+    // ── Self-improvement loop (native-ui-loop) as an in-app, abortable, streaming run ─────────
+    // SEED (the current doc) → render → scoreFidelity → fix via the design agent → repeat until
+    // ≥threshold (PASS) or `patience` non-improving rounds (CONVERGED). It reuses the SAME abort
+    // registry the design agent uses (registered by a server runId + docId), streams every loop
+    // event over the existing `design` SSE channel mapped to the harness event vocabulary (so the
+    // AgentPanel activity feed renders it exactly like a normal run), and on finish DURABLY saves
+    // the BEST-scoring doc. This is a multi-minute deep pass on the local model.
+    if (pathname === '/api/design/self-improve' && method === 'POST') {
+      const body = await readBody(req);
+      const doc = designs.getDesign(body.docId || body.id);
+      if (!doc) { sendJson(res, 404, { ok: false, error: 'not found' }); return; }
+      // Resolve the reference image to score against: an explicit absolute referencePath, an
+      // explicit {referenceId, referenceKind}, or the doc's own attached reference.
+      const referencePath = resolveReferencePath({
+        referencePath: body.referencePath || null,
+        kind: body.referenceKind || (doc.reference && doc.reference.kind) || (body.referenceId ? 'upload' : null),
+        ref: body.referenceId || (doc.reference && doc.reference.ref) || null,
+      });
+      if (!referencePath) { sendJson(res, 400, { ok: false, error: 'no reference image to match against' }); return; }
+      // Pre-run checkpoint for "Revert this run" — the exact persisted doc before the loop.
+      const preRunDoc = JSON.parse(JSON.stringify(doc));
+      const maxIters = Number(body.maxIters) > 0 ? Math.min(8, Math.floor(Number(body.maxIters))) : 4;
+      const threshold = Number.isFinite(Number(body.threshold)) ? Number(body.threshold) : 90;
+      // Archetype hint (for the fix prompt + copy label) from the doc's skeleton/reference, best-effort.
+      const archetype = (doc.reference && doc.reference.label) || doc.archetype || null;
+      // The same image resolver the agent/render uses, so scoreFidelity can render the doc's base image.
+      const resolveImage = designs.makeImageResolver({ renders: RENDERS, repo: REPO, ttImagePath: ttCache.imagePath });
+
+      // Reuse the design-agent abort registry — the loop is stoppable by the SAME Stop control
+      // (POST /api/design/agent/abort by docId), and a comp delete aborts it too.
+      const serverRunId = `srv_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+      const controller = new AbortController();
+      activeAgentRuns.set(serverRunId, { docId: doc.id, controller, startedAt: Date.now() });
+      try { res.setHeader('X-Agent-Run', serverRunId); } catch { /* headers sent — ignore */ }
+
+      // The client follows this run over the `design` SSE channel like any other. We synthesize a
+      // stable runId so the panel groups every frame under one run, and map loop events onto the
+      // harness vocabulary: each scoring round → a `subagent` frame ("Improving fidelity · round N",
+      // model ornith, substatus "score 78 → fixing 3 issues"); the seed + each applied fix → normal
+      // thinking/op/verify steps so the activity narrative + rail read like a real run.
+      const runId = `loop_${serverRunId}`;
+      let stepI = 0;
+      let announced = false;
+      const pushStep = (kind, summary, data) => {
+        stepI += 1;
+        const extra = announced ? {} : { serverRunId, kind: 'edit' };
+        announced = true;
+        ssePush('design', { docId: doc.id, runId, ...extra, step: { i: stepI, kind, summary, at: Date.now(), ...(data ? { data } : {}) } });
+      };
+      const pushWorker = (id, title, status, substatus) => {
+        ssePush('subagent', { docId: doc.id, runId, parentRunId: runId, id, title, model: 'ornith', status, phase: substatus || '' });
+      };
+
+      // Map the engine's structured onEvent frames → the SSE vocabulary the activity feed speaks.
+      let lastRoundScore = null;
+      const onEvent = (evt) => {
+        try {
+          switch (evt && evt.type) {
+            case 'seed:start':
+              pushStep('thinking', `Matching the reference — seeding round 1${archetype ? ` (${archetype})` : ''}`);
+              pushWorker('round-1', 'Improving fidelity · round 1', 'running', 'seeding from the current comp');
+              break;
+            case 'seed:done':
+              pushStep('op', 'Seeded the comp from the current design');
+              break;
+            case 'iter:score': {
+              lastRoundScore = evt.score;
+              const pct = Math.round(evt.score);
+              const nIssues = Array.isArray(evt.discrepancies) ? evt.discrepancies.length : 0;
+              // Score line as a first-person narration step + the per-round worker row with the score.
+              pushStep('verify', `Round ${evt.round} · fidelity ${pct}%${nIssues ? ` — ${nIssues} issue${nIssues === 1 ? '' : 's'} to fix` : ''}`, { score: pct, round: evt.round });
+              pushWorker(`round-${evt.round}`, `Improving fidelity · round ${evt.round}`, 'running',
+                nIssues ? `score ${pct}% → fixing ${nIssues} issue${nIssues === 1 ? '' : 's'}` : `score ${pct}%`);
+              break;
+            }
+            case 'iter:fix':
+              pushStep('thinking', `Round ${evt.round} · applying fixes to close the gap`);
+              break;
+            case 'iter:applied':
+              pushStep('op', `Round ${evt.round} · applied ${evt.applied ?? 0} change${evt.applied === 1 ? '' : 's'}`);
+              break;
+            case 'iter:error':
+              pushStep('thinking', `Round ${evt.round} · a fix round failed, keeping the best result so far`);
+              break;
+            case 'iter:done': {
+              const done = evt.verdict === 'pass' || evt.verdict === 'converged' || evt.verdict === 'exhausted';
+              if (done) {
+                pushWorker(`round-${evt.round}`, `Improving fidelity · round ${evt.round}`, 'done',
+                  `${evt.verdict} at ${Math.round(evt.score)}%`);
+              }
+              break;
+            }
+            default:
+              break;
+          }
+        } catch { /* the SSE sink must never break the loop */ }
+      };
+
+      try {
+        const result = await runSelfImproveLoop({
+          referencePath,
+          seedDoc: doc,          // the current comp is the seed (no re-copy)
+          archetype,
+          maxIters,
+          threshold,
+          agentOpts: { resolveImage },
+          scorer: (d, refPath, o) => scoreFidelityFn(d, refPath, { ...o, resolveImage }),
+          signal: controller.signal,
+          onEvent,
+        });
+
+        const aborted = controller.signal.aborted;
+        const best = result && result.bestDoc ? { ...result.bestDoc, id: doc.id } : null;
+        const stillExists = !!designs.getDesign(doc.id);
+        // Persist the BEST doc durably (unless the comp was deleted mid-run).
+        const saved = (best && stillExists) ? designs.saveDesign(best) : (best || doc);
+        if (best && stillExists) pushDoc('design', saved.id, { brand: saved.brand ?? null, updatedAt: saved.updatedAt });
+
+        const bestScore = result ? Math.round(result.bestScore) : 0;
+        const verdict = result ? result.verdict : 'exhausted';
+        // Terminal done frame — carries the final score + verdict for the activity summary.
+        ssePush('design', { docId: doc.id, runId, done: true, result: { verdict, bestScore, seedScore: result ? Math.round(result.seedScore) : 0, rounds: result ? result.iterations.length : 0 } });
+
+        // One agent chat line so the run leaves a trace in the panel history like a normal run.
+        if (stillExists) designs.appendChat(saved.id, {
+          role: 'agent',
+          text: `Match-the-reference pass ${verdict.toUpperCase()} at ${bestScore}% fidelity over ${result ? result.iterations.length : 0} round${(result && result.iterations.length === 1) ? '' : 's'}.`,
+          runId,
+          result: { applied: result ? result.iterations.reduce((n, it) => n + (it.applied || 0), 0) : 0, source: 'self-improve', kind: 'edit', model: 'ornith', verifyReady: verdict === 'pass' },
+        });
+
+        sendJson(res, 200, {
+          ok: !!(result && result.ok), design: saved, verdict, bestScore,
+          seedScore: result ? Math.round(result.seedScore) : 0,
+          rounds: result ? result.iterations.length : 0,
+          runId, serverRunId, aborted, pre: preRunDoc, source: 'self-improve', kind: 'edit',
+        });
+      } catch (e) {
+        const msg = String(e && e.message || e);
+        try { ssePush('design', { docId: doc.id, runId, done: true, error: msg }); } catch { /* ignore */ }
+        sendJson(res, 500, { ok: false, error: msg, serverRunId });
+      } finally {
+        activeAgentRuns.delete(serverRunId);
       }
       return;
     }
@@ -1392,7 +1691,18 @@ const server = http.createServer(async (req, res) => {
         ssePush('design', { runId, step: { i: stepI, kind: 'progress', summary, at: Date.now() }, ...(done ? { done: true } : {}) });
       };
       pushStep('reading the reference with vision — usually ~1 fast pass…');
-      const r = await extractLayout(imagePath, { runId, onProgress: (msg) => pushStep(msg) });
+      // Unified event vocabulary: extraction now also streams `subagent` (fan-out worker) frames on
+      // the SAME `design` channel the design-edit agent uses, so one activity component renders both.
+      const r = await extractLayout(imagePath, {
+        runId,
+        onProgress: (msg) => pushStep(msg),
+        onStep: (step) => {
+          if (step && step.kind === 'subagent') {
+            stepI += 1;
+            ssePush('design', { runId, step: { i: stepI, ...step } });
+          }
+        },
+      });
       if (!r.ok) {
         const summary = r.canceled
           ? 'extraction canceled'
@@ -1504,8 +1814,7 @@ const server = http.createServer(async (req, res) => {
         createdAt: Date.now(),
       });
       saved = saved.slice(0, 60);
-      mkdirSync(STATE_DIR, { recursive: true });
-      writeFileSync(join(STATE_DIR, 'elements.json'), JSON.stringify({ elements: saved }, null, 2));
+      writeAtomic(join(STATE_DIR, 'elements.json'), JSON.stringify({ elements: saved }, null, 2));
       pushDoc('element', saved[0] && saved[0].id);
       sendJson(res, 200, { ok: true, elements: saved });
       return;
@@ -1515,7 +1824,7 @@ const server = http.createServer(async (req, res) => {
       let saved = [];
       try { saved = JSON.parse(readFileSync(join(STATE_DIR, 'elements.json'), 'utf8')).elements || []; } catch { /* none */ }
       saved = saved.filter((e) => e.id !== body.id);
-      writeFileSync(join(STATE_DIR, 'elements.json'), JSON.stringify({ elements: saved }, null, 2));
+      writeAtomic(join(STATE_DIR, 'elements.json'), JSON.stringify({ elements: saved }, null, 2));
       pushDoc('element', body.id, { deleted: true });
       sendJson(res, 200, { ok: true, elements: saved });
       return;

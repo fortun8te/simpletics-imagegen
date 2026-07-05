@@ -1,0 +1,420 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6mjivr-4",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 15,
+        "y": 32,
+        "w": 1022,
+        "h": 232
+      },
+      "children": [
+        {
+          "id": "ext-mr6mjivr-a",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · man before photo",
+          "box": {
+            "x": 15,
+            "y": 32,
+            "w": 45,
+            "h": 60
+          },
+          "style": {
+            "background": "#a6a09859",
+            "radius": 22,
+            "stroke": {
+              "color": "#a6a098",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.01,
+              "y": 0.03,
+              "w": 0.04,
+              "h": 0.06
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mjivr-b",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · man after photo",
+          "box": {
+            "x": 63,
+            "y": 32,
+            "w": 45,
+            "h": 60
+          },
+          "style": {
+            "background": "#c0baac59",
+            "radius": 22,
+            "stroke": {
+              "color": "#c0baac",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.06,
+              "y": 0.03,
+              "w": 0.04,
+              "h": 0.06
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mjisv-3",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "No need to ruin your hair to have perfect curls",
+          "autoH": true,
+          "box": {
+            "x": 100,
+            "y": 76,
+            "w": 937,
+            "h": 188
+          },
+          "style": {
+            "color": "#f2f2f2",
+            "fontSize": 70,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mjivr-c-lb",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": false,
+          "sizeLocked": true,
+          "text": "GREEN CURL CREAM",
+          "box": {
+            "x": 48,
+            "y": 60,
+            "w": 40,
+            "h": 32
+          },
+          "style": {
+            "fontSize": 16,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6mjivr-5",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 150,
+        "y": 297,
+        "w": 760,
+        "h": 611
+      },
+      "children": [
+        {
+          "id": "ext-mr6mjisv-0",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · photo",
+          "box": {
+            "x": 150,
+            "y": 297,
+            "w": 363,
+            "h": 483
+          },
+          "style": {
+            "background": "#c2b5a359",
+            "radius": 22,
+            "stroke": {
+              "color": "#c2b5a3",
+              "width": 3
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.14,
+              "y": 0.28,
+              "w": 0.34,
+              "h": 0.45
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mjisv-1",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · photo",
+          "box": {
+            "x": 518,
+            "y": 297,
+            "w": 392,
+            "h": 483
+          },
+          "style": {
+            "background": "#d4c6b859",
+            "radius": 22,
+            "stroke": {
+              "color": "#d4c6b8",
+              "width": 3
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.48,
+              "y": 0.28,
+              "w": 0.36,
+              "h": 0.45
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mjisv-2",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · photo",
+          "box": {
+            "x": 493,
+            "y": 517,
+            "w": 171,
+            "h": 391
+          },
+          "style": {
+            "background": "#1d6a4c59",
+            "radius": 22,
+            "stroke": {
+              "color": "#1d6a4c",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.46,
+              "y": 0.48,
+              "w": 0.16,
+              "h": 0.36
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mjisv-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Before",
+          "autoH": true,
+          "box": {
+            "x": 236,
+            "y": 297,
+            "w": 230,
+            "h": 58
+          },
+          "style": {
+            "color": "#56775a",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mjisv-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "After",
+          "autoH": true,
+          "box": {
+            "x": 659,
+            "y": 297,
+            "w": 205,
+            "h": 58
+          },
+          "style": {
+            "color": "#56775a",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mjisv-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Everyday Curl Crème",
+          "autoH": true,
+          "box": {
+            "x": 509,
+            "y": 584,
+            "w": 148,
+            "h": 63
+          },
+          "style": {
+            "color": "#54805e",
+            "fontSize": 24,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mjivp-7",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "wavy",
+          "autoH": true,
+          "box": {
+            "x": 518,
+            "y": 655,
+            "w": 127,
+            "h": 181
+          },
+          "style": {
+            "color": "#a1bba2",
+            "fontSize": 92,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mjivq-8",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "125ML e 4.22 US FL.OZ",
+          "autoH": true,
+          "box": {
+            "x": 523,
+            "y": 852,
+            "w": 116,
+            "h": 30
+          },
+          "style": {
+            "color": "#b2bab4",
+            "fontSize": 18,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "fontFamily": "-apple-system",
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6mjivr-c",
+      "type": "shape",
+      "role": "product",
+      "name": "Product · green curl cream",
+      "box": {
+        "x": 48,
+        "y": 51,
+        "w": 40,
+        "h": 49
+      },
+      "style": {
+        "background": "#3f6c5259",
+        "radius": 22,
+        "shapeKind": "path",
+        "path": "M 0.5 0.2 C 0.5833 0.2 0.6733 0.2 0.75 0.25 C 0.8267 0.3 0.945 0.4017 0.96 0.5 C 0.975 0.5983 0.9167 0.7717 0.84 0.84 C 0.7633 0.9083 0.6133 0.91 0.5 0.91 C 0.3867 0.91 0.2367 0.9083 0.16 0.84 C 0.0833 0.7717 0.025 0.5983 0.04 0.5 C 0.055 0.4017 0.1733 0.3 0.25 0.25 C 0.3267 0.2 0.4167 0.2 0.5 0.2 Z",
+        "stroke": {
+          "color": "#3f6c52",
+          "width": 2
+        }
+      }
+    },
+    {
+      "id": "ext-mr6mjivr-9",
+      "type": "text",
+      "role": "subhead",
+      "name": "subhead",
+      "text": "This natural curl cream is all you need",
+      "autoH": true,
+      "box": {
+        "x": 168,
+        "y": 1000,
+        "w": 912,
+        "h": 80
+      },
+      "style": {
+        "color": "#56775a",
+        "fontSize": 41,
+        "fontWeight": 400,
+        "align": "center",
+        "uppercase": false,
+        "fontFamily": "-apple-system",
+        "serif": true,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1080
+  },
+  "archetype": "before-after",
+  "background": null,
+  "backgroundIsPhoto": true,
+  "backgroundConfidence": "normal",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#799175",
+      "share": 0.25
+    },
+    {
+      "hex": "#a4a797",
+      "share": 0.25
+    },
+    {
+      "hex": "#fbf9f7",
+      "share": 0.25
+    },
+    {
+      "hex": "#3d3f3a",
+      "share": 0.125
+    },
+    {
+      "hex": "#749376",
+      "share": 0.125
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

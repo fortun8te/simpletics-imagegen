@@ -1,0 +1,217 @@
+{
+  "id": "harness_099_cc36c725",
+  "name": "copy-harness harness_099_cc36c725",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6mq53v-1x",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "headline-mr6mq53v-1o",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Sleep like an athlete\n—not a zombie.",
+      "autoH": true,
+      "box": {
+        "x": 108,
+        "y": 288,
+        "w": 864,
+        "h": 288
+      },
+      "style": {
+        "color": "#111111",
+        "fontSize": 70,
+        "fontWeight": 900,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "group-mr6mq53v-1p",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 422,
+        "w": 886,
+        "h": 1152
+      },
+      "children": [
+        {
+          "id": "rect-mr6mq53v-1q",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · recovery sleep tube",
+          "box": {
+            "x": 432,
+            "y": 422,
+            "w": 216,
+            "h": 1152
+          },
+          "style": {
+            "crop": {
+              "x": 0.4,
+              "y": 0.22,
+              "w": 0.2,
+              "h": 0.6
+            },
+            "radius": 8
+          },
+          "src": "/refasset?id=harness-099"
+        },
+        {
+          "id": "caption-mr6mq53v-1r",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Cadence Recovery rebuilds your sleep so your hormones and performance bounce back.",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 806,
+            "w": 270,
+            "h": 230
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 30,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6mq53v-1s",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Deep sleep optimization",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 826,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6mq53v-1t",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Natural testosterone support",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 960,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6mq53v-1u",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Stress and cortisol regulation",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 1094,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6mq53v-1v",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Wake clear, train stronger",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 1229,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "logo-mr6mq53v-1w",
+      "type": "text",
+      "role": "logo",
+      "name": "logo",
+      "text": "Cadence logo",
+      "autoH": true,
+      "box": {
+        "x": 454,
+        "y": 1690,
+        "w": 173,
+        "h": 82
+      },
+      "style": {
+        "color": "#111111",
+        "fontSize": 34,
+        "fontWeight": 600,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "skeletonId": "skel_mr6mq53vk14r",
+  "updatedAt": 1783185701468
+}

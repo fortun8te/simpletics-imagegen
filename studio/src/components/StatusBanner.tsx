@@ -52,7 +52,38 @@ export default function StatusBanner() {
     return () => window.clearInterval(id);
   }, [ticking]);
 
-  if (!blockers) return null;
+  // ── ERR-25: proactive local-LLM health ──────────────────────────────
+  // Poll the existing /api/llm/config endpoint (already used by the model switcher) every ~30s.
+  // If the request errors, or the response resolves with no model configured, the local model
+  // (ornith via LM Studio) is unreachable — agent features (design agent, self-improve, extract)
+  // would just silently fail, so surface a quiet banner proactively instead of waiting for the
+  // user to hit a dead end. No server change: this is a read-only poll of a route that exists.
+  const [llmDown, setLlmDown] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    const check = () => {
+      api.getLlmConfig().then((r) => {
+        if (!alive) return;
+        const model = r.config?.model;
+        setLlmDown(!r.ok || !model);
+      });
+    };
+    check();
+    const id = window.setInterval(check, 30_000);
+    return () => { alive = false; window.clearInterval(id); };
+  }, []);
+
+  if (!blockers) {
+    if (llmDown) {
+      return (
+        <div className={`${s.banner} ${s.budget}`} role="status">
+          <Icon name="alert" size={15} className={s.icon} />
+          <span className={s.text}>Local model unreachable — agent features unavailable.</span>
+        </div>
+      );
+    }
+    return null;
+  }
 
   const applyResumeResult = (r: Awaited<ReturnType<typeof api.resume>>) => {
     if (r.codexUsage) setUsage(r.codexUsage);
@@ -189,6 +220,16 @@ export default function StatusBanner() {
           <Icon name="settings" size={14} />
           <span>Adjust</span>
         </button>
+      </div>
+    );
+  }
+
+  // ── local model unreachable (lowest priority — only shown when nothing else is) ─────────
+  if (llmDown) {
+    return (
+      <div className={`${s.banner} ${s.budget}`} role="status">
+        <Icon name="alert" size={15} className={s.icon} />
+        <span className={s.text}>Local model unreachable — agent features unavailable.</span>
       </div>
     );
   }

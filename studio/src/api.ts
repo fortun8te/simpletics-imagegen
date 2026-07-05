@@ -19,10 +19,46 @@ async function jpost<T>(url: string, body: unknown, fallback: T): Promise<T> {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
     });
+    if (!r.ok) {
+      // Non-2xx: the server may still have sent a structured { ok:false, error } body (e.g.
+      // validation failures, 4xx/5xx from a route that reports errors in-band) — parse it and
+      // return that if it parses, so callers see the real error instead of just the fallback.
+      // Behavior-compatible: callers already branch on the body's own `.ok`, not on r.ok.
+      try {
+        return (await r.json()) as T;
+      } catch {
+        return fallback;
+      }
+    }
     return (await r.json()) as T;
   } catch {
     return fallback;
   }
+}
+
+/** Maps a raw error string (network/timeout message) to a short, actionable sentence for the
+ *  local-LLM-down cases the studio hits constantly (LM Studio not running, model overloaded).
+ *  Anything unrecognized passes through unchanged so real server error text still surfaces. */
+function friendlyError(msg: string | undefined | null): string | undefined {
+  if (!msg) return msg ?? undefined;
+  const m = msg.toLowerCase();
+  if (m.includes('fetch failed') || m.includes('econnrefused') || m.includes('enotfound') || m.includes(':1234')) {
+    return "LM Studio isn't reachable — is it running with ornith loaded?";
+  }
+  if (m.includes('timeout') || m.includes('timed out') || m.includes('aborted')) {
+    return 'The model timed out — it may be overloaded.';
+  }
+  return msg;
+}
+
+/** Applies friendlyError to a result object's optional `.error` field, in place semantics via a
+ *  new object — used for the design-agent/self-improve/extract endpoints so downstream UI shows
+ *  the friendly text without every caller needing to remember to map it. */
+function withFriendlyError<T extends { error?: string }>(result: T): T {
+  if (result && typeof result === 'object' && typeof result.error === 'string') {
+    return { ...result, error: friendlyError(result.error) };
+  }
+  return result;
 }
 
 const emptyState = (brand: string, batch: string): BatchState => ({
@@ -148,8 +184,13 @@ export const api = {
       `/api/designs${brand ? `?brand=${encodeURIComponent(brand)}` : ''}`, { ok: false, designs: [] }),
   getDesign: (id: string) =>
     jget<{ ok: boolean; design?: import('./lib/sceneGraph').DesignDoc }>(`/api/design?id=${encodeURIComponent(id)}`, { ok: false }),
-  saveDesign: (design: import('./lib/sceneGraph').DesignDoc, thumb?: string | null) =>
-    jpost<{ ok: boolean; design?: import('./lib/sceneGraph').DesignDoc; error?: string }>('/api/design/save', { design, thumb }, { ok: false }),
+  // `baseUpdatedAt` = the updatedAt of the version this client last loaded/saved. The server
+  // rejects with { conflict:true, serverUpdatedAt } when the on-disk doc is NEWER than that base —
+  // optimistic concurrency so two tabs can't silently last-write-wins clobber each other (ERR-16).
+  saveDesign: (design: import('./lib/sceneGraph').DesignDoc, thumb?: string | null, baseUpdatedAt?: number) =>
+    jpost<{ ok: boolean; design?: import('./lib/sceneGraph').DesignDoc; conflict?: boolean; serverUpdatedAt?: number; error?: string }>(
+      '/api/design/save', { design, thumb, baseUpdatedAt }, { ok: false },
+    ),
   deleteDesign: (id: string) =>
     jpost<{ ok: boolean }>('/api/design/delete', { id }, { ok: false }),
   exportDesign: (id: string, png?: string | null, svg?: string | null) =>
@@ -159,7 +200,7 @@ export const api = {
   extractLayout: (source: { kind: 'trendtrack' | 'upload' | 'render' | 'figma'; ref: string }, runId?: string) =>
     jpost<{ ok: boolean; skeleton?: import('./lib/sceneGraph').Skeleton; cached?: boolean; canceled?: boolean; runId?: string; error?: string }>(
       '/api/design/extract', { source, runId }, { ok: false },
-    ),
+    ).then(withFriendlyError),
   extractCancel: (runId: string) =>
     jpost<{ ok: boolean; canceled?: boolean }>('/api/design/extract/cancel', { runId }, { ok: false }),
   listSkeletons: (brand?: string | null) =>
@@ -181,7 +222,7 @@ export const api = {
   runDesignAgent: (id: string, instruction: string) =>
     jpost<{ ok: boolean; design?: import('./lib/sceneGraph').DesignDoc; source?: string; error?: string }>(
       '/api/design/agent', { id, instruction }, { ok: false },
-    ),
+    ).then(withFriendlyError),
 
   // ── Planner (Plan mode brain) ──
   planRun: (opts: { mode: 'brief' | 'refs'; brief?: string; refIds?: string[]; brand?: string | null; product?: string; adType?: string }) =>
@@ -246,17 +287,56 @@ export const api = {
     attachments?: { ref: string; note?: string }[];
     /** Referenced canvas node ids (chat @-chips) — scopes the agent's observe() server-side. */
     focusIds?: string[];
+    /**
+     * Copy-from-reference in-editor run: hand the agent a reference image id (an uploaded ref,
+     * or a trendtrack ad id already staged as a ref) + a label. The server runs runCopyReference()
+     * — it extracts the reference's skeleton and rebuilds it into THIS doc, streaming the same
+     * thinking/op/subagent/verify events as a normal edit run. See studio-server.mjs (body.reference).
+     */
+    reference?: { ref: string; label?: string };
   }) =>
     jpost<{
       ok: boolean;
       design?: import('./lib/sceneGraph').DesignDoc;
       steps?: unknown[];
       source?: string;
+      /** Run kind — 'chat' (conversational reply, canvas NOT locked) | 'edit' | 'copy'. */
+      kind?: 'chat' | 'edit' | 'copy' | (string & {});
+      /** Server-issued abort handle for THIS run (also on the X-Agent-Run header). */
+      serverRunId?: string;
+      /** The persisted doc BEFORE this run — the "Revert this run" safety net restores it. */
+      pre?: import('./lib/sceneGraph').DesignDoc;
+      /** True when the run settled because it was aborted (Stop / comp delete). */
+      aborted?: boolean;
       lint?: unknown;
       verify?: { ready?: boolean; layoutScore?: number; lintCount?: number; skeletonIoU?: number | null };
       applied?: number;
       error?: string;
-    }>('/api/design/agent', opts, { ok: false }),
+    }>('/api/design/agent', opts, { ok: false }).then(withFriendlyError),
+  // Abort an in-flight design-agent run — by docId (Stop button; the run's own id isn't known
+  // client-side until it finishes) or a specific serverRunId. Server aborts the run's AbortSignal.
+  designAgentAbort: (arg: { docId?: string; runId?: string }) =>
+    jpost<{ ok: boolean; aborted?: number }>('/api/design/agent/abort', arg, { ok: false }),
+  // Self-improvement loop ("Match the reference"): SEED (the current doc) → render → score
+  // fidelity → fix → repeat until it matches the reference (or converges). Streams progress over
+  // the SAME `design` SSE channel as a normal run and is stoppable via designAgentAbort({docId}).
+  // Multi-minute deep pass on the local model. `pre` is the pre-run snapshot for "Revert this run".
+  selfImprove: (opts: { docId: string; referenceId?: string; referenceKind?: string; referencePath?: string; maxIters?: number; threshold?: number }) =>
+    jpost<{
+      ok: boolean;
+      design?: import('./lib/sceneGraph').DesignDoc;
+      verdict?: 'pass' | 'converged' | 'exhausted' | 'seed-failed' | (string & {});
+      bestScore?: number;
+      seedScore?: number;
+      rounds?: number;
+      runId?: string;
+      serverRunId?: string;
+      aborted?: boolean;
+      pre?: import('./lib/sceneGraph').DesignDoc;
+      source?: string;
+      kind?: string;
+      error?: string;
+    }>('/api/design/self-improve', opts, { ok: false }).then(withFriendlyError),
   // LLM provider info (which agent/model runs design chat) + usage rollups.
   getLlmUsage: () =>
     jget<{ ok: boolean; provider?: { base?: string; model?: string; provider?: string }; hasLlm?: boolean }>(

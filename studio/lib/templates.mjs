@@ -9,6 +9,8 @@
 // (setText routes through nothing special — these are plain layers, not element instances).
 
 import { buildElement, fitElementText, layerId, FONT_SUGGEST } from './elements.mjs';
+import { estimateTextBoxH } from './type-scale.mjs';
+import { IG_BG, IG_MUTED as IG_MUTED_LIVE } from './instagram-colors.mjs';
 import { groupBounds } from './scene-tree.mjs';
 import {
   NOTES_CHEVRON_BACK, NOTES_SHARE_ICON, NOTES_MORE_CIRCLE_RING, NOTES_MORE_CIRCLE_HOLE,
@@ -124,6 +126,7 @@ export const TEMPLATES = [
 
   {
     id: 'story-native',
+    family: 'native-chrome',
     name: 'Story native',
     hint: 'Vertical photo story: stacked hook pills top (Simpletics-style), photo fills the rest',
     params: { hook: 'Never Noticed How Full My Hair Looked', hook2: '…Until The Bottle Was Empty.', style: 'light' },
@@ -149,6 +152,7 @@ export const TEMPLATES = [
 
   {
     id: 'x-post-ad',
+    family: 'native-chrome',
     name: 'X post ad',
     hint: 'X/Twitter Post detail: dark chrome, ← Post ⋯ nav, avatar + bold name + blue check + @handle + Following pill, multi-paragraph body, grey meta with bold viewcount, 5-icon action row',
     params: {
@@ -159,6 +163,8 @@ export const TEMPLATES = [
       viewsLabel: 'views',
       replies: '257', reposts: '66', likes: '21K', bookmarks: '89',
       verified: true, blurAvatar: false, avatarEffect: 'none',
+      showActions: true, // false: the reference has NO meta/action row (a minimal screenshot, ad-010 class) — hide it and give the body the full space
+      theme: 'dark', // 'dark' = X "Lights out" (#000) · 'light' = X default (#fff) — copy mode sets this from the reference's real background
       // optional embedded media below the body: '' = none, 'photo' = a single photo card,
       // 'quote' = a quote-tweet card (avatar + name/handle + quoted text)
       media: '', photo: 'attached photo',
@@ -172,8 +178,17 @@ export const TEMPLATES = [
       //   nav bar (← · Post · ⋯) → header (avatar + bold name + blue check + @handle + Following
       //   pill) → multi-paragraph body → grey meta line with a BOLD viewcount → 5-icon action row
       //   (reply 💬 · repost 🔁 · like ♥ · bookmark 🔖 · share ⬆). No photo — this is a text post.
-      // X "Lights out" dark: pure-black bg #000, primary text #e7e9ea, muted #71767b, blue #1d9bf0.
-      const WHITE = '#ffffff', NAME = '#e7e9ea', MUTED = '#71767b', BLUE = '#1d9bf0', BG = '#000000';
+      // Theme tokens — dark: X "Lights out" (#000, text #e7e9ea, muted #71767b); light: X default
+      // (#fff, ink #0f1419, muted #536471). A white reference used to be forced onto the dark
+      // template (copy-fidelity ad 010 scored 9.8/100) — theme now follows the reference.
+      const light = String(p.theme || 'dark').toLowerCase() === 'light';
+      const WHITE = light ? '#0f1419' : '#ffffff';       // "primary ink" (nav glyphs, bold text)
+      const NAME = light ? '#0f1419' : '#e7e9ea';
+      const MUTED = light ? '#536471' : '#71767b';
+      const BLUE = '#1d9bf0';
+      const BG = light ? '#ffffff' : '#000000';
+      const PILL_BG = light ? '#0f1419' : '#ffffff';     // follow pill
+      const PILL_INK = light ? '#ffffff' : '#0f1419';
       const pad = rx(0.05);            // X's ~16px content gutter
       const chirp = FONT_SUGGEST.twitter;
       const bg = S({ role: 'card', name: 'Post bg', box: { x: 0, y: 0, w, h }, style: { background: BG } });
@@ -226,16 +241,20 @@ export const TEMPLATES = [
           style: { fontSize: handleFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1.2, fontFamily: chirp } }),
         T({ role: 'cta', name: 'Following', text: followLabel, sizeLocked: true, autoH: false,
           box: { x: followX, y: headY + Math.round((av - followH) / 2), w: followW, h: followH },
-          style: { fontSize: followFs, fontWeight: 700, color: '#0f1419', background: WHITE, radius: followH, align: 'center', lineHeight: 1, fontFamily: chirp } }),
+          style: { fontSize: followFs, fontWeight: 700, color: PILL_INK, background: PILL_BG, radius: followH, align: 'center', lineHeight: 1, fontFamily: chirp } }),
       ];
       const header = groupLayers('Header', headerKids);
 
       // ── Meta line + action row are anchored to the BOTTOM so the post reads full at any body
       //    length; the body fills the gap between the header and the meta line ───────────────────
-      const metaFs = fs(0.034), metaH = Math.round(metaFs * 1.4);
-      const rowH = ry(0.06);
-      const rowY = h - ry(0.05) - rowH;
-      const metaY = rowY - ry(0.02) - metaH;
+      // showActions:false (010-class: a minimal screenshot with NO meta/action chrome) collapses
+      // both rows to zero height so the body gets the full space down to the canvas edge instead
+      // of leaving a dead gap where a row that was never in the reference used to sit.
+      const showActions = p.showActions !== false;
+      const metaFs = fs(0.034), metaH = showActions ? Math.round(metaFs * 1.4) : 0;
+      const rowH = showActions ? ry(0.06) : 0;
+      const rowY = h - (showActions ? ry(0.05) : ry(0.02)) - rowH;
+      const metaY = rowY - (showActions ? ry(0.02) : 0) - metaH;
 
       // ── Body: ONE layer PER PARAGRAPH so the blank-line gaps read like the real X post (the
       //    HTML/canvas renderers collapse '\n' inside a single text box, losing the spacing) ──────
@@ -274,8 +293,15 @@ export const TEMPLATES = [
         style: { fontSize: bodyFs, fontWeight: 400, color: WHITE, align: 'left', lineHeight: bodyLineH, fontFamily: chirp },
       }));
       const prefix = `${pct(p.timestamp)} · `;
-      const prefixW = Math.round(prefix.length * metaFs * 0.5);
-      const viewsW = Math.round(String(pct(p.views)).length * metaFs * 0.62);
+      // clamp the three meta segments so the row NEVER escapes the body column (long
+      // timestamp/views params truncate inside their boxes instead — clip audit fix).
+      const viewsWRaw = Math.round(String(pct(p.views)).length * metaFs * 0.62);
+      const suffixGap = Math.round(metaFs * 0.3);
+      const suffixWWanted = rx(0.4);
+      const viewsW = Math.min(viewsWRaw, Math.round(bodyW * 0.35));
+      const prefixW = Math.min(Math.round(prefix.length * metaFs * 0.5),
+        Math.max(60, bodyW - viewsW - suffixGap - Math.min(suffixWWanted, Math.round(bodyW * 0.3))));
+      const suffixW = Math.min(suffixWWanted, Math.max(40, bodyW - prefixW - viewsW - suffixGap));
       const metaPrefix = T({ role: 'caption', name: 'Meta time', text: prefix, sizeLocked: true, autoH: false,
         box: { x: pad, y: metaY, w: prefixW, h: metaH },
         style: { fontSize: metaFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1.2, fontFamily: chirp } });
@@ -283,9 +309,9 @@ export const TEMPLATES = [
         box: { x: pad + prefixW, y: metaY, w: viewsW, h: metaH },
         style: { fontSize: metaFs, fontWeight: 800, color: WHITE, align: 'left', lineHeight: 1.2, fontFamily: chirp } });
       const metaSuffix = T({ role: 'caption', name: 'Meta views label', text: ` ${pct(p.viewsLabel) || 'views'}`, sizeLocked: true, autoH: false,
-        box: { x: pad + prefixW + viewsW + Math.round(metaFs * 0.3), y: metaY, w: rx(0.4), h: metaH },
+        box: { x: pad + prefixW + viewsW + suffixGap, y: metaY, w: suffixW, h: metaH },
         style: { fontSize: metaFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1.2, fontFamily: chirp } });
-      const meta = groupLayers('Meta', [metaPrefix, metaViews, metaSuffix]);
+      const meta = showActions ? groupLayers('Meta', [metaPrefix, metaViews, metaSuffix]) : null;
 
       // ── Media card: a photo slot, or a quote-tweet (bordered card w/ avatar + name + quote) ─────
       let mediaGroup = null;
@@ -294,7 +320,7 @@ export const TEMPLATES = [
         const mediaRadius = rx(0.03);
         if (mediaMode === 'photo') {
           const frame = S({ role: 'card', name: 'Media frame', box: { x: pad, y: mediaY, w: bodyW, h: mediaH },
-            style: { background: '#16181c', radius: mediaRadius, stroke: { color: '#2f3336', width: 2 } } });
+            style: { background: light ? '#f7f9f9' : '#16181c', radius: mediaRadius, stroke: { color: light ? '#cfd9de' : '#2f3336', width: 2 } } });
           const photo = imageSlot(pct(p.photo), { x: pad, y: mediaY, w: bodyW, h: mediaH }, mediaRadius);
           mediaGroup = groupLayers('Media', [frame, photo]);
         } else {
@@ -304,7 +330,7 @@ export const TEMPLATES = [
           const qtx = pad + qPad + qAv + rx(0.02);
           const qHeadY = mediaY + qPad;
           const qCard = S({ role: 'card', name: 'Quote card', box: { x: pad, y: mediaY, w: bodyW, h: mediaH },
-            style: { background: BG, radius: mediaRadius, stroke: { color: '#2f3336', width: 2 } } });
+            style: { background: BG, radius: mediaRadius, stroke: { color: light ? '#cfd9de' : '#2f3336', width: 2 } } });
           const qAvatar = avatarShape({
             role: 'avatar', name: 'Quote avatar', box: { x: pad + qPad, y: qHeadY, w: qAv, h: qAv },
             gradient: { type: 'linear', angle: 150, stops: [{ color: '#5b7cff', pos: 0 }, { color: '#8a3ffb', pos: 1 }] },
@@ -357,7 +383,7 @@ export const TEMPLATES = [
       actionNodes.push(T({ role: 'caption', name: 'Share', text: '⬆', sizeLocked: true, autoH: false,
         box: { x: w - pad - Math.round(actFs * 1.6), y: rowY, w: Math.round(actFs * 1.6), h: rowH },
         style: { fontSize: actFs, fontWeight: 400, color: MUTED, align: 'right', lineHeight: 1, fontFamily: chirp } }));
-      const actions = groupLayers('Actions', actionNodes);
+      const actions = showActions ? groupLayers('Actions', actionNodes) : null;
 
       // clean Figma export: bg, Nav group, Header group, then a Body/Media/Meta/Actions content group
       return [bg, nav, header, groupLayers('Body', [...bodyNodes, mediaGroup, meta, actions])];
@@ -366,6 +392,7 @@ export const TEMPLATES = [
 
   {
     id: 'before-after',
+    family: 'editorial-layout',
     name: 'Before / After',
     hint: 'Serif headline, two labeled photo panels, product slot center, closing line (Wavy-style)',
     params: {
@@ -389,15 +416,22 @@ export const TEMPLATES = [
       shift(ba);
       ba.name = 'Panels';
       const product = imageSlot(pct(p.product), { x: rx(0.41), y: ry(0.40), w: rx(0.18), h: ry(0.34) }, fs(0.012));
+      // bottom-anchor the closing line: fitElementText re-measures autoH height AFTER build, so
+      // a long closing used to grow past the canvas bottom — pre-measure and pull y up instead
+      // (clip audit fix).
+      const closingStyle = { fontSize: fs(0.042), fontWeight: 500, color: '#5c7a56', align: 'center', lineHeight: 1.25, fontFamily: FONT_SUGGEST.display };
+      const closingBox = { x: rx(0.10), y: ry(0.87), w: rx(0.80), h: ry(0.09) };
+      const closingNeed = estimateTextBoxH({ type: 'text', text: pct(p.closing), box: closingBox, style: closingStyle });
+      closingBox.y = Math.min(closingBox.y, Math.max(0, h - closingNeed - ry(0.02)));
       const closing = T({ role: 'subhead', name: 'Closing', text: pct(p.closing), sizeLocked: true,
-        box: { x: rx(0.10), y: ry(0.87), w: rx(0.80), h: ry(0.09) },
-        style: { fontSize: fs(0.042), fontWeight: 500, color: '#5c7a56', align: 'center', lineHeight: 1.25, fontFamily: FONT_SUGGEST.display } });
+        box: closingBox, style: closingStyle });
       return [frame, headline, ba, product, closing];
     },
   },
 
   {
     id: 'comparison',
+    family: 'editorial-layout',
     name: 'Us vs Them',
     hint: 'Split background, bold headline, two product slots, ✓ rows vs ✗ rows (Craft-Cadence-style)',
     params: {
@@ -437,6 +471,7 @@ export const TEMPLATES = [
 
   {
     id: 'ig-dm',
+    family: 'native-chrome',
     name: 'IG DM screenshot',
     hint: 'Instagram DM thread ad: white frame + caption, dark card, story-reply thumb, gray received bubbles, purple→blue gradient sent bubbles, New Messages divider, Replied-to quote',
     params: {
@@ -588,6 +623,7 @@ export const TEMPLATES = [
 
   {
     id: 'offer-hero',
+    family: 'editorial-layout',
     name: 'Offer hero',
     hint: 'Over-photo offer: serif save-headline, was/now price line, benefit chips row (Cadence-style)',
     params: {
@@ -612,11 +648,28 @@ export const TEMPLATES = [
         style: { fontSize: fs(0.036), fontWeight: 700, color: '#ffe8b0', align: 'center', lineHeight: 1.2 } });
       // benefit chips row — solid white pills, measured to hug their label + even gaps, centered.
       const chips = (p.chips || []).map(pct).slice(0, 4);
-      const chipFs = fs(0.028);
-      const chipH = Math.round(chipFs * 2.4);
+      // fit the whole centered row inside 92% of the canvas: shrink the font first (down to a
+      // floor), then hard-clamp per-chip width so long extracted copy truncates inside its pill
+      // instead of pushing chips off-canvas (clip audit fix).
+      const rowMax = Math.round(w * 0.92);
       const gap = rx(0.02);
-      const widths = chips.map((c) => Math.round(c.length * chipFs * 0.56 + chipFs * 2.0));
-      const total = widths.reduce((a, b) => a + b, 0) + gap * Math.max(0, chips.length - 1);
+      let chipFs = fs(0.028);
+      const measure = (f) => chips.map((c) => Math.round(c.length * f * 0.56 + f * 2.0));
+      let widths = measure(chipFs);
+      let total = widths.reduce((a, b) => a + b, 0) + gap * Math.max(0, chips.length - 1);
+      const fsFloor = Math.max(14, Math.round(fs(0.028) * 0.7));
+      while (total > rowMax && chipFs > fsFloor) {
+        chipFs = Math.max(fsFloor, Math.round(chipFs * 0.92));
+        widths = measure(chipFs);
+        total = widths.reduce((a, b) => a + b, 0) + gap * Math.max(0, chips.length - 1);
+      }
+      if (total > rowMax && chips.length) {
+        const gaps = gap * Math.max(0, chips.length - 1);
+        const per = Math.floor((rowMax - gaps) / chips.length);
+        widths = widths.map(() => per);
+        total = rowMax;
+      }
+      const chipH = Math.round(chipFs * 2.4);
       let cx = Math.round((w - total) / 2);
       const chipY = ry(0.29);
       const chipNodes = chips.map((c, i) => {
@@ -636,6 +689,7 @@ export const TEMPLATES = [
 
   {
     id: 'apple-notes',
+    family: 'native-chrome',
     name: 'Apple Notes',
     hint: 'iOS Notes screen: yellow ‹ Notes / Done nav, bold SF headline, • bullet list, product slot, footnote (bench 011)',
     params: {
@@ -727,6 +781,7 @@ export const TEMPLATES = [
 
   {
     id: 'stat-chart',
+    family: 'editorial-layout',
     name: 'Stat chart',
     hint: 'Data ad: giant stat + ↓ ring, subhead, citation, filled area line-chart w/ WEEK labels, product on chart, pill, caption (bench 107)',
     params: {
@@ -795,7 +850,8 @@ export const TEMPLATES = [
       // ── Colored pill label ──
       const pillTxt = pct(p.pillLabel);
       const pillFs = fs(0.03);
-      const pillW = Math.round(pillTxt.length * pillFs * 0.62 + pillFs * 2.2);
+      // clamp to the chart column so a long label truncates inside the pill (clip audit fix)
+      const pillW = Math.min(Math.round(pillTxt.length * pillFs * 0.62 + pillFs * 2.2), Math.round(w - cx * 2));
       const pillH = Math.round(pillFs * 2.2);
       const pill = T({ role: 'badge', name: 'Pill label', text: pillTxt, sizeLocked: true, autoH: false,
         box: { x: cx, y: cy + chH + ry(0.05), w: pillW, h: pillH },
@@ -810,6 +866,7 @@ export const TEMPLATES = [
 
   {
     id: 'ig-feed-post',
+    family: 'native-chrome',
     name: 'IG feed post',
     hint: 'Instagram feed post: avatar+username+⋯ top bar, square photo, like/comment/share + save row, "liked by" + bold-username caption (bench IG-feed)',
     params: {
@@ -911,6 +968,7 @@ export const TEMPLATES = [
 
   {
     id: 'notes-checklist',
+    family: 'native-chrome',
     name: 'Apple Notes checklist',
     hint: 'iOS Notes checklist: yellow ‹ Notes / Done nav, bold title, rounded ☑/☐ checkbox rows (done items greyed + struck), footnote (bench Notes-check)',
     params: {
@@ -1008,6 +1066,7 @@ export const TEMPLATES = [
 
   {
     id: 'imessage',
+    family: 'native-chrome',
     name: 'iMessage thread',
     hint: 'iOS Messages thread: grey nav (avatar + contact name + ›), grey received bubbles left + blue sent bubbles right w/ tails, timestamp divider, iOS type field (bench iMessage)',
     params: {
@@ -1021,6 +1080,7 @@ export const TEMPLATES = [
       ],
       timestamp: 'Today 7:42 PM',
       avatarEffect: 'none', blurAvatar: false,
+      service: 'imessage', // 'imessage' (blue) | 'sms' (GREEN — real SMS/RCS bubbles are #34C759, never blue)
     },
     build(doc, p) {
       const { w, h, rx, ry, fs } = sized(doc);
@@ -1028,7 +1088,11 @@ export const TEMPLATES = [
       // iOS Messages (light): nav/back tint #007AFF, sent bubble flat #0A84FF + white text,
       // received #E9E9EB + black text, ~18px radius, timestamp grey #8E8E93, composer hairline
       // #C6C6C8, send button #0A84FF circle + white ↑. Everything scales off the canvas.
-      const INK = '#000000', MUTED = '#8e8e93', TINT = '#007aff', BLUE = '#0a84ff', GREY = '#e9e9eb', GREYINK = '#000000';
+      // SMS service: identical chrome but the sent bubble + send button go iOS SMS GREEN #34C759
+      // and the composer placeholder reads "Text Message" — the old `sms` alias silently rendered
+      // BLUE, which is factually wrong (research-confirmed) and reads as fake to anyone on iOS.
+      const isSms = String(p.service || 'imessage').toLowerCase() === 'sms';
+      const INK = '#000000', MUTED = '#8e8e93', TINT = '#007aff', BLUE = isSms ? '#34c759' : '#0a84ff', GREY = '#e9e9eb', GREYINK = '#000000';
       const bg = S({ role: 'card', name: 'Thread bg', box: { x: 0, y: 0, w, h }, style: { background: '#ffffff' } });
       // ── Nav: ‹ back chevron (tint, left) · centered avatar + contact name + ›, hairline under ──
       const navH = ry(0.13);
@@ -1073,9 +1137,12 @@ export const TEMPLATES = [
           const m = /^(\S+)\s+(.*)$/.exec(it.text);
           const dayWord = m ? m[1] : it.text;
           const timeWord = m ? ` ${m[2]}` : '';
-          const dayW = Math.round(dayWord.length * tsFs * 0.62);
-          const timeW = Math.round(timeWord.length * tsFs * 0.56);
-          const tsX = Math.round((w - dayW - timeW) / 2);
+          // clamp the centered row inside the canvas — a long timestamp param must truncate
+          // within its box, never escape the canvas (copy-fidelity clip audit).
+          const tsMaxW = Math.round(w * 0.9);
+          let dayW = Math.min(Math.round(dayWord.length * tsFs * 0.62), tsMaxW);
+          const timeW = Math.min(Math.round(timeWord.length * tsFs * 0.56), Math.max(0, tsMaxW - dayW));
+          const tsX = Math.max(Math.round(w * 0.05), Math.round((w - dayW - timeW) / 2));
           nodes.push(groupLayers('Timestamp', [
             T({ role: 'caption', name: 'Timestamp day', text: dayWord, sizeLocked: true, autoH: false,
               box: { x: tsX, y: cy, w: dayW, h: Math.round(tsFs * 1.5) },
@@ -1106,7 +1173,7 @@ export const TEMPLATES = [
       const fieldW = w - pad * 2 - fieldH - rx(0.02);
       const field = S({ role: 'card', name: 'Type field', box: { x: pad, y: fieldY, w: fieldW, h: fieldH },
         style: { background: '#ffffff', radius: fieldH, stroke: { color: '#c7c7cc', width: 2 } } });
-      const placeholder = T({ role: 'caption', name: 'Placeholder', text: 'iMessage', sizeLocked: true, autoH: false,
+      const placeholder = T({ role: 'caption', name: 'Placeholder', text: isSms ? 'Text Message' : 'iMessage', sizeLocked: true, autoH: false,
         box: { x: pad + rx(0.03), y: fieldY, w: rx(0.4), h: fieldH },
         style: { fontSize: fs(0.03), fontWeight: 400, color: '#b0b0b5', align: 'left', lineHeight: 1, fontFamily: sf } });
       const sendS = fieldH;
@@ -1117,6 +1184,115 @@ export const TEMPLATES = [
         style: { fontSize: Math.round(sendS * 0.55), fontWeight: 800, color: '#ffffff', align: 'center', lineHeight: 1, fontFamily: sf } });
       const composer = groupLayers('Composer', [field, placeholder, sendBtn, sendArrow]);
       return [bg, nav, thread, composer];
+    },
+  },
+  {
+    // Dedicated GREEN thread — the `sms` alias used to silently reroute to the blue iMessage
+    // template, which is factually wrong (real SMS/RCS bubbles are #34C759; research-confirmed).
+    // Reuses the imessage build verbatim with service:'sms' so the two never drift.
+    id: 'sms',
+    family: 'native-chrome',
+    name: 'SMS thread (green)',
+    hint: 'iOS Messages thread with GREEN sent bubbles (#34C759) + "Text Message" composer — real SMS/RCS look, never blue',
+    params: {
+      contact: 'Mom',
+      messages: [
+        { from: 'them', text: 'did you order more of that hair stuff?' },
+        { from: 'me', text: 'yeah the texture powder, it just shipped' },
+        { from: 'them', text: 'send me the link i want it for your dad lol' },
+      ],
+      timestamp: 'Today 7:42 PM',
+      avatarEffect: 'none', blurAvatar: false,
+      service: 'sms',
+    },
+    build(doc, p) {
+      const im = TEMPLATES.find((t) => t.id === 'imessage');
+      return im.build(doc, { ...p, service: 'sms' });
+    },
+  },
+  {
+    // Facebook feed post — FDS tokens (research-verified): card #FFFFFF, primary text #050505,
+    // secondary #65676B, brand/active blue #1877F2, divider #CED0D4, page bg #F0F2F5. System font
+    // stack (Facebook uses SF Pro/Segoe/Roboto, not a branded webfont). Structure: avatar row
+    // (name + "2d · 🌐"), body text, photo region, reactions/meta row, hairline, Like·Comment·Share.
+    id: 'fb-post',
+    family: 'native-chrome',
+    name: 'Facebook post',
+    hint: 'Facebook feed post: avatar + bold name + "2d · 🌐" row, body text, photo, 👍❤️ reactions + comments/shares meta, hairline, Like/Comment/Share action row (FDS colors)',
+    params: {
+      name: 'Sarah Mitchell', time: '2d',
+      body: 'Okay I was skeptical but this texture powder is the only thing that survived a 12-hour shift. My hair still had volume at midnight??',
+      photo: 'selfie with visible hair volume',
+      reactions: '241', comments: '38', shares: '12',
+      avatarEffect: 'none', blurAvatar: false,
+    },
+    build(doc, p) {
+      const { w, h, rx, ry, fs } = sized(doc);
+      const sf = FONT_SUGGEST.sf;
+      const INK = '#050505', MUTED = '#65676b', BLUE = '#1877f2', LINE = '#ced0d4';
+      const pad = rx(0.04);
+      const bg = S({ role: 'card', name: 'Post card', box: { x: 0, y: 0, w, h }, style: { background: '#ffffff' } });
+
+      // ── Header: avatar · bold name / "2d · 🌐" ──
+      const headY = ry(0.025);
+      const av = ry(0.055);
+      const avatar = avatarShape({
+        role: 'avatar', name: 'Avatar', box: { x: pad, y: headY, w: av, h: av },
+        gradient: { type: 'linear', angle: 135, stops: [{ color: '#a8b4c4', pos: 0 }, { color: '#7a8699', pos: 1 }] },
+      }, avatarEffectOf(p));
+      const nameFs = fs(0.032);
+      const nx = pad + av + rx(0.025);
+      const name = T({ role: 'caption', name: 'Name', text: pct(p.name), sizeLocked: true, autoH: false,
+        box: { x: nx, y: headY + Math.round(av * 0.04), w: w - nx - pad, h: Math.round(nameFs * 1.4) },
+        style: { fontSize: nameFs, fontWeight: 600, color: INK, align: 'left', lineHeight: 1.2, fontFamily: sf } });
+      const timeFs = fs(0.026);
+      const time = T({ role: 'caption', name: 'Time', text: `${pct(p.time)} · 🌐`, sizeLocked: true, autoH: false,
+        box: { x: nx, y: headY + Math.round(nameFs * 1.5), w: w - nx - pad, h: Math.round(timeFs * 1.4) },
+        style: { fontSize: timeFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1.2, fontFamily: sf } });
+      const more = T({ role: 'caption', name: 'More', text: '⋯', sizeLocked: true, autoH: false,
+        box: { x: w - pad - rx(0.08), y: headY, w: rx(0.08), h: av },
+        style: { fontSize: fs(0.045), fontWeight: 700, color: MUTED, align: 'right', lineHeight: 1, fontFamily: sf } });
+      const header = groupLayers('Header', [avatar, name, time, more]);
+
+      // ── Body text (15px-class, near-black) ──
+      const bodyFs = fs(0.032);
+      const bodyY = headY + av + ry(0.018);
+      const body = T({ role: 'body', name: 'Post text', text: pct(p.body), autoH: false, sizeLocked: true,
+        tplRef: { key: 'body' },
+        box: { x: pad, y: bodyY, w: w - pad * 2, h: Math.round(bodyFs * 1.35 * 3.2) },
+        style: { fontSize: bodyFs, fontWeight: 400, color: INK, align: 'left', lineHeight: 1.35, fontFamily: sf } });
+
+      // ── Photo (full-bleed width, Facebook posts run photos edge-to-edge) ──
+      const photoY = bodyY + Math.round(bodyFs * 1.35 * 3.2) + ry(0.015);
+      const photoH = Math.min(ry(0.42), h - photoY - ry(0.19));
+      const photo = imageSlot(pct(p.photo), { x: 0, y: photoY, w, h: photoH }, 0);
+
+      // ── Reactions/meta row: 👍❤️ N (left) · "N comments · N shares" (right) ──
+      const metaFs = fs(0.028);
+      const metaY = photoY + photoH + ry(0.014);
+      const reacts = T({ role: 'caption', name: 'Reactions', text: `👍❤️ ${pct(p.reactions)}`, sizeLocked: true, autoH: false,
+        box: { x: pad, y: metaY, w: rx(0.4), h: Math.round(metaFs * 1.4) },
+        style: { fontSize: metaFs, fontWeight: 400, color: MUTED, align: 'left', lineHeight: 1.3, fontFamily: sf } });
+      const counts = T({ role: 'caption', name: 'Counts', text: `${pct(p.comments)} comments · ${pct(p.shares)} shares`, sizeLocked: true, autoH: false,
+        box: { x: w - pad - rx(0.5), y: metaY, w: rx(0.5), h: Math.round(metaFs * 1.4) },
+        style: { fontSize: metaFs, fontWeight: 400, color: MUTED, align: 'right', lineHeight: 1.3, fontFamily: sf } });
+
+      // ── Hairline + Like/Comment/Share action row (FDS secondary grey, 600 weight) ──
+      const lineY = metaY + Math.round(metaFs * 1.4) + ry(0.012);
+      const hairline = S({ role: 'decor', name: 'Divider', box: { x: pad, y: lineY, w: w - pad * 2, h: 1 }, style: { background: LINE } });
+      const actFs = fs(0.03);
+      const actY = lineY + ry(0.012);
+      const actH = Math.round(actFs * 1.6);
+      const third = Math.round((w - pad * 2) / 3);
+      const actionCell = (label, i) => T({ role: 'caption', name: label, text: label, sizeLocked: true, autoH: false,
+        box: { x: pad + third * i, y: actY, w: third, h: actH },
+        style: { fontSize: actFs, fontWeight: 600, color: MUTED, align: 'center', lineHeight: 1.4, fontFamily: sf } });
+      const actions = groupLayers('Actions', [
+        actionCell('👍 Like', 0), actionCell('💬 Comment', 1), actionCell('↗ Share', 2),
+      ]);
+      const meta = groupLayers('Meta', [reacts, counts, hairline]);
+
+      return [bg, header, body, photo, meta, actions];
     },
   },
 ];
@@ -1138,9 +1314,12 @@ const IG_SENT_TOP = '#a033ff';    // vivid purple at the top of the thread (IG's
 const IG_SENT_BOTTOM = '#0aa6ff'; // cyan-blue at the bottom
 const IG_RECEIVED = '#262626';    // received bubble — Instagram's dark-mode received grey; #262626
                                    // is the well-documented value (#303030 reads slightly too light)
-const IG_CARD = '#0C1014';        // DM thread background — LIVE-confirmed from a real logged-in
-                                   // instagram.com session (getComputedStyle bg), not pure black
-const IG_MUTED = '#a8a8a8';       // labels: New Messages / Replied to you — matches live extraction
+// DM card bg + muted label come from the DOM-VERIFIED single source of truth
+// (lib/instagram-colors.mjs, live-sampled from a real logged-in instagram.com session) — that
+// module used to be dead code while these values were redeclared here; now templates consume it
+// directly so the two can never drift.
+const IG_CARD = IG_BG;            // '#0C1014' — dark blue-charcoal, NOT pure black
+const IG_MUTED = IG_MUTED_LIVE;   // '#A8A8A8' — New Messages / Replied to you labels
 
 /** Wrapped-line estimate for bubble sizing: greedy wrap, then the widest RESULTING line
  *  (the first version returned the longest word — bubbles came out one-word wide). */
@@ -1170,8 +1349,28 @@ export const TEMPLATE_ALIASES = {
   stat: 'stat-chart', 'stat-card-ad': 'stat-chart', chart: 'stat-chart', 'data-ad': 'stat-chart',
   'ig-post': 'ig-feed-post', 'instagram-post': 'ig-feed-post', 'feed-post': 'ig-feed-post', 'ig-feed': 'ig-feed-post', post: 'ig-feed-post',
   checklist: 'notes-checklist', 'notes-check': 'notes-checklist', 'todo': 'notes-checklist', 'to-do': 'notes-checklist', 'checklist-note': 'notes-checklist',
-  imessage: 'imessage', 'i-message': 'imessage', messages: 'imessage', text: 'imessage', 'text-thread': 'imessage', sms: 'imessage',
+  imessage: 'imessage', 'i-message': 'imessage', messages: 'imessage', text: 'imessage', 'text-thread': 'imessage',
+  // sms routes to the GREEN thread — the old sms→imessage alias silently produced blue bubbles,
+  // which real SMS never has (research-confirmed fix).
+  sms: 'sms', 'sms-thread': 'sms', 'green-text': 'sms', rcs: 'sms', android: 'sms',
+  facebook: 'fb-post', 'facebook-post': 'fb-post', 'fb-feed': 'fb-post', fb: 'fb-post',
 };
+
+/**
+ * Which FAMILY a template belongs to: 'native-chrome' (a real platform UI — IG DM, iMessage,
+ * SMS, X post, IG feed post, Apple Notes/checklist, Facebook post, story-native — where the
+ * chrome is FIXED and consistent, so snapping a reference onto the template's canonical layout is
+ * correct) or 'editorial-layout' (before-after, comparison, offer-hero, stat-chart — DESIGN
+ * PATTERNS whose actual arrangement varies enormously per ad; forcing every one into one
+ * canonical layout is the "it's using templates when it shouldn't" bug). Returns null for an
+ * unknown id. Copy-mode preset-fill gating (layout-extract.mjs) hard-excludes editorial-layout
+ * archetypes from ever snapping to the preset, regardless of geometry-match score.
+ */
+export function templateFamily(id) {
+  const canonical = TEMPLATE_ALIASES[id] || id;
+  const def = TEMPLATES.find((t) => t.id === canonical);
+  return def?.family || null;
+}
 
 /** Build a template's full layer list for the doc. Returns [] for unknown ids. */
 export function buildTemplate(id, doc, rawParams = {}, kit = undefined) {
@@ -1246,7 +1445,11 @@ export function templateCatalog() {
 /** Detect the archetype implied by a brief/instruction (priority order matters). */
 export function detectTemplate(text) {
   const s = String(text || '').toLowerCase();
-  if (/\b(imessage|i-?message|sms|text thread|text message)\b/.test(s)) return 'imessage';
+  // SMS/RCS/green-bubble cues route to the GREEN thread, checked BEFORE the generic
+  // imessage/text-thread cues so "sms thread" never lands on blue bubbles.
+  if (/\b(sms|rcs|green (bubble|text)|android (text|message))\b/.test(s)) return 'sms';
+  if (/\b(imessage|i-?message|text thread|text message)\b/.test(s)) return 'imessage';
+  if (/\b(facebook|fb) ?(feed )?(post|testimonial)?\b/.test(s) && /\b(facebook|fb)\b/.test(s)) return 'fb-post';
   if (/\b(dm|dms|direct message|message thread)\b/.test(s)) return 'ig-dm';
   if (/\b(x[- ]?post|tweet|twitter)\b/.test(s)) return 'x-post-ad';
   if (/\b(checklist|to-?do list|todo list)\b/.test(s)) return 'notes-checklist';

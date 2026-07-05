@@ -7,14 +7,16 @@
 // so /api/llm/config changes apply without a restart. Zero-dep (node:* only). Every call —
 // success or failure — appends one JSON line to .state/llm-usage.jsonl for /api/llm/usage.
 
-import { readFileSync, existsSync, mkdirSync, appendFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
+import { readFileSync, existsSync, mkdirSync, appendFileSync, statSync } from 'node:fs';
+import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 import { getLlmConfig, resolveLlm, DEFAULT_BASE } from './llm-config.mjs';
 
 const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const STATE_DIR = join(STUDIO, '.state');
 const USAGE_FILE = join(STATE_DIR, 'llm-usage.jsonl');
+const VISION_TMP_DIR = join(STATE_DIR, 'vision-tmp');
 
 // ── .env loader (same pattern as lib/trendtrack.mjs — process.env always wins) ───────────────────
 function loadEnvFile() {
@@ -49,11 +51,12 @@ async function textConfig() {
   const c = config();
   const vbase = process.env.VISION_BASE_URL ? String(process.env.VISION_BASE_URL).replace(/\/$/, '') : null;
   if (vbase) {
-    const ids = await loadedModelIds(vbase);
-    if (ids.length) {
-      const model = (await activePreferredModel(vbase)) || ids[0]; // whatever's actually loaded — never a hardcoded name
-      return { base: vbase, model, key: process.env.VISION_API_KEY || null, provider: 'vision-endpoint' };
-    }
+    // activePreferredModel resolves ornith from the DOWNLOADED set (JIT-loads it if needed), so a
+    // box that booted with only gemma loaded — or nothing loaded — still gets ornith, not gemma
+    // and not a DeepSeek fallback. Only when LM Studio is unreachable/empty does model come back
+    // null and we fall through to the DeepSeek text config.
+    const model = await activePreferredModel(vbase);
+    if (model) return { base: vbase, model, key: process.env.VISION_API_KEY || null, provider: 'vision-endpoint' };
   }
   return c;
 }
@@ -104,11 +107,14 @@ export async function llmText(prompt, {
   maxTokens = 2000,
   temperature = 0,
   _noPrefer = false, // internal: skip the ornith preference (used for the ornith→DeepSeek fallback)
+  _forceModel = null, // internal: pins a specific model id (LM Studio can have >1 model loaded at once)
+  _bumped = false, // internal: this call is already the larger-cap reasoning retry (don't loop)
 } = {}) {
   // LM Studio is the DEFAULT text route whenever it's reachable (textConfig() detects this via
   // /models); _noPrefer forces the plain resolved config (used for the LM-Studio→DeepSeek retry
   // below when the loaded model itself fails to answer).
   let { base, model, key, provider } = _noPrefer ? config() : await textConfig();
+  if (_forceModel) model = _forceModel;
   const usedPreferred = !_noPrefer && provider === 'vision-endpoint';
   const started = Date.now();
   const ctrl = new AbortController();
@@ -173,7 +179,21 @@ export async function llmText(prompt, {
     let text = typeof m.content === 'string' ? m.content : '';
     if (!text.trim() && typeof m.reasoning_content === 'string') text = m.reasoning_content;
     if (!text.trim()) {
-      if (usedPreferred) return fallbackToBase(); // ornith returned nothing → DeepSeek
+      // Reasoning-model truncation (ornith): it burned the whole budget in reasoning_content and
+      // never emitted the answer — the tell is finish_reason:'length' / outTok == the cap. Retry
+      // ONCE with a much larger cap so it can reason THEN emit (local tokens are cheap) before
+      // giving up. Only for the local/preferred route, and only once (_bumped guards the loop).
+      const truncated = r.json?.choices?.[0]?.finish_reason === 'length'
+        || (r.json?.usage?.completion_tokens || 0) >= maxTokens;
+      if (usedPreferred && truncated && !_bumped) {
+        clearTimeout(timer);
+        if (signal) signal.removeEventListener('abort', onAbort);
+        return llmText(prompt, {
+          system, timeoutMs, signal, purpose, json, temperature, _forceModel,
+          maxTokens: Math.max(maxTokens * 2, 8000), _bumped: true,
+        });
+      }
+      if (usedPreferred) return fallbackToBase(); // ornith still returned nothing → DeepSeek
       return finish(false, null, 'empty completion', r.json?.usage);
     }
     return finish(true, text, null, r.json?.usage);
@@ -229,57 +249,182 @@ async function visionConfig() {
   const base = process.env.VISION_BASE_URL;
   if (base) {
     const b = base.replace(/\/$/, '');
-    // Don't hardcode a model name — LM Studio only ever has ONE model loaded at a time (ornith9b,
-    // "gemma 4 12b", or whatever Michael has open), so detect it via /models. VISION_MODEL still
-    // overrides explicitly when set.
-    let model = process.env.VISION_MODEL || '';
-    if (!model) {
-      const ids = await loadedModelIds(b);
-      model = (await activePreferredModel(b)) || ids[0] || '';
+    // REMOTE vision provider fast-path (e.g. OpenCode Zen: VISION_BASE_URL=https://opencode.ai/zen/v1,
+    // VISION_MODEL=<a vision-capable id>, VISION_API_KEY=<key>). A hosted provider does NOT expose LM
+    // Studio's "loaded models" semantics — the /models dance below (activePreferredModel, loaded-set
+    // filtering, JIT-load avoidance) is meaningless there and would mis-resolve the model. So when the
+    // host is remote (not localhost) AND an explicit VISION_MODEL is set, send it directly. gemma is
+    // still hard-blocked. Confirm the chosen model actually accepts images first with
+    // `node scripts/probe-vision-backends.mjs` — a text-only model here yields noVision at call time.
+    try {
+      const host = new URL(b).hostname;
+      const isLocal = ['localhost', '127.0.0.1', '0.0.0.0', '::1', '[::1]'].includes(host);
+      const want = String(process.env.VISION_MODEL || '').trim();
+      if (!isLocal && want && !BLOCKED_MODEL.test(want)) {
+        return { base: b, model: want, key: process.env.VISION_API_KEY || null, provider: 'remote-vision' };
+      }
+    } catch { /* not a parseable URL — fall through to the LM Studio path */ }
+    // Resolve the model to send ONLY from the loaded set (activePreferredModel) — ornith does
+    // vision+reasoning so it's the vision default too. A stale VISION_MODEL env (e.g. it points at
+    // gemma, which is downloaded but NOT loaded) is honored ONLY if that id is actually loaded;
+    // otherwise it's ignored so it can't JIT-load a second model. Empty model = no LM Studio model
+    // loaded → caller degrades (no silent fallback that spawns a load).
+    // Same resolution as text: ornith for vision too (it does vision+reasoning). A VISION_MODEL
+    // override is honored ONLY if that id is actually downloaded (so it can be JIT-loaded); an
+    // unset/stale VISION_MODEL falls through to activePreferredModel → ornith. gemma is never sent.
+    const raw = await modelIds(b);
+    // gemma is hard-blocked everywhere (see BLOCKED_MODEL) — strip it before any pick.
+    const loaded = raw.loaded.filter((id) => !BLOCKED_MODEL.test(id));
+    const all = raw.all.filter((id) => !BLOCKED_MODEL.test(id));
+    const want = String(process.env.VISION_MODEL || '').trim();
+    let model = '';
+    if (want && !BLOCKED_MODEL.test(want)) {
+      const pick = (list) => list.find((id) => id === want) || list.find((id) => id.toLowerCase().includes(want.toLowerCase()));
+      model = pick(loaded) || pick(all) || '';
     }
-    return { base: b, model, key: process.env.VISION_API_KEY || null, provider: 'vision-endpoint' };
+    if (!model) model = (await activePreferredModel(b)) || '';
+    // No non-gemma model available (e.g. only gemma is loaded) → DON'T send an empty model id, which
+    // LM Studio would resolve to its own default (possibly gemma). Fall through to the text config
+    // so vision degrades to noVision instead of secretly using gemma.
+    if (model) return { base: b, model, key: process.env.VISION_API_KEY || null, provider: 'vision-endpoint' };
   }
   return config();
 }
 
 // ── LM Studio model detection ────────────────────────────────────────────────────────────────
-// Michael runs LM Studio with exactly ONE model loaded at a time — ornith9b today, "gemma 4 12b"
-// tomorrow, whatever else next (never assume both are loaded simultaneously, and never hardcode
-// a model name as a fallback). Whenever LM Studio (VISION_BASE_URL) is reachable at all, it is
-// preferred for BOTH text and vision over Codex/DeepSeek — Codex/DeepSeek are last-resort
-// fallbacks only when LM Studio is genuinely unreachable. We detect what's loaded via the
-// OpenAI-compatible GET /models and optionally match PREFERRED_MODEL (default: any id containing
-// "ornith", smallest variant first). Cached ~20s so we don't poll on every call.
-const _modelCache = { at: 0, base: '', ids: [] };
-async function loadedModelIds(base) {
-  const now = Date.now();
-  if (base === _modelCache.base && now - _modelCache.at < 20_000) return _modelCache.ids;
-  let ids = [];
-  try {
-    const res = await fetch(`${base}/models`, { signal: AbortSignal.timeout(2500) });
-    const j = await res.json();
-    ids = Array.isArray(j?.data) ? j.data.map((m) => String(m.id)) : [];
-  } catch { ids = _modelCache.base === base ? _modelCache.ids : []; }
-  _modelCache.at = now; _modelCache.base = base; _modelCache.ids = ids;
-  return ids;
+// CRITICAL: never trigger a JIT model load. LM Studio auto-loads any DOWNLOADED-but-unloaded
+// model the moment a request names its id — so if routing ever sends a stale/persisted name
+// (VISION_MODEL env, config.json model field, a picker choice) that isn't the currently-loaded
+// model, LM Studio spins up a SECOND model → contention, slowness, and "loads unused models".
+// So we resolve the model id to send ONLY from the set LM Studio reports as actually `loaded`.
+//
+// The plain OpenAI-compatible GET /models lists every DOWNLOAD (loaded or not) and carries no
+// load state — using it is exactly what causes the unwanted loads. LM Studio's native
+// GET /api/v0/models gives per-model `state:"loaded"`, so we prefer it and keep only loaded ids;
+// we fall back to /v1/models (all ids, treated as "loaded") only if v0 is unreachable.
+// Michael's stated default is ornith for EVERYTHING (it does vision+reasoning), so when ornith is
+// loaded we use it; if ornith isn't loaded but something else is, we use whatever IS loaded — we
+// never force-load ornith (that would itself spawn a second model). Cached ~20s.
+const _modelCache = { at: 0, base: '', ids: [], all: [] };
+
+/** Derive LM Studio's native REST root ("http://host:1234/api/v0") from an OpenAI-compat base
+ *  ("http://host:1234/v1" or "http://host:1234"). */
+function v0Root(base) {
+  const b = String(base || '').replace(/\/+$/, '');
+  const host = b.replace(/\/v1$/, '');
+  return `${host}/api/v0`;
 }
-/** The active preferred-model id at `base`, or null when none is available. Prefers a SMALLER
- *  ornith variant (e.g. the 9b over a 35b) — a laptop can actually load the 9b, whereas the 35b
- *  fails with "insufficient system resources". `PREFERRED_MODEL` (exact or substring) overrides. */
+
+/** Model ids at `base`, split into { loaded, all }. `loaded` = models LM Studio reports
+ *  `state:"loaded"`; `all` = every DOWNLOADED model (loaded or not). Prefers the native
+ *  /api/v0/models `state` field; falls back to /v1/models (no state → every id treated as both
+ *  loaded and downloaded) only when v0 is unreachable. Cached ~20s so we don't poll per call. */
+async function modelIds(base) {
+  const now = Date.now();
+  if (base === _modelCache.base && now - _modelCache.at < 20_000) return { loaded: _modelCache.ids, all: _modelCache.all };
+  let loaded = null;
+  let all = null;
+  // 1) native endpoint with real load state — the authoritative source
+  try {
+    const res = await fetch(`${v0Root(base)}/models`, { signal: AbortSignal.timeout(2500) });
+    const j = await res.json();
+    if (Array.isArray(j?.data)) {
+      const usable = j.data.filter((m) => m.type !== 'embeddings');
+      loaded = usable.filter((m) => String(m.state || '').toLowerCase() === 'loaded').map((m) => String(m.id));
+      all = usable.map((m) => String(m.id));
+    }
+  } catch { loaded = null; all = null; }
+  // 2) fallback: OpenAI-compat list (no state — can't distinguish; treat every id as available)
+  if (loaded == null) {
+    try {
+      const res = await fetch(`${base}/models`, { signal: AbortSignal.timeout(2500) });
+      const j = await res.json();
+      all = Array.isArray(j?.data) ? j.data.map((m) => String(m.id)) : [];
+      loaded = all;
+    } catch {
+      loaded = _modelCache.base === base ? _modelCache.ids : [];
+      all = _modelCache.base === base ? _modelCache.all : [];
+    }
+  }
+  _modelCache.at = now; _modelCache.base = base; _modelCache.ids = loaded; _modelCache.all = all;
+  return { loaded, all };
+}
+
+/** Back-compat: just the loaded set. */
+async function loadedModelIds(base) { return (await modelIds(base)).loaded; }
+
+/** The model id to actually SEND at `base`. Michael's rule: **ornith for EVERYTHING**, and gemma
+ *  must NEVER be used even when it's loaded. So the desired model (PREFERRED_MODEL, default ornith)
+ *  is resolved against ALL downloaded models, not just the loaded set — if it's downloaded but not
+ *  loaded, we send its id anyway and let LM Studio JIT-load it (that's a DESIRED load, not the
+ *  "unused second model" problem the loaded-only rule was guarding against). We only ever send the
+ *  desired id, so gemma is never used as long as ornith is downloaded. The old "use whatever's
+ *  loaded" was the bug: booting with gemma loaded + ornith unloaded made the app use gemma.
+ *  Precedence: loaded-preferred → downloaded-preferred (JIT) → loaded-ornith → downloaded-ornith
+ *  (JIT, smallest variant — the 35b can't load on this machine) → loaded-anything. null if empty. */
+// Models we must NEVER select — Michael: "stop using gemma completely." Any id matching this is
+// stripped from every candidate list below, so gemma is never sent (and thus never JIT-loaded by
+// us) even if it's the only thing LM Studio has loaded. When exclusion leaves nothing, we return
+// null → text falls back to DeepSeek, vision degrades to noVision — never gemma.
+const BLOCKED_MODEL = /gemma/i;
 export async function activePreferredModel(base) {
   if (!base) return null;
-  const want = String(process.env.PREFERRED_MODEL || '').trim();
-  const ids = await loadedModelIds(base);
-  if (!ids.length) return null;
+  const raw = await modelIds(base);
+  const loaded = raw.loaded.filter((id) => !BLOCKED_MODEL.test(id));
+  const all = raw.all.filter((id) => !BLOCKED_MODEL.test(id));
+  if (!loaded.length && !all.length) return null;
+  const want = String(process.env.PREFERRED_MODEL || 'ornith').trim(); // default the hint to ornith
+  const matches = (list, needle) => list.find((id) => id === needle)
+    || list.find((id) => id.toLowerCase().includes(needle.toLowerCase()));
+  const smallest = (list) => {
+    const paramB = (id) => { const mm = id.match(/(\d+)\s*b\b/i); return mm ? Number(mm[1]) : 999; };
+    return [...list].sort((a, b) => paramB(a) - paramB(b))[0];
+  };
   if (want) {
-    const hit = ids.find((id) => id === want) || ids.find((id) => id.toLowerCase().includes(want.toLowerCase()));
-    if (hit) return hit;
+    // Prefer an already-loaded match (no load), else a downloaded match (JIT-load the DESIRED model).
+    const wantMatches = (list) => list.filter((id) => id === want || id.toLowerCase().includes(want.toLowerCase()));
+    const loadedWant = wantMatches(loaded);
+    if (loadedWant.length) return smallest(loadedWant);
+    const downloadedWant = wantMatches(all);
+    if (downloadedWant.length) return smallest(downloadedWant); // JIT-load ornith — desired, not stray
   }
-  const ornith = ids.filter((id) => /ornith/i.test(id));
-  if (!ornith.length) return null;
-  const paramB = (id) => { const mm = id.match(/(\d+)\s*b\b/i); return mm ? Number(mm[1]) : 999; };
-  ornith.sort((a, b) => paramB(a) - paramB(b)); // smallest first — most likely to load
-  return ornith[0];
+  // No explicit hint match: prefer any ornith (loaded first, else downloaded → JIT), smallest variant.
+  const loadedOrnith = loaded.filter((id) => /ornith/i.test(id));
+  if (loadedOrnith.length) return smallest(loadedOrnith);
+  const anyOrnith = all.filter((id) => /ornith/i.test(id));
+  if (anyOrnith.length) return smallest(anyOrnith);
+  return loaded[0] || all[0]; // no ornith downloaded at all → whatever's available
+}
+
+// ── vision-incompatible image formats ────────────────────────────────────────────────────────
+// LM Studio's multimodal endpoint (ornith) only accepts jpeg/png (confirmed live: a real .webp
+// reference — a VERY common ad-screenshot format, a large fraction of ~/Downloads/IMAGE AD
+// INSPO/*.webp — returns a hard `HTTP 400: 'url' field must be a base64 encoded image`). Prior
+// to this fix that surfaced as a mystifying "unparsable / empty layout" from layout-extract (the
+// vision call failed outright, so extraction just saw a string of retries with no real signal).
+// Convert unsupported formats to PNG via macOS `sips` (zero-dep, same shell-out pattern as
+// self-vision.mjs's qlmanage/Chrome rendering) before ever base64-encoding for the API. Cached to
+// .state/vision-tmp/ keyed by source path + mtime so repeated attempts (layout-extract retries up
+// to 5× per pass) don't reconvert the same file.
+const VISION_OK_EXT = /\.(png|jpe?g)$/i;
+const _visionConvertCache = new Map(); // "path:mtimeMs" -> converted png path
+function ensureVisionCompatible(imagePath) {
+  if (VISION_OK_EXT.test(imagePath)) return { path: imagePath, mime: /\.jpe?g$/i.test(imagePath) ? 'image/jpeg' : 'image/png' };
+  let mtimeMs = 0;
+  try { mtimeMs = statSync(imagePath).mtimeMs; } catch { /* fall through to conversion attempt */ }
+  const cacheKey = `${imagePath}:${mtimeMs}`;
+  const cached = _visionConvertCache.get(cacheKey);
+  if (cached && existsSync(cached)) return { path: cached, mime: 'image/png' };
+  mkdirSync(VISION_TMP_DIR, { recursive: true });
+  const out = join(VISION_TMP_DIR, `${basename(imagePath).replace(/\.[^.]+$/, '')}-${Date.now()}.png`);
+  const r = spawnSync('sips', ['-s', 'format', 'png', imagePath, '--out', out], { timeout: 15_000 });
+  if (r.status === 0 && existsSync(out)) {
+    _visionConvertCache.set(cacheKey, out);
+    return { path: out, mime: 'image/png' };
+  }
+  // Conversion failed (sips missing / unreadable source) — fall through with the original path;
+  // the API call will surface its own clear error rather than us inventing one.
+  return { path: imagePath, mime: 'image/png' };
 }
 
 export async function llmVision(prompt, imagePath, {
@@ -291,8 +436,17 @@ export async function llmVision(prompt, imagePath, {
   // tokens in reasoning_content before emitting the answer. A low cap runs out mid-think and
   // returns empty content. Big budget is cheap locally.
   maxTokens = 6000,
+  signal = null, // caller AbortSignal — aborts the in-flight HTTP call promptly (mirrors llmText)
+  // temperature 0 by default (deterministic extraction), but retry strategies NEED to vary it —
+  // at temp 0 an identical re-ask provably returns the identical wrong answer (observed live:
+  // 5 retries, byte-identical token counts every time). Callers doing a corrective retry pass
+  // temperature > 0 to actually change the outcome.
+  temperature = 0,
   _forceModel = null, // internal: pins a specific model id (rarely needed now — one model loaded at a time)
+  _bumped = false, // internal: guards the one-shot truncation retry below from looping
+  extraImages = [], // NEW: array of file paths for additional images to send alongside the primary
 } = {}) {
+  if (signal?.aborted) return { ok: false, text: null, error: 'aborted', aborted: true };
   let { base, model, key, provider } = await visionConfig();
   // LM Studio only ever loads ONE model at a time, so visionConfig() already resolved whichever
   // one is active — no "prefer a smarter model" re-check needed, and no Gemma-specific fallback:
@@ -301,30 +455,43 @@ export async function llmVision(prompt, imagePath, {
   if (_forceModel) model = _forceModel;
   const started = Date.now();
   let b64;
-  let mime = 'image/png';
+  let mime;
   try {
+    const compat = ensureVisionCompatible(imagePath);
+    mime = compat.mime;
     const { readFileSync: rf } = await import('node:fs');
-    b64 = rf(imagePath).toString('base64');
-    if (/\.jpe?g$/i.test(imagePath)) mime = 'image/jpeg';
-    else if (/\.webp$/i.test(imagePath)) mime = 'image/webp';
+    b64 = rf(compat.path).toString('base64');
   } catch (e) {
     return { ok: false, text: null, error: `cannot read image: ${e.message}` };
   }
+  // Build content: primary image + any extra images + text prompt
+  const content = [
+    { type: 'image_url', image_url: { url: `data:${mime};base64,${b64}` } },
+  ];
+  // Encode and append extra images (e.g. reference image for comparison)
+  for (const extra of extraImages) {
+    try {
+      const extraCompat = ensureVisionCompatible(extra);
+      const { readFileSync: rf } = await import('node:fs');
+      const extraB64 = rf(extraCompat.path).toString('base64');
+      content.push({ type: 'image_url', image_url: { url: `data:${extraCompat.mime};base64,${extraB64}` } });
+    } catch { /* skip unreadable extra images */ }
+  }
+  content.push({ type: 'text', text: String(prompt) });
   const messages = [];
   if (system) messages.push({ role: 'system', content: String(system) });
-  messages.push({
-    role: 'user',
-    content: [
-      { type: 'image_url', image_url: { url: `data:${mime};base64,${b64}` } },
-      { type: 'text', text: String(prompt) },
-    ],
-  });
-  const payload = { model, messages, temperature: 0, max_tokens: maxTokens, stream: false };
+  messages.push({ role: 'user', content });
+  const payload = { model, messages, temperature, max_tokens: maxTokens, stream: false };
   if (json) payload.response_format = { type: 'json_object' };
   const headers = { 'Content-Type': 'application/json' };
   if (key) headers.Authorization = `Bearer ${key}`;
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(new Error('timeout')), timeoutMs);
+  // Forward the caller's AbortSignal into the HTTP call so a Stop/delete kills the in-flight
+  // vision request immediately (this was the RUN-1 gap: extraction vision calls were unabortable).
+  const onAbort = () => ctrl.abort(signal?.reason || new Error('aborted'));
+  if (signal) signal.addEventListener('abort', onAbort, { once: true });
+  const cleanupAbort = () => { if (signal) signal.removeEventListener('abort', onAbort); };
   try {
     let r = await postChat(`${base}/chat/completions`, payload, headers, ctrl.signal);
     if (r.status === 404) r = await postChat(`${base}/v1/chat/completions`, payload, headers, ctrl.signal);
@@ -336,6 +503,7 @@ export async function llmVision(prompt, imagePath, {
       if (r.status === 404) r = await postChat(`${base}/v1/chat/completions`, payload, headers, ctrl.signal);
     }
     clearTimeout(timer);
+    cleanupAbort();
     const ms = Date.now() - started;
     const u = { inTok: r.json?.usage?.prompt_tokens || 0, outTok: r.json?.usage?.completion_tokens || 0, model, provider, ms };
     logUsage({ at: Date.now(), provider, model, purpose, inTok: u.inTok, outTok: u.outTok, ms, ok: r.status < 300 });
@@ -351,13 +519,29 @@ export async function llmVision(prompt, imagePath, {
     let text = typeof msg.content === 'string' ? msg.content : '';
     if (!text.trim() && typeof msg.reasoning_content === 'string') text = msg.reasoning_content;
     const truncated = r.json?.choices?.[0]?.finish_reason === 'length';
+    // Same fix as llmText: a reasoning model (ornith) that hit finish_reason:'length' has either
+    // emitted nothing yet, or emitted a JSON payload CUT OFF mid-structure (e.g. a layout-extract
+    // array truncated mid-layer) — that reads as "unparsable" to the caller even though ok:true was
+    // returned. Retry ONCE at a much larger cap so it can finish reasoning THEN emit the full
+    // answer (local tokens are cheap) before giving up, exactly mirroring llmText's bump-retry.
+    if (truncated && !_bumped) {
+      cleanupAbort();
+      // A doubled token budget needs more WALL-CLOCK too — retrying at the same timeoutMs made the
+      // bump itself time out on a slow local model (PERF audit). Scale the deadline with the budget.
+      return llmVision(prompt, imagePath, {
+        system, timeoutMs: Math.max(timeoutMs * 2, 150_000), purpose, json, signal, temperature, _forceModel,
+        maxTokens: Math.max(maxTokens * 2, 12_000), _bumped: true,
+      });
+    }
     if (!text.trim()) {
       return { ok: false, text: null, error: truncated ? 'reasoning ran out of tokens before an answer (raise maxTokens)' : 'empty completion', usage: u };
     }
     return { ok: true, text, error: null, usage: u, truncated };
   } catch (e) {
     clearTimeout(timer);
-    return { ok: false, text: null, error: String(e?.message || e) };
+    cleanupAbort();
+    const aborted = !!signal?.aborted;
+    return { ok: false, text: null, error: aborted ? 'aborted' : String(e?.message || e), aborted };
   }
 }
 

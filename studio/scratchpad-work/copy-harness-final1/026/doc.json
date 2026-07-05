@@ -1,0 +1,496 @@
+{
+  "id": "harness_026_d247573d",
+  "name": "copy-harness harness_026_d247573d",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6eqfii-22",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "group-mr6eqfii-1j",
+      "type": "group",
+      "name": "Frame",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "children": [
+        {
+          "id": "card-mr6eqfii-1k",
+          "type": "shape",
+          "role": "card",
+          "name": "Left half",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "w": 540,
+            "h": 1920
+          },
+          "style": {
+            "background": "#ffffff"
+          },
+          "tpl": "comparison"
+        },
+        {
+          "id": "card-mr6eqfii-1l",
+          "type": "shape",
+          "role": "card",
+          "name": "Right half",
+          "box": {
+            "x": 540,
+            "y": 0,
+            "w": 540,
+            "h": 1920
+          },
+          "style": {
+            "background": "#19a5b8"
+          },
+          "tpl": "comparison"
+        }
+      ],
+      "tpl": "comparison",
+      "template": {
+        "id": "comparison",
+        "params": {
+          "headline": "Silk",
+          "leftTitle": "OURS",
+          "rightTitle": "THEIRS",
+          "leftItems": [
+            "",
+            "Premium silk\n✓ Antibacterial\n✓ Protects skin & hair"
+          ],
+          "rightItems": [
+            "Synthetic fabrics\n✗ Bacterial breeding ground\n✗ Causes friction with skin & hair"
+          ],
+          "leftBg": "#ffffff",
+          "rightBg": "#19a5b8",
+          "badge": "BUY 3, GET 1 FREE!"
+        }
+      }
+    },
+    {
+      "id": "headline-mr6eqfii-1m",
+      "type": "text",
+      "autoH": true,
+      "role": "headline",
+      "name": "Headline",
+      "text": "Silk",
+      "sizeLocked": true,
+      "box": {
+        "x": 475,
+        "y": 77,
+        "w": 130,
+        "h": 65
+      },
+      "style": {
+        "fontSize": 56,
+        "fontWeight": 800,
+        "color": "#111111",
+        "align": "center",
+        "uppercase": true,
+        "lineHeight": 1.15
+      },
+      "tpl": "comparison",
+      "tplRef": {
+        "key": "headline"
+      }
+    },
+    {
+      "id": "group-mr6eqfii-1n",
+      "type": "group",
+      "name": "Products",
+      "box": {
+        "x": 108,
+        "y": 384,
+        "w": 864,
+        "h": 576
+      },
+      "children": [
+        {
+          "id": "product-mr6eqfii-1o",
+          "type": "shape",
+          "role": "product",
+          "name": "Image · our product",
+          "box": {
+            "x": 108,
+            "y": 384,
+            "w": 324,
+            "h": 576
+          },
+          "style": {
+            "background": "#9aa0a6",
+            "opacity": 0.45,
+            "radius": 13
+          },
+          "tpl": "comparison"
+        },
+        {
+          "id": "product-mr6eqfii-1p",
+          "type": "shape",
+          "role": "product",
+          "name": "Image · their product",
+          "box": {
+            "x": 648,
+            "y": 384,
+            "w": 324,
+            "h": 576
+          },
+          "style": {
+            "background": "#9aa0a6",
+            "opacity": 0.45,
+            "radius": 13
+          },
+          "tpl": "comparison"
+        }
+      ],
+      "tpl": "comparison"
+    },
+    {
+      "id": "badge-mr6eqfii-1q",
+      "type": "badge",
+      "role": "badge",
+      "name": "Badge",
+      "autoH": true,
+      "text": "BUY 3, GET 1 FREE!",
+      "box": {
+        "x": 324,
+        "y": 768,
+        "w": 299,
+        "h": 98
+      },
+      "style": {
+        "fontSize": 28,
+        "fontWeight": 800,
+        "color": "#111111",
+        "background": "#ffe14d",
+        "radius": 32,
+        "align": "center",
+        "uppercase": true,
+        "letterSpacing": 0.5,
+        "padding": 15,
+        "fontFamily": "Impact"
+      },
+      "sizeLocked": true,
+      "paramRef": {
+        "key": "text"
+      },
+      "element": {
+        "id": "badge",
+        "params": {
+          "text": "BUY 3, GET 1 FREE!",
+          "color": "#ffe14d",
+          "textColor": "#111111"
+        },
+        "v": 2
+      },
+      "tpl": "comparison",
+      "tplRef": {
+        "key": "badge"
+      }
+    },
+    {
+      "id": "group-mr6eqfii-1r",
+      "type": "group",
+      "name": "Table",
+      "box": {
+        "x": 54,
+        "y": 1056,
+        "w": 972,
+        "h": 419
+      },
+      "children": [
+        {
+          "id": "card-mr6eqfii-1s",
+          "type": "shape",
+          "role": "card",
+          "name": "OURS column",
+          "box": {
+            "x": 54,
+            "y": 1056,
+            "w": 474,
+            "h": 419
+          },
+          "style": {
+            "background": "#ffffff",
+            "radius": 17,
+            "stroke": {
+              "color": "#2c5cff",
+              "width": 3
+            }
+          },
+          "tpl": "comparison"
+        },
+        {
+          "id": "headline-mr6eqfii-1t",
+          "type": "text",
+          "autoH": true,
+          "role": "headline",
+          "name": "OURS title",
+          "text": "OURS",
+          "box": {
+            "x": 249,
+            "y": 1087,
+            "w": 85,
+            "h": 35
+          },
+          "style": {
+            "fontSize": 35,
+            "fontWeight": 800,
+            "color": "#2c5cff",
+            "align": "center",
+            "uppercase": true,
+            "letterSpacing": 1,
+            "lineHeight": 1
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "leftTitle"
+          },
+          "tpl": "comparison",
+          "tplRef": {
+            "key": "leftTitle"
+          }
+        },
+        {
+          "id": "caption-mr6eqfii-1u",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "OURS mark 1",
+          "text": "✓",
+          "box": {
+            "x": 90,
+            "y": 1175,
+            "w": 39,
+            "h": 127
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 800,
+            "color": "#2c5cff",
+            "align": "left",
+            "lineHeight": 1.25
+          },
+          "sizeLocked": true,
+          "tpl": "comparison"
+        },
+        {
+          "id": "caption-mr6eqfii-1v",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "OURS row 1",
+          "text": "",
+          "box": {
+            "x": 140,
+            "y": 1175,
+            "w": 352,
+            "h": 127
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 600,
+            "color": "#111111",
+            "align": "left",
+            "lineHeight": 1.25
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "leftItems",
+            "index": 0
+          },
+          "tpl": "comparison"
+        },
+        {
+          "id": "caption-mr6eqfii-1w",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "OURS mark 2",
+          "text": "✓",
+          "box": {
+            "x": 90,
+            "y": 1302,
+            "w": 39,
+            "h": 127
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 800,
+            "color": "#2c5cff",
+            "align": "left",
+            "lineHeight": 1.25
+          },
+          "sizeLocked": true,
+          "tpl": "comparison"
+        },
+        {
+          "id": "caption-mr6eqfii-1x",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "OURS row 2",
+          "text": "Premium silk\n✓ Antibacterial\n✓ Protects skin & hair",
+          "box": {
+            "x": 140,
+            "y": 1302,
+            "w": 352,
+            "h": 127
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 600,
+            "color": "#111111",
+            "align": "left",
+            "lineHeight": 1.25
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "leftItems",
+            "index": 1
+          },
+          "tpl": "comparison"
+        },
+        {
+          "id": "card-mr6eqfii-1y",
+          "type": "shape",
+          "role": "card",
+          "name": "THEIRS column",
+          "box": {
+            "x": 552,
+            "y": 1056,
+            "w": 474,
+            "h": 419
+          },
+          "style": {
+            "background": "#f1f3f5",
+            "radius": 17,
+            "stroke": {
+              "color": "#d7dbdf",
+              "width": 2
+            }
+          },
+          "tpl": "comparison"
+        },
+        {
+          "id": "headline-mr6eqfii-1z",
+          "type": "text",
+          "autoH": true,
+          "role": "headline",
+          "name": "THEIRS title",
+          "text": "THEIRS",
+          "box": {
+            "x": 726,
+            "y": 1087,
+            "w": 127,
+            "h": 35
+          },
+          "style": {
+            "fontSize": 35,
+            "fontWeight": 800,
+            "color": "#5f6368",
+            "align": "center",
+            "uppercase": true,
+            "letterSpacing": 1,
+            "lineHeight": 1
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "rightTitle"
+          },
+          "tpl": "comparison",
+          "tplRef": {
+            "key": "rightTitle"
+          }
+        },
+        {
+          "id": "caption-mr6eqfii-20",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "THEIRS mark 1",
+          "text": "✗",
+          "box": {
+            "x": 588,
+            "y": 1175,
+            "w": 39,
+            "h": 127
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 800,
+            "color": "#c2410c",
+            "align": "left",
+            "lineHeight": 1.25
+          },
+          "sizeLocked": true,
+          "tpl": "comparison"
+        },
+        {
+          "id": "caption-mr6eqfii-21",
+          "type": "text",
+          "autoH": true,
+          "role": "caption",
+          "name": "THEIRS row 1",
+          "text": "Synthetic fabrics\n✗ Bacterial breeding ground\n✗ Causes frict",
+          "box": {
+            "x": 638,
+            "y": 1175,
+            "w": 352,
+            "h": 127
+          },
+          "style": {
+            "fontSize": 28,
+            "fontWeight": 600,
+            "color": "#8a8f96",
+            "align": "left",
+            "lineHeight": 1.25
+          },
+          "sizeLocked": true,
+          "paramRef": {
+            "key": "rightItems",
+            "join": true
+          },
+          "tpl": "comparison"
+        }
+      ],
+      "element": {
+        "id": "comparison-table",
+        "params": {
+          "leftTitle": "OURS",
+          "rightTitle": "THEIRS",
+          "leftItems": [
+            "",
+            "Premium silk\n✓ Antibacterial\n✓ Protects skin & hair"
+          ],
+          "rightItems": [
+            "Synthetic fabrics\n✗ Bacterial breeding ground\n✗ Causes frict"
+          ],
+          "accent": "#2c5cff"
+        },
+        "v": 2
+      },
+      "tpl": "comparison"
+    }
+  ],
+  "skeletonId": "skel_mr6eqfih904b",
+  "updatedAt": 1783172278027
+}

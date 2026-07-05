@@ -34,8 +34,9 @@
 //     batch includes the actual render; visionRefine drops 2→1 rounds then
 //
 // Model priority: llmText (DeepSeek / any OpenAI-compatible endpoint) via the BATCHED
-// plan-act-verify harness (lib/agent-harness.mjs runBatchAgent, v5) → codex CLI single-shot
-// (legacy) → deterministic fallback. Lint runs IN the loop and gates "done"; generation mode
+// plan-act-verify harness (lib/agent-harness.mjs runBatchAgent, v5) → deterministic auto-layout
+// fallback (codex was REMOVED — Ornith-only, never shell out to another model). Lint runs IN the
+// loop and gates "done"; generation mode
 // seeds from templates + retrieval exemplars (lib/layout-library.mjs) and samples best-of-N
 // scored by layoutScore. The "draftText" op is an in-loop copywriter with per-layer char
 // budgets computed from the real boxes.
@@ -53,16 +54,19 @@
 //   { "op":"ungroup",  "id" }
 //   { "op":"reparent", "id", "into": groupId|null, "index"? }     (validated but not advertised in the prompt)
 //   { "op":"add",      "layer":{type,role,text,box,style} }       (type:'image' becomes a gray placeholder)
+//   { "op":"cutout",   "box", "region", "src"?, "shape"? }         (LAST RESORT: lift a non-editable
+//                                                                   avatar/logo out of the reference —
+//                                                                   crop sub-rect + auto shape mask)
 //   { "op":"autolayout" }                                          (ZERO-token deterministic layout pass)
 //   { "op":"done",     "summary"? }
 
-import { codexText } from './codex-text.mjs';
 import { llmText, llmVision, hasLlm, llmInfo } from './llm.mjs';
-import { runBatchAgent, parseBatch } from './agent-harness.mjs';
+import { runBatchAgent, parseBatch, runFanOut, makerChecker, nextSubAgentId } from './agent-harness.mjs';
+import { extractLayout } from './layout-extract.mjs';
 import { exemplarBlock, aspectTag, indexLayout, docSkeleton } from './layout-library.mjs';
 import { ELEMENTS, ELEMENT_ALIASES, buildElement, elementCatalogLine, applyElementTextEdit } from './elements.mjs';
 import { buildTemplate, templateCatalog, detectTemplate, applyTemplateTextEdit } from './templates.mjs';
-import { lookAtComp, renderCompPng } from './self-vision.mjs';
+import { lookAtComp, renderCompPng, compareToReference } from './self-vision.mjs';
 
 import { lintDesign, parseColor, luminance } from './design-lint.mjs';
 import { getChat } from './designstore.mjs';
@@ -94,6 +98,8 @@ const STYLE_KEYS = new Set([
   // real frosted panels for over-photo product cards (benchmark 129); renders in DOM/HTML/Figma.
   'rotation', 'strikethrough', 'fontFamily', 'blend', 'blur', 'backdropBlur', 'radiusCorners',
   'shapeKind', 'spikes', 'flipDiag', 'points', 'fit',
+  // cut-out crop: a sub-rect of the SOURCE image (fractions 0..1) — see the {"op":"cutout"} op.
+  'crop',
 ]);
 
 // numeric style keys — '84' is coerced to 84 with a repair note
@@ -113,6 +119,153 @@ const STYLE_ENUMS = {
 const LEAF_TYPES = new Set(['image', 'text', 'badge', 'button', 'shape', 'vignette']);
 
 const clamp = (v, min, max) => Math.max(min, Math.min(max, Number(v) || 0));
+
+// ── Meaningful auto-naming ─────────────────────────────────────────────────────────────────────
+// A layer without an explicit model-supplied name used to fall back to its bare TYPE ("text",
+// "image", "Group"), which then flowed into both the layers panel AND the Figma export. deriveLayerName
+// gives every layer a HUMAN name instead — deterministic, ≤60 chars — so the tree and Figma nodes read
+// like a designer named them. NEVER call this to override a name the model explicitly provided.
+
+/** Title-Case a short text snippet for use as a layer name. Collapses whitespace/newlines,
+ *  strips wrapping quotes, truncates to ~24 chars on a word boundary (…), and caps each word. */
+function titleSnippet(raw, max = 24) {
+  let s = String(raw || '').replace(/\s+/g, ' ').replace(/^["'“”‘’]+|["'“”‘’]+$/g, '').trim();
+  if (!s) return '';
+  if (s.length > max) {
+    const cut = s.slice(0, max);
+    const sp = cut.lastIndexOf(' ');
+    s = (sp > max * 0.5 ? cut.slice(0, sp) : cut).trim() + '…';
+  }
+  // Title-case ASCII words but leave ALL-CAPS acronyms and %/$ tokens alone.
+  return s.replace(/[A-Za-z][A-Za-z'’]*/g, (w) => (
+    w.length > 1 && w === w.toUpperCase() ? w : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+  ));
+}
+
+// role → friendly label for image/shape/group layers with no usable text.
+const ROLE_IMAGE_LABEL = {
+  product: 'Product', avatar: 'Avatar', background: 'Background', bg: 'Background',
+  base: 'Background', logo: 'Logo', photo: 'Photo', hero: 'Hero image', icon: 'Icon',
+  cutout: 'Cut-out',
+};
+const ROLE_TEXT_LABEL = {
+  headline: 'Headline', title: 'Headline', subhead: 'Subhead', subtitle: 'Subhead',
+  body: 'Body', caption: 'Body', eyebrow: 'Eyebrow', price: 'Price', quote: 'Quote',
+  disclaimer: 'Disclaimer', label: 'Label',
+};
+const ROLE_SHAPE_LABEL = {
+  badge: 'Badge', card: 'Card', divider: 'Divider', scrim: 'Scrim', vignette: 'Vignette',
+  decor: 'Decoration', line: 'Divider', pill: 'Pill', panel: 'Panel', chart: 'Chart',
+};
+
+/** Human display name for a layer that has no explicit model-supplied name. Pure + deterministic,
+ *  ≤60 chars. `opts.cutout` forces the image label to "Cut-out"; `opts.placeholder` marks a gray
+ *  image placeholder. Rules:
+ *    text/badge/button → Title-Cased text snippet, else its role label ("Headline"/"Body"/…)
+ *    button            → "<text|role> button"  ("Shop Now button")
+ *    image             → role label ("Product"/"Avatar"/"Background"/"Logo") or "Cut-out"
+ *    shape/group       → role label ("Badge"/"Card"/"Divider") else a sensible type default    */
+export function deriveLayerName(layer, opts = {}) {
+  if (!layer || typeof layer !== 'object') return 'Layer';
+  const type = layer.type;
+  const role = String(layer.role || '').toLowerCase();
+  const snippet = titleSnippet(layer.text);
+
+  if (type === 'button') {
+    const label = snippet || ROLE_TEXT_LABEL[role] || (role && role !== 'button' ? titleSnippet(role) : 'Button');
+    return `${label} button`.slice(0, 60);
+  }
+  if (type === 'text' || type === 'badge') {
+    if (type === 'badge' && !snippet) return (ROLE_SHAPE_LABEL[role] || 'Badge').slice(0, 60);
+    if (snippet) return snippet.slice(0, 60);
+    return (ROLE_TEXT_LABEL[role] || (role ? titleSnippet(role) : 'Text')).slice(0, 60);
+  }
+  if (type === 'image') {
+    if (opts.cutout) return 'Cut-out';
+    if (ROLE_IMAGE_LABEL[role]) return ROLE_IMAGE_LABEL[role];
+    if (opts.placeholder) return 'Image placeholder';
+    // Enhanced: include crop info if present
+    const crop = layer.style && layer.style.crop;
+    if (crop && role) return `${titleSnippet(role)} (cropped)`.slice(0, 60);
+    return role ? titleSnippet(role).slice(0, 60) : 'Image';
+  }
+  if (type === 'group') {
+    return (layer.name || (role ? titleSnippet(role) : 'Group')).slice(0, 60);
+  }
+  // shape / vignette / anything else — enhanced with shapeKind and visual hints
+  if (type === 'shape') {
+    const shapeKind = layer.style && layer.style.shapeKind;
+    const hasGradient = layer.style && layer.style.gradient;
+    const hasStroke = layer.style && layer.style.stroke && layer.style.stroke.width > 0;
+    let base = ROLE_SHAPE_LABEL[role] || (role && role !== type ? titleSnippet(role) : null);
+    if (!base) {
+      if (shapeKind === 'ellipse') base = 'Ellipse';
+      else if (shapeKind === 'polyline') base = 'Polyline';
+      else if (shapeKind === 'arrow' || shapeKind === 'line') base = 'Line';
+      else base = 'Rectangle';
+    }
+    // Add visual descriptors for Figma-friendliness
+    const descriptors = [];
+    if (hasGradient) descriptors.push('gradient');
+    if (hasStroke) descriptors.push('stroked');
+    if (shapeKind === 'starburst') descriptors.push('starburst');
+    if (layer.style && layer.style.backdropBlur) descriptors.push('glass');
+    if (descriptors.length) return `${base} (${descriptors.join(', ')})`.slice(0, 60);
+    return base.slice(0, 60);
+  }
+  // vignette / anything else
+  return (ROLE_SHAPE_LABEL[role] || (role && role !== type ? titleSnippet(role) : titleSnippet(type) || 'Shape')).slice(0, 60);
+}
+
+/** Name for a freshly-formed group with no explicit name: prefer a CTA/product/header cue from
+ *  its children, else the headline/first-text snippet, else "Group". Deterministic, ≤60 chars.
+ *  v2: includes a descriptive suffix from the dominant child content when available. */
+export function deriveGroupName(children) {
+  const kids = Array.isArray(children) ? children : [];
+  const roles = kids.map((n) => String(n?.role || '').toLowerCase());
+
+  // CTA groups: include the button text or role hint
+  if (roles.some((r) => /cta|button/.test(r)) || kids.some((n) => n?.type === 'button')) {
+    const btn = kids.find((n) => n?.type === 'button' || /cta|button/.test(String(n?.role || '')));
+    const snippet = btn ? titleSnippet(btn.text || btn.role || '') : '';
+    return snippet ? `CTA - ${snippet}`.slice(0, 60) : 'CTA';
+  }
+
+  // Product groups: describe what kind of product visual
+  if (roles.some((r) => /product|avatar|photo|hero/.test(r))) {
+    const img = kids.find((n) => /product|avatar|photo|hero/.test(String(n?.role || '')));
+    const roleLabel = img ? titleSnippet(img.role || '') : '';
+    return roleLabel ? `Product - ${roleLabel}`.slice(0, 60) : 'Product';
+  }
+
+  // Header groups: include the headline text
+  if (roles.some((r) => /headline|title|nav|badge/.test(r))) {
+    const head = kids.find((n) => /headline|title|nav/.test(String(n?.role || '')) && n?.text);
+    const snippet = head ? titleSnippet(head.text) : '';
+    return snippet ? `Header - ${snippet}`.slice(0, 60) : 'Header';
+  }
+
+  // Decorative: background shapes, dividers, vignettes
+  const shapeKids = kids.filter((n) => n?.type === 'shape' || n?.type === 'vignette');
+  if (shapeKids.length >= kids.length * 0.6 && kids.length >= 2) {
+    return 'Decorative elements';
+  }
+
+  // Fallback: use the first text snippet
+  const head = kids.find((n) => (n?.type === 'text' || n?.type === 'badge') && n?.text);
+  if (head) return titleSnippet(head.text).slice(0, 60) || 'Group';
+  return 'Group';
+}
+
+/** True when `name` is exactly what deriveLayerName would produce from `layer`'s CURRENT text —
+ *  i.e. the name was auto-derived from text and never user-renamed. Used by setText to keep an
+ *  auto name in sync with edited copy WITHOUT ever clobbering a user/model-chosen name. */
+function nameIsAutoFromText(layer, name) {
+  if (!name || typeof name !== 'string') return false;
+  const type = layer.type;
+  if (type !== 'text' && type !== 'badge' && type !== 'button') return false;
+  return name === deriveLayerName(layer);
+}
 
 // ── Duplicate-suppression ("same product 40 times") ──────────────────────────────────────────
 // An inserted element/product that lands essentially ON TOP of an existing same-kind node is a
@@ -141,6 +294,43 @@ const label = (n) => n.role || n.name || n.id;
 
 let addSeq = 0;
 const newId = (prefix) => `${prefix}-${Date.now().toString(36)}-${(addSeq++).toString(36)}`;
+
+// ── theme-aware backgrounds (server mirror of src/lib/sceneGraph.ts THEME_BG/THEME_FG) ───────────
+// A comp's base + text colors follow the ad's LIGHT / DARK theme rather than a single hardcoded
+// color. THEME_BG is the neutral base fill; THEME_FG is the foreground token the contrast rules
+// flip text to. Extraction derives the theme from the reference background luminance.
+const THEME_BG = { light: '#f7f8fa', dark: '#0c0e14' };
+const THEME_FG = { light: '#111111', dark: '#f5f5f5' };
+
+/** Theme from a background luminance (0..1): darker than mid-grey → 'dark'. Matches the contrast
+ *  rule (bgLum < 0.5) so a comp's base and its text flips stay consistent. */
+export function themeFromLuminance(bgLum) {
+  return typeof bgLum === 'number' && bgLum < 0.5 ? 'dark' : 'light';
+}
+
+/** The base layer a skeleton's `background` dictates, or null when none is warranted. A gradient →
+ *  gradient base; a genuine solid hex → solid base; a PHOTO reference (background null) → null (the
+ *  overlays float over the doc's existing base — NO unwanted flat solid injected). */
+function baseFromSkeletonBackground(bg, canvas) {
+  if (bg && typeof bg === 'object' && bg.from && bg.to) {
+    return {
+      id: newId('base'), type: 'shape', role: 'base', name: 'Base gradient',
+      box: { x: 0, y: 0, w: canvas.w, h: canvas.h },
+      style: {
+        background: bg.from,
+        gradient: { type: 'linear', angle: Math.round(Number(bg.angle) || 180), stops: [{ color: bg.from, pos: 0 }, { color: bg.to, pos: 1 }] },
+      },
+    };
+  }
+  if (typeof bg === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(bg)) {
+    return {
+      id: newId('base'), type: 'shape', role: 'base', name: 'Base color',
+      box: { x: 0, y: 0, w: canvas.w, h: canvas.h },
+      style: { shapeKind: 'rect', background: bg },
+    };
+  }
+  return null;
+}
 
 // ── final-deliverable grouping ─────────────────────────────────────────────────────────────────
 // A finished, usable ad has HIERARCHY, not a flat pile of 50 leaves (Michael: "the agent's output
@@ -193,6 +383,245 @@ export function groupIntoRegions(doc) {
   doc.layers = out;
   normalizeGroups(doc);
   return made;
+}
+
+// ── enhanced semantic grouping (v2) ─────────────────────────────────────────────────────────────
+// `groupIntoRegions` does a basic vertical-band fold for flat docs. `semanticGrouping` goes further:
+// it works on ALREADY-grouped docs too, creating a meaningful 3-level hierarchy (Header / Body / CTA
+// / Product / Decorative) with descriptive sub-group names. Designed for Figma export: layer names
+// read like a designer organized them, nesting depth stays at 3 (Figma-optimal), and every group
+// has bounds encompassing all children.
+
+/** Classify a leaf node into one of 5 semantic categories by role, type, content, and position. */
+function semanticCategory(node, ch) {
+  if (!node || !node.box) return 'body';
+  const role = String(node.role || '').toLowerCase();
+  const type = node.type;
+  const cy = (Number(node.box.y) || 0) / Math.max(1, ch);
+  const cx = (Number(node.box.x) + (Number(node.box.w) || 0) / 2) / Math.max(1, 1);
+
+  // CTA: buttons, CTAs, action-oriented roles
+  if (/cta|button|buy|shop|shop now|order|sign up|subscribe|learn more|get started|add to cart/i.test(role + ' ' + (node.text || ''))) return 'cta';
+  if (type === 'button') return 'cta';
+
+  // Header: top zone + headline/title/nav/badge roles
+  if (/headline|title|nav|logo|header|eyebrow|badge|tag/i.test(role)) return 'header';
+  if (cy < 0.22 && (type === 'text' || type === 'badge')) return 'header';
+
+  // Product: product images, avatars, hero visuals, cut-outs
+  if (/product|avatar|photo|hero|cutout|model|person|face|shot|lifestyle/i.test(role)) return 'product';
+  if (type === 'image' && /product|avatar|photo|hero|cutout/.test(role)) return 'product';
+
+  // Decorative: background shapes, dividers, vignettes, scrim layers
+  if (/scrim|divider|vignette|decor|background|bg|base/.test(role)) return 'decorative';
+  if (type === 'vignette') return 'decorative';
+  if (type === 'shape' && (node.style?.backdropBlur || node.style?.gradient || /scrim|divider/.test(role))) return 'decorative';
+
+  // Body: everything else (captions, descriptions, prices, subheads, body text)
+  return 'body';
+}
+
+/** Descriptive suffix for a semantic group based on the dominant children. */
+function semanticGroupSuffix(category, children) {
+  if (!children || !children.length) return '';
+  const roles = children.map((n) => String(n?.role || '').toLowerCase());
+  const types = children.map((n) => n?.type || '');
+
+  switch (category) {
+    case 'header': {
+      const hasLogo = roles.some((r) => /logo/.test(r));
+      const hasNav = roles.some((r) => /nav|menu/.test(r));
+      const parts = [];
+      if (hasLogo) parts.push('Logo');
+      if (hasNav) parts.push('Nav');
+      const headlineChild = children.find((n) => /headline|title/.test(String(n?.role || '')));
+      if (headlineChild?.text) parts.push(titleSnippet(headlineChild.text));
+      else if (children.some((n) => n?.type === 'badge')) parts.push('Badge');
+      return parts.length ? ` - ${parts.slice(0, 2).join(' & ')}` : '';
+    }
+    case 'product': {
+      const imgs = children.filter((n) => n?.type === 'image');
+      const texts = children.filter((n) => n?.type !== 'image');
+      if (imgs.length === 1 && texts.length === 0) {
+        const roleLabel = ROLE_IMAGE_LABEL[roles.find((r) => ROLE_IMAGE_LABEL[r]) || ''] || '';
+        return roleLabel ? ` - ${roleLabel}` : '';
+      }
+      if (imgs.length > 1) return ` - ${imgs.length} visuals`;
+      return '';
+    }
+    case 'cta': {
+      const btn = children.find((n) => n?.type === 'button' || /cta|button/.test(String(n?.role || '')));
+      if (btn?.text) return ` - ${titleSnippet(btn.text)}`;
+      const label = children.find((n) => n?.text);
+      if (label?.text) return ` - ${titleSnippet(label.text)}`;
+      return '';
+    }
+    case 'decorative': {
+      const kinds = [...new Set(children.map((n) => {
+        if (n?.type === 'vignette') return 'Vignette';
+        if (n?.style?.backdropBlur) return 'Glass';
+        if (n?.style?.gradient) return 'Gradient';
+        if (/scrim/.test(String(n?.role || ''))) return 'Scrim';
+        if (/divider|line/.test(String(n?.role || ''))) return 'Divider';
+        return 'Shape';
+      }))];
+      return kinds.length <= 2 ? ` - ${kinds.join(' & ')}` : ` - ${kinds.length} effects`;
+    }
+    default: return '';
+  }
+}
+
+const SEMANTIC_LABELS = {
+  header: 'Header',
+  body: 'Body',
+  cta: 'CTA',
+  product: 'Product',
+  decorative: 'Decorative',
+};
+
+/**
+ * Enhanced semantic grouping: organizes a doc's layers into a meaningful 3-level hierarchy
+ * with descriptive names. Works on both flat and already-grouped docs. For Figma export:
+ * groups have bounds encompassing all children, names are descriptive, depth stays at 3 max.
+ *
+ * Mutates doc. Returns { groups: number, renamed: number } with counts of changes made.
+ */
+export function semanticGrouping(doc) {
+  const { h: ch } = doc.canvas || { h: 1 };
+  const top = doc.layers || [];
+  let groupsCreated = 0;
+  let namesImproved = 0;
+
+  // Collect all loose leaves (not in any group, not base/background)
+  const loose = [];
+  const keep = [];
+  for (const n of top) {
+    if (!n) continue;
+    if (n.type === 'group') {
+      keep.push(n);
+      // Improve names of existing groups
+      const improved = improveGroupName(n, ch);
+      if (improved !== n.name) { n.name = improved; namesImproved++; }
+    } else if (n.role === 'base' || n.role === 'background') {
+      keep.push(n);
+    } else {
+      loose.push(n);
+    }
+  }
+
+  // Need at least 3 loose leaves to bother grouping
+  if (loose.length < 3) {
+    doc.layers = keep;
+    normalizeGroups(doc);
+    return { groups: 0, renamed: namesImproved };
+  }
+
+  // Classify and bucket
+  const buckets = { header: [], body: [], cta: [], product: [], decorative: [] };
+  for (const n of loose) {
+    const cat = semanticCategory(n, ch);
+    buckets[cat].push(n);
+  }
+
+  // Build groups with descriptive names
+  const out = [...keep];
+  const ORDER = ['header', 'product', 'body', 'cta', 'decorative'];
+  for (const cat of ORDER) {
+    const kids = buckets[cat];
+    if (kids.length >= 2) {
+      const suffix = semanticGroupSuffix(cat, kids);
+      const name = `${SEMANTIC_LABELS[cat]}${suffix}`.slice(0, 60);
+      out.push({
+        id: newId('group'),
+        type: 'group',
+        name,
+        box: groupBounds(kids) || { x: 0, y: 0, w: 0, h: 0 },
+        children: kids,
+      });
+      groupsCreated++;
+    } else if (kids.length === 1) {
+      out.push(kids[0]);
+    }
+  }
+
+  doc.layers = out;
+  normalizeGroups(doc);
+  return { groups: groupsCreated, renamed: namesImproved };
+}
+
+/** Improve an existing group's name if it's generic (Group, unnamed) or can be made more descriptive. */
+function improveGroupName(group, ch) {
+  if (!group || group.type !== 'group') return group?.name || 'Group';
+  const currentName = group.name || '';
+  // Don't override explicitly descriptive names (contain " - " or are specific like "Header - …")
+  if (currentName.includes(' - ') || (currentName.length > 4 && !/^(Group|Layer|Section)$/i.test(currentName))) {
+    return currentName;
+  }
+  // Try to derive a better name from the children
+  const derived = deriveGroupName(group.children || []);
+  if (derived && derived !== 'Group' && derived.length > currentName.length) return derived;
+  return currentName || derived || 'Group';
+}
+
+// ── skeleton → doc (server-side apply, mirrors src/lib/sceneGraph.ts applySkeleton) ───────────────
+// The "copy this reference" build step: fold an extracted skeleton's overlay nodes into the CURRENT
+// doc — fresh ids, boxes + typographic metrics scaled to the doc's canvas, the base image kept, any
+// previous overlay layers replaced. Kept here (not imported from the TS frontend) so the design
+// agent can run copy-reference as an in-editor agent run without a round-trip to the browser.
+function scaleBoxInto(box, from, to) {
+  const sx = to.w / from.w;
+  const sy = to.h / from.h;
+  return {
+    x: Math.round((box.x || 0) * sx),
+    y: Math.round((box.y || 0) * sy),
+    w: Math.round((box.w || 0) * sx),
+    h: Math.round((box.h || 0) * sy),
+  };
+}
+/** Scale the width-relative typographic metrics of a style by `s` (uniform min-axis scale). */
+function scaleStyleMetrics(style, s) {
+  if (!style || typeof style !== 'object') return style;
+  const out = { ...style };
+  for (const k of ['fontSize', 'radius', 'padding', 'letterSpacing']) {
+    if (typeof out[k] === 'number') out[k] = Math.round(out[k] * s * 10) / 10;
+  }
+  if (out.stroke && typeof out.stroke === 'object' && typeof out.stroke.width === 'number') {
+    out.stroke = { ...out.stroke, width: Math.max(1, Math.round(out.stroke.width * s)) };
+  }
+  return out;
+}
+
+/**
+ * Apply an extracted skeleton ({ canvas, layers, background }) onto `doc` in place. Replaces the
+ * doc's non-base overlay layers with the skeleton's (fresh ids, scaled to the doc canvas), keeps
+ * the base image, stamps skeletonId. Returns { added } for the op summary.
+ */
+export function applySkeletonToDoc(doc, skeleton) {
+  const from = skeleton.canvas || doc.canvas;
+  const to = doc.canvas;
+  const s = Math.min(to.w / from.w, to.h / from.h);
+  const fresh = JSON.parse(JSON.stringify(skeleton.layers || []));
+  let count = 0;
+  walkNodes(fresh, (n) => {
+    n.id = newId(n.role || n.type || 'layer');
+    if (n.box) n.box = scaleBoxInto(n.box, from, to);
+    if (n.type !== 'group') {
+      if (n.style) n.style = scaleStyleMetrics(n.style, s);
+      if (n.type === 'text' || n.type === 'badge' || n.type === 'button') n.autoH = true;
+    }
+    count++;
+  });
+  const overlays = fresh.filter((n) => n.type === 'group' || n.role !== 'base');
+  const keptBase = (doc.layers || []).filter((n) => n.type !== 'group' && n.role === 'base');
+  // The reference's OWN background drives the base: a solid/gradient reference replaces the doc's
+  // seeded base with that fill; a PHOTO reference (skeleton.background null) keeps the doc's
+  // existing base untouched — we never auto-inject a flat solid the reference didn't have.
+  const skelBase = baseFromSkeletonBackground(skeleton.background, to);
+  const base = skelBase ? [skelBase] : keptBase;
+  doc.layers = [...base, ...overlays];
+  if (skeleton.id) doc.skeletonId = skeleton.id;
+  normalizeGroups(doc);
+  return { added: overlays.length, nodes: count };
 }
 
 // ── auto-repair helpers ──────────────────────────────────────────────────────────────────────────
@@ -306,6 +735,45 @@ function quantizeRadius(v, doc, excludeId, notes) {
   return v;
 }
 
+// ── cut-out crop (server mirror of src/lib/sceneGraph.ts) ───────────────────────────────────────
+// The rendering foundation lives in src/lib/sceneGraph.ts (LayerStyle.crop + resolveCrop +
+// autoCutoutShape + cropImageCss) and every renderer already draws it. That's a TS module the
+// browser owns; the server keeps a byte-parity JS mirror (same pattern as resolveCropJs in
+// designstore.mjs). These two helpers let the AGENT construct a cut-out image layer server-side.
+
+/** PARITY with sceneGraph.ts resolveCrop: normalize a crop to a sane in-bounds sub-rect (fractions
+ *  0..1 of the SOURCE image), or null for a missing / identity / degenerate crop. */
+function normCropJs(crop) {
+  if (!crop || typeof crop !== 'object') return null;
+  const num = (v, d) => (Number.isFinite(Number(v)) ? Number(v) : d);
+  const x = Math.min(Math.max(num(crop.x, 0), 0), 1);
+  const y = Math.min(Math.max(num(crop.y, 0), 0), 1);
+  const w = Math.min(Math.max(num(crop.w, 1), 0), 1 - x);
+  const h = Math.min(Math.max(num(crop.h, 1), 0), 1 - y);
+  if (!(w > 0) || !(h > 0)) return null;
+  if (x < 1e-6 && y < 1e-6 && w > 1 - 1e-6 && h > 1 - 1e-6) return null;
+  const r = (v) => Math.round(v * 1e6) / 1e6;
+  return { x: r(x), y: r(y), w: r(w), h: r(h) };
+}
+
+/** PARITY with sceneGraph.ts autoCutoutShape: pick the mask shape for a cut-out from the box aspect
+ *  (+ optional hint 'avatar'|'circle'|'logo'|'rounded'|'rect'|'square'). Returns { shape, radius }
+ *  where shape is 'circle' (→ shapeKind:'ellipse') / 'roundedRect' (→ radius) / 'rect'. */
+function autoCutoutShapeJs(box, hint) {
+  const w = Math.max(1, Number(box?.w) || 1);
+  const h = Math.max(1, Number(box?.h) || 1);
+  const ratio = w / h;
+  const longEdge = Math.max(w, h);
+  const radius = Math.round(Math.min(w, h) * 0.12);
+  if (hint === 'avatar' || hint === 'circle') return { shape: 'circle', radius };
+  if (hint === 'rounded') return { shape: 'roundedRect', radius };
+  if (hint === 'rect') return { shape: 'rect', radius: 0 };
+  if (hint === 'logo' || hint === 'square') return { shape: 'roundedRect', radius };
+  if (ratio >= 0.85 && ratio <= 1.18) return { shape: 'circle', radius };
+  if (ratio >= 2.4 || ratio <= 1 / 2.4 || longEdge / Math.min(w, h) >= 2.4) return { shape: 'rect', radius: 0 };
+  return { shape: 'roundedRect', radius };
+}
+
 // ── reactive contrast-pair guard (v4.1) ─────────────────────────────────────────────────────────
 // The existing smartAdRepair contrast flip (lib/ad-context.mjs) only fixes text color against
 // what's UNDERNEATH the layer in the doc (a scrim, a photo, a solid base) and runs as a blanket
@@ -345,19 +813,50 @@ function reactiveContrastGuard(node, changedKeys) {
   const fgLum = luminance(fg);
   const bgLum = luminance(bg);
   if (userSetBg && !userSetColor) {
-    const newColor = bgLum < 0.5 ? '#ffffff' : '#111111';
+    // Dark own-background → light text token, light → dark — the SAME theme mapping the base uses,
+    // so a flipped text color lands on the theme's foreground rather than a divergent hardcoded hex.
+    const newColor = THEME_FG[themeFromLuminance(bgLum)];
     if (newColor.toLowerCase() !== String(color).toLowerCase()) {
       node.style.color = newColor;
       return `auto-flipped color → ${newColor} (was invisible against its background)`;
     }
     return '';
   }
-  const newBg = fgLum < 0.5 ? '#ffffff' : '#111111';
+  // Flip the pill/card fill to the theme background OPPOSITE the text so the two stay legible:
+  // dark text → light surface token, light text → dark surface token.
+  const newBg = THEME_BG[fgLum < 0.5 ? 'light' : 'dark'];
   if (newBg.toLowerCase() !== String(background).toLowerCase()) {
     node.style.background = newBg;
     return `auto-flipped background → ${newBg} (was invisible against text color)`;
   }
   return '';
+}
+
+/**
+ * Contrast SWEEP over a freshly-built subtree (element insert / setParams rebuild): the reactive
+ * guard above only fires on setStyle, so builder-set color+background pairs were never checked
+ * (HARNESS-9) — a rebuilt pill could ship invisible text. Walks every leaf carrying BOTH color and
+ * background and flips the background to the theme surface opposite the text when the pair is
+ * illegible (keeps the builder's text color — matches the guard's flip direction). Returns a note
+ * string ('' when nothing needed fixing).
+ */
+function contrastSweepNote(root) {
+  const fixes = [];
+  walkNodes([root], (n) => {
+    if (!n || n.type === 'group' || !n.style) return;
+    const { color, background } = n.style;
+    if (!color || !background) return;
+    const fg = parseColor(color);
+    const bg = parseColor(background);
+    if (!fg || !bg) return;
+    if (Math.abs(luminance(fg) - luminance(bg)) >= MIN_SELF_CONTRAST) return;
+    const newBg = THEME_BG[luminance(fg) < 0.5 ? 'light' : 'dark'];
+    if (newBg.toLowerCase() !== String(background).toLowerCase()) {
+      n.style.background = newBg;
+      fixes.push(`${n.role || n.type}→${newBg}`);
+    }
+  });
+  return fixes.length ? ` (contrast-fixed: ${fixes.join(', ')})` : '';
 }
 
 // ── short-id alias map ───────────────────────────────────────────────────────────────────────────
@@ -434,7 +933,7 @@ export function applyOp(doc, op, ctx = {}) {
       const def = ELEMENTS.find((e) => e.id === op.element) || (alias && ELEMENTS.find((e) => e.id === alias.id));
       if (!def) throw new Error(`unknown element "${op.element}" — expected one of: ${ELEMENTS.map((e) => e.id).join(', ')}`);
       const inst = buildElement(op.element, doc, op.params || {}, ctx.kit || undefined)[0];
-      if (!inst) return null;
+      if (!inst) throw new Error(`element "${op.element}" failed to build — its builder returned nothing (check the params)`);
       const notes = [];
       if (op.w !== undefined) {
         const nw = clamp(repairNum(op.w, 'w', notes), 40, cw);
@@ -457,22 +956,23 @@ export function applyOp(doc, op, ctx = {}) {
       if (ctx.aliases) ctx.aliases.sync(doc);
       walkNodes([inst], (n) => { if (n.type !== 'group') touchText(n, doc, notes); });
       touch(inst);
-      return `element ${def.id} → ${aliasOf(inst.id)} @ ${inst.box.x},${inst.box.y} ${inst.box.w}×${inst.box.h}${noteStr(notes)}`;
+      const contrastNote = contrastSweepNote(inst); // HARNESS-9: builder-set pairs get checked too
+      return `element ${def.id} → ${aliasOf(inst.id)} @ ${inst.box.x},${inst.box.y} ${inst.box.w}×${inst.box.h}${noteStr(notes)}${contrastNote}`;
     }
 
     case 'setParams': {
-      if (!node) return null;
+      if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation (L1, g2) or a role`);
       if (!node.element || !node.element.id) {
         throw new Error(`${aliasOf(node.id)} is not an element instance — setParams only works on nodes inserted via {"op":"element"}`);
       }
       // instances are stamped with the canonical id, but tolerate alias-stamped older docs
       const elAlias = ELEMENT_ALIASES[node.element.id];
       const def = ELEMENTS.find((e) => e.id === node.element.id) || (elAlias && ELEMENTS.find((e) => e.id === elAlias.id));
-      if (!def) return null;
+      if (!def) throw new Error(`${aliasOf(node.id)}'s element definition no longer exists — it cannot be rebuilt via setParams`);
       if (!op.params || typeof op.params !== 'object') throw new Error('setParams needs a "params" object');
       const merged = { ...node.element.params, ...op.params };
       const fresh = buildElement(node.element.id, doc, merged, ctx.kit || undefined)[0];
-      if (!fresh) return null;
+      if (!fresh) throw new Error(`rebuilding ${aliasOf(node.id)} with those params produced nothing — check the param values`);
       // v2: rebuild keeps POSITION but takes its natural measured size — squeezing the fresh
       // content into the old bounds (geometric scaling) distorted fonts and re-clipped text.
       // A deliberate user resize is honored via the explicit scale ratio when one was applied.
@@ -490,13 +990,14 @@ export function applyOp(doc, op, ctx = {}) {
       fresh.name = node.name;
       if (node.locked) fresh.locked = node.locked;
       const list = findParentList(doc, node.id);
-      if (!list) return null;
+      if (!list) throw new Error(`${aliasOf(node.id)} has no parent list — it was likely removed or regrouped by an earlier op this turn; re-read the state before targeting it`);
       list.splice(list.indexOf(node), 1, fresh);
       normalizeGroups(doc);
       if (ctx.aliases) ctx.aliases.sync(doc);
       touchText(fresh, doc);
       touch(fresh);
-      return `setParams ${aliasOf(fresh.id)} (${def.id}) → ${Object.keys(op.params).join(', ')}`;
+      const contrastNote = contrastSweepNote(fresh); // HARNESS-9
+      return `setParams ${aliasOf(fresh.id)} (${def.id}) → ${Object.keys(op.params).join(', ')}${contrastNote}`;
     }
 
     case 'align': {
@@ -610,7 +1111,11 @@ export function applyOp(doc, op, ctx = {}) {
         return viaParam;
       }
       const notes = [];
+      // Was this layer's name auto-derived from its OLD text (never user/model-renamed)? If so,
+      // refresh it to track the new copy. A user-renamed layer won't match → its name is preserved.
+      const syncName = nameIsAutoFromText(node, node.name);
       node.text = op.text.slice(0, 300);
+      if (syncName) node.name = deriveLayerName(node);
       touchText(node, doc, notes);
       touch(node);
       return `text ${aliasOf(node.id)} → “${node.text.slice(0, 50)}”${noteStr(notes)}`;
@@ -679,7 +1184,7 @@ export function applyOp(doc, op, ctx = {}) {
       if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation (L1, g2) or a role`);
       if (node.role === 'base') throw new Error('the base image cannot be removed');
       const list = findParentList(doc, node.id);
-      if (!list) return null;
+      if (!list) throw new Error(`${aliasOf(node.id)} has no parent list — it was likely removed or regrouped by an earlier op this turn; re-read the state before targeting it`);
       list.splice(list.indexOf(node), 1);
       normalizeGroups(doc);
       return `remove ${aliasOf(node.id)} (${label(node)})`;
@@ -696,7 +1201,9 @@ export function applyOp(doc, op, ctx = {}) {
         throw new Error('group: all ids must share the same parent — ungroup first or pick siblings');
       }
       const box = groupBounds(nodes) || { x: 0, y: 0, w: cw, h: ch };
-      const g = { id: newId('group'), type: 'group', name: op.name ? String(op.name).slice(0, 60) : 'Group', box, children: [] };
+      // explicit group name wins; else name after the dominant child role/text (e.g. "CTA", "Product")
+      const gName = op.name ? String(op.name).slice(0, 60) : deriveGroupName(nodes);
+      const g = { id: newId('group'), type: 'group', name: gName, box, children: [] };
       const insertAt = Math.min(...nodes.map((n) => list.indexOf(n)));
       for (const n of nodes) list.splice(list.indexOf(n), 1);
       g.children = nodes;
@@ -708,9 +1215,10 @@ export function applyOp(doc, op, ctx = {}) {
     }
 
     case 'ungroup': {
-      if (!node || node.type !== 'group') return null;
+      if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation`);
+      if (node.type !== 'group') throw new Error(`${aliasOf(node.id)} is not a group — ungroup only works on group nodes (g1, g2, …)`);
       const list = findParentList(doc, node.id);
-      if (!list) return null;
+      if (!list) throw new Error(`${aliasOf(node.id)} has no parent list — it was likely removed or regrouped by an earlier op this turn; re-read the state before targeting it`);
       const at = list.indexOf(node);
       list.splice(at, 1, ...(node.children || []));
       normalizeGroups(doc);
@@ -722,7 +1230,7 @@ export function applyOp(doc, op, ctx = {}) {
       if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation (L1, g2) or a role`);
       if (node.role === 'base') throw new Error('the base image stays at the back');
       const list = findParentList(doc, node.id);
-      if (!list) return null;
+      if (!list) throw new Error(`${aliasOf(node.id)} has no parent list — it was likely removed or regrouped by an earlier op this turn; re-read the state before targeting it`);
       const to = String(op.to || '');
       if (!['front', 'back', 'forward', 'backward'].includes(to)) {
         throw new Error('"to" must be one of: front|back|forward|backward');
@@ -744,7 +1252,7 @@ export function applyOp(doc, op, ctx = {}) {
       if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation (L1, g2) or a role`);
       if (node.role === 'base') throw new Error('the base image cannot be duplicated');
       const list = findParentList(doc, node.id);
-      if (!list) return null;
+      if (!list) throw new Error(`${aliasOf(node.id)} has no parent list — it was likely removed or regrouped by an earlier op this turn; re-read the state before targeting it`);
       const copy = JSON.parse(JSON.stringify(node));
       walkNodes([copy], (n) => { n.id = newId(n.type || 'layer'); });
       const notes = [];
@@ -784,18 +1292,20 @@ export function applyOp(doc, op, ctx = {}) {
     }
 
     case 'reparent': {
-      if (!node || node.role === 'base') return null;
+      if (!node) throw new Error(`unknown target "${ref}" — use a short id from the observation`);
+      if (node.role === 'base') throw new Error('the base image cannot be reparented');
       const from = findParentList(doc, node.id);
-      if (!from) return null;
+      if (!from) throw new Error(`${aliasOf(node.id)} has no parent list — it was likely removed by an earlier op this turn`);
       let into;
       if (op.into == null) into = doc.layers;
       else {
         const g = resolveNode(doc, op.into, ctx);
-        if (!g || g.type !== 'group') return null;
+        if (!g) throw new Error(`unknown "into" target "${op.into}"`);
+        if (g.type !== 'group') throw new Error(`"into" must be a group — ${aliasOf(g.id)} is a ${g.type}`);
         // never reparent a group into itself/its own subtree
         let cycle = g === node;
         walkNodes(node.type === 'group' ? node.children || [] : [], (n) => { if (n === g) cycle = true; });
-        if (cycle) return null;
+        if (cycle) throw new Error(`cannot reparent ${aliasOf(node.id)} into its own subtree`);
         into = g.children;
       }
       from.splice(from.indexOf(node), 1);
@@ -804,6 +1314,79 @@ export function applyOp(doc, op, ctx = {}) {
       normalizeGroups(doc);
       touch(node);
       return `reparent ${aliasOf(node.id)} → ${op.into || 'root'}[${idx}]`;
+    }
+
+    case 'cutout': {
+      // LAST-RESORT non-destructive lift of a NON-EDITABLE visual element (a profile picture, a
+      // complex logo/icon) out of a REFERENCE image we shouldn't remake — an image layer with a
+      // `crop` sub-rect + a shape mask. NEVER for text or anything we can rebuild as an element.
+      //   box    = destination on the canvas (absolute px)
+      //   region = the sub-rect of the SOURCE image to cut (fractions 0..1 of the source's own w/h)
+      //   src    = which image to cut from (default: the base/reference image this comp is built on)
+      //   shape  = optional hint (else autoCutoutShape decides from box aspect + region)
+      const bx = op.box;
+      if (!bx || typeof bx !== 'object') throw new Error('cutout needs a "box" {x,y,w,h} (destination on the canvas, absolute px)');
+      const region = normCropJs(op.region);
+      if (!region) throw new Error('cutout needs a "region" {x,y,w,h} — the sub-rect of the SOURCE image as fractions 0..1 (e.g. a face at {"x":0.34,"y":0.08,"w":0.32,"h":0.24}); the whole image is not a cut-out');
+      // Resolve the source image. Default: the base/reference image the comp was built on. An
+      // explicit /refasset?id=REF is honored only when it's one of this run's attachments — the
+      // model must never invent srcs (same rule as the `add` op).
+      const baseNode = (doc.layers || []).find((n) => n && n.type === 'image' && n.role === 'base' && typeof n.src === 'string');
+      let src = baseNode ? baseNode.src : null;
+      if (typeof op.src === 'string' && op.src.trim()) {
+        const raw = op.src.trim();
+        const m = /^\/refasset\?id=([\w-]+)$/.exec(raw);
+        if (m && ctx.allowedRefs && ctx.allowedRefs.has(m[1])) src = `/refasset?id=${m[1]}`;
+        else if (baseNode && raw === baseNode.src) src = baseNode.src;
+        // else: an invented/disallowed src → fall through to the base image below.
+      }
+      if (!src) throw new Error('cutout: no source image — this comp has no base/reference image to cut from');
+      const notes = [];
+      const box = {
+        w: clamp(repairNum(bx.w, 'box.w', notes), 40, cw),
+        h: clamp(repairNum(bx.h, 'box.h', notes), 30, ch),
+      };
+      // ASPECT LOCK: the crop renders with a fill/cover contract, so a destination box whose
+      // aspect differs from the source region's would visibly STRETCH the cut-out (a 4:3 face in
+      // a 1:1 box). Preserve the region's aspect by adjusting the box's shorter constraint —
+      // keeps the requested width, derives the height (parity-harness-confirmed behavior).
+      // Region fractions are of the SOURCE image; assume near-square source pixels (refs are
+      // screenshots), so region.w/region.h approximates the true pixel aspect.
+      const regionAspect = region.w > 0 && region.h > 0 ? region.w / region.h : 1;
+      const boxAspect = box.w / box.h;
+      if (Math.abs(boxAspect - regionAspect) / regionAspect > 0.08) {
+        const nh = clamp(Math.round(box.w / regionAspect), 30, ch);
+        notes.push(`box.h ${box.h}→${nh} (matched to the region's aspect so the cut-out doesn't stretch)`);
+        box.h = nh;
+      }
+      box.x = clamp(snapGridNote(clamp(repairNum(bx.x, 'box.x', notes), 0, cw - box.w), cw, 'x', notes), 0, cw - box.w);
+      box.y = clamp(Math.round(repairNum(bx.y, 'box.y', notes)), 0, ch - box.h); // y never grid-snapped
+      const HINTS = ['avatar', 'circle', 'logo', 'rounded', 'rect', 'square'];
+      const hint = HINTS.includes(op.shape) ? op.shape : null;
+      const { shape, radius } = autoCutoutShapeJs(box, hint);
+      const style = { crop: region };
+      if (shape === 'circle') style.shapeKind = 'ellipse';
+      else if (shape === 'roundedRect' && radius > 0) style.radius = radius;
+      // else 'rect' → no shapeKind/radius (plain rectangular crop)
+      const cutoutRole = typeof op.role === 'string' ? op.role.slice(0, 40) : 'cutout';
+      const layer = {
+        id: newId('cutout'),
+        type: 'image',
+        role: cutoutRole,
+        // explicit name wins; else a role label ("Avatar"/"Logo"), defaulting to "Cut-out"
+        name: typeof op.name === 'string' && op.name.trim()
+          ? op.name.slice(0, 60)
+          : deriveLayerName({ type: 'image', role: cutoutRole }, { cutout: cutoutRole === 'cutout' }),
+        src,
+        fit: 'cover',
+        box,
+        style,
+      };
+      doc.layers.push(layer);
+      normalizeGroups(doc);
+      if (ctx.aliases) ctx.aliases.sync(doc);
+      touch(layer);
+      return `cutout ${aliasOf(layer.id)} (${shape}) → ${box.x},${box.y} ${box.w}×${box.h} of ${region.w}×${region.h}@${region.x},${region.y}${noteStr(notes)}`;
     }
 
     case 'add': {
@@ -831,11 +1414,22 @@ export function applyOp(doc, op, ctx = {}) {
         id: newId(type),
         type,
         role: typeof l.role === 'string' ? l.role.slice(0, 40) : type,
-        name: typeof l.name === 'string' ? l.name.slice(0, 60) : (placeholder ? 'Image placeholder' : type),
         box,
       };
-      if (imageSrc) layer.src = imageSrc;
+      // set text FIRST so a text-derived name can see it (placeholders/images carry no text)
       if (!placeholder && type !== 'image' && typeof l.text === 'string') layer.text = l.text.slice(0, 300);
+      // human display name — the model's explicit name wins; else derive from text/role/type.
+      // For a gray image placeholder, prefer a role label ("Product"/"Avatar"/…) computed from the
+      // ORIGINAL image type; only unroled placeholders fall back to "Image placeholder".
+      if (typeof l.name === 'string' && l.name.trim()) {
+        layer.name = l.name.slice(0, 60);
+      } else if (placeholder) {
+        const imgName = deriveLayerName({ type: 'image', role: layer.role }, { placeholder: true });
+        layer.name = imgName === 'Image placeholder' ? 'Image placeholder' : imgName;
+      } else {
+        layer.name = deriveLayerName(layer);
+      }
+      if (imageSrc) layer.src = imageSrc;
       if (placeholder) {
         layer.style = { background: '#9aa0a6', opacity: 0.5, radius: 12 };
       } else if (l.style && typeof l.style === 'object') {
@@ -865,8 +1459,78 @@ export function applyOp(doc, op, ctx = {}) {
     }
 
     default:
-      throw new Error(`unknown op "${op.op}" — expected one of: template, element, setParams, move, center, align, resize, setText, setStyle, draftText, look, order, duplicate, distribute, add, remove, group, ungroup, autolayout, done`);
+      // `look` and `draftText` are HARNESS-level ops: runDesignAgent's applyFn intercepts them
+      // before this switch (they need the run's LLM/vision closures). A standalone applyOp caller
+      // reaching here with one gets a precise error instead of a misleading "unknown op".
+      if (op.op === 'look' || op.op === 'draftText') {
+        throw new Error(`"${op.op}" is only available inside a design-agent run (it needs the run's vision/copywriter context) — not via applyOp directly`);
+      }
+      throw new Error(`unknown op "${op.op}" — expected one of: template, element, setParams, move, center, align, resize, setText, setStyle, draftText, look, order, duplicate, distribute, add, cutout, remove, group, ungroup, autolayout, done`);
   }
+}
+
+// ── layout diagnostics (v7): turn vague commands into concrete facts ──────────────────────────────
+// "fix the spacing" / "fix the alignment" / "tighten it up" are under-specified. Rather than let a
+// tiny model guess, we DETECT the concrete problems deterministically from the scene graph and put
+// them in the observation as SPACING/ALIGN lines the model can act on directly. Only top-level
+// non-base movable leaves+groups in the relevant region are considered; overlaps and uneven
+// vertical rhythm are the two failure modes owners flag. Pure function; never throws.
+
+/** Top-level, movable, on-canvas nodes (non-base, non-locked, has a box) — the layout blocks. */
+function layoutBlocks(doc) {
+  return (doc.layers || []).filter((n) => n && n.role !== 'base' && n.role !== 'background' && !n.locked && n.box && n.box.h > 0);
+}
+
+/**
+ * Deterministic spacing/alignment findings for the CURRENT doc, optionally scoped to a set of node
+ * ids (aliases or real ids resolved by the caller). Returns compact strings:
+ *   "SPACING: L2 and L3 overlap by 24px"
+ *   "SPACING: vertical gaps uneven (12/48/12px) — normalize to ~24px"
+ *   "ALIGN: L2,L4 left edges differ (60 vs 92) — snap to a shared column"
+ * ids: optional Set of REAL node ids to restrict the analysis to (from deriveFocusIds). null = all.
+ */
+export function layoutDiagnostics(doc, aliasOf = (id) => id, ids = null) {
+  const out = [];
+  try {
+    let blocks = layoutBlocks(doc);
+    if (ids && ids.size) blocks = blocks.filter((n) => ids.has(n.id));
+    if (blocks.length < 2) return out;
+    // sort into vertical reading order
+    const col = blocks.slice().sort((a, b) => a.box.y - b.box.y);
+    // 1) OVERLAPS (vertical) — adjacent blocks whose boxes intersect on the y-axis by >4px
+    for (let i = 0; i < col.length - 1; i++) {
+      const a = col[i];
+      const b = col[i + 1];
+      const overlap = (a.box.y + a.box.h) - b.box.y;
+      // only flag when they also overlap horizontally (a true collision, not two side-by-side)
+      const hOverlap = a.box.x < b.box.x + b.box.w && b.box.x < a.box.x + a.box.w;
+      if (overlap > 4 && hOverlap) out.push(`SPACING: ${aliasOf(a.id)} and ${aliasOf(b.id)} overlap by ${Math.round(overlap)}px — separate them`);
+    }
+    // 2) UNEVEN VERTICAL RHYTHM — gaps between consecutive non-overlapping blocks vary a lot
+    const gaps = [];
+    for (let i = 0; i < col.length - 1; i++) {
+      const g = col[i + 1].box.y - (col[i].box.y + col[i].box.h);
+      if (g >= 0) gaps.push(Math.round(g));
+    }
+    if (gaps.length >= 2) {
+      const min = Math.min(...gaps);
+      const max = Math.max(...gaps);
+      const avg = Math.round(gaps.reduce((s, g) => s + g, 0) / gaps.length);
+      // "uneven" = spread is both large in absolute terms and relative to the average
+      if (max - min > 16 && max - min > avg * 0.6) {
+        out.push(`SPACING: vertical gaps uneven (${gaps.join('/')}px) — even them out to ~${avg}px with distribute or move`);
+      }
+    }
+    // 3) MISALIGNED LEFT EDGES — text/blocks that are almost-but-not-quite on a shared column
+    const xs = col.filter((n) => n.type !== 'group').map((n) => ({ id: n.id, x: Math.round(n.box.x) }));
+    for (let i = 0; i < xs.length; i++) {
+      for (let j = i + 1; j < xs.length; j++) {
+        const d = Math.abs(xs[i].x - xs[j].x);
+        if (d > 2 && d <= 24) { out.push(`ALIGN: ${aliasOf(xs[i].id)},${aliasOf(xs[j].id)} left edges differ (${xs[i].x} vs ${xs[j].x}) — snap to one column with align h:left`); }
+      }
+    }
+  } catch { /* diagnostics must never break an observation */ }
+  return out.slice(0, 6);
 }
 
 // ── observation ──────────────────────────────────────────────────────────────────────────────────
@@ -909,7 +1573,7 @@ const boxesIntersect = (a, b) =>
  */
 export function observe(doc, {
   aliases = null, lastTarget = null, budgetTokens = OBS_TOKEN_BUDGET,
-  focusRegion = null, focusIds = null,
+  focusRegion = null, focusIds = null, diagnostics = false,
 } = {}) {
   const aliasOf = (id) => (aliases ? aliases.alias(id) : id);
   const budget = budgetTokens * 4;
@@ -954,6 +1618,12 @@ export function observe(doc, {
       const vctx = visualContextBlock(doc, { aliases, budgetChars: 380 });
       if (vctx) lines.push(vctx);
     } catch { /* observation must never throw */ }
+    // vague-command diagnostics: concrete spacing/alignment problems the model can act on directly
+    // (only injected when the caller asked for them — a "fix the spacing" style instruction).
+    if (diagnostics) {
+      const diag = layoutDiagnostics(doc, aliasOf, idSet);
+      if (diag.length) lines.push(`LAYOUT ISSUES (fix these concretely):\n${diag.join('\n')}`);
+    }
     let i = 0;
     let outside = 0;
     const walk = (nodes, depth) => {
@@ -1022,7 +1692,35 @@ export function buildRunMemory(docId, { chat = null } = {}) {
  *  v4: DESIGN PRINCIPLES block + runMemory ("earlier: …" continuity lines from buildRunMemory).
  *  v5: the "look" op is only advertised when a vision endpoint is configured (opts.vision,
  *  default VISION_BASE_URL) — advertising it on text-only DeepSeek burned ops on doomed calls. */
-export function buildSystemPrompt(instruction, { brief, referenceText, kit, memory, attachments, runMemory, brandSkill, copyLock, vision = !!process.env.VISION_BASE_URL } = {}) {
+// PLATFORM STACKS — per-platform playbook lines with RESEARCH-VERIFIED tokens, so the agent
+// "sees platform X → whips out stack X" instead of inventing colors. Injected into the prompt
+// ONLY for the platform(s) the task/doc actually references (max 2) — the edit budget never pays
+// for seven platforms it isn't touching.
+const PLATFORM_STACKS = {
+  'apple-notes': 'APPLE NOTES stack: {"op":"template","id":"apple-notes"} (or notes-checklist) · nav gold #E2AE0C · checklist done #FDB902 · ink #1C1C1E · muted #8A8A8E · bg #FFF · DARK: bg #000, card #1C1C1E, accent #FFD60A · SF font',
+  'notes-checklist': 'APPLE NOTES CHECKLIST stack: {"op":"template","id":"notes-checklist"} · done badge #FDB902 + white ✓ · nav gold #E2AE0C · ink #1C1C1E · SF font',
+  imessage: 'IMESSAGE stack: {"op":"template","id":"imessage"} · sent #0A84FF (white text) · received #E9E9EB (black text; DARK #262626) · tint #007AFF · timestamps #8E8E93 · bubble radius ≈18 · SF font · for GREEN/SMS use template "sms" (#34C759) — real SMS is never blue',
+  sms: 'SMS stack: {"op":"template","id":"sms"} · GREEN sent #34C759 · "Text Message" composer · otherwise identical iOS chrome; never blue bubbles',
+  'ig-dm': 'IG DM stack: {"op":"template","id":"ig-dm"} · card #0C1014 (never pure black) · received #262626 text #E9E9EE · sent gradient #A033FF→#0AA6FF · muted #A8A8A8',
+  'ig-feed-post': 'IG FEED stack: {"op":"template","id":"ig-feed-post"} · ink #262626 · muted #737373 · hairline #DBDBDB · verified #0095F6 · DARK: bg #0C1014 text #F5F5F5 muted #A8A8A8',
+  'story-native': 'IG STORY stack: {"op":"template","id":"story-native"} + ig-caption pill elements · white pill + #0A0A0A text (DARK: black pill + white text) · pill fs ≈4.6% of min(w,h)',
+  'x-post-ad': 'X POST stack: {"op":"template","id":"x-post-ad"} · bg #000 · ink #E7E9EA · muted #71767B · verified #1D9BF0 · Chirp ≈ base grotesk (leave fontFamily unset)',
+  'fb-post': 'FACEBOOK stack: {"op":"template","id":"fb-post"} · card #FFF · ink #050505 · secondary #65676B · blue #1877F2 · divider #CED0D4 · DARK: bg #18191A card #242526 text #E4E6EB · system font',
+};
+
+/** The stack lines relevant to THIS task: platform named in the instruction + platform(s) the doc
+ *  is already built from (tpl provenance stamps). Max 2 lines to protect the edit budget. */
+export function platformStackLines(instruction, doc) {
+  const hits = new Set();
+  const det = detectTemplate(String(instruction || ''));
+  if (det && PLATFORM_STACKS[det]) hits.add(det);
+  try {
+    walkNodes(doc?.layers || [], (n) => { if (n.tpl && PLATFORM_STACKS[n.tpl]) hits.add(n.tpl); });
+  } catch { /* best-effort */ }
+  return [...hits].slice(0, 2).map((k) => PLATFORM_STACKS[k]);
+}
+
+export function buildSystemPrompt(instruction, { brief, referenceText, kit, memory, attachments, runMemory, brandSkill, copyLock, vague = false, lintBaseline = '', platformStack = [], vision = !!process.env.VISION_BASE_URL } = {}) {
   const ctx = [];
   if (Array.isArray(runMemory)) for (const line of runMemory.slice(-3)) ctx.push(String(line).slice(0, 120));
   if (brief) ctx.push(`Brief/copy: ${String(brief).slice(0, 400)}`);
@@ -1037,6 +1735,8 @@ export function buildSystemPrompt(instruction, { brief, referenceText, kit, memo
   }
   if (brandSkill) ctx.push(`BRAND SKILL:\n${String(brandSkill).slice(0, 1200)}`);
   if (memory) ctx.push(`WORKSPACE NOTES: ${String(memory).slice(-500)}`);
+  if (lintBaseline) ctx.push(String(lintBaseline).slice(0, 400)); // HARNESS-11: edit runs start with the known findings
+  for (const line of platformStack || []) ctx.push(line); // native-platform playbook (only when relevant)
   const atts = Array.isArray(attachments) ? attachments.filter((a) => a && a.ref).slice(0, 3) : [];
   atts.forEach((a, i) => {
     const note = a.note ? ` (${String(a.note).slice(0, 80)})` : '';
@@ -1082,6 +1782,8 @@ ELEMENTS — prefer {"op":"element"} over raw add; every param is optional (good
 ${catalog}
 Param notes: list params like items[] REPLACE the text param (ig-caption items[] = one pill per line); series = [{label,color,points:0..1}].
 
+{"op":"cutout","box":{px},"region":{src 0..1},"shape"?} LAST RESORT: mask a fixed ref (face/logo); not text.
+
 DESIGN PRINCIPLES:
 - HIERARCHY: read order headline > subhead > body/caption > cta > legal. The headline is the ONE
   dominant size (≈2× the subhead) — one glance must show where to look.
@@ -1095,31 +1797,27 @@ DESIGN PRINCIPLES:
   middle, cta bottom ~15%). Keep style.align consistent with the box: centered box → "align":"center".
 - Breathing room: generous, CONSISTENT spacing; never crowd edges. Compose, don't scatter.
 - Text must contrast with what's behind it (scrim/pill if needed) — legibility beats prettiness.
-- CONTRAST PAIRS: when changing "color" OR "background" on a node that has BOTH set (pill/badge/card,
-  e.g. ig-caption), a literal one-property edit can leave the pair invisible (black text on a
-  near-black pill). ALSO adjust the paired property so it reads, and say so in your plan (e.g.
-  "caption text black, flipped its pill to white"). Same check in reverse when changing a background
-  under colored text.
-- DARK MODE on platform elements = that platform's REAL dark theme, never a naive invert. Match the
-  platform from element id/role and apply its bg/text/accent as a SET, naming it in your plan:
-  Instagram (ig-*): bg #0C1014, text #F5F5F5, muted #A8A8A8 · Apple Notes: bg #000000 (card #1C1C1E),
-  white text, accent #FFD60A (not #FFCC00) · iMessage: sent bubble STAYS #0A84FF, received → #262626 ·
-  X post: already dark (#000000) — usually a color no-op. Non-platform elements: true near-black bg +
-  light text (not inverted photo colors), per CONTRAST PAIRS.
-- If fsΔ shows in observation, fix that layer's fontSize toward the TYPE SIZES above.
+- CONTRAST PAIRS: on a node with BOTH color+background set (pill/badge/card, e.g. ig-caption),
+  a one-property edit can go invisible (black text on a near-black pill). Adjust the PAIRED
+  property too and say so in your plan; same check in reverse under colored text.
+- DARK MODE = the platform's REAL dark theme (from element id/role), applied as a bg/text/accent SET,
+  never a naive invert: ig-* bg #0C1014 text #F5F5F5 · Apple Notes bg #000 (card #1C1C1E) accent #FFD60A ·
+  iMessage sent STAYS #0A84FF, received #262626 · X already #000. Others: near-black bg + light text.
+- If fsΔ shows in observation, fix that layer's fontSize toward the TYPE SIZES above.${vague ? '\n- VAGUE ASK → obey each LAYOUT ISSUES line exactly (position ops only, off blocks only); none = clean.' : ''}
 - VISUAL CONTEXT lines show what's under each layer (photo/solid) and warnings (wide-on-photo, tiny-type).
 - NEVER place wide text (>70% canvas) directly on a photo — pill/scrim or narrow the box.
 - ONE archetype per comp — never stack two archetypes or duplicate an element in the same spot
   (duplicates are auto-suppressed).${attRule}
 
-EXAMPLE TURN (imitate this shape exactly):
+EXAMPLE TURN (imitate the JSON SHAPE only — the color below is a random placeholder, NEVER copy it
+literally; always derive real colors from the doc's own brand-kit/background/context):
 State shows: [2] L2 headline text 80,120 700x120 "BIG SALE" {fs:84,w:800,#ffffff} · [4] L4 cta button 80,900 320x90
 Task: "move the headline lower and make the CTA stand out"
 Reply:
-{"plan":"drop headline to the lower third, give the cta a brand pill","ops":[{"op":"move","id":"L2","x":80,"y":620},{"op":"setStyle","id":"L4","style":{"background":"#2c5cff","color":"#ffffff"}}],"done":false}
+{"plan":"drop headline to the lower third, give the cta a brand pill","ops":[{"op":"move","id":"L2","x":80,"y":620},{"op":"setStyle","id":"L4","style":{"background":"#e8734a","color":"#ffffff"}}],"done":false}
 Next turn, if state + lint look right: {"plan":"both edits landed clean","ops":[],"done":true}
 
-${copyLock ? 'COPY LOCK: this comp keeps its reference copy VERBATIM — setText/draftText are disabled; edit position, size, color and structure only.\n' : ''}HOUSE RULES (auto-enforced after every op — work WITH them, never fight them):
+${copyLock ? 'COPY LOCK: this comp keeps its reference copy VERBATIM — setText/draftText are disabled, fontFamily is LOCKED (the reference\'s typography IS part of the copy — adjust size/weight/color, never the face), and new elements/templates are off-limits unless the user asks; edit position, size, color and structure only.\n' : ''}HOUSE RULES (auto-enforced after every op — work WITH them, never fight them):
 - x soft-snaps to a 12-column grid (±8px); y is never snapped.
 - colors near a brand-kit color snap to the kit (kits with 2+ colors); radii quantize to the doc's radius set.
 - text height auto-grows to fit content (autoH); opt out with {"op":"setStyle","style":{"autoH":false}}.
@@ -1128,21 +1826,11 @@ ${copyLock ? 'COPY LOCK: this comp keeps its reference copy VERBATIM — setText
 - setStyle on a color/background that would leave text invisible against its own pill/card fill
   auto-flips the OTHER property to a contrasting value — you don't need to also do this yourself,
   but plan for it and mention the trade-off (e.g. "black text will need a light pill") up front.
-Op feedback lines show what the rules changed, e.g. "(repaired: x 63→60 (grid), color #2b5bfe→#2c5cff (kit))".
+Op feedback lines show what the rules changed, e.g. "(repaired: x 63→60 (grid), color #f2903f→#e8734a (kit))".
 ${ctx.length ? `\nCONTEXT:\n${ctx.join('\n')}\n` : ''}
 TASK: ${instruction}
 
 Reply with ONE JSON object per turn: {"plan":"…","ops":[…],"done":false}. Set "done":true when the task is complete and lint is clean (ops may be [] then). No prose, no code fences. Prefer few, decisive ops — autolayout + element beats many tiny setStyle calls.`;
-}
-
-/** Pull the first JSON array out of a codex reply (tolerates prose/code fences). */
-function parseOpsArray(text) {
-  const m = String(text || '').match(/\[[\s\S]*\]/);
-  if (!m) return null;
-  try {
-    const arr = JSON.parse(m[0]);
-    return Array.isArray(arr) ? arr.slice(0, MAX_OPS) : null;
-  } catch { return null; }
 }
 
 // Deterministic fallback: classic direct-response layout pass. Bounded, always valid.
@@ -1193,10 +1881,78 @@ export function isChitChat(s) {
   // "why did you change that?", "it keeps making changes". REQUESTS ("can you make…") run.
   if (/^(why|what|when|who|how come|did you|are you|were you|do you)\b/.test(t)) return true;
   if (/\b(keeps?|stop|don'?t)\b.+\b(making|changing|doing|moving)\b/.test(t)) return true;
-  const editIntent = /\b(add|move|resize|change|make|set|remove|delete|swap|replace|generate|create|align|center|rewrite|fix|bigger|smaller|color|colour|template|caption|headline|cta|bubble|text|layout|design|font|image|pill|badge)\b/;
   const question = /\?\s*$/.test(t);
-  if (question && !editIntent.test(t)) return true;
+  if (question && !EDIT_INTENT_RE.test(t)) return true;
   return false;
+}
+
+// ── INTENT GATE (v7): classify chat vs edit vs copy at the START of a run ──────────────────────────
+// Michael: saying "Yo" still locks the canvas and runs edit ops. The intent gate classifies the
+// user's message FIRST so a greeting/thanks/meta-question stays conversational (kind:'chat',
+// locked:false, ZERO ops) while a real change (kind:'edit') or a "copy this reference" ask
+// (kind:'copy') proceeds into the op loop. Cheap heuristic first; an AMBIGUOUS short message gets
+// one quick ornith intent check. The contract the frontend gates the canvas lock on:
+//   kind:'chat' → locked:false (no lock, no ops)   ·   kind:'edit'|'copy' → locked:true (op loop)
+export const RUN_KINDS = ['chat', 'edit', 'copy'];
+
+// A real imperative EDIT verb or a concrete design noun — the signal that a message is an actual
+// change to the comp, not small talk. Shared by isChitChat and classifyIntent.
+const EDIT_INTENT_RE = /\b(add|move|resize|change|make|set|remove|delete|swap|replace|generate|create|align|center|centre|rewrite|fix|tighten|tidy|clean|cleanup|space|spacing|gap|nudge|shift|rotate|flip|crop|recolou?r|bigger|smaller|larger|wider|taller|bolder|shrink|enlarge|colou?r|template|caption|headline|subhead|cta|button|bubble|text|copy|layout|design|font|image|photo|logo|pill|badge|price|offer|margin|padding|balance|contrast|hierarchy)\b/;
+
+// "copy this reference / make it look like / match this" — a distinct intent that rebuilds the
+// comp FROM a reference. Recognized so the frontend can label the run and (with a reference
+// attached) route to the copy pipeline. Purely lexical; the actual copy path also needs a
+// reference image (opts.reference) to fire.
+const COPY_INTENT_RE = /\b(copy|clone|recreate|replicate|reproduce|mimic|match)\b.*\b(this|that|the|reference|ref|image|design|ad|it|layout)\b|\b(make|do) (it|this) (look )?like\b|\blike (this|that|the) (reference|ref|image|design|ad)\b/;
+
+/**
+ * Cheap deterministic intent heuristic. Returns 'chat' | 'edit' | 'copy' | null (null = ambiguous,
+ * caller may escalate to a quick ornith check). Pure function of the message text + whether a
+ * reference image is attached to the run.
+ */
+export function heuristicIntent(instruction, { hasReference = false } = {}) {
+  const t = String(instruction || '').trim().toLowerCase();
+  if (!t) return 'chat';
+  // an explicit copy ask (only meaningful when a reference is actually attached)
+  if (hasReference && COPY_INTENT_RE.test(t)) return 'copy';
+  // clear chit-chat / meta → chat
+  if (isChitChat(t)) return 'chat';
+  // clear edit signal → edit
+  if (EDIT_INTENT_RE.test(t)) return 'edit';
+  // short and no edit signal and not obviously chat → ambiguous (let ornith decide). Longer
+  // messages without any edit verb are unusual; treat as edit (the model can no-op) rather than
+  // burning a classify call — the risk we guard against is the SHORT greeting, not a paragraph.
+  if (t.length <= 24) return null;
+  return 'edit';
+}
+
+/**
+ * Classify a run's intent as 'chat' | 'edit' | 'copy'. Heuristic first (free, deterministic);
+ * only an AMBIGUOUS short message triggers one cheap ornith intent check. The ornith check is
+ * strictly conservative — anything that isn't a confident CHAT falls back to EDIT so no real
+ * instruction is ever swallowed. Never throws; a failed/absent model degrades to 'edit'.
+ *
+ * opts: { hasReference?, llmCall?, signal? }
+ * Returns { kind, via:'heuristic'|'model'|'fallback', reply? } — `reply` is only set when the
+ * model was asked and volunteered a short conversational line for a chat classification.
+ */
+export async function classifyIntent(instruction, { hasReference = false, llmCall = null, signal = null } = {}) {
+  const h = heuristicIntent(instruction, { hasReference });
+  if (h) return { kind: h, via: 'heuristic' };
+  // ambiguous: a quick ornith intent check. Conservative — only a confident "chat" wins.
+  const call = llmCall || llmText;
+  try {
+    if (signal?.aborted) return { kind: 'edit', via: 'fallback' };
+    const r = await call(
+      `A user is talking to an ad-design assistant that edits a design canvas. Classify their message as exactly one word:\n- "chat" if it is a greeting, thanks, small talk, or a question ABOUT the assistant (not a change to the design)\n- "edit" if it asks to change/create/fix anything in the design\nMessage: "${String(instruction).slice(0, 200)}"\nReply with ONLY the single word chat or edit.`,
+      { system: 'You are an intent classifier. Reply with exactly one word: chat or edit.', maxTokens: 400, purpose: 'design-intent', signal, temperature: 0 },
+    );
+    if (r && r.ok && typeof r.text === 'string') {
+      const word = r.text.toLowerCase();
+      if (/\bchat\b/.test(word) && !/\bedit\b/.test(word)) return { kind: 'chat', via: 'model' };
+    }
+  } catch { /* classify is best-effort — never blocks a run */ }
+  return { kind: 'edit', via: 'fallback' };
 }
 
 // ── FAST PATH (v6): trivial edits skip the full observe→plan→verify machinery ─────────────────
@@ -1208,6 +1964,21 @@ const FAST_VERB = /\b(make|set|change|move|nudge|center|centre|align|resize|rena
 const FAST_TARGET = /\b(headline|title|subhead|subheading|subline|caption|body|cta|button|badge|logo|price|pill|label|tagline|offer|text|copy|word(?:ing)?|it|this|that|l\d+|g\d+)\b/;
 // anything that smells multi-part, generative, or structural stays on the full loop
 const FAST_BLOCK = /\b(generate|create|design|redesign|rebuild|redo|template|layout|autolayout|everything|whole|entire|all the|from scratch|then|also|after that|as well)\b|&|\bplus\b/;
+
+// A vague LAYOUT command ("fix the spacing", "tighten it up", "fix the alignment", "make it
+// cleaner", "even it out") — under-specified asks that must map to CONCRETE spacing/alignment ops.
+// When matched, the observation ships the deterministic LAYOUT ISSUES block so the model acts on
+// facts, not guesses. Kept separate from FAST_* so a vague ask can still use the fast path but
+// with diagnostics turned on.
+const VAGUE_LAYOUT_RE = /\b(spacing|spaced?|space it|alignment|aligned?|align it|line ?it ?up|tighten|tidy|clean\s*(it|this|up)?|cleaner|neaten|even(?:\s*(it|them))?\s*out|balance|breathing room|too (?:cramped|tight|crowded|close|much space)|overlap|overlapping|not aligned|off\s*center|uneven|messy|declutter|fix the (?:layout|gaps?))\b/i;
+
+/** True when the instruction is a vague layout/spacing/alignment ask that benefits from the
+ *  deterministic LAYOUT ISSUES diagnostics block in the observation. */
+export function isVagueLayoutCommand(instruction) {
+  const t = String(instruction || '').trim().toLowerCase();
+  if (!t) return false;
+  return VAGUE_LAYOUT_RE.test(t);
+}
 
 /** True when `instruction` is a single trivial edit (short + edit verb + identifiable target,
  *  or any short edit ask when focusIds pin the target) that the fast path can run in 1-2 turns. */
@@ -1238,9 +2009,49 @@ export function deriveFocusIds(doc, instruction) {
   return ids.slice(0, 8);
 }
 
+// ── ORCHESTRATOR: decompose an edit into ≤3 independent region subtasks ────────────────────────────
+// A task decomposes when the user's instruction touches SEVERAL distinct regions of the comp that
+// can be worked independently (e.g. "restyle the header AND fix the CTA AND tidy the footer"). We
+// map the instruction onto the comp's region bands (header/body/product/cta), keep only the regions
+// the instruction actually names, and emit one subtask per region (each with the region's node ids
+// as its focus). Returns [] when the task does NOT decompose (≤1 region named, or too few nodes) so
+// the caller falls back to the normal single loop — we NEVER fan out a task that doesn't split.
+const REGION_KEYWORDS = {
+  header: ['header', 'headline', 'title', 'nav', 'logo', 'top', 'badge'],
+  body: ['body', 'caption', 'subhead', 'text', 'paragraph', 'middle', 'copy'],
+  product: ['product', 'image', 'photo', 'avatar', 'picture', 'shot'],
+  cta: ['cta', 'button', 'footer', 'bottom', 'call to action', 'buy', 'shop'],
+};
+/**
+ * Split an edit instruction into independent region subtasks. Returns
+ * [{ region, ids:[nodeId…], hint }] for the regions the instruction names (max 3), or [] when the
+ * task doesn't cleanly decompose. Deterministic — pure function of (doc, instruction).
+ */
+export function decomposeEditIntoRegions(doc, instruction) {
+  const t = String(instruction || '').toLowerCase();
+  const ch = (doc.canvas && doc.canvas.h) || 1;
+  // multi-part intent signal: the instruction must actually describe several things
+  const conjunctions = (t.match(/\band\b|;|,|\bthen\b|\balso\b/g) || []).length;
+  if (conjunctions < 1) return [];
+  // bucket the comp's real leaves into region bands
+  const buckets = { header: [], body: [], product: [], cta: [] };
+  walkNodes(doc.layers || [], (n) => {
+    if (!n || n.type === 'group' || n.role === 'base' || n.role === 'background' || !n.box) return;
+    try { buckets[leafRegion(n, ch)].push(n.id); } catch { /* skip */ }
+  });
+  const named = [];
+  for (const region of REGION_SEQ) {
+    if (!buckets[region] || !buckets[region].length) continue;
+    const kws = REGION_KEYWORDS[region] || [region];
+    if (kws.some((k) => t.includes(k))) named.push({ region, ids: buckets[region], hint: REGION_LABEL[region] });
+  }
+  // decomposes only when the instruction independently names 2+ populated regions
+  return named.length >= 2 ? named.slice(0, 3) : [];
+}
+
 /** Minimal fast-path system prompt (~15% of the full one): the trivial-op subset, placement
  *  rules, done-in-same-reply. No template/element catalogs, no design-principles essay. */
-export function buildFastPrompt(instruction, { copyLock = false } = {}) {
+export function buildFastPrompt(instruction, { copyLock = false, vague = false } = {}) {
   return `You edit an ad comp's scene graph. This is a SMALL edit — finish it in ONE reply.
 Reply with ONE JSON object: {"plan":"<one short sentence>","ops":[…1-3 ops…],"done":true}. No prose, no code fences.
 Address nodes by short id (L1, g2) or role. Coordinates are absolute px. Never touch role "base" or locked nodes.
@@ -1248,7 +2059,8 @@ Address nodes by short id (L1, g2) or role. Coordinates are absolute px. Never t
 OPS (exact shapes):
 {"op":"move","id":"L3","x":60,"y":120}
 {"op":"center","id":"L3","axis":"x"}   (axis: x|y|both — exact canvas centering, never compute it yourself)
-{"op":"align","id":"L3","h":"center","v":"bottom"}   (h: left|center|right · v: top|middle|bottom)
+{"op":"align","ids":["L2","L3"],"h":"left"}   (snap edges to ONE column · h: left|center|right · v: top|middle|bottom)
+{"op":"distribute","ids":["L2","L3","L4"],"axis":"y"}   (3+ stacked blocks → equal gaps)
 {"op":"resize","id":"L3","w":400,"h":120}
 {"op":"setText","id":"L3","text":"…"}
 {"op":"setStyle","id":"L3","style":{"fontSize":84,"fontWeight":800,"color":"#111111"}}   (plain text layers — the DEFAULT choice)
@@ -1258,7 +2070,12 @@ OPS (exact shapes):
 RULES:
 - "bigger"/"smaller" on text ≈ ±25% fontSize via setStyle (setParams only when the line shows el:…).
 - Centered/moved text: use "center"/"align", and keep style.align consistent with the box.
-- Do exactly what was asked — nothing extra.${copyLock ? '\n- COPY LOCK: text is verbatim-locked — setText is disabled; edit position/size/color only.' : ''}
+- Do exactly what was asked — nothing extra.${copyLock ? '\n- COPY LOCK: text is verbatim-locked — setText is disabled; edit position/size/color only.' : ''}${vague ? `
+- VAGUE ASK: the observation has a LAYOUT ISSUES block naming the EXACT problems — act on those ids.
+  · spacing → separate overlaps with "move"; even vertical gaps with "distribute" (3+) or "move".
+    Spacing is POSITION only — do NOT resize or restyle.
+  · alignment → snap the named blocks' left edges to one column with {"op":"align","ids":[…],"h":"left"}.
+  · If LAYOUT ISSUES is empty, the layout is already clean — reply {"plan":"already clean","ops":[],"done":true}.` : ''}
 
 TASK: ${instruction}
 
@@ -1277,26 +2094,120 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
     steps.push(step);
     onStep({ runId, step });
   };
+  // ABORT (v7): the stop button must halt a run PROMPTLY. runBatchAgent already checks opts.signal
+  // between turns AND between ops (and passes it to every llmCall so the in-flight request aborts);
+  // this helper lets the MULTI-PHASE orchestration in runDesignAgent (generate best-of, fan-out
+  // gather, vision-refine, self-check, final passes) bail out between phases too, so no phase runs
+  // after the user hit stop. Applied ops are preserved on `work` — a clean partial, never corrupt.
+  const aborted = () => !!(opts.signal && opts.signal.aborted);
 
   try {
+    // ── INTENT GATE (v7) ─────────────────────────────────────────────────────────────────────────
+    // Classify the message FIRST so a greeting/thanks/meta-question ("yo", "nice", "what can you
+    // do?") stays conversational — NO canvas lock, NO scene read, ZERO ops — while a real change
+    // runs the op loop. improve/generate modes are always edits; a run with a reference image is a
+    // copy. The `kind` (chat|edit|copy) drives the frontend lock contract: locked ⇔ kind≠'chat'.
+    // Emitted on the run-START event so the other agent can gate the canvas lock before the first op.
+    const hasReference = !!(opts.reference && opts.reference.path);
+    let kind;
+    if (opts.mode === 'improve' || opts.mode === 'generate') kind = 'edit';
+    else if (hasReference) kind = 'copy';
+    else {
+      const cls = await classifyIntent(instruction, { hasReference, llmCall: opts.llmCall || null, signal: opts.signal || null });
+      kind = cls.kind;
+    }
+    const locked = kind !== 'chat';
+    // Run-start contract for the frontend: kind + locked land on the FIRST event of the run so the
+    // canvas lock is gated before any op (locked ONLY when kind==='edit'|'copy').
+    onStep({ runId, start: true, kind, locked });
+
     // Conversational gate: chit-chat gets a chat reply, ZERO doc reads, zero ops — "yo" must
-    // never re-layout an ad. Only plain edit-mode messages hit this path.
-    if (opts.mode !== 'improve' && opts.mode !== 'generate' && isChitChat(instruction)) {
+    // never re-layout an ad. locked:false so the client never locks the canvas.
+    if (kind === 'chat') {
       const call = opts.llmCall || llmText;
-      const r = await call(`You are the design agent inside an ad editor. The user said: "${String(instruction).slice(0, 200)}". Reply in ONE friendly sentence (you may reference that you edit designs when asked). Plain text.`, {
-        system: 'Reply with one short sentence, no JSON.', maxTokens: 800, purpose: 'design-chat',
-      });
-      if (r.usage) { usage.inTok += r.usage.inTok || 0; usage.outTok += r.usage.outTok || 0; }
-      const reply = (r.ok && r.text ? r.text : 'Ready when you are — tell me what to change.').trim().slice(0, 200);
+      let reply = 'Ready when you are — tell me what to change.';
+      if (!(opts.signal && opts.signal.aborted)) {
+        const r = await call(`You are the design agent inside an ad editor. The user said: "${String(instruction).slice(0, 200)}". Reply in ONE friendly sentence (you may reference that you edit designs when asked). Plain text.`, {
+          system: 'Reply with one short sentence, no JSON.', maxTokens: 800, purpose: 'design-chat', signal: opts.signal || null,
+        });
+        if (r.usage) { usage.inTok += r.usage.inTok || 0; usage.outTok += r.usage.outTok || 0; }
+        reply = (r.ok && r.text ? r.text : reply).trim().slice(0, 200);
+      }
       emit('op', reply, { chat: true });
-      onStep({ runId, done: true });
+      onStep({ runId, done: true, kind, locked: false });
       const lint = lintDesign(JSON.parse(JSON.stringify(doc)), opts.kit || null);
       return {
-        doc, steps, source: 'chat', runId, applied: 0, usage, lint,
+        doc, steps, source: 'chat', kind: 'chat', locked: false, runId, applied: 0, usage, lint,
         totals: { turns: 1, parts: 1, inTok: usage.inTok, outTok: usage.outTok },
         layoutScore: layoutScore(doc, opts.kit || null),
         verify: verifyDesign(doc, { kit: opts.kit || null, skeletonId: doc.skeletonId }),
       };
+    }
+
+    // ── COPY-REFERENCE as an in-editor agent RUN ────────────────────────────────────────────────
+    // "copy this reference" is an AGENT ACTION, not a separate pipeline: when the caller hands the
+    // run a reference image (opts.reference.path), the design agent extracts its layout and builds
+    // it INTO the current doc, streaming the SAME unified vocabulary (thinking / subagent / op /
+    // verify) as a normal edit — so the editor's activity panel renders it identically. The
+    // standalone extractLayout endpoint still works; this just lets the loop invoke the same core.
+    if (opts.reference && opts.reference.path) {
+      const out = await runCopyReference(doc, opts.reference, emit, { ...opts, runId });
+      // COPY SELF-CHECK (multi-pass, checks its own work — copy-from-reference is THE product's
+      // most important flow): render the ASSEMBLED copy, compare it against the original
+      // reference with vision, and run ONE constrained corrective round on the visible
+      // differences. Text and fonts stay locked (keepCopy); positions/sizes/colors only.
+      if (out && out.doc && out.applied > 0 && !opts.signal?.aborted && !opts.llmCall && process.env.VISION_BASE_URL) {
+        try {
+          emit('thinking', 'self-check: rendering the copy and comparing it to the reference…');
+          // checkText:true — the copy-reference self-check must diff TEXT CONTENT against the
+          // reference (missing/hallucinated headlines, eyebrows, "vs" chips, CTA labels), not
+          // just visual geometry — the generic compare prompt explicitly ignores text.
+          const cmp = await compareToReference(out.doc, opts.reference.path, { checkText: true });
+          const corrections = (cmp && Array.isArray(cmp.corrections)) ? cmp.corrections.slice(0, 6) : [];
+          const textFixes = corrections.filter((c) => c.textFix === true);
+          const visualFixes = corrections.filter((c) => c.textFix !== true);
+          const nestedStep = (ev) => { if (ev && ev.step) onStep({ ...ev, runId }); };
+          // TEXT-FIX ROUND FIRST: bypasses keepCopy's setText lock ONLY here — corrections toward
+          // the reference's real copy are the point, not a copy-lock violation.
+          if (textFixes.length) {
+            emit('thinking', `self-check found ${textFixes.length} text mismatch${textFixes.length === 1 ? '' : 'es'} vs the reference — fixing`);
+            const fixes = textFixes.map((c, i) => `${i + 1}. ${c.layer ? `${c.layer}: ` : ''}${c.problem}${c.fix ? ` → ${c.fix}` : ''}`).join('\n');
+            const textFixRun = await runDesignAgent(
+              out.doc,
+              `The rendered TEXT differs from the reference's real copy — fix ONLY these text mismatches by setting the text to match the reference exactly:\n${fixes}`,
+              nestedStep,
+              { ...opts, reference: undefined, keepCopy: true, allowReferenceTextFix: true, mainTurnVision: false },
+            );
+            if (textFixRun && textFixRun.doc && textFixRun.applied > 0) {
+              out.doc = textFixRun.doc;
+              out.applied += textFixRun.applied;
+              emit('op', `self-check text corrections applied (${textFixRun.applied} op${textFixRun.applied === 1 ? '' : 's'})`, { deterministic: true });
+            }
+          }
+          if (visualFixes.length) {
+            emit('thinking', `self-check found ${visualFixes.length} visible difference${visualFixes.length === 1 ? '' : 's'} vs the reference — fixing`);
+            const fixes = visualFixes.map((c, i) => `${i + 1}. ${c.layer ? `${c.layer}: ` : ''}${c.problem}${c.fix ? ` → ${c.fix}` : ''}`).join('\n');
+            // nested constrained edit run; its step frames stream into THIS run's feed (re-stamped
+            // with the outer runId; nested start/done frames are dropped so the panel state holds).
+            const fixRun = await runDesignAgent(
+              out.doc,
+              `The copy differs from the reference — fix ONLY these visible differences (positions, sizes, colors; text and fonts are LOCKED):\n${fixes}`,
+              nestedStep,
+              { ...opts, reference: undefined, keepCopy: true, mainTurnVision: false },
+            );
+            if (fixRun && fixRun.doc && fixRun.applied > 0) {
+              out.doc = fixRun.doc;
+              out.applied += fixRun.applied;
+              emit('op', `self-check corrections applied (${fixRun.applied} op${fixRun.applied === 1 ? '' : 's'})`, { deterministic: true });
+            }
+          }
+          if (!corrections.length && cmp && cmp.match !== false) {
+            emit('thinking', 'self-check: the copy matches the reference render');
+          }
+        } catch { /* self-check is best-effort — never fails the copy */ }
+      }
+      onStep({ runId, done: true, kind: 'copy', locked: true });
+      return { ...out, runId, steps, kind: 'copy', locked: true };
     }
 
     const work = JSON.parse(JSON.stringify(doc)); // agents never mutate the stored doc directly
@@ -1378,12 +2289,40 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
     // autolayout would reshuffle the artifact (tweet cards don't follow the 12-col grid) and
     // the completeness lint (add a cta!) would bolt ad furniture onto a native-format post.
     let templateSeeded = false;
+    // Per-runBatch gates (set fresh in runBatch below) against the "takes elements / applies
+    // presets when it shouldn't" failure mode: the model reaching for a whole-ad template on a
+    // populated comp, or decorating a reference copy with elements nobody asked for.
+    let allowArchetypeOps = true; // template op allowed (generate mode, or the task names an archetype)
+    let allowElementOps = true;   // element op allowed (always outside copy; inside copy only when asked)
 
     const applyFn = async (op) => {
       if (op && op.op === 'autolayout' && templateSeeded) {
         throw new Error('this comp is a finished archetype template — autolayout would wreck it; edit copy with setText/draftText instead');
       }
-      if (op && op.op === 'template') templateSeeded = true;
+      if (op && op.op === 'template') {
+        if (!allowArchetypeOps) {
+          let leaves = 0;
+          walkNodes(work.layers || [], (n) => { if (n.type !== 'group' && n.role !== 'base') leaves++; });
+          if (leaves > 4) {
+            throw new Error('this comp already has real content and the task did not ask for an archetype — a template would REPLACE the existing layout; edit the existing layers (move/resize/setStyle) instead');
+          }
+        }
+        templateSeeded = true;
+      }
+      if (op && op.op === 'element' && keepCopy && !allowElementOps) {
+        throw new Error('this comp is a reference COPY — reproduce what the reference shows by editing existing layers; inserting new design elements is locked unless the user asks for one');
+      }
+      // FONT LOCK under copy: the reference’s typography is part of the copy. The model kept
+      // "fixing" fonts to something completely different — strip fontFamily from setStyle on copy
+      // docs (the rest of the style edit still applies) so extracted serif/platform stacks survive.
+      let fontStripped = false;
+      if (keepCopy && op && op.op === 'setStyle' && op.style && typeof op.style === 'object' && 'fontFamily' in op.style) {
+        delete op.style.fontFamily;
+        fontStripped = true;
+        if (!Object.keys(op.style).length) {
+          throw new Error('fontFamily is locked on a reference copy — the reference’s typography is part of the copy; adjust size/weight/color instead');
+        }
+      }
       if (op && op.op === 'look') {
         // self-vision: render the current comp and critique it with the vision endpoint.
         // Fast-fail without one — the usage log showed repeated instant (~7ms) failed calls
@@ -1401,7 +2340,11 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
         for (const id of r.touched) styledIds.add(id);
         return r.summary;
       }
-      if (keepCopy && (op.op === 'setText' || op.op === 'draftText')) {
+      // TEXT-FIX BYPASS (Fable's 026-escalation fix #3): the copy self-check's corrective round
+      // may need to fix TEXT TOWARD THE REFERENCE (e.g. hallucinated "OURS/THEIRS" headers
+      // replacing the real "Premium Silk/Satin") — that is not a user-copy-lock violation, it's
+      // the entire point of a copy. opts.allowReferenceTextFix is set ONLY on that nested run.
+      if (keepCopy && !opts.allowReferenceTextFix && (op.op === 'setText' || op.op === 'draftText')) {
         throw new Error('this comp keeps its reference copy verbatim — text edits are locked (ask the user to unlock if copy changes are wanted)');
       }
       if (generateMode) {
@@ -1413,9 +2356,13 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       if (r && (op.op === 'setStyle' || op.op === 'setText') && opCtx.lastTarget) {
         styledIds.add(opCtx.lastTarget);
       }
-      if (r && typeof r === 'string' && !generateMode) {
-        const fix = postApplyRepair();
-        if (fix) return `${r} · ${fix}`;
+      if (r && typeof r === 'string') {
+        const fontNote = fontStripped ? ' · (fontFamily kept — the reference\'s typography is part of the copy)' : '';
+        if (!generateMode) {
+          const fix = postApplyRepair();
+          if (fix) return `${r} · ${fix}${fontNote}`;
+        }
+        if (fontNote) return `${r}${fontNote}`;
       }
       return r;
     };
@@ -1434,14 +2381,41 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       const fastFocus = fast
         ? (Array.isArray(opts.focusIds) && opts.focusIds.length ? opts.focusIds : deriveFocusIds(work, goal))
         : null;
+      // vague layout ask ("fix the spacing") → ship the deterministic LAYOUT ISSUES diagnostics
+      // (overlaps / uneven rhythm / misaligned edges) so the model maps it to concrete ops. Off in
+      // generate mode (the whole comp is being built, not tidied).
+      // Diagnostics run on EVERY non-generate edit against a multi-node doc, not only on exact
+      // vague-keyword matches ("fix the spacing") — "the layout is broken" used to get NOTHING and
+      // the model had to invent corrections instead of acting on measured facts (HARNESS-8). The
+      // scan is deterministic and cheap; `vague` still tightens the prompt rules for vague asks.
+      const vagueAsk = !generate && isVagueLayoutCommand(goal);
+      const multiNode = (() => { try { let n = 0; walkNodes(work.layers, () => { n++; }); return n >= 3; } catch { return false; } })();
+      const wantDiagnostics = !generate && (vagueAsk || multiNode);
+      // LINT BASELINE (HARNESS-11): edit runs used to start blind — the lint gate only fired AFTER
+      // turn 1, so on an already-broken doc the model wasted a turn discovering problems instead
+      // of fixing them. Compute the findings up-front and hand them to the model as context
+      // (improve mode already did this; scoped edits now get the same head start).
+      let lintBaseline = '';
+      if (!generate && !fast) {
+        try {
+          const base = lintDesign(work, kit).slice(0, 4);
+          if (base.length) lintBaseline = `LINT baseline (already wrong before your edit — fix any that overlap your task): ${base.join(' · ')}`;
+        } catch { /* baseline is best-effort */ }
+      }
+      // Archetype/element gates for THIS batch (see applyFn): a template op is only allowed when
+      // generating, or when the task actually names an archetype; on a reference COPY, inserting
+      // new elements needs the user to have asked for one ("add a badge/rating/…").
+      allowArchetypeOps = generate || !!detectTemplate(goal) || /\b(template|preset|archetype|rebuild|start over|from scratch)\b/i.test(String(goal || ''));
+      allowElementOps = !keepCopy || /\b(add|insert|element|badge|button|pill|sticker|arrow|caption|rating|stars?|scrim|logo)\b/i.test(String(goal || ''));
       const run = await runBatchAgent({
         system: generate ? buildGeneratePrompt(goal, promptCtx)
-          : fast ? buildFastPrompt(goal, { copyLock: keepCopy })
-            : buildSystemPrompt(goal, promptCtx),
+          : fast ? buildFastPrompt(goal, { copyLock: keepCopy, vague: vagueAsk })
+            : buildSystemPrompt(goal, { ...promptCtx, vague: vagueAsk, lintBaseline, platformStack: platformStackLines(goal, work) }),
         buildObservation: () => observe(work, {
           aliases,
           lastTarget: opCtx.lastTarget,
           focusIds: fast ? (fastFocus && fastFocus.length ? fastFocus : null) : (opts.focusIds || null),
+          diagnostics: wantDiagnostics,
           // fast path: don't ship a huge doc — only the focused/relevant nodes fit a 500-token cap
           ...(fast ? { budgetTokens: 500 } : {}),
         }),
@@ -1468,16 +2442,43 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
         purpose: fast ? 'design-agent-fast' : generate ? 'design-generate' : 'design-agent',
         signal: opts.signal || null,
         llmCall: opts.llmCall || undefined,
-        maxTokensPerTurn: opts.maxTokensPerTurn || 3000, // reasoning headroom (see agent-harness)
+        // Reasoning headroom (see agent-harness). Ornith is a REASONING model — it burns its whole
+        // budget in reasoning_content BEFORE emitting JSON, so a 3000 cap truncates it mid-think and
+        // it silently no-ops (benchmark CREATIVE 1/5, every call outTok:3000/validJson:false).
+        // Generate calls emit the most JSON, so give them the most room; edits still fine at 3000.
+        maxTokensPerTurn: opts.maxTokensPerTurn || (generate ? 8000 : 3000),
+        // CONTEXT BUDGET (v8): a hard per-turn prompt ceiling well under ornith's ~60k window.
+        // Edit budget is 4200 (was 3000): the edit SYSTEM prompt alone has grown to ~2950 est
+        // tokens, so 3000 left ~zero headroom — the guard crushed per-op feedback and the LAYOUT
+        // ISSUES diagnostics into slivers (observed live: the FAILED-op feedback line pruned,
+        // diagnostics truncated mid-word). 4200 keeps turns snappy locally while giving
+        // observation + feedback + lint real room; generate turns carry the element/template
+        // catalogs, so they get more. Guarantees a 100+-layer comp can't blow the window.
+        contextBudgetTokens: opts.contextBudgetTokens || (generate ? 14_000 : 4200),
         maxApplied: opts.maxApplied || null,
-        // main-turn vision: render once (turn 0) per batch — later turns already have op feedback
+        // main-turn vision: render once (turn 0) per batch and SHOW it to the worker — later turns
+        // already carry op feedback. Fires for BOTH generate AND non-trivial edit batches (the
+        // `runBatch` closure is shared), so an edit like "center the headline" is judged from the
+        // actual render, not just coordinates. Off for the fast path and text-only workers.
         ...(mainTurnVision && !fast ? {
           visionCall: (p, img, o) => llmVision(p, img, o),
           imageForTurn: (turn) => (turn === 0 ? renderCompPng(work) : null),
         } : {}),
-        // targetId: the REAL node id the op touched (aliases like L2 are per-run) — the UI
-        // uses it to flash the edited element on the canvas.
-        onStep: (s) => emit(s.kind, s.summary, { ...(s.data || {}), model: model.model, ...(s.kind === 'op' && opCtx.lastTarget ? { targetId: opCtx.lastTarget } : {}) }),
+        // targetId + targetBox: the REAL node the op touched (aliases like L2 are per-run) and its
+        // CURRENT canvas box + canvas dims — the UI flashes the edited element AND steers the
+        // agent-cursor overlay to hover exactly over what is being edited (owner ask: "the agent
+        // mouse movements are only going over that element").
+        onStep: (s) => {
+          let target = null;
+          if (s.kind === 'op' && opCtx.lastTarget) {
+            target = { targetId: opCtx.lastTarget };
+            try {
+              const n = findNode(work, opCtx.lastTarget);
+              if (n && n.box) target.targetBox = { x: n.box.x, y: n.box.y, w: n.box.w, h: n.box.h, cw: work.canvas.w, ch: work.canvas.h };
+            } catch { /* box is best-effort enrichment */ }
+          }
+          emit(s.kind, s.summary, { ...(s.data || {}), model: model.model, ...(target || {}) });
+        },
       });
       totals.turns += run.turns || 0;
       usage.inTok += run.usage.inTok;
@@ -1503,7 +2504,7 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       const candidates = [];
       for (let i = 0; i < n; i++) {
         if (opts.signal && opts.signal.aborted) break;
-        const r = await call(prompt, { system, json: true, maxTokens: 2500, timeoutMs: 60_000, purpose: 'design-generate-bestof', signal: opts.signal, temperature: i === 0 ? 0 : 0.9 });
+        const r = await call(prompt, { system, json: true, maxTokens: 8000, timeoutMs: 60_000, purpose: 'design-generate-bestof', signal: opts.signal, temperature: i === 0 ? 0 : 0.9 });
         totals.turns += 1;
         if (r.usage) { usage.inTok += r.usage.inTok || 0; usage.outTok += r.usage.outTok || 0; }
         if (!r.ok) continue;
@@ -1527,6 +2528,7 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       candidates.sort((a, b) => b.score - a.score);
       emit('thinking', `best-of (adaptive): ${candidates.length} sample${candidates.length === 1 ? '' : 's'} → score ${candidates[0].score}`);
       for (const op of candidates[0].ops) {
+        if (aborted()) break;
         try { const s = await applyFn(op); if (typeof s === 'string') { applied++; opsTotal++; emit('op', s, { op, bestOf: true }); } } catch { /* skip */ }
       }
       return true;
@@ -1546,17 +2548,17 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
         const seeds = seedFromTemplate(work, opCtx, { brief: opts.brief, kit });
         for (const s of seeds) emit('op', s, { deterministic: true });
       }
-      if (useHarness) {
+      if (useHarness && !aborted()) {
         const n = Number.isFinite(opts.bestOf) ? opts.bestOf : 3;
         const seeded = n > 1 ? await bestOfSeed(n) : false;
         // short batch pass to react to lint / finish the polish
-        await runBatch(instruction, { maxTurns: seeded ? 2 : 3, generate: true });
+        if (!aborted()) await runBatch(instruction, { maxTurns: seeded ? 2 : 3, generate: true });
 
         // CONVERGENCE GUARD (raise the self-review bar — "don't stop half-built"): if there's no
         // vision endpoint to critique with AND the comp still lints dirty / scores below GOOD, run
         // ONE more corrective batch aimed squarely at the remaining findings. Token-disciplined:
         // fires at most once, and only when the polish left real problems.
-        if (!process.env.VISION_BASE_URL) {
+        if (!aborted() && !process.env.VISION_BASE_URL) {
           let findings = [];
           try { findings = lintDesign(work, kit); } catch { findings = []; }
           if (findings.length || layoutScore(work, kit) < GOOD) {
@@ -1588,14 +2590,72 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       }
     } else if (useHarness) {
       source = model.provider === 'deepseek' ? 'deepseek' : model.provider;
+
+      // ── ORCHESTRATOR-WORKER FAN-OUT (opt-in / auto) ─────────────────────────────────────────────
+      // When the edit decomposes into 2-3 INDEPENDENT regions, spawn one concurrent sub-agent per
+      // region (each its own model call proposing ops scoped to that region), then GATHER and apply
+      // the non-conflicting ops. Regions are disjoint node sets, so applying serially after the
+      // concurrent proposals never conflicts. Streams a `subagent` frame per worker. Falls back to
+      // the single loop below when the task doesn't decompose. Off for generate/improve/fast and for
+      // the trivial-edit case; disable entirely with opts.fanOut === false.
+      // AUTO-fan-out fires only at real runtime (a live endpoint, not an injected test llmCall), so
+      // the single-agent path stays the deterministic default under test and existing edits never
+      // regress; opts.fanOut === true forces it on (used by the fan-out-specific test).
+      const fanOutAllowed = opts.fanOut === true || (opts.fanOut !== false && !opts.llmCall);
+      const regions = (!fanOutAllowed || generateMode || opts.mode === 'improve' || aborted())
+        ? []
+        : decomposeEditIntoRegions(work, instruction);
+      if (regions.length >= 2) {
+        emit('thinking', `this edit spans ${regions.length} independent regions — fanning out ${regions.length} sub-agents (${regions.map((r) => r.hint).join(', ')})`);
+        const promptCtx = { ...opts, kit, runMemory, brandSkill, exemplars, copyLock: keepCopy };
+        const fan = await runFanOut({
+          model: model.model || 'ornith', parentRunId: runId, concurrency: 3, signal: opts.signal,
+          onStep: (step) => emit('subagent', step.summary, step.data),
+          subtasks: regions.map((rg) => ({
+            id: nextSubAgentId(), title: `${rg.hint} region`,
+            run: async ({ update }) => {
+              update(`proposing edits for ${rg.hint}`);
+              const obs = observe(work, { aliases, focusIds: rg.ids });
+              const sys = buildSystemPrompt(instruction, promptCtx);
+              const prompt = `CURRENT STATE (focus: ${rg.hint} region):\n${obs}\n\nOnly edit the ${rg.hint} region for this instruction: "${instruction}". Reply with ONE JSON object {"plan":"…","ops":[…≤4 ops…],"done":true}. No prose.`;
+              const r = await call(prompt, { system: sys, json: true, maxTokens: 3000, timeoutMs: 60_000, purpose: 'design-fanout-worker', signal: opts.signal, temperature: 0 });
+              if (r.usage) { usage.inTok += r.usage.inTok || 0; usage.outTok += r.usage.outTok || 0; }
+              totals.turns += 1;
+              if (!r.ok) { update('model call failed'); return { ok: false, error: r.error, ops: [] }; }
+              const batch = parseBatch(r.text);
+              if (batch.error) { update(`unparsable (${batch.error})`); return { ok: false, error: batch.error, ops: [] }; }
+              update(`${batch.ops.length} op${batch.ops.length === 1 ? '' : 's'} proposed`);
+              return { ok: true, ops: batch.ops.slice(0, 4), region: rg.hint };
+            },
+          })),
+        });
+        // GATHER: apply each worker's proposed ops to the shared doc (regions are disjoint).
+        for (const res of fan.results) {
+          if (aborted()) break;
+          if (!res || !Array.isArray(res.ops)) continue;
+          for (const op of res.ops) {
+            if (aborted()) break;
+            try {
+              const s = await applyFn(op);
+              if (typeof s === 'string') { applied++; opsTotal++; emit('op', s, { op, fanOut: true, region: res.region }); }
+            } catch (e) { emit('op', `skipped ${op && op.op}: ${String(e?.message || e)}`, { op, failed: true }); }
+          }
+        }
+        if (applied > 0) source = `${source}·fanout`;
+      }
+
       // FAST PATH routing: short single-target trivial edits run ONE focused turn (cap 2) with
       // the minimal prompt and a scoped observation — no lint gate, no vision, no best-of.
       // Zero applied ops escalates to the untouched full loop, so nothing is ever lost.
-      const fast = opts.fast !== false && isTrivialEdit(instruction, opts);
+      // (Skipped when the fan-out already applied edits.)
+      const fannedOut = applied > 0 && /·fanout$/.test(source);
+      const fast = !fannedOut && opts.fast !== false && isTrivialEdit(instruction, opts);
+      let ranFast = false;
       let run = null;
       if (fast) {
         emit('thinking', 'fast path: trivial edit — one focused turn, minimal context');
         run = await runBatch(instruction, { maxTurns: 2, fast: true });
+        ranFast = run.applied > 0; // only "stayed fast" if the trivial turn actually landed ops
         // ZERO applied ops = the fast turn changed nothing (even if the model said done) —
         // escalate to the untouched full loop so the user's ask is never silently dropped.
         if (run.applied === 0) {
@@ -1603,46 +2663,62 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
           run = null;
         }
       }
-      if (!run) run = await runBatch(instruction, { maxTurns: MAX_TURNS });
-      if (!run.ok && run.applied === 0) {
-        if (opts.noCodex) {
-          emit('thinking', `${source} produced no applied ops (${run.stoppedBy}) — deterministic autolayout`);
-          const pre = autoLayoutDoc(work, { kit });
-          emit('op', pre.summary, { deterministic: true });
-          source = 'autolayout';
-        } else {
-          emit('thinking', `${source} produced no applied ops (${run.stoppedBy}) — trying codex fallback`);
-          source = null; // fall through
+      // The fan-out IS the run when it landed edits — don't re-run the single loop over the same
+      // instruction (it would just re-litigate the disjoint regions the workers already handled).
+      if (!run && !fannedOut) run = await runBatch(instruction, { maxTurns: MAX_TURNS });
+      // ABORT (v7): an aborted run that applied nothing must stay a clean no-op — do NOT fall
+      // through to the deterministic autolayout, which would re-layout the whole comp AFTER the
+      // user pressed stop (orphaned work). The autolayout fallback only exists to salvage a run
+      // the model failed to resolve, never one the user deliberately cancelled.
+      if (run && !run.ok && run.applied === 0 && run.stoppedBy !== 'aborted' && !aborted()) {
+        // No codex fallback anymore (Ornith-only): a no-op local run degrades to the zero-token
+        // deterministic autolayout, never to another model.
+        emit('thinking', `${source} produced no applied ops (${run.stoppedBy}) — deterministic autolayout`);
+        const pre = autoLayoutDoc(work, { kit });
+        emit('op', pre.summary, { deterministic: true });
+        source = 'autolayout';
+      }
+
+      // VISUAL SELF-CHECK on non-trivial edits (mirrors generate mode's self-critique loop):
+      // the model just edited from the text scene-graph + turn-0 render — now LOOK at the result
+      // and, if a real VISIBLE problem is left ("headline overlaps the product", "off-canvas"),
+      // run ONE corrective turn scoped to what it can SEE. Capped at 1 round — edits are targeted,
+      // so we do NOT want the open-ended 2-round redesign iteration generate mode uses.
+      // Gated hard: only when a vision endpoint is up (mainTurnVision ⇒ not a test, not text-only),
+      // the edit was NON-trivial (never the fast path — a render costs more than the whole trivial
+      // edit), and the batch actually changed something on a real LLM source (not a codex fallthrough).
+      if (mainTurnVision && !ranFast && source && applied > 0 && !(opts.signal && opts.signal.aborted)) {
+        emit('thinking', 'looking at the edited render (self-check)…');
+        let crit;
+        try { crit = await lookAtComp(work, { goal: instruction }); } catch { crit = { ok: false }; }
+        if (crit.ok && crit.critique && !/^\s*ready\b/i.test(crit.critique)) {
+          emit('op', `self-check → ${crit.critique.slice(0, 140)}`, { deterministic: true });
+          await runBatch(
+            `You just made this edit: "${String(instruction).slice(0, 160)}". Looking at the current render, fix ONLY these visible problems, then done: ${crit.critique}`,
+            { maxTurns: 2 },
+          );
+        } else if (crit.ok) {
+          emit('op', 'self-check: edit looks right', { deterministic: true });
         }
       }
     }
 
-    if ((source == null || !useHarness) && !opts.noCodex && !generateMode) {
-      // ── fallback: codex single-shot JSON array (legacy behavior) — skipped when noCodex ──
-      const nodeLines = observe(work, { aliases });
-      const prompt =
-        `You lay out ad comps by editing a JSON scene graph.\n${nodeLines}\n`
-        + `Instruction: ${instruction}\n`
-        + `Reply with ONLY a JSON array (max ${MAX_OPS} items) of operations, no prose. Grammar:\n`
-        + `{"op":"move","id":"…","x":n,"y":n} {"op":"resize","id":"…","w":n,"h":n} `
-        + `{"op":"setText","id":"…","text":"…"} {"op":"setStyle","id":"…","style":{"fontSize":n,"color":"…","background":"…"}} `
-        + `{"op":"remove","id":"…"}\n`
-        + `Never touch the base image layer. Keep boxes inside the canvas.`;
-      let ops = null;
-      source = 'codex';
-      const r = await codexText(prompt, { timeoutMs: 90_000 });
-      if (r.ok) ops = parseOpsArray(r.text);
-      if (!ops) {
-        source = 'fallback';
-        emit('thinking', `codex unavailable or unparsable (${r.error || 'bad ops JSON'}) — using auto-layout fallback`);
-        ops = fallbackOps(work);
-      }
+    if ((source == null || !useHarness) && !generateMode) {
+      // ── fallback: DETERMINISTIC auto-layout only ──────────────────────────────────────────────
+      // The codex single-shot editing fallback has been REMOVED (Michael: Ornith for everything,
+      // never pull in other models). When the local/ornith harness path doesn't resolve, we do NOT
+      // shell out to codex — that surfaced model:'codex' in the agent UI and read as "looping in
+      // other models". Instead we apply the zero-token deterministic auto-layout and report the
+      // honest 'fallback' source. No agent op ever reports model:'codex'.
+      source = 'fallback';
+      emit('thinking', 'local agent did not resolve an edit — using zero-token auto-layout fallback');
+      const ops = fallbackOps(work);
       applied = 0;
       opsTotal = ops.length;
       for (const op of ops) {
         let summary = null;
         try { summary = applyOp(work, op, opCtx); } catch { summary = null; }
-        if (summary && typeof summary === 'string') { applied++; emit('op', summary, { op, model: source === 'codex' ? 'codex' : null }); }
+        if (summary && typeof summary === 'string') { applied++; emit('op', summary, { op }); }
         else emit('op', `skipped invalid op (${op && op.op})`, { op });
       }
     }
@@ -1694,14 +2770,162 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
       } catch { /* library write is best-effort */ }
     }
 
+    // Abort surfaces as a clean PARTIAL result: applied ops are preserved on `work`, the run just
+    // stopped early. Report it honestly in the verify line and on the result so the caller/UI knows.
+    const wasAborted = aborted();
     emit('verify',
-      `${verifySummary(verify)} · ${totals.parts} part${totals.parts === 1 ? '' : 's'} · ${applied}/${opsTotal} ops · layout ${beforeScore}→${afterScore} · ${((usage.inTok + usage.outTok) / 1000).toFixed(1)}k tok · ${source}`,
-      { model: source === 'deepseek' ? model.model : source, totals, layoutScore: afterScore, verify });
-    onStep({ runId, done: true });
-    return { doc: work, steps, source, runId, applied, usage, lint: lintReport, totals, layoutScore: afterScore, verify };
+      `${wasAborted ? 'stopped (partial) · ' : ''}${verifySummary(verify)} · ${totals.parts} part${totals.parts === 1 ? '' : 's'} · ${applied}/${opsTotal} ops · layout ${beforeScore}→${afterScore} · ${((usage.inTok + usage.outTok) / 1000).toFixed(1)}k tok · ${source}`,
+      { model: source === 'deepseek' ? model.model : source, totals, layoutScore: afterScore, verify, aborted: wasAborted });
+    onStep({ runId, done: true, kind, locked, aborted: wasAborted });
+    return { doc: work, steps, source, kind, locked, aborted: wasAborted, runId, applied, usage, lint: lintReport, totals, layoutScore: afterScore, verify };
   } finally {
     inFlight--;
   }
+}
+
+// ── COPY-REFERENCE agent run ──────────────────────────────────────────────────────────────────────
+// The reference-copy flow, unified onto the SAME harness event vocabulary as the edit agent. It:
+//   1. runs extractLayout (which itself fans out its deterministic palette/background workers,
+//      streaming `subagent` frames) with onStep wired to THIS run's emit → extraction narration
+//      becomes `thinking` steps, its fan-out becomes `subagent` steps;
+//   2. applies the extracted skeleton onto the current doc (an `op`);
+//   3. runs a MAKER-CHECKER verify (deterministic verifyDesign as the checker) and emits `verify`.
+// Returns the same shape as runDesignAgent so callers/servers treat it identically. `emit` and
+// runId are threaded in from runDesignAgent so steps share one stream.
+export async function runCopyReference(doc, reference, emit, opts = {}) {
+  const runId = opts.runId || `design_${Date.now().toString(36)}`;
+  const kit = opts.kit || null;
+  const model = llmInfo();
+  const usage = { inTok: 0, outTok: 0 };
+  const work = JSON.parse(JSON.stringify(doc));
+  const label = reference.label || 'reference';
+
+  emit('thinking', `copying the design from ${label} — reading the reference, then rebuilding it in this comp`);
+
+  // Extraction IS a fan-out orchestrator internally (palette + background workers). Its onStep is
+  // wired to emit so its `thinking`/`subagent` frames land on THIS run's unified stream.
+  // opts.ext: caller-supplied pre-computed extraction (persisted skeleton / eval harness) —
+  // skips the vision round-trip. opts.extractTimeoutMs: budget override for slow local vision
+  // models. Neither changes behavior when absent.
+  let ext = opts.ext || null;
+  if (!ext) try {
+    ext = await extractLayout(reference.path, {
+      runId,
+      timeoutMs: opts.extractTimeoutMs || undefined,
+      // The run's AbortSignal now reaches every vision call inside extraction (RUN-1 fix): the
+      // Stop button and comp-delete genuinely kill a copy-reference run instead of letting it
+      // burn vision cycles to completion against a doc nobody wants.
+      signal: opts.signal || null,
+      onStep: (step) => {
+        if (!step || !step.kind) return;
+        // subagent frames pass through verbatim (carry {id,title,model,status,phase}); thinking
+        // frames are re-emitted as this run's narration.
+        if (step.kind === 'subagent') emit('subagent', step.summary, step.data);
+        else emit('thinking', step.summary, step.data || null);
+      },
+    });
+  } catch (e) {
+    ext = { ok: false, error: String(e?.message || e) };
+  }
+
+  if (!ext || !ext.ok) {
+    const err = (ext && ext.error) || 'extraction failed';
+    emit('verify', `couldn't copy the reference: ${err}`, { model: 'copy-reference', error: err });
+    const verify = verifyDesign(work, { kit, skeletonId: work.skeletonId });
+    return { doc: work, source: 'copy-reference', applied: 0, usage, lint: lintDesign(work, kit), totals: { turns: 0, parts: 1, inTok: 0, outTok: 0 }, layoutScore: layoutScore(work, kit), verify, error: err };
+  }
+
+  // Lock the doc canvas to the reference's aspect (the extraction already computed it) so the
+  // rebuilt comp copies the reference's real proportions.
+  if (ext.canvas && ext.canvas.w && ext.canvas.h) work.canvas = { w: ext.canvas.w, h: ext.canvas.h };
+  const skeleton = { id: `skel_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`, canvas: ext.canvas, layers: ext.layers, archetype: ext.archetype, background: ext.background, theme: ext.theme };
+
+  // MAKER-CHECKER: the "maker" applies the skeleton; the deterministic verifyDesign is the "checker"
+  // (a cheap second pass — generate then validate — with no extra model latency).
+  const mc = await makerChecker(
+    () => { const r = applySkeletonToDoc(work, skeleton); return { work, added: r.added }; },
+    ({ work: w }) => {
+      const v = verifyDesign(w, { kit, skeletonId: w.skeletonId });
+      // a copy that produced no overlays is a real failure; otherwise accept
+      const overlays = (w.layers || []).filter((n) => n.type === 'group' || n.role !== 'base').length;
+      return { ok: overlays > 0, findings: v.ready ? [] : ['verify not ready — reference copy is approximate'] };
+    },
+  );
+  emit('op', `rebuilt ${mc.candidate.added} layer${mc.candidate.added === 1 ? '' : 's'} from ${label} · ${ext.archetype || 'generic'}${ext.backgroundIsPhoto ? ' · bg photo' : ext.background ? ' · bg ' + (typeof ext.background === 'string' ? ext.background : 'gradient') : ''}`, { deterministic: true });
+
+  // AUTO-CUTOUT: extraction marks regions that should be LIFTED from the reference pixels rather
+  // than rebuilt (avatars, complex logos — `cutoutCandidate: {region, shape}` on the skeleton
+  // layer). Convert those placeholders into real masked image-crop layers pointing at the
+  // reference asset — the same shape the manual {op:'cutout'} produces — so faces/logos in a copy
+  // are the ACTUAL reference pixels, not a tinted silhouette. Needs a servable ref id; without
+  // one the silhouette placeholder stays (graceful).
+  if (reference.ref) {
+    const refSrc = `/refasset?id=${reference.ref}`;
+    // PHOTO BACKGROUND (copy-fidelity): a photo reference has no flat fill to rebuild — use the
+    // reference itself as the full-bleed base (overlays rebuilt on top cover its baked-in text).
+    // Only when the skeleton didn't produce its own base.
+    if (ext.backgroundIsPhoto && !(work.layers || []).some((n) => n.role === 'base')) {
+      work.layers.unshift({
+        id: `base_${Date.now().toString(36)}`, type: 'image', role: 'base',
+        name: 'Background (reference photo)', src: refSrc,
+        box: { x: 0, y: 0, w: work.canvas.w, h: work.canvas.h },
+        style: { fit: 'cover' },
+      });
+      emit('op', 'photo reference → full-bleed reference base under the rebuilt overlays', { deterministic: true });
+      // With the reference itself as the base, PLACEHOLDER slabs (grey product/photo stand-ins
+      // that never resolved to a cutout) only OCCLUDE the real pixels behind them — drop them.
+      // Real overlays (text, pills, cutout crops) stay.
+      const isPlaceholderSlab = (n) => !n.text && !n.cutoutCandidate && !n.src
+        && (n.type === 'shape' || n.type === 'image')
+        && /9aa0a6/i.test(String(n?.style?.background || ''));
+      let dropped = 0;
+      const prune = (list) => {
+        for (let i = list.length - 1; i >= 0; i--) {
+          const n = list[i];
+          if (!n) continue;
+          if (n.type === 'group' && Array.isArray(n.children)) { prune(n.children); continue; }
+          if (isPlaceholderSlab(n)) { list.splice(i, 1); dropped++; }
+        }
+      };
+      prune(work.layers);
+      if (dropped) emit('op', `dropped ${dropped} placeholder slab${dropped === 1 ? '' : 's'} occluding the reference photo`, { deterministic: true });
+    }
+    let lifted = 0;
+    walkNodes(work.layers, (n) => {
+      const cc = n && n.cutoutCandidate;
+      if (!cc || !cc.region) return;
+      delete n.cutoutCandidate;
+      n.type = 'image';
+      n.src = refSrc;
+      delete n.text;
+      const style = { crop: { x: cc.region.x, y: cc.region.y, w: cc.region.w, h: cc.region.h } };
+      if (cc.shape === 'avatar') style.shapeKind = 'ellipse';
+      else if (cc.shape === 'logo') style.radius = Math.max(4, Math.round(Math.min(n.box?.w || 0, n.box?.h || 0) * 0.12));
+      else style.radius = Math.max(8, Math.round(Math.min(n.box?.w || 0, n.box?.h || 0) * 0.035)); // media card corners
+      n.style = style;
+      n.name = n.name || (cc.shape === 'avatar' ? 'Avatar (cut out)' : 'Cut-out');
+      lifted++;
+    });
+    if (lifted) emit('op', `cut ${lifted} region${lifted === 1 ? '' : 's'} out of the reference (real pixels, not placeholders)`, { deterministic: true });
+  }
+
+  // FINAL contrast repair (same as the edit path) so copied text stays legible on the new base.
+  try { const ad = smartAdRepair(work, { kit }); if (ad.summaries.length) emit('op', ad.summary, { deterministic: true }); } catch { /* never fatal */ }
+
+  work.updatedAt = Date.now();
+  const afterScore = layoutScore(work, kit);
+  const verify = verifyDesign(work, { kit, skeletonId: work.skeletonId });
+  const lint = lintDesign(work, kit);
+  // EXTRACTION METRICS: surface the iterative self-check's metrics so callers (the server,
+  // the frontend activity panel) can show fidelity score, iterations, and corrections applied.
+  const extractionMetrics = ext && ext.selfCheck ? {
+    extractionScore: ext.selfCheck.score ?? null,
+    extractionIterations: ext.selfCheck.iterations ?? 0,
+    extractionCorrectionsApplied: ext.selfCheck.applied ?? 0,
+    extractionTotalCorrections: ext.selfCheck.totalCorrections ?? 0,
+  } : null;
+  emit('verify', `${verifySummary(verify)} · copied ${mc.candidate.added} layers · ${mc.findings.length ? mc.findings[0] : 'checker ok'} · layout ${afterScore}${extractionMetrics?.extractionScore != null ? ` · extraction fidelity ${extractionMetrics.extractionScore}` : ''}${extractionMetrics?.extractionIterations > 1 ? ` (${extractionMetrics.extractionIterations} iterations)` : ''}`, { model: 'copy-reference', layoutScore: afterScore, verify, extractionMetrics });
+  return { doc: work, source: 'copy-reference', applied: mc.candidate.added, usage, lint, totals: { turns: 0, parts: 1, inTok: usage.inTok, outTok: usage.outTok }, layoutScore: afterScore, verify, extractionMetrics };
 }
 
 // ── copy drafting ────────────────────────────────────────────────────────────────────────────────

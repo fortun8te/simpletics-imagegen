@@ -1,0 +1,478 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "grp-mr6ndmg8-0",
+      "type": "group",
+      "name": "Header",
+      "box": {
+        "x": 130,
+        "y": 77,
+        "w": 874,
+        "h": 211
+      },
+      "children": [
+        {
+          "id": "ext-mr6ndmc9-0",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "DORE & ROSE",
+          "autoH": true,
+          "box": {
+            "x": 130,
+            "y": 134,
+            "w": 378,
+            "h": 38
+          },
+          "style": {
+            "color": "#2d2d2d",
+            "fontSize": 19,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmc9-1",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Silk",
+          "autoH": true,
+          "box": {
+            "x": 162,
+            "y": 173,
+            "w": 324,
+            "h": 115
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 59,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg2-2",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "✓",
+          "autoH": true,
+          "box": {
+            "x": 238,
+            "y": 77,
+            "w": 54,
+            "h": 58
+          },
+          "style": {
+            "color": "#7eb3ff",
+            "fontSize": 32,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg2-3",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "✗",
+          "autoH": true,
+          "box": {
+            "x": 778,
+            "y": 77,
+            "w": 54,
+            "h": 58
+          },
+          "style": {
+            "color": "#ff7a7a",
+            "fontSize": 32,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg2-4",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "OTHERS’",
+          "autoH": true,
+          "box": {
+            "x": 626,
+            "y": 134,
+            "w": 378,
+            "h": 38
+          },
+          "style": {
+            "color": "#2d2d2d",
+            "fontSize": 19,
+            "fontWeight": 600,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg2-5",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Satin",
+          "autoH": true,
+          "box": {
+            "x": 626,
+            "y": 173,
+            "w": 378,
+            "h": 115
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 59,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg4-6",
+          "type": "badge",
+          "role": "badge",
+          "name": "badge",
+          "text": "vs",
+          "autoH": true,
+          "box": {
+            "x": 475,
+            "y": 211,
+            "w": 130,
+            "h": 77
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#7eb3ff",
+            "fontSize": 24,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 540,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "padding": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "grp-mr6ndmg9-1",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 54,
+        "y": 384,
+        "w": 1004,
+        "h": 1171
+      },
+      "children": [
+        {
+          "id": "ext-mr6ndmg5-7",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Silk pillowcase",
+          "box": {
+            "x": 54,
+            "y": 422,
+            "w": 486,
+            "h": 576
+          },
+          "style": {
+            "background": "#8e8e8e59",
+            "radius": 22,
+            "stroke": {
+              "color": "#8e8e8e",
+              "width": 4
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.05,
+              "y": 0.22,
+              "w": 0.45,
+              "h": 0.3
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6ndmg6-8",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Satin pillowcase",
+          "box": {
+            "x": 540,
+            "y": 384,
+            "w": 518,
+            "h": 614
+          },
+          "style": {
+            "background": "#b8b8b859",
+            "radius": 22,
+            "stroke": {
+              "color": "#b8b8b8",
+              "width": 4
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.5,
+              "y": 0.2,
+              "w": 0.48,
+              "h": 0.32
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6ndmg7-9",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Premium Silk",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 1056,
+            "w": 410,
+            "h": 58
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 35,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg7-a",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Satin",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 1056,
+            "w": 324,
+            "h": 58
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 35,
+            "fontWeight": 800,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg8-b",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pillowcase",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 1114,
+            "w": 238,
+            "h": 38
+          },
+          "style": {
+            "color": "#666666",
+            "fontSize": 19,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg8-c",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Pillowcase",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 1114,
+            "w": 238,
+            "h": 38
+          },
+          "style": {
+            "color": "#666666",
+            "fontSize": 19,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg8-d",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "✓ Antibacterial",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 1306,
+            "w": 378,
+            "h": 58
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 24,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg8-e",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "✓ Protects skin & hair",
+          "autoH": true,
+          "box": {
+            "x": 86,
+            "y": 1421,
+            "w": 432,
+            "h": 58
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 24,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg8-f",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "✗ Synthetic fabrics",
+          "autoH": true,
+          "box": {
+            "x": 594,
+            "y": 1210,
+            "w": 410,
+            "h": 58
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 24,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg8-g",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "✗ Bacterial breeding ground",
+          "autoH": true,
+          "box": {
+            "x": 594,
+            "y": 1306,
+            "w": 432,
+            "h": 96
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 24,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6ndmg8-h",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "✗ Causes friction with skin & hair",
+          "autoH": true,
+          "box": {
+            "x": 594,
+            "y": 1459,
+            "w": 454,
+            "h": 96
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 24,
+            "fontWeight": 500,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "comparison",
+  "background": "#f5f5f5",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#fcfcfc",
+      "share": 0.5
+    },
+    {
+      "hex": "#ebebec",
+      "share": 0.25
+    },
+    {
+      "hex": "#948f90",
+      "share": 0.125
+    },
+    {
+      "hex": "#232020",
+      "share": 0.063
+    },
+    {
+      "hex": "#756b69",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

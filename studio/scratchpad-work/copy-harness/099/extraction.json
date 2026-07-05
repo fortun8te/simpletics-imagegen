@@ -1,0 +1,235 @@
+{
+  "ok": true,
+  "layers": [
+    {
+      "id": "ext-mr6mq527-0",
+      "type": "text",
+      "role": "headline",
+      "name": "headline",
+      "text": "Sleep like an athlete\n—not a zombie.",
+      "autoH": true,
+      "box": {
+        "x": 108,
+        "y": 288,
+        "w": 864,
+        "h": 288
+      },
+      "style": {
+        "color": "#111111",
+        "fontSize": 70,
+        "fontWeight": 900,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    },
+    {
+      "id": "grp-mr6mq53c-c",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 422,
+        "w": 886,
+        "h": 1152
+      },
+      "children": [
+        {
+          "id": "ext-mr6mq528-1",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · recovery sleep tube",
+          "box": {
+            "x": 432,
+            "y": 422,
+            "w": 216,
+            "h": 1152
+          },
+          "style": {
+            "background": "#5a453a59",
+            "radius": 22,
+            "stroke": {
+              "color": "#5a453a",
+              "width": 2
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.4,
+              "y": 0.22,
+              "w": 0.2,
+              "h": 0.6
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr6mq53b-2",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Cadence Recovery rebuilds your sleep so your hormones and performance bounce back.",
+          "autoH": true,
+          "box": {
+            "x": 108,
+            "y": 806,
+            "w": 270,
+            "h": 230
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 24,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mq53b-3",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Deep sleep optimization",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 826,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mq53b-4",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Natural testosterone support",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 960,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mq53b-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Stress and cortisol regulation",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 1094,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr6mq53b-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Wake clear, train stronger",
+          "autoH": true,
+          "box": {
+            "x": 670,
+            "y": 1229,
+            "w": 324,
+            "h": 96
+          },
+          "style": {
+            "color": "#111111",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr6mq53b-7",
+      "type": "text",
+      "role": "logo",
+      "name": "logo",
+      "text": "Cadence logo",
+      "autoH": true,
+      "box": {
+        "x": 454,
+        "y": 1690,
+        "w": 173,
+        "h": 77
+      },
+      "style": {
+        "color": "#111111",
+        "fontSize": 34,
+        "fontWeight": 600,
+        "align": "left",
+        "uppercase": false,
+        "lineHeight": 1.2
+      }
+    }
+  ],
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "offer-hero",
+  "background": "#ffffff",
+  "backgroundIsPhoto": false,
+  "backgroundConfidence": "high",
+  "theme": "light",
+  "dominantPalette": [
+    {
+      "hex": "#ffffff",
+      "share": 0.5
+    },
+    {
+      "hex": "#ffffff",
+      "share": 0.25
+    },
+    {
+      "hex": "#fbfbfa",
+      "share": 0.125
+    },
+    {
+      "hex": "#2d2925",
+      "share": 0.063
+    },
+    {
+      "hex": "#5c544e",
+      "share": 0.063
+    }
+  ],
+  "selfCheck": null,
+  "error": null,
+  "passes": 2
+}

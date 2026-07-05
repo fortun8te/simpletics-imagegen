@@ -147,14 +147,55 @@
     transform: translateY(2px);
   }
 }
-/* divide between EXCHANGES (each new prompt), not between a prompt and its own reply */
-.msg[data-role="user"]:not(:first-child) { border-top: 1px solid var(--line-soft); }
+/* divide between EXCHANGES (each new prompt), not between a prompt and its own reply. On a long
+   populated thread the divider does the heavy lifting for rhythm, so give each new exchange a bit
+   more breathing room above its rule than the reply gets — the thread reads as discrete turns. */
+.msg[data-role="user"]:not(:first-child) { border-top: 1px solid var(--line-soft); margin-top: 6px; padding-top: 12px; }
 .msg[data-role="agent"] { padding-top: 2px; }
 
-/* user line: "› text" */
-.msg[data-role="user"] { display: flex; gap: 7px; align-items: baseline; }
-.userMark { flex: none; font: 600 12px/1.6 var(--font-mono); color: var(--faint); }
-.userBody { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+/* ── collapsed-history band: one quiet expandable row standing in for all the older messages on a
+   long thread. Reads as a faint divider label, not a button-looking control. ── */
+.historyBand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin: 2px 0 8px;
+  padding: 5px 2px;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  background: transparent;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--faint);
+  cursor: pointer;
+  text-align: left;
+}
+.historyBand:hover { color: var(--muted); }
+.historyBand[data-collapse] { border-bottom: 0; border-top: 1px solid var(--line-soft); margin: 8px 0 2px; }
+.historyChev { flex: none; display: inline-flex; color: var(--faint); transition: transform var(--dur-1) var(--ease); }
+.historyChev[data-open] { transform: rotate(90deg); }
+.historyCount {
+  margin-left: auto;
+  font: 500 9px/1 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--faint);
+}
+
+/* user line: a rounded dark bubble (Cursor-chat reference) — left-aligned, contains just the
+   user's text + any attachments. Distinct from the agent reply below, which is plain text on
+   the panel background with no card/border. */
+.msg[data-role="user"] { display: flex; }
+.userBubble {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  max-width: 92%;
+  padding: 7px 11px;
+  border-radius: var(--r-lg);
+  background: var(--surface-3);
+}
 .userText {
   font-size: 12px;
   line-height: 1.6;
@@ -163,57 +204,34 @@
   word-break: break-word;
 }
 .msgAtts { display: flex; flex-wrap: wrap; gap: 4px; }
+.msgAttBtn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  display: block;
+  border-radius: 4px;
+}
+.msgAttBtn:hover .msgAtt,
+.msgAttBtn:focus-visible .msgAtt { border-color: var(--line-strong); }
 .msgAtt {
-  width: 26px;
-  height: 26px;
+  width: 34px;
+  height: 34px;
   object-fit: cover;
   border-radius: 4px;
   border: 1px solid var(--line-soft);
   display: block;
 }
 
-/* agent result: one muted mono line + chevron disclosure */
-.agentRow { display: flex; align-items: center; gap: var(--space-2); }
-.agentLine {
-  flex: 1;
-  min-width: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 1px 0;
-  border: 0;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-}
+/* shared disclosure chevron (detail toggle) */
 .chev {
   flex: none;
   display: inline-flex;
   color: var(--faint);
   transition: transform var(--dur-1) var(--ease);
 }
-.agentLine[data-open] .chev { transform: rotate(90deg); }
-.agentSummary {
-  flex: none;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 500 10.5px/1.6 var(--font-mono);
-  color: var(--muted);
-}
-/* trailing "model · 1.2k tok" — quieter than the outcome, truncates first */
-.agentMeta {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font: 400 10px/1.6 var(--font-mono);
-  color: var(--faint);
-}
-.agentLine:hover .agentSummary { color: var(--ink); }
-.agentLine:hover .agentMeta { color: var(--muted); }
 .undoBtn {
+  margin-left: auto;
   flex: none;
   padding: 1px 7px;
   border: 1px solid var(--line-soft);
@@ -227,12 +245,189 @@
 .undoBtn:hover:not(:disabled) { color: var(--ink); border-color: var(--line); background: var(--surface-2); }
 .undoBtn:disabled { opacity: 0.45; cursor: default; }
 
+/* "revert this run" — the owner's safety net for a bad agent result. Deliberately MORE visible than
+   the faint undo (accent-tinted border + label, icon inline) so it reads as the obvious recovery
+   action, without shouting like a destructive button. Sits alongside undo on the latest run's row. */
+.revertBtn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line-soft));
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-ink);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.revertBtn > :global(svg) { flex: none; }
+.revertBtn:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 65%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+.revertBtn:disabled { opacity: 0.45; cursor: default; }
+
+/* ── TLDR narrative feed: first-person answer sentences, muted one-line summaries with a faint
+   right-aligned duration, tool-call chips, and a default-collapsed detail disclosure. Calm, dark,
+   monochrome, generous line-height — the whole turn reads as a short narrative + faint summaries. */
+
+/* "Thought for Ns" — a muted line above the reply, showing how long the model thought for this
+   turn (the finished-turn counterpart to the live elapsed timer shown while a run is in flight). */
+.thoughtFor {
+  margin: 0 0 3px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* the agent's first-person "what I did / am doing" sentence — plain body text, generous leading */
+.answer {
+  margin: 0;
+  font: 400 12.5px/1.6 var(--font-sans);
+  color: var(--ink);
+  word-break: break-word;
+}
+
+/* muted one-line action summary ("Edited 7 layers") — duration now lives in the "Thought for Ns"
+   line above the reply instead of a trailing timestamp here. */
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-top: 4px;
+}
+.summaryText {
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  word-break: break-word;
+}
+
+/* default-collapsed "Details" toggle under a finished turn — the wall of steps lives behind it */
+.detailToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--faint);
+}
+.detailToggle:hover { color: var(--muted); }
+.detailToggle .chev { transition: transform var(--dur-1) var(--ease); }
+.detailToggle[data-open] .chev { transform: rotate(90deg); }
+.detailMeta {
+  margin-left: 4px;
+  font: 400 10px/1.5 var(--font-mono);
+  color: var(--faint);
+}
+
+/* what-changed digest: "Moved 2 · Restyled 3 · Added 1" — a compact recap line under the summary
+   row, hover (title attr) reveals the touched layer names per bucket. */
+.digestLine {
+  margin: 3px 0 0;
+  font: 400 10.5px/1.5 var(--font-mono);
+  color: var(--faint);
+  word-break: break-word;
+}
+
+/* suggested follow-ups + retry — a row of small tappable chips under a finished/failed turn */
+.followUps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 6px 2px 2px;
+}
+.followUpChip {
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line-soft);
+  background: var(--surface-2);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.followUpChip:hover { color: var(--ink); border-color: var(--line); background: var(--surface-3); }
+.retryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line-soft));
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-ink);
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.retryChip:hover {
+  border-color: color-mix(in srgb, var(--accent) 65%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* queued instruction bubble — muted twin of .userBubble, sent the instant the live run settles */
+.queuedBubble {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 92%;
+  padding: 6px 8px 6px 11px;
+  border-radius: var(--r-lg);
+  border: 1px dashed var(--line-soft);
+  background: transparent;
+  opacity: 0.7;
+}
+.queuedLabel {
+  flex: none;
+  font: 600 8.5px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.queuedText {
+  min-width: 0;
+  flex: 1 1 auto;
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.queuedCancel {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+}
+.queuedCancel:hover { color: var(--ink); background: var(--surface-3); }
+
 .agentDetail {
   display: flex;
   flex-direction: column;
   gap: 6px;
   margin-top: 6px;
-  padding: 6px 0 2px 15px;
+  padding: 6px 0 2px 12px;
   border-left: 1px solid var(--line-soft);
 }
 .agentText {
@@ -242,40 +437,62 @@
   white-space: pre-wrap;
   word-break: break-word;
 }
-.runningLine {
+
+/* ── running turn: "Thinking…" header + current action shimmer + tool chips ── */
+.runningTurn {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  flex: 1 1 auto;
-  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+  padding: 8px 2px 4px;
+  /* same fail-visible entrance as .msg (see that comment) — transition + @starting-style */
+  opacity: 1;
+  transition: opacity 0.18s var(--ease);
 }
-.runningText {
-  flex: 1 1 auto;
+@starting-style { .runningTurn { opacity: 0; } }
+/* keep the diamond + shimmers alive while the idle/tab power-saver pauses #root animations —
+   a live run IS activity (same override as AgentCursorOverlay/SkeletonLoader). */
+:global(html[data-app-idle='true'] #root) .runningTurn,
+:global(html[data-app-idle='true'] #root) .runningTurn *,
+:global(html[data-tab-hidden='true'] #root) .runningTurn,
+:global(html[data-tab-hidden='true'] #root) .runningTurn * {
+  animation-play-state: running !important;
+}
+.thinkingHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--faint);
+}
+.thinkingLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* tool-call chips — compact bordered rows, icon + short label (right-aligned duration optional) */
+.chipRow { display: flex; flex-wrap: wrap; gap: 5px; }
+.toolChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.toolChip > :global(svg) { flex: none; color: var(--faint); }
+.toolChipLabel {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font: 500 10.5px/1.6 var(--font-mono);
-  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
 }
-/* live shimmer on the current step label (ChatGPT-style gradient sweep) */
-.runningText[data-shimmer] {
-  background: var(--shimmer);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shimmer var(--dur-shimmer) linear infinite;
-}
-@keyframes shimmer { to { background-position: -200% 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .runningText[data-shimmer] { animation: none; color: var(--muted); background: none; }
-}
-:global([data-reduced-motion="true"]) .runningText[data-shimmer] {
-  animation: none;
-  color: var(--muted);
-  background: none;
-}
+
 /* still used by the attachment "uploading" row */
 .spinner {
   width: 9px;
@@ -333,18 +550,43 @@
 .attRow { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
 .attSquare {
   position: relative;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 34px;
   padding: 0;
   border: 1px solid var(--line-soft);
   border-radius: 4px;
   overflow: hidden;
   background: var(--surface-2);
-  cursor: pointer;
   flex: none;
 }
-.attSquare img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .attSquare[data-active] { border-color: var(--line-strong); box-shadow: 0 0 0 1px var(--line-strong); }
+.attMain {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.attSquare img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* expand affordance (bottom-left) — opens the RefLightbox without fighting the note-toggle
+   click on .attMain (a separate real button, only visible on hover/focus like .attRemove). */
+.attExpand {
+  position: absolute;
+  bottom: 1px;
+  left: 1px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--surface-3);
+  color: var(--ink);
+  cursor: pointer;
+}
 .attRemove {
   position: absolute;
   top: 1px;
@@ -352,13 +594,20 @@
   display: none;
   align-items: center;
   justify-content: center;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
+  border: 0;
   border-radius: 3px;
   background: var(--surface-3);
   color: var(--ink);
+  cursor: pointer;
 }
-.attSquare:hover .attRemove { display: inline-flex; }
+/* UI-17/18: real focusable buttons, so :focus-within reveals them for keyboard users too —
+   not just :hover, which a keyboard-only user can never trigger. */
+.attSquare:hover .attRemove,
+.attSquare:focus-within .attRemove,
+.attSquare:hover .attExpand,
+.attSquare:focus-within .attExpand { display: inline-flex; }
 .attNote {
   width: 100%;
   height: 22px;
@@ -373,8 +622,14 @@
 .attNote::placeholder { color: var(--faint); }
 .uploading { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; color: var(--faint); }
 
+/* positioning context for the slash-command popover, which floats ABOVE the textarea */
+.inputWrap {
+  position: relative;
+  width: 100%;
+}
 .inputBox {
   width: 100%;
+  max-height: 160px;
   padding: var(--space-2);
   border-radius: var(--r-md);
   border: 1px solid var(--line-soft);
@@ -382,9 +637,53 @@
   font: 400 12px/1.55 var(--font-sans);
   color: var(--ink);
   resize: none;
+  overflow-y: auto;
 }
 .inputBox:focus { outline: none; border-color: var(--line-strong); }
 .inputBox::placeholder { color: var(--faint); }
+
+/* slash quick-command popover — floats above the composer, keyboard navigable */
+.slashMenu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 6px);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px;
+  border-radius: var(--r-md);
+  background: var(--surface-1, var(--glass-bg-3));
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.35));
+  max-height: 200px;
+  overflow-y: auto;
+}
+.slashItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  font-size: 11.5px;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+}
+.slashItem[data-active] { color: var(--ink); background: var(--surface-2); }
+.slashIcon { flex: none; display: inline-flex; color: var(--faint); }
+.slashItem[data-active] .slashIcon { color: var(--ink); }
+.slashCmd {
+  flex: none;
+  font: 600 11px/1 var(--font-mono);
+  color: var(--ink);
+}
+.slashLabel { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slashHint { flex: none; font: 500 9px/1 var(--font-mono); color: var(--faint); }
 
 .composerRow { display: flex; align-items: center; gap: 4px; }
 .plusBtn, .atBtn {
@@ -402,27 +701,24 @@
 .atBtn { font: 600 12px/1 var(--font-mono); }
 .plusBtn:hover:not(:disabled), .atBtn:hover:not(:disabled) { color: var(--ink); background: var(--surface-2); }
 .plusBtn:disabled, .atBtn:disabled { opacity: 0.4; cursor: default; }
+/* send — a compact rounded-square up-arrow icon button, bottom-right of the composer footer */
 .sendBtn {
   margin-left: auto;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  height: 24px;
-  padding: 0 9px;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
   border-radius: var(--r-sm);
   border: 1px solid var(--line);
   background: var(--surface-2);
-  font-size: 10.5px;
-  font-weight: 600;
   color: var(--ink);
-  white-space: nowrap;
   cursor: pointer;
 }
-.sendBtn:hover:not(:disabled) { background: var(--surface-3); }
-.sendBtn:disabled { opacity: 0.45; cursor: default; }
-.sendKbd { font: 500 9px/1 var(--font-mono); color: var(--faint); }
-/* stop — replaces send while a run is live. Always enabled: it abandons the wait client-side
-   (no server abort exists), so it must never look locked like the old disabled "running". */
+.sendBtn:hover:not(:disabled) { background: var(--surface-3); border-color: var(--line-strong); }
+.sendBtn:disabled { opacity: 0.4; cursor: default; }
+/* stop — replaces send while a run is live. Always enabled: it aborts the server run AND abandons
+   the client wait, so it must never look locked like the old disabled "running". */
 .stopBtn {
   margin-left: auto;
   display: inline-flex;
@@ -476,6 +772,7 @@
 .menuIcon { flex: none; width: 14px; display: inline-flex; justify-content: center; color: var(--faint); }
 .menuItem[data-highlighted] .menuIcon { color: var(--ink); }
 .menuHint { margin-left: auto; font: 500 9px/1 var(--font-mono); color: var(--faint); }
+.menuSep { height: 1px; margin: 4px 2px; background: var(--line); }
 
 /* model footer under the composer — the ONE model placement (opencode-style, bottom-left).
    "model" caption + bordered picker chip; padded off the panel edge so it can't get clipped
@@ -499,47 +796,7 @@
 /* persona identity in the header (orb + name/model subtitle) */
 .persona { margin-right: auto; }
 
-/* live run card: diamond+current step on top, then the ChainOfThought rail + Reasoning block */
-.runningCard {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: var(--space-2);
-  padding: 10px 12px;
-  border-radius: var(--r-md);
-  border: 1px solid var(--line-soft);
-  background: var(--glass-bg-2);
-  /* same fail-visible entrance as .msg (see the comment there) */
-  opacity: 1;
-  transform: none;
-  transition: opacity 0.18s var(--ease), transform 0.18s var(--ease);
-}
-@starting-style {
-  .runningCard {
-    opacity: 0;
-    transform: translateY(2px);
-  }
-}
-/* The idle/tab power-saver (theme.css) pauses all #root animations, and its activity signal
-   doesn't know about design-agent runs — it fires DURING agent work and froze the diamond
-   loader at its 0.08-opacity resting frame (an invisible loader) + stopped the step shimmer.
-   The card only exists while a run is live, so a live run IS activity: keep its subtree
-   animating. Specificity (1,2,1) beats the pauser's html[attr] #root * (1,1,1); both
-   !important, higher specificity wins (same override as AgentCursorOverlay/SkeletonLoader). */
-:global(html[data-app-idle='true'] #root) .runningCard,
-:global(html[data-app-idle='true'] #root) .runningCard *,
-:global(html[data-tab-hidden='true'] #root) .runningCard,
-:global(html[data-tab-hidden='true'] #root) .runningCard * {
-  animation-play-state: running !important;
-}
-.runningHead { display: flex; flex-direction: row; align-items: center; gap: 11px; }
-.cot { border-top: 1px solid var(--line-soft); padding-top: 6px; }
-.reasoning { border-top: 1px solid var(--line-soft); padding-top: 4px; }
-/* inside a run row's disclosure the rail border already frames the block — no extra hairline */
+/* the ChainOfThought step rail — a quiet disclosure inside a running turn / expanded detail */
+.cot { padding-top: 2px; }
+/* inside a finished run's expanded detail the rail border already frames the block */
 .agentDetail .cot:first-child { border-top: 0; padding-top: 0; }
-.runningMeta {
-  flex: none;
-  font-size: 10px;
-  color: var(--faint);
-  font-variant-numeric: tabular-nums;
-}

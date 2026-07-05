@@ -1,0 +1,493 @@
+{
+  "id": "harness_026_88d24490",
+  "name": "copy-harness harness_026_88d24490",
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "layers": [
+    {
+      "id": "base-mr6ddhm7-24",
+      "type": "shape",
+      "role": "base",
+      "name": "Base color",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "shapeKind": "rect",
+        "background": "#ffffff"
+      }
+    },
+    {
+      "id": "group-mr6ddhm7-1i",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 151,
+        "y": 730,
+        "w": 929,
+        "h": 806
+      },
+      "children": [
+        {
+          "id": "icon-mr6ddhm7-1j",
+          "type": "shape",
+          "role": "icon",
+          "name": "icon",
+          "box": {
+            "x": 1040,
+            "y": 730,
+            "w": 40,
+            "h": 384
+          },
+          "style": {
+            "color": "#3b82f6",
+            "background": "#9aa0a622",
+            "fontSize": 43,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "icon-mr6ddhm7-1k",
+          "type": "shape",
+          "role": "icon",
+          "name": "icon",
+          "box": {
+            "x": 1040,
+            "y": 730,
+            "w": 40,
+            "h": 384
+          },
+          "style": {
+            "color": "#ef4444",
+            "background": "#9aa0a622",
+            "fontSize": 43,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "brand-mr6ddhm7-1l",
+          "type": "text",
+          "role": "brand",
+          "name": "brand",
+          "text": "DORE & ROSE",
+          "autoH": true,
+          "box": {
+            "x": 151,
+            "y": 1382,
+            "w": 378,
+            "h": 154
+          },
+          "style": {
+            "color": "#3e3e3e",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "brand-mr6ddhm7-1m",
+          "type": "text",
+          "role": "brand",
+          "name": "brand",
+          "text": "OTHERS'",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1382,
+            "w": 40,
+            "h": 154
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 30,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "group-mr6ddhm7-1n",
+      "type": "group",
+      "name": "Product",
+      "box": {
+        "x": 778,
+        "y": 1890,
+        "w": 302,
+        "h": 30
+      },
+      "children": [
+        {
+          "id": "product-mr6ddhm7-1o",
+          "type": "shape",
+          "role": "product",
+          "name": "Product · grey pillow",
+          "box": {
+            "x": 778,
+            "y": 1890,
+            "w": 302,
+            "h": 30
+          },
+          "style": {
+            "background": "#9ca3af59",
+            "radius": 22,
+            "shapeKind": "path",
+            "path": "M 0.5 0.03 C 0.6417 0.03 0.845 -0.0033 0.925 0.075 C 1.005 0.1533 0.98 0.3583 0.98 0.5 C 0.98 0.6417 1.005 0.8467 0.925 0.925 C 0.845 1.0033 0.6417 0.97 0.5 0.97 C 0.3583 0.97 0.155 1.0033 0.075 0.925 C -0.005 0.8467 0.02 0.6417 0.02 0.5 C 0.02 0.3583 -0.005 0.1533 0.075 0.075 C 0.155 -0.0033 0.3583 0.03 0.5 0.03 Z",
+            "stroke": {
+              "color": "#9ca3af",
+              "width": 2
+            }
+          }
+        },
+        {
+          "id": "avatar-mr6ddhm7-1p",
+          "type": "image",
+          "role": "avatar",
+          "name": "Avatar · bugs inset",
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "crop": {
+              "x": 1,
+              "y": 1,
+              "w": 0.2,
+              "h": 0.2
+            },
+            "shapeKind": "ellipse"
+          },
+          "src": "/refasset?id=harness-026"
+        }
+      ]
+    },
+    {
+      "id": "group-mr6ddhm7-1q",
+      "type": "group",
+      "name": "CTA",
+      "box": {
+        "x": 778,
+        "y": 1766,
+        "w": 302,
+        "h": 154
+      },
+      "children": [
+        {
+          "id": "badge-mr6ddhm7-1r",
+          "type": "shape",
+          "role": "badge",
+          "name": "badge",
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#ffffff",
+            "background": "#60a5fa",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "radius": 108,
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8,
+            "padding": 16
+          }
+        },
+        {
+          "id": "icon-mr6ddhm7-1s",
+          "type": "shape",
+          "role": "icon",
+          "name": "icon",
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#3b82f6",
+            "background": "#9aa0a622",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "icon-mr6ddhm7-1t",
+          "type": "shape",
+          "role": "icon",
+          "name": "icon",
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#3b82f6",
+            "background": "#9aa0a622",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "icon-mr6ddhm7-1u",
+          "type": "shape",
+          "role": "icon",
+          "name": "icon",
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 30
+          },
+          "style": {
+            "color": "#3b82f6",
+            "background": "#9aa0a622",
+            "fontSize": 43,
+            "fontWeight": 600,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2,
+            "opacity": 0.8
+          }
+        },
+        {
+          "id": "headline-mr6ddhm7-1v",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Silk",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1766,
+            "w": 40,
+            "h": 154
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 130,
+            "fontWeight": 900,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6ddhm7-1w",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "vs",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 46
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 38,
+            "fontWeight": 700,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6ddhm7-1x",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Satin",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1766,
+            "w": 40,
+            "h": 154
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 130,
+            "fontWeight": 900,
+            "align": "left",
+            "uppercase": false,
+            "fontFamily": "Georgia",
+            "serif": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6ddhm7-1y",
+          "type": "text",
+          "role": "caption",
+          "name": "Product label",
+          "autoH": true,
+          "sizeLocked": true,
+          "text": "GREY PILLOW",
+          "box": {
+            "x": 778,
+            "y": 1854,
+            "w": 302,
+            "h": 66
+          },
+          "style": {
+            "fontSize": 32,
+            "fontWeight": 700,
+            "color": "#ffffff",
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1,
+            "shadow": true
+          }
+        },
+        {
+          "id": "caption-mr6ddhm7-1z",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "DORE & ROSE",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 108
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "headline-mr6ddhm7-20",
+          "type": "text",
+          "role": "headline",
+          "name": "headline",
+          "text": "Premium Silk",
+          "autoH": true,
+          "box": {
+            "x": 1037,
+            "y": 1890,
+            "w": 43,
+            "h": 135
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 56,
+            "fontWeight": 700,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "subhead-mr6ddhm7-21",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "Pillowcase",
+          "autoH": true,
+          "box": {
+            "x": 1037,
+            "y": 1890,
+            "w": 43,
+            "h": 46
+          },
+          "style": {
+            "color": "#6b7280",
+            "fontSize": 38,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6ddhm7-22",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Premium silk",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 72
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr6ddhm7-23",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "Antibacterial",
+          "autoH": true,
+          "box": {
+            "x": 1040,
+            "y": 1890,
+            "w": 40,
+            "h": 36
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "left",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    }
+  ],
+  "skeletonId": "skel_mr6ddhm6sr4g",
+  "updatedAt": 1783169994608
+}
