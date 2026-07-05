@@ -3176,14 +3176,16 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
         // real layers and dirties the Figma import (observed: an empty text spanning 68% of the
         // canvas on ad 052).
         if (!text.trim()) { dropped.push(l); return false; }
-        // (a1) PRODUCT-DESCRIPTOR captions ("CURL CRÈME TUBE", "CREATINE JAR") are the model
-        // NAMING a product region, not design copy — when any photo region exists they duplicate
-        // what the cutout already shows, usually at fabricated coordinates.
-        if (photoRegions.length && /^[\p{Lu}0-9 &'’.\-]{3,40}\s(TUBE|JAR|POUCH|BAG|TUB|BOTTLE|CAN|PACK|PACKSHOT)$/u.test(text.trim())) { dropped.push(l); return false; }
         // (a) CONTENT: unmistakable nutrition/ingredient copy is packaging regardless of role/box
         if (nutritionHits(text) >= 2 || (nutritionHits(text) >= 1 && text.length > 60)) { dropped.push(l); return false; }
         if (OVERLAY_ROLES.test(String(l.role || ''))) return true;
         if ((Number(l.style?.fontSizePct) || 0) >= 3.2) return true;
+        // (a1) PRODUCT-DESCRIPTOR captions ("CURL CRÈME TUBE", "CANDLE JAR") are the model NAMING
+        // an object it saw, not design copy. Checked AFTER the overlay-role/big-font exemptions so
+        // a real product-name headline survives; small caption-class descriptors always drop.
+        // (The old photoRegions gate missed draws where products arrived as role-less shapes —
+        // proven on ad 103, where "CANDLE JAR"/"SMALL BOTTLE" landed on top of the tweet body.)
+        if (/^[\p{Lu}0-9 &'’.\-]{3,40}\s(TUBE|JAR|POUCH|BAG|TUB|BOTTLE|CAN|PACK|PACKSHOT|SACHET)$/u.test(text.trim())) { dropped.push(l); return false; }
         // (b) pack-size caption ("VANILLE SMAAK 1kg", "CITRUS SMAAK 350g") when a photo region exists
         if (photoRegions.length && PACK_SIZE_RE.test(text.trim())) { dropped.push(l); return false; }
         // (c) GEOMETRY: small text ≥60% inside a photo/product region ships with the crop

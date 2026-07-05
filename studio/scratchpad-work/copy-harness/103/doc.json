@@ -1,13 +1,13 @@
 {
-  "id": "harness_103_a37848d0",
-  "name": "copy-harness harness_103_a37848d0",
+  "id": "harness_103_d429e3e3",
+  "name": "copy-harness harness_103_d429e3e3",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr866r1b-b",
+      "id": "base-mr86l506-7",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,130 +19,82 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#0a0a0a"
+        "background": "#000000"
       }
     },
     {
-      "id": "group-mr866r1a-0",
+      "id": "group-mr86l506-0",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 1,
-        "y": 1,
-        "w": 1047,
-        "h": 230
+        "x": 0,
+        "y": 2,
+        "w": 744,
+        "h": 106
       },
       "children": [
         {
-          "id": "caption-mr866r1a-1",
+          "id": "caption-mr86l506-1",
           "type": "text",
           "role": "caption",
-          "name": "Product label",
+          "name": "caption",
+          "text": "X.com",
           "autoH": true,
-          "sizeLocked": true,
-          "text": "CANDLE JAR",
           "box": {
-            "x": 4,
-            "y": 125,
+            "x": 9,
+            "y": 2,
             "w": 40,
-            "h": 32
+            "h": 45
           },
           "style": {
-            "fontSize": 16,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
-          }
-        },
-        {
-          "id": "caption-mr866r1a-2",
-          "type": "text",
-          "role": "caption",
-          "name": "Product label",
-          "autoH": true,
-          "sizeLocked": true,
-          "text": "SMALL BOTTLE",
-          "box": {
-            "x": 1,
-            "y": 85,
-            "w": 40,
-            "h": 32
-          },
-          "style": {
-            "fontSize": 16,
-            "fontWeight": 700,
-            "color": "#ffffff",
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1,
-            "shadow": true
-          }
-        },
-        {
-          "id": "headline-mr866r1a-3",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "@daveywarren",
-          "autoH": true,
-          "box": {
-            "x": 2,
-            "y": 1,
-            "w": 174,
-            "h": 84
-          },
-          "style": {
-            "color": "#ffffff",
-            "fontSize": 56,
-            "fontWeight": 700,
-            "align": "left",
+            "color": "#e7e9ea",
+            "fontSize": 30,
+            "fontWeight": 500,
+            "align": "right",
             "uppercase": false,
             "lineHeight": 1.2,
             "pill": true,
             "background": "rgba(0,0,0,0.62)",
-            "padding": 31
+            "padding": 17
           }
         },
         {
-          "id": "subhead-mr866r1a-4",
+          "id": "caption-mr86l506-2",
           "type": "text",
-          "role": "subhead",
-          "name": "subhead",
+          "role": "caption",
+          "name": "caption",
           "text": "Been training hard and still waking up heavy.\nStarted using Cadence Sleep Hydration and finally feel\nlike I’m actually recovering",
           "autoH": true,
           "box": {
-            "x": 1,
-            "y": 39,
-            "w": 778,
-            "h": 285
+            "x": 0,
+            "y": 40,
+            "w": 734,
+            "h": 225
           },
           "style": {
-            "color": "#d0d0d0",
-            "fontSize": 38,
+            "color": "#e7e9ea",
+            "fontSize": 30,
             "fontWeight": 400,
             "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
             "pill": true,
             "background": "rgba(0,0,0,0.62)",
-            "padding": 21
+            "padding": 17
           }
         },
         {
-          "id": "caption-mr866r1a-5",
+          "id": "caption-mr86l506-3",
           "type": "text",
           "role": "caption",
           "name": "caption",
-          "text": "14:07 - 26/09/2025 - 6.9K Views",
+          "text": "14:07 · 26/09/2025 · 6.9K Views",
           "autoH": true,
           "box": {
-            "x": 1,
-            "y": 165,
-            "w": 155,
-            "h": 180
+            "x": 0,
+            "y": 78,
+            "w": 122,
+            "h": 270
           },
           "style": {
             "color": "#ffffff",
@@ -155,106 +107,54 @@
             "background": "rgba(0,0,0,0.62)",
             "padding": 17
           }
-        },
-        {
-          "id": "headline-mr866r1a-6",
-          "type": "text",
-          "role": "headline",
-          "name": "headline",
-          "text": "X.com",
-          "autoH": true,
-          "box": {
-            "x": 886,
-            "y": 173,
-            "w": 162,
-            "h": 84
-          },
-          "style": {
-            "color": "#c3c3c3",
-            "fontSize": 56,
-            "fontWeight": 700,
-            "align": "right",
-            "uppercase": false,
-            "lineHeight": 1.2,
-            "pill": true,
-            "background": "rgba(0,0,0,0.62)",
-            "padding": 31
-          }
         }
       ]
     },
     {
-      "id": "group-mr866r1a-7",
+      "id": "group-mr86l506-4",
       "type": "group",
       "name": "Product",
       "box": {
         "x": 0,
-        "y": 1,
+        "y": 2,
         "w": 1037,
-        "h": 1554
+        "h": 1534
       },
       "children": [
         {
-          "id": "product-mr866r1a-8",
+          "id": "avatar-mr86l506-5",
           "type": "shape",
-          "role": "product",
-          "name": "Product · Candle jar",
+          "role": "avatar",
+          "name": "Blurred · user avatar",
           "box": {
-            "x": 4,
-            "y": 5,
-            "w": 40,
-            "h": 30
+            "x": 43,
+            "y": 77,
+            "w": 86,
+            "h": 77
           },
           "style": {
-            "background": "#F5F0E659",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.09 C 0.625 0.09 0.7917 0.0567 0.875 0.125 C 0.9583 0.1933 0.9975 0.3725 1 0.5 C 1.0025 0.6275 0.9733 0.8192 0.89 0.89 C 0.8067 0.9608 0.63 0.925 0.5 0.925 C 0.37 0.925 0.1933 0.9608 0.11 0.89 C 0.0267 0.8192 -0.0025 0.6275 0 0.5 C 0.0025 0.3725 0.0417 0.1933 0.125 0.125 C 0.2083 0.0567 0.375 0.09 0.5 0.09 Z",
-            "stroke": {
-              "color": "#F5F0E6",
-              "width": 2
-            }
+            "background": "#6a6a6abf",
+            "shapeKind": "ellipse",
+            "blur": 6
           }
         },
         {
-          "id": "product-mr866r1a-9",
-          "type": "shape",
-          "role": "product",
-          "name": "Product · Small bottle",
-          "box": {
-            "x": 1,
-            "y": 5,
-            "w": 40,
-            "h": 30
-          },
-          "style": {
-            "background": "#C5D1A659",
-            "radius": 22,
-            "shapeKind": "path",
-            "path": "M 0.5 0.19 C 0.5917 0.19 0.6967 0.1733 0.775 0.225 C 0.8533 0.2767 0.9575 0.3958 0.97 0.5 C 0.9825 0.6042 0.9283 0.7792 0.85 0.85 C 0.7717 0.9208 0.6167 0.925 0.5 0.925 C 0.3833 0.925 0.2283 0.9208 0.15 0.85 C 0.0717 0.7792 0.0175 0.6042 0.03 0.5 C 0.0425 0.3958 0.1467 0.2767 0.225 0.225 C 0.3033 0.1733 0.4083 0.19 0.5 0.19 Z",
-            "stroke": {
-              "color": "#C5D1A6",
-              "width": 2
-            }
-          }
-        },
-        {
-          "id": "product-mr866r1a-a",
+          "id": "product-mr86l506-6",
           "type": "image",
           "role": "product",
           "name": "Media photo (cut out)",
           "box": {
             "x": 0,
-            "y": 1,
+            "y": 2,
             "w": 1037,
-            "h": 1554
+            "h": 1534
           },
           "style": {
             "crop": {
               "x": 0,
               "y": 0,
               "w": 0.9750000000000001,
-              "h": 0.8250000000000001
+              "h": 0.8150000000000001
             },
             "radius": 36
           },
@@ -263,6 +163,6 @@
       ]
     }
   ],
-  "skeletonId": "skel_mr866r1ay851",
-  "updatedAt": 1783278855265
+  "skeletonId": "skel_mr86l5061fe2",
+  "updatedAt": 1783279526551
 }
