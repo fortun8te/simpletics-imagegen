@@ -10,9 +10,10 @@
   "theme": "light",
   "layers": [
     {
-      "id": "bg-gradient",
+      "id": "bg-blob-red",
       "type": "shape",
       "role": "decor",
+      "name": "Radial blob (red-orange core)",
       "box": {
         "x": 0,
         "y": 0,
@@ -21,29 +22,44 @@
       },
       "style": {
         "gradient": {
-          "type": "linear",
-          "angle": 90,
+          "type": "radial",
+          "cx": 0.28,
+          "cy": 0.505,
+          "r": 0.6,
+          "ry": 0.225,
           "stops": [
-            {
-              "color": "#FEFCF8",
-              "pos": 0
-            },
-            {
-              "color": "#EA5226",
-              "pos": 0.3
-            },
-            {
-              "color": "#F29B27",
-              "pos": 0.55
-            },
-            {
-              "color": "#F7D44C",
-              "pos": 0.8
-            },
-            {
-              "color": "#FEF8EC",
-              "pos": 1
-            }
+            { "color": "#EE4238", "pos": 0 },
+            { "color": "#EE4238", "pos": 0.45 },
+            { "color": "#ED6A2B", "pos": 0.62 },
+            { "color": "#F0964D", "pos": 0.78 },
+            { "color": "#FCDED4", "pos": 0.92 },
+            { "color": "#FFFFFF", "pos": 1 }
+          ]
+        }
+      }
+    },
+    {
+      "id": "bg-blob-yellow",
+      "type": "shape",
+      "role": "decor",
+      "name": "Radial blob (yellow, right edge)",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1920
+      },
+      "style": {
+        "gradient": {
+          "type": "radial",
+          "cx": 0.926,
+          "cy": 0.513,
+          "r": 0.25,
+          "ry": 0.161,
+          "stops": [
+            { "color": "#EBA81C", "pos": 0 },
+            { "color": "#EEC23D", "pos": 0.5 },
+            { "color": "rgba(238,194,61,0)", "pos": 1 }
           ]
         }
       }

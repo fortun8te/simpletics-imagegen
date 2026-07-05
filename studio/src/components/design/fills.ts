@@ -2,7 +2,7 @@
 // PARITY: studio/lib/designstore.mjs duplicates the CSS serializers (server can't import TS) —
 // change both together.
 
-import { resolveGradient, type GradientFill, type LayerBox, type LayerStyle } from '../../lib/sceneGraph';
+import { resolveGradient, resolveRadialParams, type GradientFill, type LayerBox, type LayerStyle } from '../../lib/sceneGraph';
 
 /** Angle (CSS deg, 0 = to top) → unit direction vector in y-DOWN screen space. */
 export function gradientDirection(angle: number): { dx: number; dy: number } {
@@ -10,12 +10,21 @@ export function gradientDirection(angle: number): { dx: number; dy: number } {
   return { dx: Math.sin(rad), dy: -Math.cos(rad) };
 }
 
-/** CSS background for Stage + server HTML. */
+/** CSS background for Stage + server HTML. Positioned radials (cx/cy/r/ry — fractions of the
+ *  layer box) map 1:1 to CSS `radial-gradient(ellipse rx% ry% at cx% cy%)`: horizontal
+ *  percentages resolve against the box width, vertical against the height — exactly our
+ *  fraction semantics, so no box is needed. Legacy radials keep the old `circle` output. */
 export function gradientCss(g: GradientFill): string {
   const stops = g.stops.map((s) => `${s.color} ${Math.round(s.pos * 100)}%`).join(', ');
-  return g.type === 'radial'
-    ? `radial-gradient(circle, ${stops})`
-    : `linear-gradient(${g.angle ?? 0}deg, ${stops})`;
+  if (g.type === 'radial') {
+    const rp = resolveRadialParams(g);
+    if (rp) {
+      const pc = (v: number) => `${Math.round(v * 10000) / 100}%`;
+      return `radial-gradient(ellipse ${pc(rp.r)} ${pc(rp.ry)} at ${pc(rp.cx)} ${pc(rp.cy)}, ${stops})`;
+    }
+    return `radial-gradient(circle, ${stops})`;
+  }
+  return `linear-gradient(${g.angle ?? 0}deg, ${stops})`;
 }
 
 /** Resolved fill CSS for a style: gradient wins over solid background. */
@@ -25,7 +34,10 @@ export function fillCss(s: LayerStyle | undefined): string | undefined {
   return s?.background || undefined;
 }
 
-/** Canvas-2D gradient for a box — endpoints per the CSS spec formula so pixels match. */
+/** Canvas-2D gradient for a box — endpoints per the CSS spec formula so pixels match.
+ *  NOTE positioned radials (resolveRadialParams ≠ null) are ELLIPSES in a non-square box, which
+ *  a raw CanvasGradient cannot express — raster.ts paints those via fillEllipticalRadial below;
+ *  this function keeps returning the legacy centered circle for everything else. */
 export function gradientCanvas(
   ctx: CanvasRenderingContext2D,
   g: GradientFill,
@@ -48,12 +60,55 @@ export function gradientCanvas(
   return grad;
 }
 
-/** SVG gradient def markup + the fill url. `id` must be unique per document. */
+/** Paint a POSITIONED radial (cx/cy/r/ry fractions of the box) inside the current path (or a
+ *  Path2D): clip to the shape, then scale space so a unit-circle radial becomes the ellipse.
+ *  Canvas radial gradients are circles only — the standard trick is to transform the space the
+ *  PAINT happens in (the already-built path is untouched: current-path coords are baked at
+ *  construction; a Path2D is mapped through the CTM at the moment we clip, before the scale).
+ *  Callers guard with resolveRadialParams() ≠ null. */
+export function fillEllipticalRadial(
+  ctx: CanvasRenderingContext2D,
+  g: GradientFill,
+  box: LayerBox,
+  path?: Path2D,
+): void {
+  const rp = resolveRadialParams(g);
+  if (!rp) return;
+  const cx = box.x + rp.cx * box.w;
+  const cy = box.y + rp.cy * box.h;
+  const rx = Math.max(1e-6, rp.r * box.w);
+  const ry = Math.max(1e-6, rp.ry * box.h);
+  ctx.save();
+  if (path) ctx.clip(path);
+  else ctx.clip();
+  ctx.translate(cx, cy);
+  ctx.scale(rx, ry);
+  const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+  for (const s of g.stops) {
+    grad.addColorStop(Math.max(0, Math.min(1, s.pos)), s.color === 'transparent' ? 'rgba(0,0,0,0)' : s.color);
+  }
+  ctx.fillStyle = grad;
+  // Cover the whole box in the transformed space (the clip bounds the visible area).
+  ctx.fillRect((box.x - cx) / rx, (box.y - cy) / ry, box.w / rx, box.h / ry);
+  ctx.restore();
+}
+
+/** SVG gradient def markup + the fill url. `id` must be unique per document.
+ *  Positioned radials use objectBoundingBox units (a unit-square circle stretched to the box —
+ *  the same per-axis fraction semantics as the CSS/canvas paths); when r ≠ ry the circle is
+ *  drawn at radius r and the y axis rescaled about the center via gradientTransform. */
 export function gradientSvgDef(g: GradientFill, id: string): string {
   const stops = g.stops
     .map((s) => `<stop offset="${Math.round(s.pos * 100)}%" stop-color="${s.color === 'transparent' ? '#000' : s.color}"${s.color === 'transparent' ? ' stop-opacity="0"' : ''}/>`)
     .join('');
   if (g.type === 'radial') {
+    const rp = resolveRadialParams(g);
+    if (rp) {
+      const tf = Math.abs(rp.ry - rp.r) > 1e-6
+        ? ` gradientTransform="translate(${rp.cx} ${rp.cy}) scale(1 ${Math.round((rp.ry / rp.r) * 1e6) / 1e6}) translate(${-rp.cx} ${-rp.cy})"`
+        : '';
+      return `<radialGradient id="${id}" cx="${rp.cx}" cy="${rp.cy}" r="${rp.r}"${tf}>${stops}</radialGradient>`;
+    }
     return `<radialGradient id="${id}" cx="0.5" cy="0.5" r="0.5">${stops}</radialGradient>`;
   }
   const { dx, dy } = gradientDirection(g.angle ?? 0);

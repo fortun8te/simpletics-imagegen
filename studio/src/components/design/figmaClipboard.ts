@@ -20,8 +20,10 @@
 import {
   isComponent,
   isGroup,
+  nodeRotation,
   resolveCrop,
   resolveGradient,
+  resolveRadialParams,
   type DesignDoc,
   type GradientFill,
   type GroupNode,
@@ -164,9 +166,21 @@ export function angleFromGradientTransform(m: FigMatrix | undefined): number {
 function gradientPaint(g: GradientFill): Record<string, unknown> {
   const stops = g.stops.map((s) => ({ color: parseCssColor(s.color), position: s.pos }));
   if (g.type === 'radial') {
+    // Positioned radial (cx/cy/r/ry, fractions of the box): Figma's radial paint lives in
+    // gradient space (center 0.5/0.5, radius 0.5) and `transform` maps NORMALIZED node coords
+    // into it — gx = (px − cx)/(2r) + 0.5, gy = (py − cy)/(2ry) + 0.5. Our r is a fraction of
+    // the box width and ry of the height, i.e. already normalized per axis, so the transform
+    // needs no box. Legacy radials keep the IDENTITY (Figma's default centered radial).
+    const rp = resolveRadialParams(g);
+    const transform: FigMatrix = rp
+      ? {
+        m00: 1 / (2 * rp.r), m01: 0, m02: 0.5 - rp.cx / (2 * rp.r),
+        m10: 0, m11: 1 / (2 * rp.ry), m12: 0.5 - rp.cy / (2 * rp.ry),
+      }
+      : IDENTITY;
     return {
       type: 'GRADIENT_RADIAL', visible: true, opacity: 1, blendMode: 'NORMAL',
-      stops, transform: IDENTITY,
+      stops, transform,
     };
   }
   return {
@@ -429,7 +443,7 @@ function rectNode(
     type: 'ROUNDED_RECTANGLE',
     name,
     size: { x: l.box.w, y: l.box.h },
-    transform: boxTransform(l.box, l.rotation, parentOrigin),
+    transform: boxTransform(l.box, nodeRotation(l), parentOrigin),
     opacity: s.opacity ?? 1,
     cornerRadius: rc ? rc[0] : r,
     rectangleTopLeftCornerRadius: rc ? rc[0] : r,
@@ -466,8 +480,9 @@ function lineNode(
   const s = l.style || {};
   const geom = arrowGeometry(l.box, s.flipDiag);
   let { x1, y1, x2, y2 } = geom;
-  if (l.rotation) {
-    const rad = (l.rotation * Math.PI) / 180;
+  const lineRot = nodeRotation(l);
+  if (lineRot) {
+    const rad = (lineRot * Math.PI) / 180;
     const cos = Math.cos(rad), sin = Math.sin(rad);
     const cx = l.box.x + l.box.w / 2, cy = l.box.y + l.box.h / 2;
     const rot = (px: number, py: number): [number, number] =>
@@ -599,7 +614,9 @@ function emitPolyline(
 function layerEffects(l: Layer): unknown[] | undefined {
   const s = l.style || {};
   const out: unknown[] = [];
-  if (s.shadow) {
+  // Shadow suppressed on outline-only text (textFillTransparent) — a drop shadow behind hollow
+  // glyphs silhouettes them; same rule in Stage/raster/SVG/HTML.
+  if (s.shadow && !s.textFillTransparent) {
     out.push({
       type: 'DROP_SHADOW', color: { r: 0, g: 0, b: 0, a: 0.55 }, offset: { x: 0, y: 2 },
       radius: 12, visible: true, blendMode: 'NORMAL', spread: 0, showShadowBehindNode: false,
@@ -647,7 +664,7 @@ function emitText(
     // Element instances keep the element's display name; plain text nodes are named by content.
     name: l.element ? name : String(text || name).slice(0, 40) || name,
     size: { x: Math.max(1, box.w), y: Math.max(1, box.h) },
-    transform: boxTransform(box, l.rotation, parentOrigin),
+    transform: boxTransform(box, nodeRotation(l), parentOrigin),
     opacity: s.opacity ?? 1,
     strokeAlign: 'OUTSIDE',
     fontSize: size,
@@ -678,7 +695,18 @@ function emitText(
     letterSpacing: { value: s.letterSpacing || 0, units: 'PIXELS' },
     textCase: s.uppercase ? 'UPPER' : 'ORIGINAL',
     textData: { characters: String(text || '') },
-    fillPaints: [solidPaint(s.color || '#ffffff')],
+    // textFillTransparent (outline-only glyphs) → NO fill paints; the textStroke below is the
+    // only paint. A filled text keeps its solid fill exactly as before.
+    fillPaints: s.textFillTransparent ? [] : [solidPaint(s.color || '#ffffff')],
+    // style.textStroke → real Figma strokes on the TEXT node. strokeAlign CENTER matches the
+    // CSS -webkit-text-stroke / canvas strokeText geometry (centered on the glyph edge).
+    ...(s.textStroke && s.textStroke.width > 0
+      ? {
+        strokePaints: [solidPaint(s.textStroke.color)],
+        strokeWeight: s.textStroke.width,
+        strokeAlign: 'CENTER',
+      }
+      : {}),
     // ── OVERRIDE TAGS — the actual "text renders incorrectly" root cause ──────────────────────
     // Every overridable text property in Figma's clipboard NodeChange is paired with a
     // `<field>Tag: uint`. The tag is Figma's field-override marker: a TEXT node's own
@@ -805,7 +833,7 @@ function emitSceneNode(
       type: 'ROUNDED_RECTANGLE',
       name: `${n.name || n.component} (component)`,
       size: { x: Math.max(1, n.box.w), y: Math.max(1, n.box.h) },
-      transform: boxTransform(n.box, n.rotation, parentOrigin),
+      transform: boxTransform(n.box, nodeRotation(n), parentOrigin),
       opacity: 1,
       cornerRadius: 0,
       fillPaints: [solidPaint('#2a2a2a')],

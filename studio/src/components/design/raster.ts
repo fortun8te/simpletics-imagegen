@@ -6,8 +6,8 @@
 // globalCompositeOperation), layer blur (style.blur → ctx.filter), per-corner radii
 // (style.radiusCorners) on shapes/text backgrounds, and clipping groups (GroupNode.clip).
 
-import { isComponent, isGroup, resolveCrop, resolveGradient, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
-import { arrowGeometry, gradientCanvas, starburstPoints, vignetteCanvas, vignetteSpec } from './fills';
+import { isComponent, isGroup, nodeRotation, resolveCrop, resolveGradient, resolveRadialParams, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
+import { arrowGeometry, fillEllipticalRadial, gradientCanvas, starburstPoints, vignetteCanvas, vignetteSpec } from './fills';
 import { pillPadding, textLayout, type Measurer } from './textMetrics';
 
 function loadImage(src: string): Promise<HTMLImageElement> {
@@ -308,6 +308,9 @@ function drawShape(ctx: CanvasRenderingContext2D, l: Layer) {
   }
 
   const g = resolveGradient(s);
+  // Positioned radial (cx/cy/r/ry) → ellipse paint via fillEllipticalRadial (clip + scaled
+  // unit-circle gradient); legacy gradients/solids keep the plain fillStyle path byte-identical.
+  const radial = g ? resolveRadialParams(g) : null;
   ctx.fillStyle = g ? gradientCanvas(ctx, g, l.box) : (s.background || '#000000');
 
   if (kind === 'path') {
@@ -316,7 +319,8 @@ function drawShape(ctx: CanvasRenderingContext2D, l: Layer) {
     // stroke width is not distorted by the box scale.
     if (!s.path) return;
     const p = pathGeometry(s.path, l.box);
-    ctx.fill(p);
+    if (g && radial) fillEllipticalRadial(ctx, g, l.box, p);
+    else ctx.fill(p);
     glassEdge(ctx, s, p);
     if (s.stroke && s.stroke.width > 0) {
       ctx.strokeStyle = s.stroke.color;
@@ -338,7 +342,8 @@ function drawShape(ctx: CanvasRenderingContext2D, l: Layer) {
     // radiusCorners wins over radius — PARITY: Stage cornerCss / designSvg perCornerRectPath.
     roundRect(ctx, x, y, w, h, cornerRadii(s));
   }
-  ctx.fill();
+  if (g && radial) fillEllipticalRadial(ctx, g, l.box); // clips the current path built above
+  else ctx.fill();
   glassEdge(ctx, s); // strokes the current path (rect/ellipse/starburst alike)
   if (s.stroke && s.stroke.width > 0) {
     ctx.strokeStyle = s.stroke.color;
@@ -382,7 +387,8 @@ function drawTextLayer(ctx: CanvasRenderingContext2D, l: Layer) {
     const g = resolveGradient(s);
     ctx.fillStyle = g ? gradientCanvas(ctx, g, l.box) : s.background;
     roundRect(ctx, x, y, w, h, cornerRadii(s)); // radiusCorners wins over radius
-    ctx.fill();
+    if (g && resolveRadialParams(g)) fillEllipticalRadial(ctx, g, l.box);
+    else ctx.fill();
     glassEdge(ctx, s); // backdropBlur hint — real blur only in DOM/HTML/Figma
   }
 
@@ -402,14 +408,27 @@ function drawTextLayer(ctx: CanvasRenderingContext2D, l: Layer) {
       ctx.fill();
     }
     // Text drop shadow on the GLYPHS (the pill rect above was already filled with no shadow set)
-    // — PARITY: Stage/HTML text-shadow + designSvg per-glyph <feDropShadow>. Applies in pill mode.
-    if (s.shadow) {
+    // — PARITY: Stage/HTML text-shadow + designSvg per-glyph <feDropShadow>. Applies in pill
+    // mode. Suppressed on outline-only text (textFillTransparent): a shadow behind a transparent
+    // fill silhouettes the glyph and defeats the hollow look — same rule in every renderer.
+    if (s.shadow && !s.textFillTransparent) {
       ctx.shadowColor = 'rgba(0,0,0,0.55)';
       ctx.shadowBlur = 12;
       ctx.shadowOffsetY = 2;
     }
-    ctx.fillStyle = s.color || '#ffffff';
-    ctx.fillText(line, tx, ty);
+    // style.textStroke: glyph outline (centered on the glyph edge — canvas strokeText with
+    // lineWidth = width matches CSS -webkit-text-stroke). Stroke FIRST, fill on top, so a
+    // filled+outlined glyph shows the inner stroke half under the fill exactly like CSS.
+    if (s.textStroke && s.textStroke.width > 0) {
+      ctx.strokeStyle = s.textStroke.color;
+      ctx.lineWidth = s.textStroke.width;
+      ctx.lineJoin = 'round';
+      ctx.strokeText(line, tx, ty);
+    }
+    if (!s.textFillTransparent) {
+      ctx.fillStyle = s.color || '#ffffff';
+      ctx.fillText(line, tx, ty);
+    }
     ctx.shadowColor = 'transparent';
     ctx.shadowBlur = 0;
     ctx.shadowOffsetY = 0;
@@ -451,7 +470,7 @@ function maskClipPath(l: Layer): Path2D {
   } else {
     roundRectPath(p, x, y, w, h, cornerRadii(s));
   }
-  const rot = Number(l.rotation) || 0;
+  const rot = nodeRotation(l);
   if (rot) {
     const rotated = new Path2D();
     const cx = x + w / 2, cy = y + h / 2;
@@ -515,8 +534,9 @@ async function drawNodes(ctx: CanvasRenderingContext2D, nodes: SceneNode[]) {
     const s = n.style || {};
     const blend = s.blend && s.blend !== 'normal' ? BLEND_TO_CANVAS[s.blend] : undefined;
     const blur = Number(s.blur) > 0 ? Number(s.blur) : 0;
-    // Layer.rotation: degrees clockwise about the box center — applies to every leaf type.
-    const rot = Number(n.rotation) || 0;
+    // Rotation (Layer.rotation or the style.rotation alias — nodeRotation): degrees clockwise
+    // about the box center — applies to every leaf type.
+    const rot = nodeRotation(n);
     const saved = !!(rot || blend || blur);
     if (saved) ctx.save();
     // style.blend — per-leaf composite op. PARITY: mix-blend-mode blends against everything

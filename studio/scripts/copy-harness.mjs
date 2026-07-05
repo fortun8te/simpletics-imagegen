@@ -28,6 +28,8 @@ import { homedir } from 'node:os';
 
 import { extractLayout } from '../lib/layout-extract.mjs';
 import { applySceneTruth } from '../lib/scene-truth.mjs';
+import { applyTypoTruth } from '../lib/typo-truth.mjs';
+import { planOcclusions } from '../lib/occlusion-fill.mjs';
 import { runCopyReference } from '../lib/design-agent.mjs';
 import { renderDesignHtml, makeImageResolver } from '../lib/designstore.mjs';
 import { renderCompPng } from '../lib/self-vision.mjs';
@@ -168,6 +170,18 @@ async function runOne(filename) {
     // pool extraction. This cuts the pipeline at the read/assembly seam so each half is testable
     // alone: bad output with a known-good scene = assembly bug; good output = the read was the
     // problem all along. Drop scene JSONs in scratchpad-work/scene-reads/<adId>.json.
+    //
+    // READER style vocabulary (renderer-supported, see src/lib/sceneGraph.ts LayerStyle):
+    //   gradient: {type:'linear', angle, stops:[{color,pos}]}
+    //             {type:'radial', cx, cy, r, ry?, stops} — positioned color blobs; cx/cy/r/ry are
+    //             FRACTIONS of the layer box (r of width, ry of height, ry defaults to r;
+    //             defaults cx/cy 0.5, r 0.7). Omit cx/cy/r for a legacy centered radial.
+    //   rotation: degrees CLOCKWISE about the box center (style-level alias of Layer.rotation).
+    //             NOTE: a cutoutCandidate lifts the reference's own pixels, so an object tilted
+    //             IN the reference already carries its angle — don't restate it as rotation.
+    //   textStroke: {color, width} — glyph outline (px, centered on the glyph edge).
+    //   textFillTransparent: true — outline-ONLY text (transparent fill; pair with textStroke).
+    //             scene-truth skips its pixel color/fontSize overrides on outlined text.
     const sceneFile = join(STUDIO, 'scratchpad-work', 'scene-reads', `${adId(filename)}.json`);
     if (existsSync(sceneFile)) {
       ext = JSON.parse(readFileSync(sceneFile, 'utf8'));
@@ -182,6 +196,13 @@ async function runOne(filename) {
       ext.ok = ext.ok !== false;
       ext.measuredBoxes = true; // scene boxes are pixel-measured — assembler must not autoH-grow them
       result.readSource = 'scene-file';
+      // ── OCCLUSION-FILL PLAN (lib/occlusion-fill.mjs) — the ONE wiring call ──────────────────
+      // Overlays (text/badges/buttons) sitting on reference-crop regions keep their BAKED-IN
+      // pixels inside the crop → the rebuilt overlay renders DOUBLED (or leaves a ghost when
+      // moved). Plan which crop-fraction rects each cutout asset needs inpainted and stash it on
+      // ext (also annotated per-layer as cutoutCandidate.occluders). The fill itself belongs
+      // where cutout assets are materialized — see the INTEGRATION note in occlusion-fill.mjs.
+      try { result.occlusionPlan = ext._occlusionPlan = planOcclusions(ext); } catch { /* plan is an upgrade, never a gate */ }
     } else {
       // selfCheck: true — ALWAYS run the iterative render→compare→correct rounds (up to 3), not
       // only on weak reads. The owner's bar is 1:1; checking your own work is not optional.
@@ -210,6 +231,8 @@ async function runOne(filename) {
     ext = truth.ext;
     result.sceneTruthCorrections = truth.corrections;
   }
+  // TYPO/BACKGROUND TRUTH v2 (lib/typo-truth.mjs): weight/italic/subtle-gradient/stroke/star truth.
+  try { const tt = applyTypoTruth(ext, refPng); ext = tt.ext; result.typoTruthCorrections = tt.corrections; } catch { /* typo truth is an upgrade, never a gate */ }
 
   result.archetype = ext.archetype || null;
   result.layerCountExtracted = countLeaves(ext.layers);
@@ -302,6 +325,63 @@ async function runOne(filename) {
   result.textPileOverlaps = pileOverlaps;
   result.pixelScoreRaw = rawScore;
   result.pixelScore = rawScore == null ? null : Math.max(0, Math.round((rawScore - Math.min(30, pileOverlaps * 3)) * 10) / 10);
+
+  // ── SELF-IMPROVING REFINE LOOP (lib/refine-loop.mjs) — the ONE wiring block ───────────────────
+  // Owner's core complaint: the pipeline makes ONE pass and never re-checks its render against the
+  // reference. If the first score is < 97, run the DETERMINISTIC render→compare→correct loop (zero
+  // model calls): grid-diff vs the reference, nudge the worst offender layers (position / fontSize /
+  // fill), keep a round only when the pixel score actually improves. The refined doc + render then
+  // flow into doc.json, the final score, and the side-by-side below. Budget: ≤12 renders / ≤45s.
+  if (rawScore != null && result.pixelScore != null && result.pixelScore < 97) {
+    const tRefine0 = Date.now();
+    try {
+      const { refineLoop } = await import('../lib/refine-loop.mjs');
+      const refine = await refineLoop(assembled.doc, refPng, {
+        maxRounds: 3,
+        renderFn: (d) => renderCompPng(d, { resolveImage, size: 1000 }),
+        scoreFn: (p) => { const dd = pixelDiff(refPng, p, { grid: 64 }); return dd.ok ? dd.score : null; },
+        initialRenderPath: finalRenderPath, // reuse the first render — no double-spend
+        initialScore: rawScore,
+        keepRenderPath: join(outDir, 'render.refined.png'),
+        log: (m) => { if (/CAPPED|KEPT/.test(m)) process.stdout.write(`[${m}] `); },
+      });
+      result.refine = {
+        ran: true, scoreBefore: refine.scoreBefore, scoreAfter: refine.scoreAfter,
+        rounds: refine.rounds, renders: refine.renders, capped: refine.capped || false,
+        ms: Date.now() - tRefine0, applied: refine.applied, error: refine.error,
+      };
+      if (refine.ok && refine.scoreAfter > rawScore && refine.bestRenderPath && existsSync(refine.bestRenderPath)) {
+        assembled.doc = refine.keptDoc;
+        writeFileSync(join(outDir, 'doc.json'), JSON.stringify(assembled.doc, null, 2));
+        copyFileSync(refine.bestRenderPath, finalRenderPath);
+        // final score = same metric on the refined render; text-pile penalty re-counted on the
+        // refined doc (nudges are ≤2% canvas, but stay honest and recount)
+        const dRef = pixelDiff(refPng, finalRenderPath, { grid: 64 });
+        if (dRef.ok) {
+          let po = 0;
+          const texts2 = [];
+          const walk2 = (ns) => ns.forEach((n) => { if (n?.type === 'text' && n.box) texts2.push(n.box); if (n?.children) walk2(n.children); });
+          walk2(assembled.doc.layers || []);
+          for (let a = 0; a < texts2.length; a++) {
+            for (let b = a + 1; b < texts2.length; b++) {
+              const A = texts2[a], B = texts2[b];
+              const ix = Math.max(0, Math.min(A.x + A.w, B.x + B.w) - Math.max(A.x, B.x));
+              const iy = Math.max(0, Math.min(A.y + A.h, B.y + B.h) - Math.max(A.y, B.y));
+              if ((ix * iy) / (Math.min(A.w * A.h, B.w * B.h) || 1) >= 0.4) po++;
+            }
+          }
+          result.textPileOverlaps = po;
+          result.pixelScoreRaw = dRef.score;
+          result.pixelScore = Math.max(0, Math.round((dRef.score - Math.min(30, po * 3)) * 10) / 10);
+        }
+      }
+    } catch (e) {
+      result.refine = { ran: true, error: String(e?.message || e), ms: Date.now() - tRefine0 };
+    }
+  } else {
+    result.refine = { ran: false, reason: rawScore == null ? 'no raw score' : 'score ≥ 97' };
+  }
+  // ── end refine-loop wiring block ──────────────────────────────────────────────────────────────
 
   // 6. side-by-side
   const sbsPath = join(outDir, 'side-by-side.png');

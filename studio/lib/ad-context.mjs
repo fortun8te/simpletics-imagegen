@@ -164,7 +164,9 @@ export function smartAdRepair(doc, { kit = null, excludeIds = null } = {}) {
     // text (color only, never geometry). Dark base → light text, light base → dark text.
     // Threshold 0.12 targets ILLEGIBLE (near-identical luminance, same bar as lint's contrast
     // check) — not merely muted: a tweet's gray @handle on black is a deliberate hierarchy.
-    if (ctx.underLum != null && !node.style.background && !node.style.pill) {
+    // Outline-only text (style.textFillTransparent): the fill is transparent by design — its
+    // legibility is the STROKE's job, and flipping the invisible fill color is pure churn.
+    if (ctx.underLum != null && !node.style.background && !node.style.pill && !node.style.textFillTransparent) {
       const fg = parseColor(node.style.color || '#111111');
       const fgLum = fg ? luminance(fg) : 0;
       if (Math.abs(fgLum - ctx.underLum) < 0.12) {

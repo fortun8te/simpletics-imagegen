@@ -34,6 +34,34 @@ export interface GradientFill {
   /** CSS convention: degrees, 0 = to top, 90 = to right. Linear only. */
   angle?: number;
   stops: GradientStop[];
+  /** Radial only — positioned/sized radials (color blobs). All are FRACTIONS of the layer box:
+   *  cx/cy = center (of box width/height), r = horizontal radius (fraction of box WIDTH),
+   *  ry = vertical radius (fraction of box HEIGHT, defaults to r — the CSS
+   *  `radial-gradient(ellipse rx% ry% at cx% cy%)` percentage semantics exactly). When NONE of
+   *  these fields is set, a radial keeps the LEGACY centered rendering byte-identical (renderers
+   *  branch on resolveRadialParams() === null). Defaults when ANY field is set: cx 0.5, cy 0.5,
+   *  r 0.7. */
+  cx?: number;
+  cy?: number;
+  r?: number;
+  ry?: number;
+}
+
+/** Resolved custom-radial geometry, or null for a linear / legacy centered radial (callers keep
+ *  their old code path on null so existing docs render byte-identically). */
+export function resolveRadialParams(
+  g: GradientFill | null | undefined,
+): { cx: number; cy: number; r: number; ry: number } | null {
+  if (!g || g.type !== 'radial') return null;
+  if (g.cx == null && g.cy == null && g.r == null && g.ry == null) return null;
+  const num = (v: unknown, d: number) => (Number.isFinite(Number(v)) ? Number(v) : d);
+  const r = Math.max(1e-4, num(g.r, 0.7));
+  return {
+    cx: num(g.cx, 0.5),
+    cy: num(g.cy, 0.5),
+    r,
+    ry: Math.max(1e-4, num(g.ry, r)),
+  };
 }
 
 /** Shape primitives beyond the rounded rect — the vocabulary real statics are built from:
@@ -100,6 +128,17 @@ export interface LayerStyle {
   radiusCorners?: [number, number, number, number];
   /** Border (Figma stroke). Rendered center-aligned in all renderers. */
   stroke?: { color: string; width: number };
+  /** text/badge/button: glyph outline (CSS -webkit-text-stroke; canvas strokeText; SVG text
+   *  stroke; Figma TEXT strokePaints). Centered on the glyph edge in every renderer. */
+  textStroke?: { color: string; width: number };
+  /** text: outline-ONLY glyphs — the fill is transparent, only textStroke paints (the classic
+   *  alternating filled/outline display-type treatment). style.shadow is suppressed on these
+   *  layers in every renderer (a text-shadow behind a transparent fill silhouettes the glyph,
+   *  which would defeat the hollow look). */
+  textFillTransparent?: boolean;
+  /** Degrees clockwise about the box center — style-level alias of Layer.rotation (readers /
+   *  scene files set style.rotation; Layer.rotation wins when both are set). */
+  rotation?: number;
   /** Figma-style effects we can render. Anything richer survives via Layer.figma. */
   effects?: { type: 'drop-shadow' | 'blur'; color?: string; blur?: number; x?: number; y?: number }[];
 }
@@ -204,6 +243,19 @@ export function isComponent(n: SceneNode): n is ComponentLayer {
  *  ComponentLayer has none of them — reading `.style` on one is a real runtime undefined-read). */
 export function isLeafLayer(n: SceneNode): n is Layer {
   return n.type !== 'group' && n.type !== 'component';
+}
+
+/** Effective rotation of a node in degrees clockwise about the box center: Layer.rotation wins,
+ *  style.rotation (reader-facing alias) is the fallback. 0 = no rotation. Every renderer
+ *  (Stage / raster / designSvg / server HTML / Figma export) reads rotation through this ONE
+ *  helper so the two spellings can never disagree. */
+export function nodeRotation(n: SceneNode | null | undefined): number {
+  if (!n) return 0;
+  const own = Number((n as Layer | ComponentLayer).rotation);
+  if (Number.isFinite(own) && own !== 0) return own;
+  const s = (n as Layer).style as LayerStyle | undefined;
+  const alias = Number(s?.rotation);
+  return Number.isFinite(alias) ? alias : 0;
 }
 
 /** Where a comp's reference (the ad being copied) came from. `url` is a same-origin image URL

@@ -116,7 +116,27 @@ function paintToFill(p: Record<string, unknown>): { background?: string; gradien
     const rawStops = (p.stops as Array<{ color: FigColor; position: number }>) || [];
     const stops = rawStops.map((s) => ({ color: colorToCss(s.color), pos: s.position ?? 0 }));
     if (!stops.length) return {};
-    if (t === 'GRADIENT_RADIAL') return { gradient: { type: 'radial', stops } };
+    if (t === 'GRADIENT_RADIAL') {
+      // Positioned radial: invert the export transform (figmaClipboard gradientPaint) —
+      // m00 = 1/(2r), m02 = 0.5 − cx/(2r); m11 = 1/(2ry), m12 = 0.5 − cy/(2ry). A near-identity
+      // transform is the legacy centered radial → no cx/cy/r fields (byte-stable roundtrip).
+      const m = p.transform as FigMatrix | undefined;
+      if (m && Number.isFinite(m.m00) && Number.isFinite(m.m11) && m.m00 > 1e-6 && m.m11 > 1e-6
+        && Math.abs(m.m01) < 1e-6 && Math.abs(m.m10) < 1e-6
+        && (Math.abs(m.m00 - 1) > 1e-6 || Math.abs(m.m11 - 1) > 1e-6 || Math.abs(m.m02) > 1e-6 || Math.abs(m.m12) > 1e-6)) {
+        const round = (v: number) => Math.round(v * 1e4) / 1e4;
+        const r = round(1 / (2 * m.m00));
+        const ry = round(1 / (2 * m.m11));
+        return {
+          gradient: {
+            type: 'radial', stops,
+            cx: round((0.5 - m.m02) / m.m00), cy: round((0.5 - m.m12) / m.m11),
+            r, ...(Math.abs(ry - r) > 1e-6 ? { ry } : {}),
+          },
+        };
+      }
+      return { gradient: { type: 'radial', stops } };
+    }
     return {
       gradient: {
         type: 'linear',
@@ -443,6 +463,19 @@ function convertNode(tree: DecodedTree, origin: { x: number; y: number }): Scene
         const ls = node.letterSpacing as { value?: number; units?: string } | undefined;
         if (!ls?.value) return undefined;
         return ls.units === 'PERCENT' ? (ls.value / 100) * fontSize : ls.value;
+      })(),
+      // Outlined text (export: strokePaints + strokeWeight on the TEXT node) → style.textStroke;
+      // no fill paints at all → outline-only (textFillTransparent). Roundtrip-stable with
+      // figmaClipboard emitText.
+      textStroke: (() => {
+        const strokes = node.strokePaints as Array<Record<string, unknown>> | undefined;
+        const sp = Array.isArray(strokes) ? strokes.find((p) => p && p.visible !== false && p.type === 'SOLID') : undefined;
+        const w = Number(node.strokeWeight);
+        return sp && w > 0 ? { color: colorToCss(sp.color as FigColor), width: w } : undefined;
+      })(),
+      textFillTransparent: (() => {
+        const fills = node.fillPaints as Array<Record<string, unknown>> | undefined;
+        return Array.isArray(fills) && fills.length === 0 ? true : undefined;
       })(),
     };
     // autoH rides in our pluginData (export no longer uses textAutoResize:HEIGHT for it — that

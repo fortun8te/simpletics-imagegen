@@ -38,7 +38,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type ReactNode,
 } from 'react';
-import { cropImageCss, isComponent, isGroup, isLeafLayer, resolveCrop, type DesignDoc, type GroupNode, type Layer, type LayerBox, type SceneNode, type ShapeKind } from '../../lib/sceneGraph';
+import { cropImageCss, isComponent, isGroup, isLeafLayer, nodeRotation, resolveCrop, type DesignDoc, type GroupNode, type Layer, type LayerBox, type SceneNode, type ShapeKind } from '../../lib/sceneGraph';
 import { ancestorsOf, cloneNodeDeep, findNode, findParentList, leaves, translateNode, scaleNodeInto, walk } from '../../lib/sceneTree';
 import { arrowGeometry, fillCss, starburstPoints, vignetteCss, vignetteSpec } from './fills';
 import { pillPadding, textBlockHeight } from './textMetrics';
@@ -1086,7 +1086,7 @@ export default function Stage({
           ...pctBox(l.box),
           ...(autoH ? { height: 'auto', minHeight: `${(l.box.h / ch) * 100}%` } : null),
           opacity: (s.opacity ?? 1) * groupOpacity,
-          transform: l.rotation ? `rotate(${l.rotation}deg)` : undefined,
+          transform: nodeRotation(l) ? `rotate(${nodeRotation(l)}deg)` : undefined,
           mixBlendMode: s.blend && s.blend !== 'normal' ? s.blend : undefined,
           filter: s.blur && s.blur > 0 ? `blur(${cq(s.blur)})` : undefined,
           ...strokeCss,
@@ -1198,7 +1198,8 @@ export default function Stage({
               fontSize: cq(s.fontSize || 40),
               fontWeight: s.fontWeight || 600,
               fontFamily: s.fontFamily ? `'${s.fontFamily}', var(--font-sans)` : undefined,
-              color: s.color || '#fff',
+              // textFillTransparent: outline-only glyphs — transparent fill, textStroke paints.
+              color: s.textFillTransparent ? 'transparent' : s.color || '#fff',
               background: s.pill ? 'transparent' : fillCss(s) || 'transparent',
               borderRadius: s.pill ? 0 : cornerCss(),
               padding: s.pill ? 0 : s.padding ? cq(s.padding) : 0,
@@ -1208,7 +1209,12 @@ export default function Stage({
               letterSpacing: s.letterSpacing ? cq(s.letterSpacing) : undefined,
               textTransform: s.uppercase ? 'uppercase' : 'none',
               textDecoration: s.strikethrough ? 'line-through' : undefined,
-              textShadow: s.shadow ? '0 2px 12px rgba(0,0,0,0.55)' : 'none',
+              // shadow suppressed on outline-only text — it would silhouette the hollow glyphs.
+              textShadow: s.shadow && !s.textFillTransparent ? '0 2px 12px rgba(0,0,0,0.55)' : 'none',
+              // style.textStroke → -webkit-text-stroke (centered on the glyph edge; PARITY:
+              // raster strokeText, designSvg text stroke, Figma TEXT strokePaints).
+              WebkitTextStroke: s.textStroke && s.textStroke.width > 0
+                ? `${cq(s.textStroke.width)} ${s.textStroke.color}` : undefined,
               ...glass,
             }}
           >
@@ -1424,7 +1430,7 @@ export default function Stage({
               data-group={isGroup(n) || undefined}
               style={{
                 ...pctBox(n.box),
-                transform: !isGroup(n) && n.rotation ? `rotate(${n.rotation}deg)` : undefined,
+                transform: !isGroup(n) && nodeRotation(n) ? `rotate(${nodeRotation(n)}deg)` : undefined,
               }}
             >
               {primary && !n.locked && editingId !== n.id

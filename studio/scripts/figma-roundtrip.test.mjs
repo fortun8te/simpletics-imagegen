@@ -194,6 +194,27 @@ const doc = {
       box: { x: 300, y: 640, w: 160, h: 140 },
       style: { shapeKind: 'path', path: 'M 0.5 0 L 1 1 L 0 1 Z', background: '#00ff88' },
     },
+    // ── radial blobs / outlined text / style.rotation alias round fixtures ──
+    {
+      id: 'radial-blob', type: 'shape', name: 'Radial Blob',
+      box: { x: 640, y: 760, w: 300, h: 150 },
+      style: {
+        gradient: {
+          type: 'radial', cx: 0.3, cy: 0.4, r: 0.6, ry: 0.25,
+          stops: [{ color: '#ee4238', pos: 0 }, { color: '#ffffff', pos: 1 }],
+        },
+      },
+    },
+    {
+      id: 'outline-txt', type: 'text', name: 'Outline Text', text: 'OUTLINE',
+      box: { x: 60, y: 1300, w: 300, h: 60 },
+      style: { fontSize: 48, color: '#2b3beb', textStroke: { color: '#2b3beb', width: 4 }, textFillTransparent: true },
+    },
+    {
+      id: 'style-rot', type: 'shape', name: 'Style Rotated',
+      box: { x: 420, y: 1300, w: 120, h: 50 },
+      style: { background: '#ff0088', rotation: -8 },
+    },
     {
       id: 'maskgrp2', type: 'group', name: 'Mask Trio',
       box: { x: 60, y: 850, w: 220, h: 220 },
@@ -299,7 +320,8 @@ check('node count', () => {
   //        + blend text + blurred ellipse + glass opaque + corner mix + clip group
   //        + mask group + polyline + element cta (bg rect + text siblings) = 20
   //        + path triangle + mask trio group = 22
-  assert.equal(nodes.length, 22, `got ${nodes.length}: ${nodes.map((n) => n.name).join(', ')}`);
+  //        + radial blob + outline text + style-rotated shape = 25
+  assert.equal(nodes.length, 25, `got ${nodes.length}: ${nodes.map((n) => n.name).join(', ')}`);
 });
 
 check('names preserved', () => {
@@ -398,6 +420,49 @@ check('rotation roundtrips (−30° shape, within 0.5°)', () => {
     `box (${sh.box.x},${sh.box.y}) drifted from (640,940)`);
   assert.equal(sh.box.w, 200);
   assert.equal(sh.box.h, 100);
+});
+
+check('style.rotation alias exports like Layer.rotation (−8° shape, within 0.5°)', () => {
+  const sh = findByName(nodes, 'Style Rotated');
+  assert.ok(sh, 'style-rotated shape present');
+  assert.ok(Math.abs((sh.rotation ?? 0) - -8) <= 0.5, `rotation ${sh.rotation} !≈ -8`);
+  assert.ok(Math.abs(sh.box.x - 420) <= 1 && Math.abs(sh.box.y - 1300) <= 1,
+    `box (${sh.box.x},${sh.box.y}) drifted from (420,1300)`);
+});
+
+check('positioned radial (cx/cy/r/ry) → GRADIENT_RADIAL transform → params recovered', () => {
+  const wire = changeByName('Radial Blob');
+  const paint = (wire.fillPaints || [])[0];
+  assert.ok(paint && paint.type === 'GRADIENT_RADIAL', 'GRADIENT_RADIAL paint on the wire');
+  assert.ok(Math.abs(paint.transform.m00 - 1 / (2 * 0.6)) < 1e-6, 'm00 = 1/(2r)');
+  assert.ok(Math.abs(paint.transform.m11 - 1 / (2 * 0.25)) < 1e-6, 'm11 = 1/(2ry)');
+  const sh = findByName(nodes, 'Radial Blob');
+  const g = sh.style?.gradient;
+  assert.ok(g && g.type === 'radial', 'radial gradient recovered');
+  assert.ok(Math.abs(g.cx - 0.3) < 1e-3, `cx ${g.cx} !≈ 0.3`);
+  assert.ok(Math.abs(g.cy - 0.4) < 1e-3, `cy ${g.cy} !≈ 0.4`);
+  assert.ok(Math.abs(g.r - 0.6) < 1e-3, `r ${g.r} !≈ 0.6`);
+  assert.ok(Math.abs(g.ry - 0.25) < 1e-3, `ry ${g.ry} !≈ 0.25`);
+});
+
+check('legacy centered radial stays field-free (vignette-style identity transform)', () => {
+  const vig = findByName(nodes, 'Vignette');
+  const g = vig.style?.gradient;
+  assert.ok(g && g.type === 'radial', 'radial gradient fill');
+  assert.equal(g.cx, undefined, 'no cx on a legacy centered radial');
+  assert.equal(g.r, undefined, 'no r on a legacy centered radial');
+});
+
+check('textStroke + textFillTransparent roundtrip (outline-only display type)', () => {
+  const wire = changeByName('OUTLINE');
+  assert.ok(wire, 'outline text node on the wire');
+  assert.deepEqual(wire.fillPaints, [], 'transparent fill = NO fill paints');
+  assert.equal(wire.strokeWeight, 4, 'strokeWeight = textStroke.width');
+  assert.equal(wire.strokeAlign, 'CENTER', 'centered on the glyph edge');
+  const t = findByName(nodes, 'OUTLINE');
+  assert.ok(t, 'outline text recovered');
+  assert.deepEqual(t.style.textStroke, { color: '#2b3beb', width: 4 });
+  assert.equal(t.style.textFillTransparent, true);
 });
 
 check('ellipse → ELLIPSE → shapeKind ellipse', () => {

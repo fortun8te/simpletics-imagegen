@@ -167,6 +167,52 @@ test('untouchables: photo background, gradient fill, and cutoutCandidate layers 
   assert.ok(!corrections.some((c) => /photo|grad|background/i.test(c)), `no corrections for untouchables, got: ${corrections.join(' | ')}`);
 });
 
+test('outlined text (textStroke / textFillTransparent / legacy outline) keeps reader color + fontSize', () => {
+  const p = join(dir, 'outline.png');
+  // white page; the boxes below contain thin sparse "outline" strokes that the samplers would
+  // badly misread (mostly-background clusters, two stroke bands per line).
+  writeRgbPng(p, 400, 400, (x, y) => {
+    const inBand = (y >= 60 && y < 64) || (y >= 116 && y < 120) || (y >= 160 && y < 164) || (y >= 216 && y < 220);
+    if (inBand && x >= 60 && x < 340) return [0x2b, 0x3b, 0xeb];
+    return [0xf0, 0xf0, 0xf0];
+  });
+  const ext = {
+    ok: true, canvas: { w: 400, h: 400 }, background: '#f0f0f0', backgroundIsPhoto: false,
+    layers: [
+      { id: 'hollow', type: 'text', role: 'decor', text: 'OUTLINE', box: { x: 50, y: 50, w: 300, h: 80 }, style: { fontSize: 64, color: '#2b3beb', textStroke: { color: '#2b3beb', width: 4 }, textFillTransparent: true } },
+      { id: 'legacy', type: 'text', role: 'decor', text: 'OUTLINE', box: { x: 50, y: 150, w: 300, h: 80 }, style: { fontSize: 64, color: '#2b3beb', outline: true } },
+    ],
+  };
+  const { ext: out, corrections } = applySceneTruth(ext, p);
+  for (const id of ['hollow', 'legacy']) {
+    const l = out.layers.find((n) => n.id === id);
+    assert.equal(l.style.color, '#2b3beb', `${id}: outlined text keeps the reader color`);
+    assert.equal(l.style.fontSize, 64, `${id}: outlined text keeps the reader fontSize`);
+  }
+  assert.ok(!corrections.some((c) => /hollow|legacy/.test(c)), `no corrections on outlined text, got: ${corrections.join(' | ')}`);
+});
+
+test('occluded text (a later-painted cutout covers the box) keeps reader color + fontSize', () => {
+  const p = join(dir, 'occluded.png');
+  // white page; a big dark "product" square sits where the text box is — sampling it would
+  // repaint the text with the product's colors.
+  writeRgbPng(p, 400, 400, (x, y) => (x >= 80 && x < 360 && y >= 60 && y < 340 ? [0x22, 0x44, 0x22] : [0xf5, 0xf5, 0xf3]));
+  const ext = {
+    ok: true, canvas: { w: 400, h: 400 }, background: '#f5f5f3', backgroundIsPhoto: false,
+    layers: [
+      { id: 'buried', type: 'text', role: 'headline', text: 'FRIDAY', box: { x: 60, y: 80, w: 300, h: 60 }, style: { fontSize: 48, color: '#2b3beb' } },
+      // painted AFTER the text (stacked over it), > 1/3 coverage
+      { id: 'product', type: 'shape', role: 'product', box: { x: 80, y: 60, w: 280, h: 280 }, style: {}, cutoutCandidate: { region: { x: 0.2, y: 0.15, w: 0.7, h: 0.7 }, shape: 'rect' } },
+    ],
+  };
+  const { ext: out, corrections } = applySceneTruth(ext, p);
+  const buried = out.layers.find((n) => n.id === 'buried');
+  assert.equal(buried.style.color, '#2b3beb', 'occluded text keeps the reader color');
+  assert.equal(buried.style.fontSize, 48, 'occluded text keeps the reader fontSize');
+  // geometric alignment snaps are fine — only the PIXEL-SAMPLED attributes must stay untouched
+  assert.ok(!corrections.some((c) => /buried (color|fontSize|box)/.test(c)), `no sampled corrections on occluded text, got: ${corrections.join(' | ')}`);
+});
+
 test('never throws: garbage ext / missing image / broken boxes are best-effort no-ops', () => {
   assert.doesNotThrow(() => applySceneTruth(null, '/nope/missing.png'));
   assert.doesNotThrow(() => applySceneTruth({ layers: 'not-an-array' }, '/nope/missing.png'));

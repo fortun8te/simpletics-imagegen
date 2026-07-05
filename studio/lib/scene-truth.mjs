@@ -207,6 +207,30 @@ function pxToPct(r, canvas) {
 }
 const labelOf = (l) => String(l.id || l.name || l.role || (typeof l.text === 'string' && l.text.trim().slice(0, 24)) || l.type || 'layer');
 const isTexty = (l) => (l.type === 'text' || l.type === 'badge' || l.type === 'button') && typeof l.text === 'string' && l.text.trim().length > 0;
+/** Outlined / outline-only text (style.textStroke / textFillTransparent, or a reader's legacy
+ *  `outline` flag): the glyphs are thin hollow strokes, so BOTH pixel samplers misread them —
+ *  the ink/fill luminance split sees mostly background inside the box (color override would
+ *  repaint the text with the page/underlying-layer color), and the ink-row scan sees two sparse
+ *  stroke bands per line (fontSize collapses). These layers keep the reader's values. */
+const isOutlinedText = (l) => !!(l.style && (l.style.textStroke || l.style.textFillTransparent || l.style.outline));
+/** Fraction of a text layer's box covered by a LATER-painted non-text leaf (shape/image —
+ *  e.g. a product cutout stacked over display type). The pixel samplers would mostly read the
+ *  occluder, not this layer's glyphs, so past ~1/3 coverage the measurement isn't of this layer
+ *  and the stages keep the reader's values. */
+function occludedFrac(g, geom) {
+  const idx = geom.indexOf(g);
+  const area = Math.max(1, g.px.w * g.px.h);
+  let worst = 0;
+  for (let i = idx + 1; i < geom.length; i++) {
+    const o = geom[i];
+    if (!o || isTexty(o.l) || (o.l.type !== 'shape' && o.l.type !== 'image')) continue;
+    const ix = Math.max(0, Math.min(g.px.x + g.px.w, o.px.x + o.px.w) - Math.max(g.px.x, o.px.x));
+    const iy = Math.max(0, Math.min(g.px.y + g.px.h, o.px.y + o.px.h) - Math.max(g.px.y, o.px.y));
+    worst = Math.max(worst, (ix * iy) / area);
+  }
+  return worst;
+}
+const OCCLUDED_SKIP = 1 / 3;
 
 // ── local glyph/fill cluster sampler — luminance split inside a text-bearing box ────────────────
 // (Reimplementation of layout-extract's unexported sampleGlyphColor, in px space over our decode,
@@ -447,22 +471,34 @@ function truthFills(ctx) {
 
 // 3. TEXT COLOR — glyph (minority-cluster) sample; keep the reader's color when ambiguous.
 function truthTextColor(ctx) {
-  const { canvas, geom, img, corrections } = ctx;
+  const { ext, canvas, geom, img, corrections } = ctx;
   if (!img) return;
   const sx = img.width / canvas.w, sy = img.height / canvas.h; // canvas px → image px
+  const pageBg = !ext.backgroundIsPhoto && isOpaqueHex(ext.background) ? ext.background.trim() : null;
   for (const g of geom) {
     try {
       const l = g.l;
       if (!isTexty(l)) continue;
+      if (isOutlinedText(l)) continue; // hollow glyphs — the fill sample would misread them
+      if (occludedFrac(g, geom) >= OCCLUDED_SKIP) continue; // sample would read the occluder
       const { insetX, insetY } = boxInsets(l, g.px);
       const cl = clusterBox(img, { x: g.px.x * sx, y: g.px.y * sy, w: g.px.w * sx, h: g.px.h * sy }, insetX, insetY);
       if (!cl || !cl.inkHex || cl.contrast < GLYPH_CONTRAST_MIN) continue; // ambiguous → keep reader
+      // INK/FILL SWAP guard (big display type, e.g. 170px BLACK-FRIDAY rows): when glyph
+      // coverage ≈ background coverage the minority-cluster heuristic can pick the PAGE
+      // BACKGROUND as "ink". For a plain text layer (no own fill) sitting on a measured flat
+      // page, ink that matches the page bg is nonsensical — the true ink is the OTHER cluster.
+      let inkHex = cl.inkHex;
+      if (pageBg && !(l.style && l.style.background) && cl.fillHex
+        && colorDist(inkHex, pageBg) < 0.06 && colorDist(cl.fillHex, pageBg) >= 0.06) {
+        inkHex = cl.fillHex;
+      }
       const prior = l.style && isOpaqueHex(l.style.color) ? l.style.color.trim() : null;
-      if (prior && colorDist(prior, cl.inkHex) <= TEXT_DIST) continue; // agreement — keep reader
+      if (prior && colorDist(prior, inkHex) <= TEXT_DIST) continue; // agreement — keep reader
       l.style = l.style || {};
       const was = prior || l.style.color || '(none)';
-      l.style.color = cl.inkHex;
-      corrections.push(`${labelOf(l)} color: ${was} → ${cl.inkHex} (glyph sample, contrast ${cl.contrast.toFixed(2)})`);
+      l.style.color = inkHex;
+      corrections.push(`${labelOf(l)} color: ${was} → ${inkHex} (glyph sample, contrast ${cl.contrast.toFixed(2)})`);
     } catch { /* best-effort per layer */ }
   }
 }
@@ -476,6 +512,8 @@ function truthFontSize(ctx) {
     try {
       const l = g.l;
       if (l.type !== 'text' || !isTexty(l)) continue; // badges/buttons: box ≫ ink, skip
+      if (isOutlinedText(l)) continue; // hollow glyphs — ink rows see 2 sparse stroke bands/line
+      if (occludedFrac(g, geom) >= OCCLUDED_SKIP) continue; // ink rows would scan the occluder
       const reader = l.style ? num(l.style.fontSize) : null;
       if (!reader || reader <= 0) continue; // no estimate to correct against
       const imgBox = { x: g.px.x * sx, y: g.px.y * sy, w: g.px.w * sx, h: g.px.h * sy };

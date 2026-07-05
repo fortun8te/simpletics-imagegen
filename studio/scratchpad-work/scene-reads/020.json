@@ -33,8 +33,7 @@
         "color": "#2B3BEB",
         "align": "center",
         "lineHeight": 1.0,
-        "uppercase": true,
-        "shadow": true
+        "uppercase": true
       }
     },
     {
@@ -50,8 +49,8 @@
         "align": "center",
         "lineHeight": 1.0,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textFillTransparent": true
       }
     },
     {
@@ -67,8 +66,8 @@
         "align": "center",
         "lineHeight": 1.0,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textFillTransparent": true
       }
     },
     {
@@ -84,8 +83,8 @@
         "align": "center",
         "lineHeight": 1.0,
         "uppercase": true,
-        "outline": true,
-        "shadow": true
+        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textFillTransparent": true
       }
     },
     {
@@ -101,7 +100,8 @@
         "align": "center",
         "lineHeight": 1.0,
         "uppercase": true,
-        "outline": true
+        "textStroke": { "color": "#2B3BEB", "width": 4 },
+        "textFillTransparent": true
       }
     },
     {

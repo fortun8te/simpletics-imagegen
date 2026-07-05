@@ -12,7 +12,7 @@
 // for Layer.isMask geometry masks AND GroupNode.clip frames, style="mix-blend-mode" for
 // style.blend, and <feGaussianBlur> filters for style.blur (layer blur).
 
-import { cropImageCss, isComponent, isGroup, resolveCrop, resolveGradient, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
+import { cropImageCss, isComponent, isGroup, nodeRotation, resolveCrop, resolveGradient, type DesignDoc, type Layer, type SceneNode } from '../../lib/sceneGraph';
 import { fontFaceCss } from '../../lib/fontFaces';
 import { arrowGeometry, gradientSvgDef, starburstPoints, vignetteSpec, vignetteSvgDef } from './fills';
 import { pillPadding, textLayout, type Measurer } from './textMetrics';
@@ -295,16 +295,26 @@ function textSvg(l: Layer, defs: string[]): string {
   const anchor = s.align === 'center' ? 'middle' : s.align === 'right' ? 'end' : 'start';
   // Text drop shadow on the GLYPHS only (not the pill rects) — PARITY: Stage/HTML text-shadow
   // sits on the text span, raster.ts shadows only fillText. Applies in pill mode too.
-  if (s.shadow) {
+  // Suppressed on outline-only text (textFillTransparent) — the shadow would silhouette the
+  // hollow glyphs; same rule in every renderer.
+  const shadowOn = s.shadow && !s.textFillTransparent;
+  if (shadowOn) {
     defs.push(
       `<filter id="tsh-${l.id}" x="-30%" y="-30%" width="160%" height="160%">` +
         `<feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#000000" flood-opacity="0.55"/></filter>`,
     );
   }
-  const shadowAttr = s.shadow ? ` filter="url(#tsh-${l.id})"` : '';
+  const shadowAttr = shadowOn ? ` filter="url(#tsh-${l.id})"` : '';
+  // style.textStroke → glyph outline; paint-order puts the stroke UNDER the fill (SVG default is
+  // stroke-on-top) so a filled+outlined glyph matches CSS -webkit-text-stroke / canvas
+  // strokeText-then-fillText. textFillTransparent → fill "none" (outline-only glyphs).
+  const glyphFill = s.textFillTransparent ? 'none' : esc(s.color || '#ffffff');
+  const textStrokeAttr = s.textStroke && s.textStroke.width > 0
+    ? ` stroke="${esc(s.textStroke.color)}" stroke-width="${s.textStroke.width}" stroke-linejoin="round" paint-order="stroke"`
+    : '';
   const attrs =
     `font-family="${esc(fontStackFor(s))}" font-size="${size}" font-weight="${s.fontWeight || 600}"` +
-    ` fill="${esc(s.color || '#ffffff')}" text-anchor="${anchor}"` +
+    ` fill="${glyphFill}"${textStrokeAttr} text-anchor="${anchor}"` +
     (s.letterSpacing ? ` letter-spacing="${s.letterSpacing}"` : '') +
     (s.strikethrough ? ' text-decoration="line-through"' : '');
   for (const line of lines) {
@@ -401,7 +411,7 @@ function maskShapeSvg(l: Layer): string {
   const s = l.style || {};
   const { x, y, w, h } = l.box;
   const kind = shapeKindOf(s);
-  const rot = Number(l.rotation) || 0;
+  const rot = nodeRotation(l);
   const rotAttr = rot ? ` transform="rotate(${rot} ${x + w / 2} ${y + h / 2})"` : '';
   if (l.type === 'shape' && kind === 'ellipse') {
     return `<ellipse cx="${x + w / 2}" cy="${y + h / 2}" rx="${w / 2}" ry="${h / 2}"${rotAttr}/>`;
@@ -492,9 +502,9 @@ async function nodesSvg(nodes: SceneNode[], defs: string[]): Promise<string[]> {
     // style.blend → mix-blend-mode. PARITY: Stage mixBlendMode, raster globalCompositeOperation,
     // Figma blendMode. Restricted to multiply/screen/overlay (migrateDoc drops the rest).
     const blendStyle = s.blend && s.blend !== 'normal' ? ` style="mix-blend-mode:${esc(s.blend)}"` : '';
-    // Layer.rotation: degrees clockwise about the box center (SVG rotate() is clockwise in
-    // y-down coords — same direction as raster.ts ctx.rotate).
-    const rot = Number(l.rotation) || 0;
+    // Rotation (Layer.rotation or the style.rotation alias — nodeRotation): degrees clockwise
+    // about the box center (SVG rotate() is clockwise in y-down coords, same as ctx.rotate).
+    const rot = nodeRotation(l);
     if (rot) {
       const cx = l.box.x + l.box.w / 2;
       const cy = l.box.y + l.box.h / 2;

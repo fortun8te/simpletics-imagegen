@@ -176,12 +176,34 @@ export function clearChat(docId) {
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 // PARITY: gradient/vignette CSS mirrors src/components/design/fills.ts — change both together.
+/** Positioned-radial params (cx/cy/r/ry — fractions of the layer box; ry defaults to r, r to
+ *  0.7, center to 0.5/0.5). null for linear / legacy centered radials so those keep the old
+ *  output byte-identical. Mirrors sceneGraph.ts resolveRadialParams. */
+function radialParamsJs(g) {
+  if (!g || g.type !== 'radial') return null;
+  if (g.cx == null && g.cy == null && g.r == null && g.ry == null) return null;
+  const num = (v, d) => (Number.isFinite(Number(v)) ? Number(v) : d);
+  const r = Math.max(1e-4, num(g.r, 0.7));
+  return { cx: num(g.cx, 0.5), cy: num(g.cy, 0.5), r, ry: Math.max(1e-4, num(g.ry, r)) };
+}
+
 function gradientCssJs(s) {
   const g = s && s.gradient;
   if (!g) return null;
   if (typeof g === 'object' && Array.isArray(g.stops) && g.stops.length) {
     const stops = g.stops.map((st) => `${st.color} ${Math.round((st.pos || 0) * 100)}%`).join(', ');
-    return g.type === 'radial' ? `radial-gradient(circle, ${stops})` : `linear-gradient(${g.angle || 0}deg, ${stops})`;
+    if (g.type === 'radial') {
+      // Positioned radial → CSS `radial-gradient(ellipse rx% ry% at cx% cy%)` — horizontal
+      // percentages resolve against the box width and vertical against the height, exactly the
+      // fraction semantics of GradientFill.cx/cy/r/ry (PARITY: fills.ts gradientCss).
+      const rp = radialParamsJs(g);
+      if (rp) {
+        const pc = (v) => `${Math.round(v * 10000) / 100}%`;
+        return `radial-gradient(ellipse ${pc(rp.r)} ${pc(rp.ry)} at ${pc(rp.cx)} ${pc(rp.cy)}, ${stops})`;
+      }
+      return `radial-gradient(circle, ${stops})`;
+    }
+    return `linear-gradient(${g.angle || 0}deg, ${stops})`;
   }
   const bg = s.background || '#000';
   if (g === 'to-top') return `linear-gradient(to top, ${bg}, transparent)`;
@@ -514,9 +536,11 @@ function styleFor(layer) {
   if (s.stroke && s.stroke.width > 0 && !(layer.type === 'shape' && s.shapeKind === 'polyline')) {
     parts.push(`border:${s.stroke.width}px solid ${s.stroke.color}`);
   }
-  // PARITY: Layer.rotation (degrees clockwise about box center) — raster/SVG rotate about the
-  // same center; CSS default transform-origin is the center, made explicit here.
-  if (layer.rotation) parts.push(`transform:rotate(${layer.rotation}deg)`, 'transform-origin:center');
+  // PARITY: rotation (Layer.rotation, or the style.rotation alias readers/scene files emit —
+  // sceneGraph.ts nodeRotation) in degrees clockwise about the box center — raster/SVG rotate
+  // about the same center; CSS default transform-origin is the center, made explicit here.
+  const rotation = Number(layer.rotation) || Number(s.rotation) || 0;
+  if (rotation) parts.push(`transform:rotate(${rotation}deg)`, 'transform-origin:center');
   // PARITY: backdropBlur — HTML gets REAL frosted glass via backdrop-filter; raster/SVG only
   // approximate with a 1px glass-edge stroke (noted limitation there).
   if (s.backdropBlur > 0) {
@@ -553,8 +577,14 @@ function styleFor(layer) {
       `font-size:${s.fontSize || 40}px`,
       `font-weight:${s.fontWeight || 600}`,
       `line-height:${s.lineHeight || 1.2}`,
-      `color:${s.color || '#ffffff'}`,
+      // textFillTransparent: outline-only glyphs — transparent fill, textStroke paints.
+      `color:${s.textFillTransparent ? 'transparent' : (s.color || '#ffffff')}`,
     );
+    // PARITY: style.textStroke → -webkit-text-stroke (centered on the glyph edge); raster
+    // strokeText, designSvg text stroke + paint-order, Figma TEXT strokePaints.
+    if (s.textStroke && s.textStroke.width > 0) {
+      parts.push(`-webkit-text-stroke:${s.textStroke.width}px ${s.textStroke.color}`);
+    }
     if (s.letterSpacing) parts.push(`letter-spacing:${s.letterSpacing}px`);
     if (s.background || (s.gradient && typeof s.gradient === 'object')) parts.push(`background:${gradientCssJs(s) || s.background}`);
     {
@@ -568,7 +598,9 @@ function styleFor(layer) {
     if (s.uppercase) parts.push('text-transform:uppercase');
     // PARITY: raster/SVG draw an explicit strike line with the same €19→€11 treatment.
     if (s.strikethrough) parts.push('text-decoration:line-through');
-    if (s.shadow) parts.push('text-shadow:0 2px 12px rgba(0,0,0,0.55)');
+    // Shadow suppressed on outline-only text — a text-shadow behind a transparent fill
+    // silhouettes the glyph and defeats the hollow look (same rule in every renderer).
+    if (s.shadow && !s.textFillTransparent) parts.push('text-shadow:0 2px 12px rgba(0,0,0,0.55)');
   }
   return parts.join(';');
 }

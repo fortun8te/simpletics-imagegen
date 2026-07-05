@@ -62,6 +62,18 @@
       "port": 5901
     },
     {
+      "name": "pill-viewer",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5904",
+        "--directory",
+        "/private/tmp/claude-501/-Users-michael-Downloads-NEUEGEN/5f9f3d72-c73b-42e4-a096-8ac3edd8bd51/scratchpad"
+      ],
+      "port": 5904
+    },
+    {
       "name": "diamond-harness",
       "runtimeExecutable": "python3",
       "runtimeArgs": [

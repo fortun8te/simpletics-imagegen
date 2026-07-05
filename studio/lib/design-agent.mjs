@@ -108,6 +108,8 @@ const STYLE_KEYS = new Set([
   'shapeKind', 'spikes', 'flipDiag', 'points', 'fit',
   // cut-out crop: a sub-rect of the SOURCE image (fractions 0..1) — see the {"op":"cutout"} op.
   'crop',
+  // outlined display type: textStroke {color,width} + textFillTransparent (outline-only glyphs).
+  'textStroke', 'textFillTransparent',
 ]);
 
 // numeric style keys — '84' is coerced to 84 with a repair note
@@ -595,6 +597,9 @@ function scaleStyleMetrics(style, s) {
   }
   if (out.stroke && typeof out.stroke === 'object' && typeof out.stroke.width === 'number') {
     out.stroke = { ...out.stroke, width: Math.max(1, Math.round(out.stroke.width * s)) };
+  }
+  if (out.textStroke && typeof out.textStroke === 'object' && typeof out.textStroke.width === 'number') {
+    out.textStroke = { ...out.textStroke, width: Math.max(1, Math.round(out.textStroke.width * s)) };
   }
   return out;
 }
@@ -2903,9 +2908,31 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
     // reference itself as the full-bleed base (overlays rebuilt on top cover its baked-in text).
     // Only when the skeleton didn't produce its own base.
     if (ext.backgroundIsPhoto && !(work.layers || []).some((n) => n.role === 'base')) {
+      // __photoBase occlusion fill: the FULL reference becomes the base, so every editable
+      // overlay we rebuild on top has a baked twin underneath — patch-fill those regions in a
+      // dedicated copy of the ref (never mutate the shared one) and use it as the base src.
+      let baseSrc = refSrc;
+      const basePlan = ext._occlusionPlan && Array.isArray(ext._occlusionPlan.__photoBase) ? ext._occlusionPlan.__photoBase : null;
+      if (basePlan && basePlan.length && !opts.signal?.aborted) {
+        try {
+          const srcPng = join(STATE_DIR, 'refs', `${reference.ref}.png`);
+          if (existsSync(srcPng)) {
+            const { fillOccludedRegions } = await import('./occlusion-fill.mjs');
+            const fillId = `${reference.ref}obase`;
+            const fillPath = join(STATE_DIR, 'refs', `${fillId}.png`);
+            const { copyFileSync: cpf } = await import('node:fs');
+            cpf(srcPng, fillPath);
+            const f = await fillOccludedRegions(fillPath, basePlan, fillPath);
+            if (f && f.filled) {
+              baseSrc = `/refasset?id=${fillId}`;
+              emit('op', `patched ${f.filled} baked overlay region${f.filled === 1 ? '' : 's'} out of the reference base (editable twins render on top)`, { deterministic: true });
+            }
+          }
+        } catch { /* fill is an upgrade, never a gate */ }
+      }
       work.layers.unshift({
         id: `base_${Date.now().toString(36)}`, type: 'image', role: 'base',
-        name: 'Background (reference photo)', src: refSrc,
+        name: 'Background (reference photo)', src: baseSrc,
         box: { x: 0, y: 0, w: work.canvas.w, h: work.canvas.h },
         style: { fit: 'cover' },
       });
@@ -2979,6 +3006,11 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
       n.src = refSrc;
       delete n.text;
       const style = { crop: { x: cc.region.x, y: cc.region.y, w: cc.region.w, h: cc.region.h } };
+      // A reader-specified style.rotation must survive the style replacement (renderers honor
+      // it via nodeRotation). NOTE for copy runs: a cutout of an object that is TILTED in the
+      // reference already carries that tilt in its pixels — rotation here is for readers that
+      // deliberately re-pose a region, not for re-stating the reference's baked-in angle.
+      if (n.style && Number(n.style.rotation)) style.rotation = Number(n.style.rotation);
       if (cc.shape === 'avatar') style.shapeKind = 'ellipse';
       else if (cc.shape === 'logo') style.radius = Math.max(4, Math.round(Math.min(n.box?.w || 0, n.box?.h || 0) * 0.12));
       else style.radius = Math.max(8, Math.round(Math.min(n.box?.w || 0, n.box?.h || 0) * 0.035)); // media card corners
@@ -2998,7 +3030,17 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
           if (existsSync(srcPng)) {
             const key = matteCacheKey(readFileSync(srcPng), cc.region).slice(0, 8);
             const matteId = `${reference.ref}m${key}`;
-            const r = await matteCutout(srcPng, cc.region, join(STATE_DIR, 'refs', `${matteId}.png`));
+            const mattePath = join(STATE_DIR, 'refs', `${matteId}.png`);
+            // FALLBACK CHAIN (bench-proven): BEN2 → BiRefNet-lite → imgly. The v2 backends kept
+            // solid subjects (0.99 solidity) on every crop the incumbent ghosted (0.26-0.46);
+            // imgly remains as the last resort, and a total miss keeps today's rect crop.
+            let r = null;
+            try {
+              const { matteCutoutV2, modelAvailable } = await import('./matte-v2.mjs');
+              if (modelAvailable('ben2')) r = await matteCutoutV2(srcPng, cc.region, mattePath, { backend: 'ben2' });
+              if ((!r || !r.ok) && modelAvailable('birefnet')) r = await matteCutoutV2(srcPng, cc.region, mattePath, { backend: 'birefnet' });
+            } catch { /* v2 unavailable → imgly */ }
+            if (!r || !r.ok) r = await matteCutout(srcPng, cc.region, mattePath);
             if (r.ok) {
               n.src = `/refasset?id=${matteId}`;
               delete n.style.crop;
@@ -3007,6 +3049,39 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
             }
           }
         } catch { /* matte is an upgrade, never a gate */ }
+      }
+      // OCCLUSION FILL (Qwen-layers-style decomposition, deterministic): overlays (buttons/
+      // pills/text) sitting ON this crop in the reference leave BAKED-IN pixels — our editable
+      // overlay then doubles them, and moving it exposes the ghost. planOcclusions() (harness)
+      // annotated occluder rects in crop fractions; patch-fill them out of the ASSET so the
+      // pixels underneath are clean background. Rect crops get a DEDICATED materialized crop
+      // (the shared ref png is never mutated); mattes are dedicated files already → in place.
+      if (Array.isArray(cc.occluders) && cc.occluders.length && !opts.signal?.aborted) {
+        try {
+          const srcPng = join(STATE_DIR, 'refs', `${reference.ref}.png`);
+          if (existsSync(srcPng)) {
+            const { fillOccludedRegions } = await import('./occlusion-fill.mjs');
+            if (n.style?.crop) {
+              const fillId = `${reference.ref}o${matteCacheKey(readFileSync(srcPng), cc.region).slice(0, 8)}`;
+              const fillPath = join(STATE_DIR, 'refs', `${fillId}.png`);
+              if (!existsSync(fillPath)) {
+                const sharp = (await import('sharp')).default;
+                const meta = await sharp(srcPng).metadata();
+                await sharp(srcPng).extract({
+                  left: Math.max(0, Math.round(cc.region.x * meta.width)),
+                  top: Math.max(0, Math.round(cc.region.y * meta.height)),
+                  width: Math.max(1, Math.min(meta.width, Math.round(cc.region.w * meta.width))),
+                  height: Math.max(1, Math.min(meta.height, Math.round(cc.region.h * meta.height))),
+                }).png().toFile(fillPath);
+              }
+              const f = await fillOccludedRegions(fillPath, cc.occluders, fillPath);
+              if (f && f.filled) { n.src = `/refasset?id=${fillId}`; delete n.style.crop; }
+            } else if (String(n.src || '').startsWith('/refasset?id=') && n.src !== refSrc) {
+              const matteFile = join(STATE_DIR, 'refs', `${n.src.split('id=')[1]}.png`);
+              if (existsSync(matteFile)) await fillOccludedRegions(matteFile, cc.occluders, matteFile);
+            }
+          }
+        } catch { /* occlusion fill is an upgrade, never a gate */ }
       }
     }
     if (lifted) emit('op', `cut ${lifted} region${lifted === 1 ? '' : 's'} out of the reference (real pixels, not placeholders)${matted ? ` · ${matted} upgraded to true subject matte${matted === 1 ? '' : 's'} (background removed)` : ''}`, { deterministic: true });
