@@ -3232,6 +3232,37 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
     }
   }
 
+  // CARD-CONTAINMENT RECONCILIATION (ad 002): the model often reads a big content CARD's top
+  // edge too low while reading the text ON the card roughly right — the header stack then
+  // renders on the page background above the card instead of inside it. When ≥3 text layers sit
+  // horizontally within a large card's span but vertically ABOVE its top by a plausible margin,
+  // the card's top edge is the lie: extend it up to contain them (geometry-only; never moves
+  // text, so a correct read is untouched).
+  {
+    const layersArr = best.layers || [];
+    const cards = layersArr.filter((l) => l?.type === 'shape' && l.box
+      && /card|panel|background/i.test(String(l.role || ''))
+      && (Number(l.box.w) || 0) * (Number(l.box.h) || 0) >= 2500); // ≥25% of the 100×100 space
+    for (const card of cards) {
+      const cx0 = Number(card.box.x) || 0;
+      const cx1 = cx0 + (Number(card.box.w) || 0);
+      const cy0 = Number(card.box.y) || 0;
+      const above = layersArr.filter((l) => {
+        if (l?.type !== 'text' || !l.box) return false;
+        const tcx = (Number(l.box.x) || 0) + (Number(l.box.w) || 0) / 2;
+        const ty1 = (Number(l.box.y) || 0) + (Number(l.box.h) || 0);
+        return tcx >= cx0 && tcx <= cx1 && ty1 <= cy0 + 2 && (cy0 - (Number(l.box.y) || 0)) <= 35;
+      });
+      if (above.length >= 3) {
+        const minY = Math.min(...above.map((l) => Number(l.box.y) || 0));
+        const newY = Math.max(0, minY - 3);
+        card.box.h = (Number(card.box.h) || 0) + (cy0 - newY);
+        card.box.y = newY;
+        progress(`card top extended ${Math.round(cy0 - newY)}% to contain the ${above.length} header text layers sitting above it (model read the card edge low)`);
+      }
+    }
+  }
+
   const trueRatio = imageRatio(imagePath);
   const ratio = trueRatio || Math.max(0.5, Math.min(2.6, Number(best.canvasRatio) || 1));
   const canvas = { w: CANON_W, h: Math.round(CANON_W * ratio) };
