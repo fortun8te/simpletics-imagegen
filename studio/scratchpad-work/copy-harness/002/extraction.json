@@ -81,7 +81,8 @@
         "color": "#111111",
         "align": "center",
         "lineHeight": 1.1,
-        "uppercase": true
+        "uppercase": true,
+        "fontFamily": "Arial Rounded MT Bold"
       }
     },
     {
@@ -209,5 +210,6 @@
       }
     }
   ],
-  "measuredBoxes": true
+  "measuredBoxes": true,
+  "_occlusionPlan": []
 }

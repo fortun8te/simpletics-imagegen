@@ -4,11 +4,173 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 0,
-    "assemble": 172,
-    "total": 8310
+    "extract": 940595,
+    "assemble": 251,
+    "total": 999520
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/002.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-002.png",
+    "patched": 1,
+    "layers": [
+      {
+        "id": "headline",
+        "role": "headline",
+        "text": "ALLE ESSENTIALS",
+        "previous": null,
+        "fontFamily": "",
+        "confidence": 0.0517,
+        "patched": false,
+        "tried": [
+          {
+            "family": "",
+            "score": 0.6926,
+            "fontSize": 94
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.6409,
+            "fontSize": 113
+          },
+          {
+            "family": "Menlo",
+            "score": 0.6201,
+            "fontSize": 93
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.448,
+            "fontSize": 88
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.41,
+            "fontSize": 88
+          },
+          {
+            "family": "Georgia",
+            "score": 0.3191,
+            "fontSize": 72
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.2942,
+            "fontSize": 72
+          },
+          {
+            "family": "Impact",
+            "score": 0.276,
+            "fontSize": 100
+          }
+        ]
+      },
+      {
+        "id": "subhead",
+        "role": "subhead",
+        "text": "KRACHTSPORT BUNDEL",
+        "previous": null,
+        "fontFamily": "Arial Rounded MT Bold",
+        "confidence": 0.1502,
+        "patched": true,
+        "tried": [
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.7938,
+            "fontSize": 62
+          },
+          {
+            "family": "",
+            "score": 0.6436,
+            "fontSize": 63
+          },
+          {
+            "family": "Menlo",
+            "score": 0.5472,
+            "fontSize": 68
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.4088,
+            "fontSize": 73
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.3597,
+            "fontSize": 61
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.3439,
+            "fontSize": 61
+          },
+          {
+            "family": "Impact",
+            "score": 0.3012,
+            "fontSize": 77
+          },
+          {
+            "family": "Georgia",
+            "score": 0.2922,
+            "fontSize": 46
+          }
+        ]
+      },
+      {
+        "id": "cta-caption",
+        "role": "caption",
+        "text": "KOOP NU VIA UPFRONT.NL",
+        "previous": null,
+        "fontFamily": "",
+        "confidence": 0.0683,
+        "patched": false,
+        "tried": [
+          {
+            "family": "",
+            "score": 0.7936,
+            "fontSize": 38
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.7253,
+            "fontSize": 47
+          },
+          {
+            "family": "Georgia",
+            "score": 0.7188,
+            "fontSize": 38
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.5922,
+            "fontSize": 39
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.5264,
+            "fontSize": 39
+          },
+          {
+            "family": "Menlo",
+            "score": 0.5059,
+            "fontSize": 36
+          },
+          {
+            "family": "Impact",
+            "score": 0.4984,
+            "fontSize": 49
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.4943,
+            "fontSize": 36
+          }
+        ]
+      }
+    ]
   },
   "readSource": "scene-file",
+  "occlusionPlan": [],
   "sceneTruthCorrections": [
     "headline fontSize: 72 → 99 (1 ink line, block 71px)",
     "headline box: y252 h85 → y250 h93 (tight ink rows + 11px pad)",
@@ -33,7 +195,30 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 93.7,
-  "pixelScore": 93.7,
+  "pixelScoreRaw": 93.6,
+  "pixelScore": 93.6,
+  "refine": {
+    "ran": true,
+    "scoreBefore": 93.2,
+    "scoreAfter": 93.6,
+    "rounds": 2,
+    "renders": 8,
+    "capped": false,
+    "ms": 45362,
+    "applied": [
+      {
+        "round": 1,
+        "layerId": "subhead-mr8ccne4-3",
+        "layerName": "subhead",
+        "kind": "font",
+        "detail": "fontSize ×0.92",
+        "localMae": {
+          "before": 0.124,
+          "after": 0.057
+        }
+      }
+    ],
+    "error": null
+  },
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/002/side-by-side.png"
 }

@@ -1,13 +1,13 @@
 {
-  "id": "harness_002_74f42fdc",
-  "name": "copy-harness harness_002_74f42fdc",
+  "id": "harness_002_8581949c",
+  "name": "copy-harness harness_002_8581949c",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr8ap5er-b",
+      "id": "base-mr8ccne4-b",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "card-mr8ap5er-0",
+      "id": "card-mr8ccne3-0",
       "type": "shape",
       "role": "card",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "logo-mr8ap5er-1",
+      "id": "logo-mr8ccne4-1",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -54,7 +54,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "headline-mr8ap5er-2",
+      "id": "headline-mr8ccne4-2",
       "type": "text",
       "role": "headline",
       "text": "ALLE ESSENTIALS",
@@ -76,7 +76,7 @@
       "sizeLocked": true
     },
     {
-      "id": "subhead-mr8ap5er-3",
+      "id": "subhead-mr8ccne4-3",
       "type": "text",
       "role": "subhead",
       "text": "KRACHTSPORT BUNDEL",
@@ -87,18 +87,19 @@
         "h": 62
       },
       "style": {
-        "fontSize": 63,
+        "fontSize": 58,
         "fontWeight": 800,
         "color": "#111111",
         "align": "center",
         "lineHeight": 1.1,
-        "uppercase": true
+        "uppercase": true,
+        "fontFamily": "Arial Rounded MT Bold"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "price-mr8ap5er-4",
+      "id": "price-mr8ccne4-4",
       "type": "text",
       "role": "price",
       "text": "€63",
@@ -120,7 +121,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8ap5er-5",
+      "id": "decor-mr8ccne4-5",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -134,7 +135,7 @@
       }
     },
     {
-      "id": "decor-mr8ap5er-6",
+      "id": "decor-mr8ccne4-6",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -149,7 +150,7 @@
       }
     },
     {
-      "id": "price-mr8ap5er-7",
+      "id": "price-mr8ccne4-7",
       "type": "text",
       "role": "price",
       "text": "€49",
@@ -171,7 +172,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8ap5er-8",
+      "id": "decor-mr8ccne4-8",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -185,7 +186,7 @@
       }
     },
     {
-      "id": "caption-mr8ap5er-9",
+      "id": "caption-mr8ccne4-9",
       "type": "text",
       "role": "caption",
       "text": "KOOP NU VIA UPFRONT.NL",
@@ -207,7 +208,7 @@
       "sizeLocked": true
     },
     {
-      "id": "product-mr8ap5er-a",
+      "id": "product-mr8ccne4-a",
       "type": "image",
       "role": "product",
       "box": {
@@ -229,6 +230,6 @@
       "name": "Cut-out"
     }
   ],
-  "skeletonId": "skel_mr8ap5eqkv03",
-  "updatedAt": 1783286432333
+  "skeletonId": "skel_mr8ccne3fx69",
+  "updatedAt": 1783289208416
 }
