@@ -2,33 +2,33 @@
   "ok": true,
   "layers": [
     {
-      "id": "grp-mr830yrj-2",
+      "id": "grp-mr83im01-3",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 54,
-        "y": 77,
-        "w": 1026,
-        "h": 922
+        "x": 92,
+        "y": 86,
+        "w": 988,
+        "h": 1747
       },
       "children": [
         {
-          "id": "ext-mr830yre-5",
+          "id": "ext-mr83ilzx-7",
           "type": "shape",
           "role": "card",
           "name": "card",
           "box": {
-            "x": 54,
-            "y": 77,
-            "w": 972,
-            "h": 922
+            "x": 92,
+            "y": 86,
+            "w": 896,
+            "h": 1747
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
+            "color": "#f6f6f6",
+            "background": "#f6f6f6",
             "fontSize": 43,
-            "fontWeight": 400,
-            "align": "center",
+            "fontWeight": 600,
+            "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
             "opacity": 1,
@@ -37,193 +37,215 @@
           }
         },
         {
-          "id": "ext-mr830yre-2",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "KRACHTSPORT BUNDEL",
-          "autoH": true,
-          "box": {
-            "x": 508,
-            "y": 346,
-            "w": 572,
-            "h": 46
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 32,
-            "fontWeight": 900,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "grp-mr830yrj-3",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 108,
-        "y": 461,
-        "w": 972,
-        "h": 1459
-      },
-      "children": [
-        {
-          "id": "ext-mr830yre-0",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · Whey Milkshake",
-          "box": {
-            "x": 508,
-            "y": 1018,
-            "w": 572,
-            "h": 902
-          },
-          "style": {
-            "background": "#FFFFFF59",
-            "radius": 22,
-            "stroke": {
-              "color": "#FFFFFF",
-              "width": 5
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.47,
-              "y": 0.53,
-              "w": 0.53,
-              "h": 0.47
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr830yrg-7",
-          "type": "shape",
-          "role": "rect",
-          "name": "Cut-out · whey protein pouch",
-          "box": {
-            "x": 108,
-            "y": 1018,
-            "w": 594,
-            "h": 826
-          },
-          "style": {
-            "background": "#d1d1d159",
-            "radius": 22,
-            "stroke": {
-              "color": "#d1d1d1",
-              "width": 5
-            }
-          },
-          "cutoutCandidate": {
-            "region": {
-              "x": 0.1,
-              "y": 0.53,
-              "w": 0.55,
-              "h": 0.43
-            },
-            "shape": "rect"
-          }
-        },
-        {
-          "id": "ext-mr830yre-1",
+          "id": "ext-mr83ilzr-2",
           "type": "text",
           "role": "headline",
           "name": "headline",
           "text": "ALLE ESSENTIALS",
           "autoH": true,
           "box": {
-            "x": 508,
-            "y": 1018,
-            "w": 572,
-            "h": 78
+            "x": 432,
+            "y": 182.6,
+            "w": 432,
+            "h": 76.80000000000001
           },
           "style": {
-            "color": "#1a1a1a",
-            "fontSize": 54,
-            "fontWeight": 900,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        },
-        {
-          "id": "ext-mr830yre-3",
-          "type": "badge",
-          "role": "price",
-          "name": "price",
-          "text": "€63 → €49",
-          "autoH": true,
-          "box": {
-            "x": 508,
-            "y": 461,
-            "w": 572,
-            "h": 55
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 38,
+            "color": "#c23e17",
+            "fontSize": 43,
             "fontWeight": 800,
             "align": "center",
-            "uppercase": false,
+            "uppercase": true,
             "lineHeight": 1.2
           }
         }
       ]
     },
     {
-      "id": "ext-mr830yrg-6",
+      "id": "grp-mr83im01-4",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 442,
+        "w": 972,
+        "h": 1420
+      },
+      "children": [
+        {
+          "id": "ext-mr83ilzr-0",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · Whey Milkshake",
+          "box": {
+            "x": 540,
+            "y": 998,
+            "w": 540,
+            "h": 864
+          },
+          "style": {
+            "background": "#FFFFFF59",
+            "radius": 22,
+            "stroke": {
+              "color": "#FFFFFF",
+              "width": 4
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.5,
+              "y": 0.52,
+              "w": 0.8,
+              "h": 0.45
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr83ilzz-8",
+          "type": "shape",
+          "role": "rect",
+          "name": "Cut-out · whey milkshake pouch",
+          "box": {
+            "x": 108,
+            "y": 998,
+            "w": 540,
+            "h": 806
+          },
+          "style": {
+            "background": "#d1d5d859",
+            "radius": 22,
+            "stroke": {
+              "color": "#d1d5d8",
+              "width": 4
+            }
+          },
+          "cutoutCandidate": {
+            "region": {
+              "x": 0.1,
+              "y": 0.52,
+              "w": 0.5,
+              "h": 0.42
+            },
+            "shape": "rect"
+          }
+        },
+        {
+          "id": "ext-mr83ilzu-3",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "KRACHTSPORT BUNDEL",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 442,
+            "w": 486,
+            "h": 77
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 38,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr83ilzv-4",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "€63 → €49",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 538,
+            "w": 378,
+            "h": 77
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 43,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr83ilzw-5",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "KOOP NU VIA UPFRONT.NL",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 845,
+            "w": 486,
+            "h": 38
+          },
+          "style": {
+            "color": "#754333",
+            "fontSize": 22,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "ext-mr83ilzx-6",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "UPFRONT",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 1229,
+            "w": 378,
+            "h": 77
+          },
+          "style": {
+            "color": "#898885",
+            "fontSize": 43,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "ext-mr83ilzr-1",
       "type": "shape",
       "role": "logo",
-      "name": "Logo · UPFRONT logo",
+      "name": "Logo · Brand Logo",
       "box": {
-        "x": 464,
-        "y": 96,
-        "w": 151,
+        "x": 486,
+        "y": 77,
+        "w": 108,
         "h": 115
       },
       "style": {
-        "background": "#1a1a1a59",
+        "background": "#FFFFFF59",
         "shapeKind": "ellipse",
         "stroke": {
-          "color": "#1a1a1a",
+          "color": "#FFFFFF",
           "width": 2
         }
       },
       "cutoutCandidate": {
         "region": {
-          "x": 0.43,
-          "y": 0.05,
-          "w": 0.14,
+          "x": 0.45,
+          "y": 0.04,
+          "w": 0.1,
           "h": 0.06
         },
         "shape": "logo"
-      }
-    },
-    {
-      "id": "ext-mr830yre-4",
-      "type": "text",
-      "role": "cta",
-      "name": "cta",
-      "text": "KOOP NU VIA UPFRONT.NL",
-      "autoH": true,
-      "box": {
-        "x": 508,
-        "y": 634,
-        "w": 572,
-        "h": 27
-      },
-      "style": {
-        "color": "#1a1a1a",
-        "fontSize": 19,
-        "fontWeight": 700,
-        "align": "center",
-        "uppercase": true,
-        "lineHeight": 1.2
       }
     }
   ],
@@ -232,7 +254,7 @@
     "h": 1920
   },
   "archetype": "offer-hero",
-  "background": "#F15A29",
+  "background": "#E8521A",
   "backgroundIsPhoto": false,
   "backgroundConfidence": "normal",
   "theme": "dark",
@@ -258,7 +280,14 @@
       "share": 0.125
     }
   ],
-  "selfCheck": null,
+  "selfCheck": {
+    "matched": false,
+    "score": 25,
+    "corrections": [],
+    "applied": 2,
+    "iterations": 3,
+    "totalCorrections": 15
+  },
   "error": null,
   "passes": 2
 }

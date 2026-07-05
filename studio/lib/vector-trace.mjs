@@ -41,6 +41,10 @@ export const TRACE_MAX_SUBPATHS = 160;
 export const TRACE_MERGE_DELTA = 48;
 /** Crops with more significant color clusters than this fail early (photo/gradient). */
 export const TRACE_MAX_COLORS = 6;
+/** Min fraction of adjacent pixel pairs with a HARD color step. Logos are made of crisp edges;
+ *  gradients and soft/defocused photos have ~none — quantizing those into bands and tracing the
+ *  bands is the classic "bad trace worse than a crop" failure. */
+export const TRACE_MIN_EDGE_FRAC = 0.004;
 
 // Deterministic imagetracerjs options: colorsampling 2 (deterministic sampling) and
 // mincolorratio 0 (no random palette re-seeding) are the two knobs that keep Math.random out
@@ -113,6 +117,23 @@ export function normalizePathD(d, w, h) {
 const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 const toHex = (rgb) => '#' + rgb.map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, '0')).join('');
 
+/** MONO-MERGE (pure, exported for tests): when every kept fill is near-identical
+ *  (≤ TRACE_MERGE_DELTA apart — mono logos, or a tracer palette that split one ink into
+ *  near-duplicates), collapse them into ONE group; otherwise return them sorted by area
+ *  (largest first — back-to-front paint order). `kept` entries: { rgb, ds, area, subpaths }. */
+export function monoMergeGroups(kept) {
+  const sorted = [...kept].sort((a, b) => b.area - a.area);
+  if (!sorted.length) return [];
+  const allNearIdentical = sorted.every((e) => dist(e.rgb, sorted[0].rgb) <= TRACE_MERGE_DELTA);
+  if (!allNearIdentical) return sorted;
+  return [{
+    rgb: sorted[0].rgb,
+    ds: sorted.flatMap((e) => e.ds),
+    area: sorted.reduce((s, e) => s + e.area, 0),
+    subpaths: sorted.reduce((s, e) => s + e.subpaths, 0),
+  }];
+}
+
 /** The pure gate: judge a grouped trace. Exported so tests can probe thresholds directly. */
 export function judgeTrace({ pathCount, coverage, subpaths }) {
   if (!(pathCount >= 1)) return { ok: false, reason: 'nothing traced' };
@@ -165,6 +186,22 @@ function colorCensus(data, pixelCount) {
   return centers.filter((c) => c.count / n >= 0.03).length;
 }
 
+/** Fraction of sampled horizontal neighbor pairs with a hard color step (RGB distance > 60).
+ *  Run on the NATIVE-size crop: gradients ≈ 0, flat fills ≈ 0, logos have plenty. */
+function hardEdgeFraction(data, w, h) {
+  let edges = 0, n = 0;
+  const rowStep = Math.max(1, Math.floor(h / 64)); // sample ≤64 rows
+  for (let y = 0; y < h; y += rowStep) {
+    for (let x = 1; x < w; x++) {
+      const i = (y * w + x) * 4, j = i - 4;
+      if (data[i + 3] < 32 || data[j + 3] < 32) continue;
+      if (dist([data[i], data[i + 1], data[i + 2]], [data[j], data[j + 1], data[j + 2]]) > 60) edges++;
+      n++;
+    }
+  }
+  return n ? edges / n : 0;
+}
+
 /** Average color of the crop's 1px border frame (the region's background, same trick as
  *  layout-extract's sampleBorderBackground). */
 function borderColor(data, w, h) {
@@ -178,24 +215,32 @@ function borderColor(data, w, h) {
   return n ? [r / n, g / n, b / n] : null;
 }
 
-/** Per-channel MEDIAN of the sampled pixels nearest to `target` among `centers` — recovers the
- *  true ink color that quantization washes out with anti-aliased fringe. */
-function medianAssignedColor(data, pixelCount, centers, targetIdx) {
-  const ch = [[], [], []];
+/** Recover the TRUE fill color for a traced cluster. Quantized palette colors are washed out by
+ *  anti-aliased fringe (thin line art can be half fringe), so: collect the sampled pixels nearest
+ *  to `target` among `centers`, keep the half FARTHEST from the background color (AA pixels sit
+ *  between bg and ink; real ink pixels sit farthest), then take the per-channel median. */
+function medianAssignedColor(data, pixelCount, centers, targetIdx, bg) {
+  const px = [];
   const step = Math.max(1, Math.floor(pixelCount / 4096));
   for (let p = 0; p < pixelCount; p += step) {
     const i = p * 4;
     if (data[i + 3] < 32) continue;
-    const px = [data[i], data[i + 1], data[i + 2]];
+    const c = [data[i], data[i + 1], data[i + 2]];
     let best = 0, bestD = Infinity;
-    for (let c = 0; c < centers.length; c++) {
-      const d = dist(px, centers[c]);
-      if (d < bestD) { bestD = d; best = c; }
+    for (let k = 0; k < centers.length; k++) {
+      const d = dist(c, centers[k]);
+      if (d < bestD) { bestD = d; best = k; }
     }
-    if (best === targetIdx) { ch[0].push(px[0]); ch[1].push(px[1]); ch[2].push(px[2]); }
+    if (best === targetIdx) px.push(c);
   }
-  if (!ch[0].length) return null;
-  return ch.map((arr) => { arr.sort((a, b) => a - b); return arr[arr.length >> 1]; });
+  if (!px.length) return null;
+  const keep = bg
+    ? px.sort((a, b) => dist(b, bg) - dist(a, bg)).slice(0, Math.max(1, px.length >> 1))
+    : px;
+  return [0, 1, 2].map((k) => {
+    const arr = keep.map((c) => c[k]).sort((a, b) => a - b);
+    return arr[arr.length >> 1];
+  });
 }
 
 // ── main API ──────────────────────────────────────────────────────────────────────────────────
@@ -243,6 +288,20 @@ export async function traceRegion(srcPngPath, cropFrac, opts = {}) {
     const height = Math.min(meta.height - top, Math.round(cropFrac.h * meta.height));
     if (width < 8 || height < 8) return fail('crop too small to trace');
 
+    // PRE-GATE: photos/gradients have many significant color clusters — refuse to trace them.
+    // Census runs on the NATIVE-size crop, where anti-aliased fringe is a 1px minority; the
+    // upscaled buffer used for tracing widens AA into bands that would inflate the count.
+    const native = await sharp(srcPngPath)
+      .extract({ left, top, width, height })
+      .ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const colors = colorCensus(native.data, width * height);
+    if (colors < 1) return fail('empty/transparent crop');
+    if (colors > TRACE_MAX_COLORS) return fail(`too many colors (${colors} clusters — photo/gradient?)`, { colors });
+    const edgeFrac = hardEdgeFraction(native.data, width, height);
+    if (edgeFrac < TRACE_MIN_EDGE_FRAC) {
+      return fail(`no crisp edges (${(edgeFrac * 100).toFixed(2)}% — gradient/flat/soft photo?)`, { colors });
+    }
+
     // Upscale small crops before tracing (smoother curves, AA fringe shrinks relative to ink);
     // integer factor so it stays deterministic and cheap. Target min-dimension ≈ 256px, cap 4x.
     const scale = Math.max(1, Math.min(4, Math.ceil(256 / Math.min(width, height))));
@@ -252,70 +311,68 @@ export async function traceRegion(srcPngPath, cropFrac, opts = {}) {
       .ensureAlpha().raw().toBuffer({ resolveWithObject: true });
     const W = info.width, H = info.height, pixelCount = W * H;
 
-    // PRE-GATE: photos/gradients have many significant color clusters — refuse to trace them.
-    const colors = colorCensus(data, pixelCount);
-    if (colors < 1) return fail('empty/transparent crop');
-    if (colors > TRACE_MAX_COLORS) return fail(`too many colors (${colors} clusters — photo/gradient?)`, { colors });
-
-    const svg = ImageTracer.imagedataToSVG(
-      { width: W, height: H, data: new Uint8ClampedArray(data.buffer, data.byteOffset, data.byteLength) },
-      { ...TRACER_BASE_OPTS, pathomit: opts.pathomit ?? TRACER_BASE_OPTS.pathomit, numberofcolors: Math.max(2, Math.min(TRACE_MAX_COLORS, colors)) },
-    );
-    const rawPaths = parseSvgPaths(svg).filter((p) => p.opacity >= 0.5);
-    if (!rawPaths.length) return fail('nothing traced', { colors });
-
-    // Drop BACKGROUND fills: near the border color, or any fill tiling ≥88% of the crop.
     const border = borderColor(data, W, H);
     const cropArea = W * H;
-    const byFill = new Map();
-    for (const p of rawPaths) {
-      const key = p.rgb.join(',');
-      const e = byFill.get(key) || { rgb: p.rgb, ds: [], area: 0, subpaths: 0 };
-      e.ds.push(p.d);
-      e.area += Math.abs(signedPathArea(p.d));
-      e.subpaths += (p.d.match(/M /g) || []).length;
-      byFill.set(key, e);
-    }
-    const kept = [];
-    for (const e of byFill.values()) {
-      const isBorderColor = border && dist(e.rgb, border) <= 60;
-      const tilesEverything = e.area / cropArea >= 0.88;
-      if (!isBorderColor && !tilesEverything) kept.push(e);
-    }
-    if (!kept.length) return fail('only background traced', { colors });
 
-    // MONO-MERGE: when every kept fill is near-identical (mono logos — the common case), collapse
-    // to a single path layer. Fill color is re-sampled from source pixels (median of the pixels
-    // assigned to the ink cluster) because quantized palette colors are AA-washed.
-    kept.sort((a, b) => b.area - a.area);
-    const allNearIdentical = kept.length > 1
-      && kept.every((e) => dist(e.rgb, kept[0].rgb) <= TRACE_MERGE_DELTA);
-    const groups = (allNearIdentical || kept.length === 1)
-      ? [{
-          rgb: kept[0].rgb,
-          ds: kept.flatMap((e) => e.ds),
-          area: kept.reduce((s, e) => s + e.area, 0),
-          subpaths: kept.reduce((s, e) => s + e.subpaths, 0),
-        }]
-      : kept;
+    /** One full trace → group → judge pass at a given palette size. */
+    const attempt = (numberofcolors) => {
+      const svg = ImageTracer.imagedataToSVG(
+        { width: W, height: H, data: new Uint8ClampedArray(data.buffer, data.byteOffset, data.byteLength) },
+        { ...TRACER_BASE_OPTS, pathomit: opts.pathomit ?? TRACER_BASE_OPTS.pathomit, numberofcolors },
+      );
+      const rawPaths = parseSvgPaths(svg).filter((p) => p.opacity >= 0.5);
+      if (!rawPaths.length) return fail('nothing traced', { colors });
 
-    const centers = groups.map((g) => g.rgb).concat(border ? [border] : []);
-    const paths = groups.map((g, i) => {
-      const resampled = medianAssignedColor(data, pixelCount, centers, i);
+      // Drop BACKGROUND fills: near the border color, or any fill tiling ≥88% of the crop.
+      const byFill = new Map();
+      for (const p of rawPaths) {
+        const key = p.rgb.join(',');
+        const e = byFill.get(key) || { rgb: p.rgb, ds: [], area: 0, subpaths: 0 };
+        e.ds.push(p.d);
+        e.area += Math.abs(signedPathArea(p.d));
+        e.subpaths += (p.d.match(/M /g) || []).length;
+        byFill.set(key, e);
+      }
+      const kept = [];
+      for (const e of byFill.values()) {
+        const isBorderColor = border && dist(e.rgb, border) <= 60;
+        const tilesEverything = e.area / cropArea >= 0.88;
+        if (!isBorderColor && !tilesEverything) kept.push(e);
+      }
+      if (!kept.length) return fail('only background traced', { colors });
+
+      // MONO-MERGE: near-identical kept fills collapse into one path layer (see monoMergeGroups).
+      // Fill color is re-sampled from source pixels afterwards — quantized colors are AA-washed.
+      const groups = monoMergeGroups(kept);
+
+      const centers = groups.map((g) => g.rgb).concat(border ? [border] : []);
+      const paths = groups.map((g, i) => {
+        const resampled = medianAssignedColor(data, pixelCount, centers, i, border);
+        return {
+          d: g.ds.map((d) => normalizePathD(d, W, H)).join(' '),
+          fill: toHex(resampled || g.rgb),
+        };
+      });
+
+      const coverage = Math.min(1, groups.reduce((s, g) => s + g.area, 0) / cropArea);
+      const subpaths = groups.reduce((s, g) => s + g.subpaths, 0);
+      const pathCount = paths.length;
+      const verdict = judgeTrace({ pathCount, coverage, subpaths });
       return {
-        d: g.ds.map((d) => normalizePathD(d, W, H)).join(' '),
-        fill: toHex(resampled || g.rgb),
+        ok: verdict.ok, paths, viewBox: '0 0 1 1', pathCount, coverage, subpaths, colors,
+        ms: Date.now() - t0, reason: verdict.reason,
       };
-    });
-
-    const coverage = Math.min(1, groups.reduce((s, g) => s + g.area, 0) / cropArea);
-    const subpaths = groups.reduce((s, g) => s + g.subpaths, 0);
-    const pathCount = paths.length;
-    const verdict = judgeTrace({ pathCount, coverage, subpaths });
-    return {
-      ok: verdict.ok, paths, viewBox: '0 0 1 1', pathCount, coverage, subpaths, colors,
-      ms: Date.now() - t0, reason: verdict.reason,
     };
+
+    // RETRY LADDER: first trace at the census's palette size. Thin line art (the emblem case)
+    // legitimately censuses at 3-4 because anti-aliased fringe is a large pixel share — if that
+    // multi-color attempt fails the gate, re-attempt as MONO (2 colors): AA snaps to bg-or-ink
+    // and mono logos are the common case. Photos fail both (coverage stays ~1). Deterministic —
+    // fixed ladder, no randomness anywhere.
+    const first = attempt(Math.max(2, Math.min(TRACE_MAX_COLORS, colors)));
+    if (first.ok || colors <= 2) return first;
+    const mono = attempt(2);
+    return mono.ok ? mono : first;
   } catch (e) {
     return fail(`trace failed: ${e?.message || e}`);
   }

@@ -3237,6 +3237,88 @@ export async function extractLayout(imagePath, { timeoutMs = 120_000, runId = nu
     }
   }
 
+  // PIXEL-VERIFIED PANEL (inverse-design principle: backgrounds are REBUILT from geometry the
+  // pixels prove, never trusted from the model). Detect the dominant light content panel (the
+  // white poster card) as an axis-aligned rect directly from the image: threshold light+neutral
+  // cells on a coarse grid, take the largest connected blob, require it to be rectangle-shaped.
+  // An existing card layer SNAPS to it; a missing card gets inserted. The model can no longer
+  // lie about the single most load-bearing box in the composition.
+  {
+    const panel = (() => {
+      try {
+        const img = decodeImage(imagePath);
+        if (!img) return null;
+        const { width: w, height: h, channels: ch, data } = img;
+        const G = 48;
+        const light = new Uint8Array(G * G);
+        for (let gy = 0; gy < G; gy++) {
+          for (let gx = 0; gx < G; gx++) {
+            let ok = 0;
+            for (const [fx, fy] of [[0.5, 0.5], [0.2, 0.3], [0.8, 0.7]]) {
+              const x = Math.min(w - 1, Math.floor((gx + fx) * w / G));
+              const y = Math.min(h - 1, Math.floor((gy + fy) * h / G));
+              const p = (y * w + x) * ch;
+              const r = data[p], g = data[p + 1], b = data[p + 2];
+              const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+              if (mx >= 215 && (mx - mn) <= 30) ok++;
+            }
+            light[gy * G + gx] = ok >= 2 ? 1 : 0;
+          }
+        }
+        // largest connected light blob (4-neighbour flood fill)
+        const seen = new Uint8Array(G * G);
+        let best = null;
+        for (let i = 0; i < G * G; i++) {
+          if (!light[i] || seen[i]) continue;
+          const stack = [i];
+          seen[i] = 1;
+          let count = 0, x0 = G, x1 = 0, y0 = G, y1 = 0;
+          while (stack.length) {
+            const c = stack.pop();
+            count++;
+            const cx = c % G, cy = (c / G) | 0;
+            if (cx < x0) x0 = cx; if (cx > x1) x1 = cx;
+            if (cy < y0) y0 = cy; if (cy > y1) y1 = cy;
+            for (const nb of [c - 1, c + 1, c - G, c + G]) {
+              if (nb < 0 || nb >= G * G || seen[nb] || !light[nb]) continue;
+              if ((nb === c - 1 && cx === 0) || (nb === c + 1 && cx === G - 1)) continue;
+              seen[nb] = 1;
+              stack.push(nb);
+            }
+          }
+          if (!best || count > best.count) best = { count, x0, x1, y0, y1 };
+        }
+        if (!best) return null;
+        const bw = best.x1 - best.x0 + 1, bh = best.y1 - best.y0 + 1;
+        const fill = best.count / (bw * bh);
+        const areaFrac = best.count / (G * G);
+        // must be rectangle-shaped and a real content panel (not the whole canvas, not a sliver)
+        if (fill < 0.82 || areaFrac < 0.15 || areaFrac > 0.92) return null;
+        return { x: best.x0 / G * 100, y: best.y0 / G * 100, w: bw / G * 100, h: bh / G * 100 };
+      } catch { return null; }
+    })();
+    if (panel) {
+      const cards = (best.layers || []).filter((l) => l?.type === 'shape' && l.box
+        && /card|panel|background/i.test(String(l.role || ''))
+        && (Number(l.box.w) || 0) * (Number(l.box.h) || 0) >= 1500);
+      let snappedCard = false;
+      for (const card of cards) {
+        const dx = Math.abs((Number(card.box.x) || 0) - panel.x) + Math.abs((Number(card.box.y) || 0) - panel.y);
+        const dw = Math.abs((Number(card.box.w) || 0) - panel.w) + Math.abs((Number(card.box.h) || 0) - panel.h);
+        if (dx + dw > 8) {
+          card.box = { x: panel.x, y: panel.y, w: panel.w, h: panel.h };
+          snappedCard = true;
+        }
+      }
+      if (snappedCard) progress(`panel oracle: card snapped to the pixel-detected light panel (${Math.round(panel.x)},${Math.round(panel.y)} ${Math.round(panel.w)}×${Math.round(panel.h)}%)`);
+      if (!cards.length && String(best.backgroundKind || '').toLowerCase() !== 'photo') {
+        best.layers = best.layers || [];
+        best.layers.unshift({ type: 'shape', role: 'card', box: { ...panel }, style: { background: '#ffffff' } });
+        progress('panel oracle: inserted the pixel-detected light panel the model missed');
+      }
+    }
+  }
+
   // PIXEL-SNAP ORACLE (ad 002, the "full fixup"): the model's WORDS are reliable but its BOXES
   // sometimes aren't — partial degenerate reads give a subset of text layers fabricated
   // coordinates (tiny boxes crammed top-left) that no retry is guaranteed to fix. The pixels

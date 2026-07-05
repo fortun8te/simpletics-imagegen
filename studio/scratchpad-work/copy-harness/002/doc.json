@@ -1,13 +1,13 @@
 {
-  "id": "harness_002_bfdcc94b",
-  "name": "copy-harness harness_002_bfdcc94b",
+  "id": "harness_002_0d5955fc",
+  "name": "copy-harness harness_002_0d5955fc",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr830ys1-s",
+      "id": "base-mr83ja6k-w",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -19,37 +19,37 @@
       },
       "style": {
         "shapeKind": "rect",
-        "background": "#F15A29"
+        "background": "#E8521A"
       }
     },
     {
-      "id": "group-mr830ys0-i",
+      "id": "group-mr83ja6k-l",
       "type": "group",
       "name": "Header",
       "box": {
-        "x": 54,
-        "y": 77,
-        "w": 1026,
-        "h": 922
+        "x": 92,
+        "y": 86,
+        "w": 896,
+        "h": 1747
       },
       "children": [
         {
-          "id": "card-mr830ys0-j",
+          "id": "card-mr83ja6k-m",
           "type": "shape",
           "role": "card",
           "name": "card",
           "box": {
-            "x": 54,
-            "y": 77,
-            "w": 972,
-            "h": 922
+            "x": 92,
+            "y": 86,
+            "w": 896,
+            "h": 1747
           },
           "style": {
-            "color": "#ffffff",
-            "background": "#ffffff",
+            "color": "#f6f6f6",
+            "background": "#f6f6f6",
             "fontSize": 43,
-            "fontWeight": 400,
-            "align": "center",
+            "fontWeight": 600,
+            "align": "left",
             "uppercase": false,
             "lineHeight": 1.2,
             "opacity": 1,
@@ -58,170 +58,176 @@
           }
         },
         {
-          "id": "subhead-mr830ys0-k",
-          "type": "text",
-          "role": "subhead",
-          "name": "subhead",
-          "text": "KRACHTSPORT BUNDEL",
-          "autoH": true,
-          "box": {
-            "x": 508,
-            "y": 346,
-            "w": 572,
-            "h": 46
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 38,
-            "fontWeight": 900,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2
-          }
-        }
-      ]
-    },
-    {
-      "id": "group-mr830ys0-l",
-      "type": "group",
-      "name": "Body",
-      "box": {
-        "x": 108,
-        "y": 461,
-        "w": 972,
-        "h": 1459
-      },
-      "children": [
-        {
-          "id": "rect-mr830ys0-m",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · Whey Milkshake",
-          "box": {
-            "x": 508,
-            "y": 1018,
-            "w": 572,
-            "h": 902
-          },
-          "style": {
-            "crop": {
-              "x": 0.47,
-              "y": 0.53,
-              "w": 0.53,
-              "h": 0.47
-            },
-            "radius": 20
-          },
-          "src": "/refasset?id=harness-002"
-        },
-        {
-          "id": "rect-mr830ys0-n",
-          "type": "image",
-          "role": "rect",
-          "name": "Cut-out · whey protein pouch",
-          "box": {
-            "x": 108,
-            "y": 1018,
-            "w": 594,
-            "h": 826
-          },
-          "style": {
-            "crop": {
-              "x": 0.1,
-              "y": 0.53,
-              "w": 0.55,
-              "h": 0.43
-            },
-            "radius": 21
-          },
-          "src": "/refasset?id=harness-002"
-        },
-        {
-          "id": "headline-mr830ys0-o",
+          "id": "headline-mr83ja6k-n",
           "type": "text",
           "role": "headline",
           "name": "headline",
           "text": "ALLE ESSENTIALS",
           "autoH": true,
           "box": {
-            "x": 508,
-            "y": 1018,
-            "w": 572,
-            "h": 84
+            "x": 432,
+            "y": 183,
+            "w": 432,
+            "h": 135
           },
           "style": {
-            "color": "#ffffff",
+            "color": "#c23e17",
             "fontSize": 56,
-            "fontWeight": 900,
-            "align": "center",
-            "uppercase": true,
-            "lineHeight": 1.2,
-            "pill": true,
-            "background": "rgba(0,0,0,0.62)",
-            "padding": 31
-          }
-        },
-        {
-          "id": "price-mr830ys0-p",
-          "type": "badge",
-          "role": "price",
-          "name": "price",
-          "text": "€63 → €49",
-          "autoH": true,
-          "box": {
-            "x": 508,
-            "y": 461,
-            "w": 572,
-            "h": 55
-          },
-          "style": {
-            "color": "#1a1a1a",
-            "fontSize": 40,
             "fontWeight": 800,
             "align": "center",
-            "uppercase": false,
+            "uppercase": true,
             "lineHeight": 1.2
           }
         }
       ]
     },
     {
-      "id": "logo-mr830ys1-q",
+      "id": "group-mr83ja6k-o",
+      "type": "group",
+      "name": "Body",
+      "box": {
+        "x": 108,
+        "y": 442,
+        "w": 972,
+        "h": 1420
+      },
+      "children": [
+        {
+          "id": "rect-mr83ja6k-p",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · Whey Milkshake",
+          "box": {
+            "x": 540,
+            "y": 998,
+            "w": 540,
+            "h": 864
+          },
+          "style": {},
+          "src": "/refasset?id=harness-002m61c30f31"
+        },
+        {
+          "id": "rect-mr83ja6k-q",
+          "type": "image",
+          "role": "rect",
+          "name": "Cut-out · whey milkshake pouch",
+          "box": {
+            "x": 108,
+            "y": 998,
+            "w": 540,
+            "h": 806
+          },
+          "style": {},
+          "src": "/refasset?id=harness-002m66b5357d"
+        },
+        {
+          "id": "subhead-mr83ja6k-r",
+          "type": "text",
+          "role": "subhead",
+          "name": "subhead",
+          "text": "KRACHTSPORT BUNDEL",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 442,
+            "w": 486,
+            "h": 77
+          },
+          "style": {
+            "color": "#000000",
+            "fontSize": 38,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "price-mr83ja6k-s",
+          "type": "text",
+          "role": "price",
+          "name": "price",
+          "text": "€63 → €49",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 538,
+            "w": 378,
+            "h": 77
+          },
+          "style": {
+            "color": "#333333",
+            "fontSize": 43,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": false,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr83ja6k-t",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "KOOP NU VIA UPFRONT.NL",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 845,
+            "w": 486,
+            "h": 38
+          },
+          "style": {
+            "color": "#754333",
+            "fontSize": 30,
+            "fontWeight": 400,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2
+          }
+        },
+        {
+          "id": "caption-mr83ja6k-u",
+          "type": "text",
+          "role": "caption",
+          "name": "caption",
+          "text": "UPFRONT",
+          "autoH": true,
+          "box": {
+            "x": 540,
+            "y": 1229,
+            "w": 378,
+            "h": 77
+          },
+          "style": {
+            "color": "#ffffff",
+            "fontSize": 43,
+            "fontWeight": 800,
+            "align": "center",
+            "uppercase": true,
+            "lineHeight": 1.2,
+            "pill": true,
+            "background": "rgba(0,0,0,0.62)",
+            "padding": 24
+          }
+        }
+      ]
+    },
+    {
+      "id": "logo-mr83ja6k-v",
       "type": "image",
       "role": "logo",
-      "name": "Logo · UPFRONT logo",
+      "name": "Logo · Brand Logo",
       "box": {
-        "x": 464,
-        "y": 96,
-        "w": 151,
+        "x": 486,
+        "y": 77,
+        "w": 108,
         "h": 115
       },
       "style": {},
-      "src": "/refasset?id=harness-002m2353cc0b"
-    },
-    {
-      "id": "cta-mr830ys1-r",
-      "type": "text",
-      "role": "cta",
-      "name": "cta",
-      "text": "KOOP NU VIA UPFRONT.NL",
-      "autoH": true,
-      "box": {
-        "x": 508,
-        "y": 634,
-        "w": 518,
-        "h": 39
-      },
-      "style": {
-        "color": "#1a1a1a",
-        "fontSize": 32,
-        "fontWeight": 700,
-        "align": "center",
-        "uppercase": true,
-        "lineHeight": 1.2
-      }
+      "src": "/refasset?id=harness-002m022202ef"
     }
   ],
-  "skeletonId": "skel_mr830ys08phd",
-  "updatedAt": 1783273551213
+  "skeletonId": "skel_mr83ja6kgqj2",
+  "updatedAt": 1783274405417
 }

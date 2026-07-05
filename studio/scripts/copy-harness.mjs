@@ -161,7 +161,9 @@ async function runOne(filename) {
   try {
     // this machine's ornith is slow (~1.5-4 min per vision call) — the default 120s budget with
     // 90s per-pass times out on dense/dark ads. 360s total keeps the two-step fallback viable.
-    ext = await extractLayout(srcPath, { passes: 2, timeoutMs: 600_000 });
+    // selfCheck: true — ALWAYS run the iterative render→compare→correct rounds (up to 3), not
+    // only on weak reads. The owner's bar is 1:1; checking your own work is not optional.
+    ext = await extractLayout(srcPath, { passes: 2, timeoutMs: 600_000, selfCheck: true });
   } catch (e) {
     ext = { ok: false, error: String(e?.message || e) };
   }

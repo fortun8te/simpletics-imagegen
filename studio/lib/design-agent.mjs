@@ -2907,6 +2907,41 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
     for (const n of candidates) {
       const cc = n.cutoutCandidate;
       delete n.cutoutCandidate;
+      // VECTOR-FIRST for small logos/emblems (inverse-design principle: a mark the designer drew
+      // as a graphic should be a crisp scalable vector, not a fuzzy raster crop). Gated hard in
+      // traceRegion — photos/gradients fail and fall through to the crop→matte path below.
+      if (cc.shape === 'logo' && n.box && (n.box.w * n.box.h) / (work.canvas.w * work.canvas.h) <= 0.12 && !opts.signal?.aborted) {
+        try {
+          const srcPng = join(STATE_DIR, 'refs', `${reference.ref}.png`);
+          if (existsSync(srcPng)) {
+            const { traceRegion } = await import('./vector-trace.mjs');
+            const tr = await traceRegion(srcPng, cc.region, { maxRegionFrac: 0.12 });
+            if (tr.ok && Array.isArray(tr.paths) && tr.paths.length) {
+              const baseName = n.name || 'Logo (vectorized)';
+              if (tr.pathCount === 1) {
+                n.type = 'shape';
+                n.role = 'logo';
+                n.name = baseName;
+                n.style = { shapeKind: 'path', path: tr.paths[0].d, background: tr.paths[0].fill };
+              } else {
+                n.type = 'group';
+                n.role = 'logo';
+                n.name = baseName;
+                n.style = {};
+                n.children = tr.paths.map((p, i) => ({
+                  id: `${n.id || 'vec'}_p${i}`, type: 'shape', role: 'logo', name: `${baseName} ${i + 1}`,
+                  box: { ...n.box }, style: { shapeKind: 'path', path: p.d, background: p.fill },
+                }));
+              }
+              delete n.text;
+              delete n.src;
+              lifted++;
+              emit('op', `vectorized ${baseName} (${tr.pathCount} path${tr.pathCount === 1 ? '' : 's'} traced from the reference)`, { deterministic: true });
+              continue; // vector replaces crop + matte entirely
+            }
+          }
+        } catch { /* vector trace is an upgrade, never a gate */ }
+      }
       n.type = 'image';
       n.src = refSrc;
       delete n.text;
