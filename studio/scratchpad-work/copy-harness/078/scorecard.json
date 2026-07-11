@@ -1,0 +1,233 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr86ym9p-p",
+        "text": "Nature’s Energy Gel\n2 ingredients",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 76.9,
+        "sizeDeltaPct": 9
+      },
+      {
+        "id": "caption-mr86ym9p-s",
+        "text": "Pure Honey",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 48.3,
+        "sizeDeltaPct": 9.8
+      },
+      {
+        "id": "caption-mr86ym9p-t",
+        "text": "Pink Salt",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 12.6,
+        "sizeDeltaPct": 26.4
+      },
+      {
+        "id": "caption-mr86ym9p-u",
+        "text": "100% Natural",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 34.8,
+        "sizeDeltaPct": 17.6
+      },
+      {
+        "id": "caption-mr86ym9p-v",
+        "text": "stomach\nfriendly",
+        "renderSim": 0.53,
+        "sourceSim": 0.71,
+        "stringOk": false,
+        "posDeltaPx": 171.7,
+        "sizeDeltaPct": 23.7
+      },
+      {
+        "id": "price-mr86ym9p-x",
+        "text": "24 servings for\n$1.99 per serve",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 32.4,
+        "sizeDeltaPct": 6
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Nature's Energy Gel",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "2 ingredients",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "HORNE*",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Pure Honey",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Pink Salt",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "HONEY",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "100% Natural",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "SHOT",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "GEL 100% NATUREL",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "27g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "150mg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "stomach",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "friendly",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "33g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "24 servings for",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "$1.99 per serve",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "HORNET",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "ENERGY",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.89,
+    "textRenderAcc": 0.83,
+    "meanPosDelta": 62.8,
+    "pileOverlaps": 0,
+    "score": 83.5
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr86ym9p-y",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 5.07,
+        "samples": 2695
+      },
+      {
+        "id": "card-mr86ym9p-o",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 5.07,
+        "samples": 2695
+      },
+      {
+        "id": "rect-mr86ym9p-r",
+        "name": "Cut-out · Energy Gel Packet",
+        "type": "image",
+        "box": {
+          "x": 405,
+          "y": 297,
+          "w": 270,
+          "h": 567
+        },
+        "area": 153090,
+        "meanDeltaE": 10.74,
+        "samples": 3415
+      },
+      {
+        "id": "logo-mr86ym9p-w",
+        "name": "Logo · Hornet Logo",
+        "type": "shape",
+        "box": {
+          "x": 891,
+          "y": 945,
+          "w": 86,
+          "h": 81
+        },
+        "area": 6966,
+        "meanDeltaE": 7.76,
+        "samples": 4116
+      }
+    ],
+    "meanDeltaE": 7.16,
+    "score": 86.4
+  },
+  "legacyPixel": 89.4,
+  "composite": 85.6
+}

@@ -1,0 +1,355 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "icon-mr8d914s-d",
+        "text": "✓",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "icon-mr8d914s-e",
+        "text": "✗",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "eyebrow-mr8d914s-f",
+        "text": "DORE & ROSE",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 5.6,
+        "sizeDeltaPct": 0
+      },
+      {
+        "id": "eyebrow-mr8d914s-g",
+        "text": "OTHERS'",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 9.8,
+        "sizeDeltaPct": 12
+      },
+      {
+        "id": "headline-mr8d914s-h",
+        "text": "Silk",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1.4,
+        "sizeDeltaPct": 3.9
+      },
+      {
+        "id": "headline-mr8d914s-j",
+        "text": "Satin",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2.8,
+        "sizeDeltaPct": 15.6
+      },
+      {
+        "id": "subhead-mr8d914s-l",
+        "text": "Premium Silk",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 8.5,
+        "sizeDeltaPct": 7.1
+      },
+      {
+        "id": "caption-mr8d914s-m",
+        "text": "Pillowcase",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 8.4,
+        "sizeDeltaPct": 1.4
+      },
+      {
+        "id": "subhead-mr8d914s-n",
+        "text": "Satin",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2.8,
+        "sizeDeltaPct": 15.6
+      },
+      {
+        "id": "caption-mr8d914s-o",
+        "text": "Pillowcase",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 8.4,
+        "sizeDeltaPct": 1.4
+      },
+      {
+        "id": "benefit-mr8d914s-p",
+        "text": "✓ Premium silk",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 8.5,
+        "sizeDeltaPct": 7.1
+      },
+      {
+        "id": "benefit-mr8d914s-q",
+        "text": "✓ Antibacterial",
+        "renderSim": 0.93,
+        "sourceSim": 0.93,
+        "stringOk": true,
+        "posDeltaPx": 19,
+        "sizeDeltaPct": 23.4
+      },
+      {
+        "id": "benefit-mr8d914s-r",
+        "text": "✓ Protects skin & hair",
+        "renderSim": 0.71,
+        "sourceSim": 0.53,
+        "stringOk": false,
+        "posDeltaPx": 49.5,
+        "sizeDeltaPct": 12.2
+      },
+      {
+        "id": "drawback-mr8d914s-s",
+        "text": "Synthetic fabrics ✗",
+        "renderSim": 0.94,
+        "sourceSim": 0.94,
+        "stringOk": true,
+        "posDeltaPx": 0,
+        "sizeDeltaPct": 22.1
+      },
+      {
+        "id": "drawback-mr8d914s-t",
+        "text": "Bacterial breeding ground ✗",
+        "renderSim": 0.96,
+        "sourceSim": 0.74,
+        "stringOk": true,
+        "posDeltaPx": 48.3,
+        "sizeDeltaPct": 8.5
+      },
+      {
+        "id": "drawback-mr8d914s-u",
+        "text": "Causes friction with skin & hair ✗",
+        "renderSim": 0.84,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 8.4,
+        "sizeDeltaPct": 12.1
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "drawback-mr8d914s-u",
+        "text": "Causes friction with skin & hair ✗",
+        "role": "drawback",
+        "sourceLines": 2,
+        "renderLines": 3
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "DORE & ROSE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "OTHERS'",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Silk",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "VS",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Satin",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "DORE & ROSE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Premium Silk",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Satin",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Pillowcase",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Pillowcase",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "V Premium silk",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Synthetic fabrics x",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Bacterial breeding",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "V Antibacterial",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ground",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Protects",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Causes friction with",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "skin &hair",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "skin & hair",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "100 Nights Risk Free Trial",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.75,
+    "meanPosDelta": 13,
+    "pileOverlaps": 0,
+    "score": 90.5
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8d914s-w",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 1.48,
+        "samples": 3394
+      },
+      {
+        "id": "card-mr8d914s-c",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 540,
+          "y": 0,
+          "w": 540,
+          "h": 1920
+        },
+        "area": 1036800,
+        "meanDeltaE": 2.1,
+        "samples": 3456
+      },
+      {
+        "id": "badge-mr8d914s-i",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 489,
+          "y": 203,
+          "w": 102,
+          "h": 102
+        },
+        "area": 10404,
+        "meanDeltaE": 12.02,
+        "samples": 2233
+      },
+      {
+        "id": "product-mr8d914s-k",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 60,
+          "y": 385,
+          "w": 980,
+          "h": 610
+        },
+        "area": 597800,
+        "meanDeltaE": 0.44,
+        "samples": 4116
+      },
+      {
+        "id": "cta-mr8d914s-v",
+        "name": "cta",
+        "type": "button",
+        "box": {
+          "x": 254,
+          "y": 1628,
+          "w": 572,
+          "h": 112
+        },
+        "area": 64064,
+        "meanDeltaE": 19.65,
+        "samples": 2640
+      }
+    ],
+    "meanDeltaE": 7.14,
+    "score": 95.4
+  },
+  "legacyPixel": 97.9,
+  "composite": 89.5
+}

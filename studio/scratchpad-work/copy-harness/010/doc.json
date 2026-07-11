@@ -1,13 +1,13 @@
 {
-  "id": "harness_010_cd97026c",
-  "name": "copy-harness harness_010_cd97026c",
+  "id": "harness_010_1b448aab",
+  "name": "copy-harness harness_010_1b448aab",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr8apbkh-h",
+      "id": "base-mr8dh23x-13",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "avatar-mr8apbkh-c",
+      "id": "avatar-mr8dh23x-y",
       "type": "image",
       "role": "avatar",
       "box": {
@@ -45,7 +45,7 @@
       "name": "Avatar (cut out)"
     },
     {
-      "id": "meta-mr8apbkh-d",
+      "id": "meta-mr8dh23x-z",
       "type": "text",
       "role": "meta",
       "text": "UPFRONT",
@@ -67,7 +67,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8apbkh-e",
+      "id": "icon-mr8dh23x-10",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -84,7 +84,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr8apbkh-f",
+      "id": "meta-mr8dh23x-11",
       "type": "text",
       "role": "meta",
       "text": "@UpfrontFood",
@@ -106,7 +106,7 @@
       "sizeLocked": true
     },
     {
-      "id": "body-mr8apbkh-g",
+      "id": "body-mr8dh23x-12",
       "type": "text",
       "role": "body",
       "text": "WAT. EEN. JAAR. 🥹😮‍💨🤝\n\nVan een visie voor een betere voedingsindustrie naar meer dan 800.000 bestellingen in één jaar.\n\nStap voor stap zullen we met Upfront iedereen van zijn of haar dagelijkse voeding en supplementen voorzien.\n\nOm 2026 goed af te trappen geven wij 20% korting op het hele assortiment. Alleen deze week.\n\nZo kun jij jouw jaar sterk starten, dus doe er je voordeel mee. 🤝🏼",
@@ -122,12 +122,13 @@
         "color": "#0F1419",
         "align": "left",
         "lineHeight": 1.35,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Menlo"
       },
       "autoH": false,
       "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr8apbkhrd7e",
-  "updatedAt": 1783286440171
+  "skeletonId": "skel_mr8dh23wqc2u",
+  "updatedAt": 1783291093496
 }

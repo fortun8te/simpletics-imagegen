@@ -1,0 +1,1239 @@
+[
+  {
+    "family": "Inter",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Inter/Inter-400.ttf",
+      "500": "Inter/Inter-500.ttf",
+      "600": "Inter/Inter-600.ttf",
+      "700": "Inter/Inter-700.ttf",
+      "800": "Inter/Inter-800.ttf",
+      "900": "Inter/Inter-900.ttf"
+    },
+    "source": "google-pack",
+    "bundled": true,
+    "figma": true
+  },
+  {
+    "family": "Roboto",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Roboto/Roboto-400.ttf",
+      "500": "Roboto/Roboto-500.ttf",
+      "600": "Roboto/Roboto-600.ttf",
+      "700": "Roboto/Roboto-700.ttf",
+      "800": "Roboto/Roboto-800.ttf",
+      "900": "Roboto/Roboto-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Archivo",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Archivo/Archivo-400.ttf",
+      "500": "Archivo/Archivo-500.ttf",
+      "600": "Archivo/Archivo-600.ttf",
+      "700": "Archivo/Archivo-700.ttf",
+      "800": "Archivo/Archivo-800.ttf",
+      "900": "Archivo/Archivo-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Barlow",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Barlow/Barlow-400.ttf",
+      "500": "Barlow/Barlow-500.ttf",
+      "600": "Barlow/Barlow-600.ttf",
+      "700": "Barlow/Barlow-700.ttf",
+      "800": "Barlow/Barlow-800.ttf",
+      "900": "Barlow/Barlow-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Libre Franklin",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "LibreFranklin/LibreFranklin-400.ttf",
+      "500": "LibreFranklin/LibreFranklin-500.ttf",
+      "600": "LibreFranklin/LibreFranklin-600.ttf",
+      "700": "LibreFranklin/LibreFranklin-700.ttf",
+      "800": "LibreFranklin/LibreFranklin-800.ttf",
+      "900": "LibreFranklin/LibreFranklin-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "IBM Plex Sans",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "IBMPlexSans/IBMPlexSans-400.ttf",
+      "500": "IBMPlexSans/IBMPlexSans-500.ttf",
+      "600": "IBMPlexSans/IBMPlexSans-600.ttf",
+      "700": "IBMPlexSans/IBMPlexSans-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Work Sans",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "WorkSans/WorkSans-400.ttf",
+      "500": "WorkSans/WorkSans-500.ttf",
+      "600": "WorkSans/WorkSans-600.ttf",
+      "700": "WorkSans/WorkSans-700.ttf",
+      "800": "WorkSans/WorkSans-800.ttf",
+      "900": "WorkSans/WorkSans-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Space Grotesk",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "SpaceGrotesk/SpaceGrotesk-400.ttf",
+      "500": "SpaceGrotesk/SpaceGrotesk-500.ttf",
+      "600": "SpaceGrotesk/SpaceGrotesk-600.ttf",
+      "700": "SpaceGrotesk/SpaceGrotesk-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Manrope",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "files": {
+      "400": "Manrope/Manrope-400.ttf",
+      "500": "Manrope/Manrope-500.ttf",
+      "600": "Manrope/Manrope-600.ttf",
+      "700": "Manrope/Manrope-700.ttf",
+      "800": "Manrope/Manrope-800.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Figtree",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Figtree/Figtree-400.ttf",
+      "500": "Figtree/Figtree-500.ttf",
+      "600": "Figtree/Figtree-600.ttf",
+      "700": "Figtree/Figtree-700.ttf",
+      "800": "Figtree/Figtree-800.ttf",
+      "900": "Figtree/Figtree-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Karla",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "files": {
+      "400": "Karla/Karla-400.ttf",
+      "500": "Karla/Karla-500.ttf",
+      "600": "Karla/Karla-600.ttf",
+      "700": "Karla/Karla-700.ttf",
+      "800": "Karla/Karla-800.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Montserrat",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Montserrat/Montserrat-400.ttf",
+      "500": "Montserrat/Montserrat-500.ttf",
+      "600": "Montserrat/Montserrat-600.ttf",
+      "700": "Montserrat/Montserrat-700.ttf",
+      "800": "Montserrat/Montserrat-800.ttf",
+      "900": "Montserrat/Montserrat-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Poppins",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Poppins/Poppins-400.ttf",
+      "500": "Poppins/Poppins-500.ttf",
+      "600": "Poppins/Poppins-600.ttf",
+      "700": "Poppins/Poppins-700.ttf",
+      "800": "Poppins/Poppins-800.ttf",
+      "900": "Poppins/Poppins-900.ttf"
+    },
+    "source": "google-pack",
+    "bundled": true,
+    "figma": true
+  },
+  {
+    "family": "DM Sans",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "DMSans/DMSans-400.ttf",
+      "500": "DMSans/DMSans-500.ttf",
+      "600": "DMSans/DMSans-600.ttf",
+      "700": "DMSans/DMSans-700.ttf",
+      "800": "DMSans/DMSans-800.ttf",
+      "900": "DMSans/DMSans-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Plus Jakarta Sans",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "files": {
+      "400": "PlusJakartaSans/PlusJakartaSans-400.ttf",
+      "500": "PlusJakartaSans/PlusJakartaSans-500.ttf",
+      "600": "PlusJakartaSans/PlusJakartaSans-600.ttf",
+      "700": "PlusJakartaSans/PlusJakartaSans-700.ttf",
+      "800": "PlusJakartaSans/PlusJakartaSans-800.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Sora",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "files": {
+      "400": "Sora/Sora-400.ttf",
+      "500": "Sora/Sora-500.ttf",
+      "600": "Sora/Sora-600.ttf",
+      "700": "Sora/Sora-700.ttf",
+      "800": "Sora/Sora-800.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Outfit",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Outfit/Outfit-400.ttf",
+      "500": "Outfit/Outfit-500.ttf",
+      "600": "Outfit/Outfit-600.ttf",
+      "700": "Outfit/Outfit-700.ttf",
+      "800": "Outfit/Outfit-800.ttf",
+      "900": "Outfit/Outfit-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Lexend",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Lexend/Lexend-400.ttf",
+      "500": "Lexend/Lexend-500.ttf",
+      "600": "Lexend/Lexend-600.ttf",
+      "700": "Lexend/Lexend-700.ttf",
+      "800": "Lexend/Lexend-800.ttf",
+      "900": "Lexend/Lexend-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Jost",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Jost/Jost-400.ttf",
+      "500": "Jost/Jost-500.ttf",
+      "600": "Jost/Jost-600.ttf",
+      "700": "Jost/Jost-700.ttf",
+      "800": "Jost/Jost-800.ttf",
+      "900": "Jost/Jost-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "League Spartan",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "LeagueSpartan/LeagueSpartan-400.ttf",
+      "500": "LeagueSpartan/LeagueSpartan-500.ttf",
+      "600": "LeagueSpartan/LeagueSpartan-600.ttf",
+      "700": "LeagueSpartan/LeagueSpartan-700.ttf",
+      "800": "LeagueSpartan/LeagueSpartan-800.ttf",
+      "900": "LeagueSpartan/LeagueSpartan-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Raleway",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Raleway/Raleway-400.ttf",
+      "500": "Raleway/Raleway-500.ttf",
+      "600": "Raleway/Raleway-600.ttf",
+      "700": "Raleway/Raleway-700.ttf",
+      "800": "Raleway/Raleway-800.ttf",
+      "900": "Raleway/Raleway-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Rubik",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Rubik/Rubik-400.ttf",
+      "500": "Rubik/Rubik-500.ttf",
+      "600": "Rubik/Rubik-600.ttf",
+      "700": "Rubik/Rubik-700.ttf",
+      "800": "Rubik/Rubik-800.ttf",
+      "900": "Rubik/Rubik-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Nunito",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Nunito/Nunito-400.ttf",
+      "500": "Nunito/Nunito-500.ttf",
+      "600": "Nunito/Nunito-600.ttf",
+      "700": "Nunito/Nunito-700.ttf",
+      "800": "Nunito/Nunito-800.ttf",
+      "900": "Nunito/Nunito-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Open Sans",
+    "category": "sans-serif",
+    "cls": "humanist",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "files": {
+      "400": "OpenSans/OpenSans-400.ttf",
+      "500": "OpenSans/OpenSans-500.ttf",
+      "600": "OpenSans/OpenSans-600.ttf",
+      "700": "OpenSans/OpenSans-700.ttf",
+      "800": "OpenSans/OpenSans-800.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Lato",
+    "category": "sans-serif",
+    "cls": "humanist",
+    "weights": [
+      400,
+      700,
+      900
+    ],
+    "files": {
+      "400": "Lato/Lato-400.ttf",
+      "700": "Lato/Lato-700.ttf",
+      "900": "Lato/Lato-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Nunito Sans",
+    "category": "sans-serif",
+    "cls": "humanist",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "NunitoSans/NunitoSans-400.ttf",
+      "500": "NunitoSans/NunitoSans-500.ttf",
+      "600": "NunitoSans/NunitoSans-600.ttf",
+      "700": "NunitoSans/NunitoSans-700.ttf",
+      "800": "NunitoSans/NunitoSans-800.ttf",
+      "900": "NunitoSans/NunitoSans-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Mulish",
+    "category": "sans-serif",
+    "cls": "humanist",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Mulish/Mulish-400.ttf",
+      "500": "Mulish/Mulish-500.ttf",
+      "600": "Mulish/Mulish-600.ttf",
+      "700": "Mulish/Mulish-700.ttf",
+      "800": "Mulish/Mulish-800.ttf",
+      "900": "Mulish/Mulish-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Source Sans 3",
+    "category": "sans-serif",
+    "cls": "humanist",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "SourceSans3/SourceSans3-400.ttf",
+      "500": "SourceSans3/SourceSans3-500.ttf",
+      "600": "SourceSans3/SourceSans3-600.ttf",
+      "700": "SourceSans3/SourceSans3-700.ttf",
+      "800": "SourceSans3/SourceSans3-800.ttf",
+      "900": "SourceSans3/SourceSans3-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "PT Sans",
+    "category": "sans-serif",
+    "cls": "humanist",
+    "weights": [
+      400,
+      700
+    ],
+    "files": {
+      "400": "PTSans/PTSans-400.ttf",
+      "700": "PTSans/PTSans-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Oswald",
+    "category": "sans-serif",
+    "cls": "condensed",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "Oswald/Oswald-400.ttf",
+      "500": "Oswald/Oswald-500.ttf",
+      "600": "Oswald/Oswald-600.ttf",
+      "700": "Oswald/Oswald-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Bebas Neue",
+    "category": "sans-serif",
+    "cls": "condensed",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "BebasNeue/BebasNeue-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Anton",
+    "category": "sans-serif",
+    "cls": "condensed",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "Anton/Anton-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Barlow Condensed",
+    "category": "sans-serif",
+    "cls": "condensed",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "BarlowCondensed/BarlowCondensed-400.ttf",
+      "500": "BarlowCondensed/BarlowCondensed-500.ttf",
+      "600": "BarlowCondensed/BarlowCondensed-600.ttf",
+      "700": "BarlowCondensed/BarlowCondensed-700.ttf",
+      "800": "BarlowCondensed/BarlowCondensed-800.ttf",
+      "900": "BarlowCondensed/BarlowCondensed-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Roboto Condensed",
+    "category": "sans-serif",
+    "cls": "condensed",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "RobotoCondensed/RobotoCondensed-400.ttf",
+      "500": "RobotoCondensed/RobotoCondensed-500.ttf",
+      "600": "RobotoCondensed/RobotoCondensed-600.ttf",
+      "700": "RobotoCondensed/RobotoCondensed-700.ttf",
+      "800": "RobotoCondensed/RobotoCondensed-800.ttf",
+      "900": "RobotoCondensed/RobotoCondensed-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Archivo Black",
+    "category": "sans-serif",
+    "cls": "heavy-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "ArchivoBlack/ArchivoBlack-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Alfa Slab One",
+    "category": "display",
+    "cls": "heavy-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "AlfaSlabOne/AlfaSlabOne-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Passion One",
+    "category": "display",
+    "cls": "heavy-display",
+    "weights": [
+      400,
+      700,
+      900
+    ],
+    "files": {
+      "400": "PassionOne/PassionOne-400.ttf",
+      "700": "PassionOne/PassionOne-700.ttf",
+      "900": "PassionOne/PassionOne-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Titan One",
+    "category": "display",
+    "cls": "heavy-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "TitanOne/TitanOne-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Luckiest Guy",
+    "category": "display",
+    "cls": "heavy-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "LuckiestGuy/LuckiestGuy-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Bangers",
+    "category": "display",
+    "cls": "heavy-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "Bangers/Bangers-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Righteous",
+    "category": "display",
+    "cls": "heavy-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "Righteous/Righteous-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Abril Fatface",
+    "category": "display",
+    "cls": "serif-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "AbrilFatface/AbrilFatface-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Playfair Display",
+    "category": "serif",
+    "cls": "serif-display",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "PlayfairDisplay/PlayfairDisplay-400.ttf",
+      "500": "PlayfairDisplay/PlayfairDisplay-500.ttf",
+      "600": "PlayfairDisplay/PlayfairDisplay-600.ttf",
+      "700": "PlayfairDisplay/PlayfairDisplay-700.ttf",
+      "800": "PlayfairDisplay/PlayfairDisplay-800.ttf",
+      "900": "PlayfairDisplay/PlayfairDisplay-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Fraunces",
+    "category": "serif",
+    "cls": "serif-display",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Fraunces/Fraunces-400.ttf",
+      "500": "Fraunces/Fraunces-500.ttf",
+      "600": "Fraunces/Fraunces-600.ttf",
+      "700": "Fraunces/Fraunces-700.ttf",
+      "800": "Fraunces/Fraunces-800.ttf",
+      "900": "Fraunces/Fraunces-900.ttf"
+    },
+    "source": "google-pack",
+    "bundled": true,
+    "figma": true
+  },
+  {
+    "family": "DM Serif Display",
+    "category": "serif",
+    "cls": "serif-display",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "DMSerifDisplay/DMSerifDisplay-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Cormorant Garamond",
+    "category": "serif",
+    "cls": "serif-display",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "CormorantGaramond/CormorantGaramond-400.ttf",
+      "500": "CormorantGaramond/CormorantGaramond-500.ttf",
+      "600": "CormorantGaramond/CormorantGaramond-600.ttf",
+      "700": "CormorantGaramond/CormorantGaramond-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Lora",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "Lora/Lora-400.ttf",
+      "500": "Lora/Lora-500.ttf",
+      "600": "Lora/Lora-600.ttf",
+      "700": "Lora/Lora-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Merriweather",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Merriweather/Merriweather-400.ttf",
+      "500": "Merriweather/Merriweather-500.ttf",
+      "600": "Merriweather/Merriweather-600.ttf",
+      "700": "Merriweather/Merriweather-700.ttf",
+      "800": "Merriweather/Merriweather-800.ttf",
+      "900": "Merriweather/Merriweather-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Libre Baskerville",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "LibreBaskerville/LibreBaskerville-400.ttf",
+      "500": "LibreBaskerville/LibreBaskerville-500.ttf",
+      "600": "LibreBaskerville/LibreBaskerville-600.ttf",
+      "700": "LibreBaskerville/LibreBaskerville-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "EB Garamond",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "files": {
+      "400": "EBGaramond/EBGaramond-400.ttf",
+      "500": "EBGaramond/EBGaramond-500.ttf",
+      "600": "EBGaramond/EBGaramond-600.ttf",
+      "700": "EBGaramond/EBGaramond-700.ttf",
+      "800": "EBGaramond/EBGaramond-800.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Crimson Text",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      600,
+      700
+    ],
+    "files": {
+      "400": "CrimsonText/CrimsonText-400.ttf",
+      "600": "CrimsonText/CrimsonText-600.ttf",
+      "700": "CrimsonText/CrimsonText-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Bitter",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800,
+      900
+    ],
+    "files": {
+      "400": "Bitter/Bitter-400.ttf",
+      "500": "Bitter/Bitter-500.ttf",
+      "600": "Bitter/Bitter-600.ttf",
+      "700": "Bitter/Bitter-700.ttf",
+      "800": "Bitter/Bitter-800.ttf",
+      "900": "Bitter/Bitter-900.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Domine",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "Domine/Domine-400.ttf",
+      "500": "Domine/Domine-500.ttf",
+      "600": "Domine/Domine-600.ttf",
+      "700": "Domine/Domine-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Space Mono",
+    "category": "monospace",
+    "cls": "mono",
+    "weights": [
+      400,
+      700
+    ],
+    "files": {
+      "400": "SpaceMono/SpaceMono-400.ttf",
+      "700": "SpaceMono/SpaceMono-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "IBM Plex Mono",
+    "category": "monospace",
+    "cls": "mono",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "IBMPlexMono/IBMPlexMono-400.ttf",
+      "500": "IBMPlexMono/IBMPlexMono-500.ttf",
+      "600": "IBMPlexMono/IBMPlexMono-600.ttf",
+      "700": "IBMPlexMono/IBMPlexMono-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "JetBrains Mono",
+    "category": "monospace",
+    "cls": "mono",
+    "weights": [
+      400,
+      500,
+      600,
+      700,
+      800
+    ],
+    "files": {
+      "400": "JetBrainsMono/JetBrainsMono-400.ttf",
+      "500": "JetBrainsMono/JetBrainsMono-500.ttf",
+      "600": "JetBrainsMono/JetBrainsMono-600.ttf",
+      "700": "JetBrainsMono/JetBrainsMono-700.ttf",
+      "800": "JetBrainsMono/JetBrainsMono-800.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Caveat",
+    "category": "handwriting",
+    "cls": "script",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "Caveat/Caveat-400.ttf",
+      "500": "Caveat/Caveat-500.ttf",
+      "600": "Caveat/Caveat-600.ttf",
+      "700": "Caveat/Caveat-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Pacifico",
+    "category": "handwriting",
+    "cls": "script",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "Pacifico/Pacifico-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Dancing Script",
+    "category": "handwriting",
+    "cls": "script",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {
+      "400": "DancingScript/DancingScript-400.ttf",
+      "500": "DancingScript/DancingScript-500.ttf",
+      "600": "DancingScript/DancingScript-600.ttf",
+      "700": "DancingScript/DancingScript-700.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Permanent Marker",
+    "category": "handwriting",
+    "cls": "script",
+    "weights": [
+      400
+    ],
+    "files": {
+      "400": "PermanentMarker/PermanentMarker-400.ttf"
+    },
+    "source": "google-pack",
+    "figma": true
+  },
+  {
+    "family": "Helvetica Neue",
+    "category": "sans-serif",
+    "cls": "grotesk",
+    "weights": [
+      400,
+      500,
+      700
+    ],
+    "files": {},
+    "source": "system",
+    "figma": true
+  },
+  {
+    "family": "Georgia",
+    "category": "serif",
+    "cls": "serif-body",
+    "weights": [
+      400,
+      700
+    ],
+    "files": {},
+    "source": "system",
+    "figma": true
+  },
+  {
+    "family": "Futura",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      700
+    ],
+    "files": {},
+    "source": "system",
+    "figma": false
+  },
+  {
+    "family": "Avenir Next",
+    "category": "sans-serif",
+    "cls": "geometric",
+    "weights": [
+      400,
+      500,
+      600,
+      700
+    ],
+    "files": {},
+    "source": "system",
+    "figma": false
+  },
+  {
+    "family": "Impact",
+    "category": "display",
+    "cls": "condensed",
+    "weights": [
+      400
+    ],
+    "files": {},
+    "source": "system",
+    "figma": true
+  }
+]

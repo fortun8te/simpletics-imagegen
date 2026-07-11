@@ -1,0 +1,299 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6np259-4c",
+        "text": "Pediatrician flagged why kid’s poop isn’t normal:",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 147.1,
+        "sizeDeltaPct": 12.8
+      },
+      {
+        "id": "caption-mr6np259-4j",
+        "text": "Vitamins & Minerals",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 301.3,
+        "sizeDeltaPct": 14.3
+      },
+      {
+        "id": "caption-mr6np259-4k",
+        "text": "Adaptogens",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 270.3,
+        "sizeDeltaPct": 9.3
+      },
+      {
+        "id": "caption-mr6np259-4m",
+        "text": "Prebiotics",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 173.1,
+        "sizeDeltaPct": 15.7
+      },
+      {
+        "id": "caption-mr6np259-4n",
+        "text": "Super Mushrooms",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 3.4,
+        "sizeDeltaPct": 12.9
+      },
+      {
+        "id": "caption-mr6np259-4o",
+        "text": "Antioxidants",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 209,
+        "sizeDeltaPct": 12.2
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "headline-mr6np259-4c",
+        "text": "Pediatrician flagged why kid’s poop isn’t normal:",
+        "role": "headline",
+        "sourceLines": 4,
+        "renderLines": 2
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "12:474",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "• 82",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Pediatrician flagged why",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "kid's poop isn't normal:",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Turns out his gut needed more fiber",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "(especially prebiotic fiber)",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Recommended more whole-foods like fruits",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "and veggies daily",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Saw moms rave about these. gruns kids",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "multivitamins (apparently there's more fiber",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "than 5 cups of raw spinach in each pack?!)",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Only $1.22/day so lets try it",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Whole Veggies",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Whole Fruits",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Vitamins",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "& Minerals",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "grüns",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Adaptogens",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Superfoods",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Green Gummies",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Antioxidants",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Prebiotics",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Super",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Mushrooms",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.83,
+    "textRenderAcc": 1,
+    "meanPosDelta": 184,
+    "pileOverlaps": 0,
+    "score": 82.8
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6np259-4p",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 2348
+        },
+        "area": 2535840,
+        "meanDeltaE": 2.13,
+        "samples": 3049
+      },
+      {
+        "id": "rect-mr6np259-4e",
+        "name": "Cut-out · grüns Superfoods Green Gummies",
+        "type": "image",
+        "box": {
+          "x": 324,
+          "y": 1362,
+          "w": 432,
+          "h": 798
+        },
+        "area": 344736,
+        "meanDeltaE": 0.83,
+        "samples": 3484
+      },
+      {
+        "id": "checkbox-mr6np259-4f",
+        "name": "checkbox",
+        "type": "badge",
+        "box": {
+          "x": 43,
+          "y": 657,
+          "w": 756,
+          "h": 164
+        },
+        "area": 123984,
+        "meanDeltaE": 4.26,
+        "samples": 2166
+      },
+      {
+        "id": "checkbox-mr6np259-4g",
+        "name": "checkbox",
+        "type": "badge",
+        "box": {
+          "x": 43,
+          "y": 845,
+          "w": 756,
+          "h": 164
+        },
+        "area": 123984,
+        "meanDeltaE": 5.58,
+        "samples": 1174
+      },
+      {
+        "id": "checkbox-mr6np259-4h",
+        "name": "checkbox",
+        "type": "badge",
+        "box": {
+          "x": 43,
+          "y": 1033,
+          "w": 756,
+          "h": 258
+        },
+        "area": 195048,
+        "meanDeltaE": 6.17,
+        "samples": 3485
+      },
+      {
+        "id": "checkbox-mr6np259-4i",
+        "name": "checkbox",
+        "type": "badge",
+        "box": {
+          "x": 108,
+          "y": 1315,
+          "w": 756,
+          "h": 117
+        },
+        "area": 88452,
+        "meanDeltaE": 3.39,
+        "samples": 3529
+      }
+    ],
+    "meanDeltaE": 3.73,
+    "score": 93.8
+  },
+  "legacyPixel": 95.7,
+  "composite": 88.7
+}

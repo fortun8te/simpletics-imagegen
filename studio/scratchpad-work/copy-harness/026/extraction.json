@@ -121,7 +121,8 @@
         "align": "center",
         "lineHeight": 1,
         "uppercase": false,
-        "italic": true
+        "italic": true,
+        "fontFamily": "Arial Narrow"
       }
     },
     {
@@ -265,7 +266,8 @@
         "color": "#8B8B8B",
         "align": "right",
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Bradley Hand"
       }
     },
     {
@@ -411,5 +413,6 @@
       }
     }
   ],
-  "measuredBoxes": true
+  "measuredBoxes": true,
+  "_occlusionPlan": []
 }

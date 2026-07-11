@@ -7,14 +7,21 @@
 // image, the image below it still has the button — fix that, maybe with a fill."
 // (Qwen-Image-Layered does this decomposition with a model; we approximate it deterministically.)
 //
-// Two exports:
+// Three exports:
 //   planOcclusions(ext)                      — pure geometry: which crop-fraction rects of which
 //                                              cutout asset are covered by editable overlays.
-//   fillOccludedRegions(crop, rects, out)    — cheap deterministic content-aware fill of those
-//                                              rects on the CROPPED asset (patch-based, sharp).
+//   fillOccludedRegions(crop, rects, out)    — fill those rects on the CROPPED asset. Routes
+//                                              through lib/inpaint.mjs: MI-GAN ONNX when
+//                                              .state/models/migan.onnx is present (real
+//                                              inpainting, kills ghost text on busy photos),
+//                                              else the deterministic patch fill below.
+//                                              Engine switch: opts.engine / INPAINT_ENGINE env
+//                                              ('migan'|'patch'), default migan-when-present.
+//   patchFillRects(pixels, rectsPx, opts)    — the deterministic patch-fill core on raw RGBA
+//                                              (also lib/inpaint.mjs's never-fail fallback).
 //
-// The fill only needs to look sane at the overlay's edges (the re-added overlay covers the
-// middle) and survive the overlay being nudged a bit. Perfect inpainting is not the bar.
+// The patch fill only needs to look sane at the overlay's edges (the re-added overlay covers
+// the middle) and survive the overlay being nudged a bit; MI-GAN raises the bar to "clean".
 //
 // INTEGRATION (proposed, not applied — this module stays self-contained): the asset rewrite
 // belongs where cutout assets are MATERIALIZED — design-agent.mjs AUTO-CUTOUT (runCopyReference,
@@ -225,51 +232,40 @@ function blendStrips(A, B, w, h, axis) {
 }
 
 /**
- * Patch-based deterministic fill of occluded rects on a CROPPED asset.
+ * Deterministic patch fill of pixel-space rects on raw RGBA pixels — the strip-mirror blend
+ * that was fillOccludedRegions' whole method before MI-GAN landed; now also the never-fail
+ * fallback lib/inpaint.mjs calls when the model is absent or errors.
  *
- * @param {string} cropPngPath  the crop/matte PNG produced from the reference
- * @param {Array<{x,y,w,h}>} occluderRectsInCropFrac  rects as fractions 0..1 OF THE CROP
- *        (the shape planOcclusions() emits — extra keys are ignored)
- * @param {string} outPath  where to write the result (may equal cropPngPath; always written,
- *        even when every rect is skipped, so callers can use outPath unconditionally)
- * @returns {{ok:boolean, outPath:string|null, filled:number, skipped:number,
- *            results:Array<{rect,filled?:boolean,skipped?:boolean,reason?:string}>, ms:number}}
+ * @param {{data:Buffer|Uint8Array, width:number, height:number}} pixels  RGBA, mutated NEVER —
+ *        a patched copy is returned.
+ * @param {Array<{x,y,w,h}>} rectsPx  rects in PIXELS of this image (already padded/clamped by
+ *        the caller; degenerate rects are skipped with a reason)
+ * @returns {Promise<{data:Buffer, width, height,
+ *          results:Array<{rect,filled?:boolean,skipped?:boolean,reason?:string}>}>}
  *
  * Method per rect: sample strips of surrounding texture immediately above/below the rect
  * (left/right instead when the rect is taller than wide), mirror/stretch them across the region
  * with a linear blend, blur (sigma ~2.5), add ~2% seeded noise so it reads as continuous
- * texture rather than a smear. Guards: skip rects covering > MAX_OCCLUDER_FRAC of the crop and
- * rects whose two surrounding strips disagree by > STRIP_SIMILARITY_MAX_DIST mean-RGB distance.
+ * texture rather than a smear. Guards: skip rects covering > MAX_OCCLUDER_FRAC of the image and
+ * rects whose two surrounding strips disagree by > STRIP_SIMILARITY_MAX_DIST mean-RGB distance
+ * (a blend would smear two different worlds together — MI-GAN handles those instead).
  */
-export async function fillOccludedRegions(cropPngPath, occluderRectsInCropFrac, outPath, opts = {}) {
-  const t0 = Date.now();
-  const done = (extra) => ({ ok: false, outPath: null, filled: 0, skipped: 0, results: [], ms: Date.now() - t0, ...extra });
-
-  let sharp;
-  try { sharp = (await import('sharp')).default; } catch (e) { return done({ error: `sharp unavailable: ${e.message}` }); }
-
-  let base;
-  try {
-    base = await sharp(cropPngPath).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-  } catch (e) { return done({ error: `read crop: ${e.message}` }); }
-  const W = base.info.width, H = base.info.height;
+export async function patchFillRects(pixels, rectsPx, opts = {}) {
+  const W = pixels.width, H = pixels.height;
+  const base = { data: Buffer.isBuffer(pixels.data) ? pixels.data : Buffer.from(pixels.data.buffer, pixels.data.byteOffset, pixels.data.byteLength), info: { width: W, height: H } };
+  const out = Buffer.from(base.data); // independent copy; patches land here
   const sigma = num(opts.sigma) || 2.5;
   const noiseAmp = (num(opts.noise) ?? 0.02) * 255;
+  let sharp = null;
+  try { sharp = (await import('sharp')).default; } catch { /* blur becomes a no-op below */ }
 
-  const rects = Array.isArray(occluderRectsInCropFrac) ? occluderRectsInCropFrac : [];
   const results = [];
-  const patches = [];
-
-  for (const r of rects) {
-    const rb = normBox({ x: clamp01(num(r?.x) ?? -1), y: clamp01(num(r?.y) ?? -1), w: clamp01(num(r?.w) ?? 0), h: clamp01(num(r?.h) ?? 0) });
-    if (!rb) { results.push({ rect: r, skipped: true, reason: 'degenerate rect' }); continue; }
-    // fractions → px, padded 2px to swallow the baked overlay's anti-aliased edge
-    const pad = 2;
-    const x = Math.max(0, Math.round(rb.x * W) - pad);
-    const y = Math.max(0, Math.round(rb.y * H) - pad);
-    const w = Math.min(W - x, Math.round(rb.w * W) + 2 * pad);
-    const h = Math.min(H - y, Math.round(rb.h * H) + 2 * pad);
-    if (w < 2 || h < 2) { results.push({ rect: r, skipped: true, reason: 'degenerate rect' }); continue; }
+  for (const r of (Array.isArray(rectsPx) ? rectsPx : [])) {
+    const x = Math.max(0, Math.round(num(r?.x) ?? -1));
+    const y = Math.max(0, Math.round(num(r?.y) ?? -1));
+    const w = Math.min(W - x, Math.round(num(r?.w) ?? 0));
+    const h = Math.min(H - y, Math.round(num(r?.h) ?? 0));
+    if (!(w >= 2) || !(h >= 2) || x >= W || y >= H) { results.push({ rect: r, skipped: true, reason: 'degenerate rect' }); continue; }
     if ((w * h) / (W * H) > MAX_OCCLUDER_FRAC) {
       results.push({ rect: r, skipped: true, reason: `occluder covers >${Math.round(MAX_OCCLUDER_FRAC * 100)}% of the crop` });
       continue;
@@ -305,9 +301,11 @@ export async function fillOccludedRegions(cropPngPath, occluderRectsInCropFrac, 
 
     // blend → blur → seeded noise
     let fill = blendStrips(A, B, w, h, axis);
-    try {
-      fill = await sharp(fill, { raw: { width: w, height: h, channels: 4 } }).blur(sigma).raw().toBuffer();
-    } catch { /* blur is polish; the blend alone is acceptable */ }
+    if (sharp) {
+      try {
+        fill = await sharp(fill, { raw: { width: w, height: h, channels: 4 } }).blur(sigma).raw().toBuffer();
+      } catch { /* blur is polish; the blend alone is acceptable */ }
+    }
     const rnd = mulberry32(((x * 73856093) ^ (y * 19349663) ^ (w * 83492791) ^ (h * 15485863)) >>> 0);
     for (let i = 0; i < fill.length; i += 4) {
       for (let c = 0; c < 3; c++) {
@@ -315,20 +313,92 @@ export async function fillOccludedRegions(cropPngPath, occluderRectsInCropFrac, 
         fill[i + c] = v < 0 ? 0 : (v > 255 ? 255 : Math.round(v));
       }
     }
-    patches.push({ raw: fill, x, y, w, h });
+    for (let yy = 0; yy < h; yy++) fill.copy(out, ((y + yy) * W + x) * 4, yy * w * 4, (yy + 1) * w * 4);
     results.push({ rect: r, filled: true });
   }
 
+  return { data: out, width: W, height: H, results };
+}
+
+/**
+ * Fill occluded rects on a CROPPED asset — MI-GAN inpainting when available, patch fill else.
+ *
+ * @param {string} cropPngPath  the crop/matte PNG produced from the reference
+ * @param {Array<{x,y,w,h}>} occluderRectsInCropFrac  rects as fractions 0..1 OF THE CROP
+ *        (the shape planOcclusions() emits — extra keys are ignored)
+ * @param {string} outPath  where to write the result (may equal cropPngPath; always written,
+ *        even when every rect is skipped, so callers can use outPath unconditionally)
+ * @param {object} opts  { engine?: 'migan'|'patch', sigma?, noise? } — engine also settable via
+ *        env INPAINT_ENGINE; default is migan when .state/models/migan.onnx exists.
+ * @returns {{ok:boolean, outPath:string|null, filled:number, skipped:number,
+ *            engine:'migan'|'patch',
+ *            results:Array<{rect,filled?:boolean,skipped?:boolean,reason?:string}>, ms:number}}
+ *
+ * Both engines honor the MAX_OCCLUDER_FRAC guard (filling most of a crop is invention either
+ * way). The strip-similarity guard only applies to the patch engine — dissimilar surroundings
+ * are exactly what MI-GAN is for. Never throws; on migan failure it silently degrades to patch.
+ */
+export async function fillOccludedRegions(cropPngPath, occluderRectsInCropFrac, outPath, opts = {}) {
+  const t0 = Date.now();
+  const done = (extra) => ({ ok: false, outPath: null, filled: 0, skipped: 0, engine: 'patch', results: [], ms: Date.now() - t0, ...extra });
+
+  let sharp;
+  try { sharp = (await import('sharp')).default; } catch (e) { return done({ error: `sharp unavailable: ${e.message}` }); }
+
+  let base;
   try {
-    if (patches.length) {
-      const inputs = [];
-      for (const p of patches) {
-        inputs.push({
-          input: await sharp(p.raw, { raw: { width: p.w, height: p.h, channels: 4 } }).png().toBuffer(),
-          left: p.x, top: p.y,
-        });
+    base = await sharp(cropPngPath).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  } catch (e) { return done({ error: `read crop: ${e.message}` }); }
+  const W = base.info.width, H = base.info.height;
+  const pixels = { data: base.data, width: W, height: H };
+
+  // fractions → px, padded 2px to swallow the baked overlay's anti-aliased edge; pre-guards
+  // (degenerate + MAX_OCCLUDER_FRAC) apply to BOTH engines so `results` stays engine-stable.
+  const results = [];
+  const pxRects = [];
+  for (const r of (Array.isArray(occluderRectsInCropFrac) ? occluderRectsInCropFrac : [])) {
+    const rb = normBox({ x: clamp01(num(r?.x) ?? -1), y: clamp01(num(r?.y) ?? -1), w: clamp01(num(r?.w) ?? 0), h: clamp01(num(r?.h) ?? 0) });
+    if (!rb) { results.push({ rect: r, skipped: true, reason: 'degenerate rect' }); continue; }
+    const pad = 2;
+    const x = Math.max(0, Math.round(rb.x * W) - pad);
+    const y = Math.max(0, Math.round(rb.y * H) - pad);
+    const w = Math.min(W - x, Math.round(rb.w * W) + 2 * pad);
+    const h = Math.min(H - y, Math.round(rb.h * H) + 2 * pad);
+    if (w < 2 || h < 2) { results.push({ rect: r, skipped: true, reason: 'degenerate rect' }); continue; }
+    if ((w * h) / (W * H) > MAX_OCCLUDER_FRAC) {
+      results.push({ rect: r, skipped: true, reason: `occluder covers >${Math.round(MAX_OCCLUDER_FRAC * 100)}% of the crop` });
+      continue;
+    }
+    pxRects.push({ rect: r, x, y, w, h });
+  }
+
+  let engine = 'patch';
+  let outPixels = null;
+  if (pxRects.length) {
+    const { resolveEngine, tryMigan } = await import('./inpaint.mjs');
+    if (resolveEngine(opts) === 'migan') {
+      const mask = new Uint8Array(W * H);
+      for (const p of pxRects) {
+        for (let yy = p.y; yy < p.y + p.h; yy++) mask.fill(255, yy * W + p.x, yy * W + p.x + p.w);
       }
-      await sharp(cropPngPath).ensureAlpha().composite(inputs).png().toFile(`${outPath}.tmp.png`);
+      const m = await tryMigan(pixels, mask);
+      if (m) {
+        engine = 'migan';
+        outPixels = m.data;
+        for (const p of pxRects) results.push({ rect: p.rect, filled: true });
+      }
+    }
+    if (!outPixels) {
+      const pf = await patchFillRects(pixels, pxRects.map(({ x, y, w, h }) => ({ x, y, w, h })), opts);
+      outPixels = pf.data;
+      for (let i = 0; i < pxRects.length; i++) results.push({ ...pf.results[i], rect: pxRects[i].rect });
+    }
+  }
+
+  const anyFilled = results.some((r) => r.filled);
+  try {
+    if (anyFilled && outPixels) {
+      await sharp(outPixels, { raw: { width: W, height: H, channels: 4 } }).png().toFile(`${outPath}.tmp.png`);
       copyFileSync(`${outPath}.tmp.png`, outPath);
       const { unlinkSync } = await import('node:fs');
       try { unlinkSync(`${outPath}.tmp.png`); } catch { /* best effort */ }
@@ -338,7 +408,7 @@ export async function fillOccludedRegions(cropPngPath, occluderRectsInCropFrac, 
   } catch (e) { return done({ results, error: `write: ${e.message}` }); }
 
   return {
-    ok: true, outPath,
+    ok: true, outPath, engine,
     filled: results.filter((r) => r.filled).length,
     skipped: results.filter((r) => r.skipped).length,
     results, ms: Date.now() - t0,
@@ -356,4 +426,4 @@ function extractRaw(base, left, top, w, h) {
   return out;
 }
 
-export default { planOcclusions, fillOccludedRegions, MAX_OCCLUDER_FRAC, STRIP_SIMILARITY_MAX_DIST, MIN_OVERLAP_FRAC, PHOTO_BASE_ID };
+export default { planOcclusions, fillOccludedRegions, patchFillRects, MAX_OCCLUDER_FRAC, STRIP_SIMILARITY_MAX_DIST, MIN_OVERLAP_FRAC, PHOTO_BASE_ID };

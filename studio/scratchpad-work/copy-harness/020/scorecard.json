@@ -1,0 +1,235 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "missingText",
+      "detail": "20/23 source lines missing (87%): \"House Beautil\", \"Your loveliest\", \"MODERN LIVING I AFFORDABLE STY\", \"hristmas everl\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8dpqli-1v",
+        "text": "BLACK",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 48,
+        "sizeDeltaPct": 45.8
+      },
+      {
+        "id": "headline-mr8dpqli-1w",
+        "text": "FRIDAY",
+        "renderSim": 1,
+        "sourceSim": 0.67,
+        "stringOk": true,
+        "posDeltaPx": 35,
+        "sizeDeltaPct": 42.6
+      },
+      {
+        "id": "decor-mr8dpqli-1x",
+        "text": "BLACK",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 48,
+        "sizeDeltaPct": 45.8
+      },
+      {
+        "id": "decor-mr8dpqli-1y",
+        "text": "FRIDAY",
+        "renderSim": 1,
+        "sourceSim": 0.67,
+        "stringOk": true,
+        "posDeltaPx": 35,
+        "sizeDeltaPct": 42.6
+      },
+      {
+        "id": "decor-mr8dpqli-1z",
+        "text": "BLACK",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 48,
+        "sizeDeltaPct": 45.8
+      },
+      {
+        "id": "decor-mr8dpqli-20",
+        "text": "FRIDAY",
+        "renderSim": 1,
+        "sourceSim": 0.67,
+        "stringOk": true,
+        "posDeltaPx": 35,
+        "sizeDeltaPct": 42.6
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "BLACK",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "DECORATIONS FOR LESS * MAKE SPACE FOR GUESTS * WRAPPING SECR",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "House Beautil",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Your loveliest",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "MODERN LIVING I AFFORDABLE STYLE",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "hristmas everl",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "ZERO-STRES",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "PLAN",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "MEANINGFUL GIFTS",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "WINTER",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "SHARING PLATTERS",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "STO",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "GROL",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "SO MUCH MORE,",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "IRDENS",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "(EVEN COCKTAILSI)",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "60",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "REAL HOMES",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "DRESSED",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "HOLIDAYS",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "FOR THE",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "ER DAY",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "THE BEST CRACKERS * BAUBLES * GARLANDS * WREATHS * PARTY FOO",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 0.13,
+    "textRenderAcc": 1,
+    "meanPosDelta": 41.5,
+    "pileOverlaps": 0,
+    "score": 53.1
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8dpqli-22",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 2.54,
+        "samples": 1560
+      },
+      {
+        "id": "product-mr8dpqli-21",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 225,
+          "y": 160,
+          "w": 660,
+          "h": 750
+        },
+        "area": 495000,
+        "meanDeltaE": 6.46,
+        "samples": 259
+      }
+    ],
+    "meanDeltaE": 4.5,
+    "score": 90.7
+  },
+  "legacyPixel": 91.8,
+  "composite": 72.1
+}

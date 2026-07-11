@@ -21,10 +21,13 @@
 //     rebuilt from the rotated segment endpoints
 //   ROUNDED_RECTANGLE carrying our pluginData path entry (+ ' (path)' name suffix) → shape
 //     Layer with shapeKind 'path' + style.path restored (inverse of the export fallback)
+//   VECTOR carrying our pluginData path entry → shape Layer with shapeKind 'path' (lossless —
+//     our export ships a real vectorNetworkBlob AND the d-string); a FOREIGN vector with a
+//     decodable blob → approximate d-string reconstructed from the network (figmaVector.ts)
 //   rotation: transform matrices decode back to Layer.rotation (degrees clockwise about the
 //     box center); textDecoration STRIKETHROUGH → strikethrough; fontName.family → fontFamily;
 //     BACKGROUND_BLUR effects → backdropBlur
-//   everything else (VECTOR, BOOLEAN_OPERATION, …) → locked placeholder shape.
+//   everything else (undecodable VECTOR, BOOLEAN_OPERATION, …) → locked placeholder shape.
 //
 // Coordinates come back ABSOLUTE (canvas space) by accumulating parent m02/m12 — group children
 // in our model are absolute (see sceneGraph.ts).
@@ -51,6 +54,7 @@ import {
   FIGMA_AUTOH_PLUGIN_KEY,
   type BlendKeyword,
 } from './figmaClipboard';
+import { decodeVectorNetworkBlob, vectorNetworkToSvgPath } from './figmaVector';
 
 // ── effects/structure round: model fields that may not be in sceneGraph.ts yet (added
 //    additively by a concurrent change) — typed locally, written defensively. ────────────────────
@@ -397,7 +401,42 @@ function tryPolyline(tree: DecodedTree, node: AnyNode, box: { x: number; y: numb
   };
 }
 
-function convertNode(tree: DecodedTree, origin: { x: number; y: number }): SceneNode | null {
+type FigBlobs = Array<{ bytes: Uint8Array }>;
+
+/**
+ * VECTOR node → how to recover its path, if we can:
+ *   'plugin' — our own export: the lossless d-string rides in pluginData (handled by the shared
+ *              pathEntry reassembly in the shape branch);
+ *   string   — FOREIGN vector with a decodable vectorNetworkBlob: an approximate d-string
+ *              reconstructed from the network (vertices + cubic segments — figmaVector.ts);
+ *   null     — no blob / undecodable layout → the locked placeholder keeps the node visible.
+ */
+function tryVectorPath(node: AnyNode, blobs: FigBlobs): 'plugin' | string | null {
+  const pluginData = node.pluginData as Array<{ pluginID?: string; key?: string; value?: string }> | undefined;
+  const ours = Array.isArray(pluginData)
+    ? pluginData.find((p) => p?.pluginID === FIGMA_PATH_PLUGIN_ID && p?.key === FIGMA_PATH_PLUGIN_KEY && p?.value)
+    : undefined;
+  if (ours) return 'plugin';
+  const vd = node.vectorData as { vectorNetworkBlob?: number; normalizedSize?: { x?: number; y?: number } } | undefined;
+  const bytes = typeof vd?.vectorNetworkBlob === 'number' ? blobs[vd.vectorNetworkBlob]?.bytes : undefined;
+  if (!bytes) return null;
+  try {
+    const network = decodeVectorNetworkBlob(bytes);
+    if (!network.segments.length) return null;
+    // Blob coords live in normalizedSize space (falling back to the node size) — normalize back
+    // to our 0..1-in-the-box d-string convention.
+    const size = node.size as { x?: number; y?: number } | undefined;
+    const d = vectorNetworkToSvgPath(network, {
+      width: Math.max(1, vd?.normalizedSize?.x || size?.x || 1),
+      height: Math.max(1, vd?.normalizedSize?.y || size?.y || 1),
+    });
+    return d || null;
+  } catch {
+    return null; // foreign/truncated layout — placeholder is the honest fallback
+  }
+}
+
+function convertNode(tree: DecodedTree, origin: { x: number; y: number }, blobs: FigBlobs): SceneNode | null {
   const node = tree.node;
   const type = String(node.type || '');
   if (node.visible === false) return null;
@@ -415,7 +454,7 @@ function convertNode(tree: DecodedTree, origin: { x: number; y: number }): Scene
       if (bg) children.push(bg);
     }
     for (const c of tree.children) {
-      const converted = convertNode(c, childOrigin);
+      const converted = convertNode(c, childOrigin, blobs);
       if (converted) children.push(converted);
     }
     // A FRAME that clips (not resizeToFit, frame mask enabled) → GroupNode with clip:true,
@@ -504,7 +543,12 @@ function convertNode(tree: DecodedTree, origin: { x: number; y: number }): Scene
     return layer;
   }
 
-  if (SHAPEISH.has(type)) {
+  // VECTOR nodes route through the shape branch when their path is recoverable (our pluginData
+  // d-string, or an approximate reconstruction from a decodable vectorNetworkBlob); otherwise
+  // they fall through to the locked placeholder at the bottom, same as before.
+  const vectorPath = type === 'VECTOR' ? tryVectorPath(node, blobs) : null;
+
+  if (SHAPEISH.has(type) || vectorPath != null) {
     const paint = firstVisiblePaint(node);
     const image = paint?.type === 'IMAGE'
       ? (paint.image as { hash?: Uint8Array | string; dataBlob?: number } | undefined)
@@ -543,6 +587,12 @@ function convertNode(tree: DecodedTree, origin: { x: number; y: number }): Scene
       (style as { shapeKind?: string }).shapeKind = 'path';
       style.path = String(pathEntry.value);
       if (shapeName?.endsWith(' (path)')) shapeName = shapeName.slice(0, -' (path)'.length);
+    } else if (typeof vectorPath === 'string') {
+      // Foreign VECTOR: approximate d-string from the decoded network — an editable path layer
+      // instead of the locked placeholder. The raw node still rides in the stash (minus the
+      // per-message blob index — see sanitize), so copy-back re-encodes a fresh blob.
+      (style as { shapeKind?: string }).shapeKind = 'path';
+      style.path = vectorPath;
     }
 
     const stash = figmaStash(node, [...CONSUMED_COMMON, ...CONSUMED_MASK,
@@ -613,7 +663,7 @@ function convertNode(tree: DecodedTree, origin: { x: number; y: number }): Scene
     return layer;
   }
 
-  // VECTOR, BOOLEAN_OPERATION, LINE, STAR, POLYGON, … — locked placeholder that keeps the raw
+  // Undecodable VECTOR, BOOLEAN_OPERATION, POLYGON, … — locked placeholder that keeps the raw
   // node in `figma` so copy-back restores it.
   const layer: Layer = {
     id: layerId('figma'),
@@ -721,12 +771,12 @@ export async function parseFigmaClipboard(html: string): Promise<FigmaImportResu
       const bg = frameFillLayer(root.node, { x: 0, y: 0, w: canvas.w, h: canvas.h }, name);
       if (bg) nodes.push(bg);
       for (const c of root.children) {
-        const converted = convertNode(c, { x: 0, y: 0 });
+        const converted = convertNode(c, { x: 0, y: 0 }, blobs);
         if (converted) nodes.push(converted);
       }
     } else {
       for (const r of roots) {
-        const converted = convertNode(r, { x: 0, y: 0 });
+        const converted = convertNode(r, { x: 0, y: 0 }, blobs);
         if (converted) nodes.push(converted);
       }
       // Canvas = bounding box of the roots; shift everything so the bbox starts at 0,0.

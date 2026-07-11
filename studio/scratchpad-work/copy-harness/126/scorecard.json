@@ -1,0 +1,145 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "username-mr6mqs86-1z",
+        "text": "Evan",
+        "renderSim": 1,
+        "sourceSim": 0.29,
+        "stringOk": true,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "handle-mr6mqs86-20",
+        "text": "@Evan",
+        "renderSim": 1,
+        "sourceSim": 0.29,
+        "stringOk": true,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "verified-mr6mqs86-21",
+        "text": "✓",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6mqs86-22",
+        "text": "My hair's been flat my whole life. Two sprays of this and I ",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 114.5,
+        "sizeDeltaPct": 7.7
+      },
+      {
+        "id": "timestamp-mr6mqs86-25",
+        "text": "2:14 PM · 11/09/2025 · 647 Views",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 86.8,
+        "sizeDeltaPct": 4.7
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "MG04_b1_Testimonial_NATIVE_saltspray_A",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "My hair's been flat my whole life. Two sprays of",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "this and I finally have real texture. Wish I found",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "it sooner.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "2:14 PM • 11/09/2025 • 647 Views",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.8,
+    "textRenderAcc": 0.8,
+    "meanPosDelta": 100.7,
+    "pileOverlaps": 0,
+    "score": 77.4
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6mqs86-26",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1962
+        },
+        "area": 2118960,
+        "meanDeltaE": 4.62,
+        "samples": 3568
+      },
+      {
+        "id": "rect-mr6mqs86-23",
+        "name": "Cut-out · man with textured hair",
+        "type": "image",
+        "box": {
+          "x": 65,
+          "y": 549,
+          "w": 950,
+          "h": 1275
+        },
+        "area": 1211250,
+        "meanDeltaE": 1.07,
+        "samples": 4144
+      },
+      {
+        "id": "avatar-mr6mqs86-24",
+        "name": "Blurred · blurred profile pic",
+        "type": "shape",
+        "box": {
+          "x": 43,
+          "y": 196,
+          "w": 108,
+          "h": 98
+        },
+        "area": 10584,
+        "meanDeltaE": 28.24,
+        "samples": 2646
+      }
+    ],
+    "meanDeltaE": 11.31,
+    "score": 91.5
+  },
+  "legacyPixel": 93.9,
+  "composite": 84.9
+}

@@ -1,0 +1,194 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8at4xv-6",
+        "text": "No need to ruin your hair to have perfect curls",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 9.2,
+        "sizeDeltaPct": 11.6
+      },
+      {
+        "id": "caption-mr8at4xv-7",
+        "text": "This natural curl cream is all you need",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 3.9,
+        "sizeDeltaPct": 4.4
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "No need to ruin your hair",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "to have perfect curls",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Before",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "After",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Everyday",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Curl Crème",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "wavy",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "This natural curl cream",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "is all you need",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.89,
+    "textRenderAcc": 1,
+    "meanPosDelta": 6.6,
+    "pileOverlaps": 0,
+    "score": 93.9
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8at4xv-8",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 5.08,
+        "samples": 3277
+      },
+      {
+        "id": "card-mr8at4xv-0",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 897,
+          "w": 1080,
+          "h": 183
+        },
+        "area": 197640,
+        "meanDeltaE": 6.18,
+        "samples": 2681
+      },
+      {
+        "id": "product-mr8at4xv-1",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 143,
+          "y": 322,
+          "w": 390,
+          "h": 558
+        },
+        "area": 217620,
+        "meanDeltaE": 2.82,
+        "samples": 4319
+      },
+      {
+        "id": "product-mr8at4xv-2",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 548,
+          "y": 322,
+          "w": 390,
+          "h": 558
+        },
+        "area": 217620,
+        "meanDeltaE": 3.04,
+        "samples": 4286
+      },
+      {
+        "id": "badge-mr8at4xv-3",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 229,
+          "y": 287,
+          "w": 218,
+          "h": 66
+        },
+        "area": 14388,
+        "meanDeltaE": 1.96,
+        "samples": 2319
+      },
+      {
+        "id": "badge-mr8at4xv-4",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 633,
+          "y": 287,
+          "w": 218,
+          "h": 66
+        },
+        "area": 14388,
+        "meanDeltaE": 3.63,
+        "samples": 2552
+      },
+      {
+        "id": "product-mr8at4xv-5",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 466,
+          "y": 500,
+          "w": 148,
+          "h": 392
+        },
+        "area": 58016,
+        "meanDeltaE": 3.74,
+        "samples": 2725
+      }
+    ],
+    "meanDeltaE": 3.78,
+    "score": 88.4
+  },
+  "legacyPixel": 96.1,
+  "composite": 92.7
+}

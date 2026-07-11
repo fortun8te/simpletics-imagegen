@@ -1,0 +1,327 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6nks5u-2d",
+        "text": "20 MEI\n20:00",
+        "renderSim": 0.89,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 17.1,
+        "sizeDeltaPct": 3.1
+      },
+      {
+        "id": "subhead-mr6nks5u-2f",
+        "text": "Allerlaatste site-wide sale van 2026.",
+        "renderSim": 0.65,
+        "sourceSim": 0.65,
+        "stringOk": false,
+        "posDeltaPx": 61.5,
+        "sizeDeltaPct": 8.5
+      },
+      {
+        "id": "price-mr6nks5u-2g",
+        "text": "20% korting op het volledige assortiment",
+        "renderSim": 0.66,
+        "sourceSim": 0.57,
+        "stringOk": false,
+        "posDeltaPx": 146.2,
+        "sizeDeltaPct": 33.8
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "20 MEI",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "20:00",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRO",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Schrijf je nu in, mis geen enkele update.",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "CAFFEINE 159mg",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "MANGO CHILI SMAAK",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ingrediënten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Allerlaatste site-wide",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "bruisend water, zuurteregelaar: citroenzuur",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "sale van 2026.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "cafeine (0.03%), zoetstof: steviolglycosiden u",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "natuurlijk aroma, gember extract, zeezout,",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "20% korting op het",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "aroma",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "enzymatisch verwerkte stevia; natuurlijk chili",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "volledige assortiment",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "voedingswaarden",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "energie",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "vetten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "/100ml /500ml",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "9 kJ",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "-verz. vetten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "2 kcal",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "45 kJ",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "koolhydraten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "11 kca",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Suikers",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.00",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "vezels",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.1g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "eiwitten",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.30",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "zout",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1 portie",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "11.04g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.18g",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 0.89,
+    "textRenderAcc": 0.33,
+    "meanPosDelta": 74.9,
+    "pileOverlaps": 0,
+    "score": 66.9
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6nks5u-2i",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 2.53,
+        "samples": 2587
+      },
+      {
+        "id": "rect-mr6nks5u-2c",
+        "name": "Cut-out · Mango Chili flavored can",
+        "type": "image",
+        "box": {
+          "x": 432,
+          "y": 0,
+          "w": 648,
+          "h": 1920
+        },
+        "area": 1244160,
+        "meanDeltaE": 0.2,
+        "samples": 2293
+      },
+      {
+        "id": "cta-mr6nks5u-2h",
+        "name": "cta",
+        "type": "badge",
+        "box": {
+          "x": 113,
+          "y": 714,
+          "w": 380,
+          "h": 148
+        },
+        "area": 56240,
+        "meanDeltaE": 16.24,
+        "samples": 3135
+      }
+    ],
+    "meanDeltaE": 6.32,
+    "score": 95.3
+  },
+  "legacyPixel": 97,
+  "composite": 81.4
+}

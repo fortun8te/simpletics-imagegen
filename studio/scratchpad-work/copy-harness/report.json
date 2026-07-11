@@ -1,228 +1,615 @@
 {
-  "at": "2026-07-05T22:28:45.463Z",
-  "n": 1,
-  "okN": 1,
-  "avgScore": 91.7,
+  "at": "2026-07-05T22:32:09.411Z",
+  "n": 2,
+  "okN": 2,
+  "avgScore": 95.8,
   "results": [
     {
-      "id": "020",
-      "filename": "020_attached_7ba93f7f655ce950.webp",
+      "id": "002",
+      "filename": "002_attached_5885519ba4359843.webp",
       "ok": true,
       "error": null,
       "ms": {
-        "extract": 2408,
-        "assemble": 10109,
-        "total": 69881
+        "extract": 940595,
+        "assemble": 251,
+        "total": 999520
       },
       "fontMatch": {
         "ok": true,
-        "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/020.json",
-        "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-020.png",
-        "patched": 0,
+        "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/002.json",
+        "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-002.png",
+        "patched": 1,
         "layers": [
           {
-            "id": "row-1-black-fill",
+            "id": "headline",
             "role": "headline",
-            "text": "BLACK",
+            "text": "ALLE ESSENTIALS",
             "previous": null,
             "fontFamily": "",
-            "confidence": 0.0887,
+            "confidence": 0.0517,
             "patched": false,
             "tried": [
               {
                 "family": "",
-                "score": 0.8698,
-                "fontSize": 199
-              },
-              {
-                "family": "Arial Rounded MT Bold",
-                "score": 0.7811,
-                "fontSize": 193
+                "score": 0.6926,
+                "fontSize": 94
               },
               {
                 "family": "Arial Narrow",
-                "score": 0.7019,
-                "fontSize": 236
+                "score": 0.6409,
+                "fontSize": 113
               },
               {
                 "family": "Menlo",
-                "score": 0.5947,
-                "fontSize": 229
+                "score": 0.6201,
+                "fontSize": 93
               },
               {
-                "family": "Impact",
-                "score": 0.5664,
-                "fontSize": 256
-              },
-              {
-                "family": "Times New Roman",
-                "score": 0.48,
-                "fontSize": 202
-              },
-              {
-                "family": "Georgia",
-                "score": 0.4229,
-                "fontSize": 170
+                "family": "Arial Rounded MT Bold",
+                "score": 0.448,
+                "fontSize": 88
               },
               {
                 "family": "Bradley Hand",
-                "score": 0.3964,
-                "fontSize": 202
+                "score": 0.41,
+                "fontSize": 88
+              },
+              {
+                "family": "Georgia",
+                "score": 0.3191,
+                "fontSize": 72
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.2942,
+                "fontSize": 72
+              },
+              {
+                "family": "Impact",
+                "score": 0.276,
+                "fontSize": 100
               }
             ]
           },
           {
-            "id": "row-2-friday-fill",
-            "role": "headline",
-            "text": "FRIDAY",
-            "previous": "Impact",
-            "fontFamily": "Impact",
-            "confidence": 0.0644,
-            "patched": false,
+            "id": "subhead",
+            "role": "subhead",
+            "text": "KRACHTSPORT BUNDEL",
+            "previous": null,
+            "fontFamily": "Arial Rounded MT Bold",
+            "confidence": 0.1502,
+            "patched": true,
             "tried": [
               {
-                "family": "Impact",
-                "score": 0.5463,
-                "fontSize": 190
+                "family": "Arial Rounded MT Bold",
+                "score": 0.7938,
+                "fontSize": 62
               },
               {
                 "family": "",
-                "score": 0.4819,
-                "fontSize": 202
-              },
-              {
-                "family": "Arial Rounded MT Bold",
-                "score": 0.4619,
-                "fontSize": 202
+                "score": 0.6436,
+                "fontSize": 63
               },
               {
                 "family": "Menlo",
-                "score": 0.4101,
-                "fontSize": 208
-              },
-              {
-                "family": "Times New Roman",
-                "score": 0.4016,
-                "fontSize": 196
+                "score": 0.5472,
+                "fontSize": 68
               },
               {
                 "family": "Arial Narrow",
-                "score": 0.3696,
-                "fontSize": 170
+                "score": 0.4088,
+                "fontSize": 73
               },
               {
-                "family": "Georgia",
-                "score": 0.3624,
-                "fontSize": 170
+                "family": "Times New Roman",
+                "score": 0.3597,
+                "fontSize": 61
               },
               {
                 "family": "Bradley Hand",
-                "score": 0.3065,
-                "fontSize": 196
+                "score": 0.3439,
+                "fontSize": 61
+              },
+              {
+                "family": "Impact",
+                "score": 0.3012,
+                "fontSize": 77
+              },
+              {
+                "family": "Georgia",
+                "score": 0.2922,
+                "fontSize": 46
+              }
+            ]
+          },
+          {
+            "id": "cta-caption",
+            "role": "caption",
+            "text": "KOOP NU VIA UPFRONT.NL",
+            "previous": null,
+            "fontFamily": "",
+            "confidence": 0.0683,
+            "patched": false,
+            "tried": [
+              {
+                "family": "",
+                "score": 0.7936,
+                "fontSize": 38
+              },
+              {
+                "family": "Arial Narrow",
+                "score": 0.7253,
+                "fontSize": 47
+              },
+              {
+                "family": "Georgia",
+                "score": 0.7188,
+                "fontSize": 38
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.5922,
+                "fontSize": 39
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.5264,
+                "fontSize": 39
+              },
+              {
+                "family": "Menlo",
+                "score": 0.5059,
+                "fontSize": 36
+              },
+              {
+                "family": "Impact",
+                "score": 0.4984,
+                "fontSize": 49
+              },
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.4943,
+                "fontSize": 36
               }
             ]
           }
         ]
       },
       "readSource": "scene-file",
-      "occlusionPlan": [
-        {
-          "layerId": "magazine-stack",
-          "name": "product",
-          "shape": "rect",
-          "region": {
-            "x": 0.208,
-            "y": 0.148,
-            "w": 0.611,
-            "h": 0.694
-          },
-          "rects": [
-            {
-              "x": 0,
-              "y": 0.07733333333333337,
-              "w": 1,
-              "h": 0.20000000000000007,
-              "overlayId": "row-2-friday-fill",
-              "overlayRole": "headline"
-            },
-            {
-              "x": 0,
-              "y": 0.3066666666666667,
-              "w": 1,
-              "h": 0.2,
-              "overlayId": "row-3-black-outline",
-              "overlayRole": "decor"
-            },
-            {
-              "x": 0,
-              "y": 0.5306666666666667,
-              "w": 1,
-              "h": 0.2000000000000001,
-              "overlayId": "row-4-friday-outline",
-              "overlayRole": "decor"
-            },
-            {
-              "x": 0,
-              "y": 0.7573333333333333,
-              "w": 1,
-              "h": 0.19999999999999993,
-              "overlayId": "row-5-black-outline",
-              "overlayRole": "decor"
-            }
-          ]
-        }
+      "occlusionPlan": [],
+      "sceneTruthCorrections": [
+        "headline fontSize: 72 → 99 (1 ink line, block 71px)",
+        "headline box: y252 h85 → y250 h93 (tight ink rows + 11px pad)",
+        "subhead fontSize: 46 → 67 (1 ink line, block 48px)",
+        "subhead box: y448 h55 → y444 h62 (tight ink rows + 7px pad)",
+        "price-old fontSize: 54 → 76 (1 ink line, block 55px)",
+        "price-old box: y540 h65 → y539 h71 (tight ink rows + 8px pad)",
+        "price-new fontSize: 58 → 78 (1 ink line, block 56px)",
+        "price-new box: y535 h70 → y538 h72 (tight ink rows + 8px pad)",
+        "cta-caption fontSize: 36 → 43 (1 ink line, block 31px)",
+        "cta-caption box: y832 h48 → y830 h41 (tight ink rows + 5px pad)"
       ],
-      "sceneTruthCorrections": [],
-      "typoTruthCorrections": [],
-      "archetype": "type-stack-promo",
-      "layerCountExtracted": 7,
+      "archetype": "offer-hero",
+      "layerCountExtracted": 11,
       "parsePath": "loose",
-      "background": "#F5F5F3",
-      "cutoutCandidates": 1,
-      "layersApplied": 7,
-      "leavesInResult": 8,
+      "background": "#E4490E",
+      "cutoutCandidates": 2,
+      "layersApplied": 11,
+      "leavesInResult": 12,
       "verify": {
-        "ready": false
+        "ready": true
       },
       "pixelError": null,
       "textPileOverlaps": 0,
-      "pixelScoreRaw": 91.7,
-      "pixelScore": 91.7,
+      "pixelScoreRaw": 93.6,
+      "pixelScore": 93.6,
       "refine": {
         "ran": true,
-        "scoreBefore": 91.4,
-        "scoreAfter": 91.7,
+        "scoreBefore": 93.2,
+        "scoreAfter": 93.6,
         "rounds": 2,
-        "renders": 9,
-        "capped": "time",
-        "ms": 47535,
+        "renders": 8,
+        "capped": false,
+        "ms": 45362,
         "applied": [
           {
             "round": 1,
-            "layerId": "headline-mr8d3g5q-1",
-            "layerName": "headline",
+            "layerId": "subhead-mr8ccne4-3",
+            "layerName": "subhead",
             "kind": "font",
-            "detail": "fontSize ×1.08",
+            "detail": "fontSize ×0.92",
             "localMae": {
-              "before": 0.113,
-              "after": 0.112
-            }
-          },
-          {
-            "round": 1,
-            "layerId": "headline-mr8d3g5p-0",
-            "layerName": "headline",
-            "kind": "nudge",
-            "detail": "nudge dx=0 dy=-17",
-            "localMae": {
-              "before": 0.243,
-              "after": 0.221
+              "before": 0.124,
+              "after": 0.057
             }
           }
         ],
         "error": null
       },
-      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/020/side-by-side.png",
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/002/side-by-side.png",
+      "attempts": 1
+    },
+    {
+      "id": "026",
+      "filename": "026_attached_84a042d29cdfff93.webp",
+      "ok": true,
+      "error": null,
+      "ms": {
+        "extract": 1453068,
+        "assemble": 3,
+        "total": 1464003
+      },
+      "fontMatch": {
+        "ok": true,
+        "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/026.json",
+        "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-026.png",
+        "patched": 2,
+        "layers": [
+          {
+            "id": "headline-silk",
+            "role": "headline",
+            "text": "Silk",
+            "previous": null,
+            "fontFamily": "Arial Narrow",
+            "confidence": 0.034,
+            "patched": true,
+            "tried": [
+              {
+                "family": "Arial Narrow",
+                "score": 0.8197,
+                "fontSize": 102
+              },
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.7857,
+                "fontSize": 85
+              },
+              {
+                "family": "",
+                "score": 0.7789,
+                "fontSize": 88
+              },
+              {
+                "family": "Impact",
+                "score": 0.7351,
+                "fontSize": 89
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.7195,
+                "fontSize": 89
+              },
+              {
+                "family": "Georgia",
+                "score": 0.5373,
+                "fontSize": 89
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.3807,
+                "fontSize": 89
+              },
+              {
+                "family": "Menlo",
+                "score": 0.2918,
+                "fontSize": 89
+              }
+            ]
+          },
+          {
+            "id": "headline-satin",
+            "role": "headline",
+            "text": "Satin",
+            "previous": null,
+            "fontFamily": null,
+            "confidence": 0.0249,
+            "patched": false,
+            "tried": [
+              {
+                "family": "Arial Narrow",
+                "score": 0.6769,
+                "fontSize": 102
+              },
+              {
+                "family": "Impact",
+                "score": 0.652,
+                "fontSize": 93
+              },
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.6389,
+                "fontSize": 85
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.5576,
+                "fontSize": 95
+              },
+              {
+                "family": "",
+                "score": 0.5505,
+                "fontSize": 95
+              },
+              {
+                "family": "Georgia",
+                "score": 0.4766,
+                "fontSize": 89
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.3711,
+                "fontSize": 89
+              },
+              {
+                "family": "Menlo",
+                "score": 0.2883,
+                "fontSize": 89
+              }
+            ]
+          },
+          {
+            "id": "subhead-left",
+            "role": "subhead",
+            "text": "Premium Silk",
+            "previous": null,
+            "fontFamily": null,
+            "confidence": 0.0269,
+            "patched": false,
+            "tried": [
+              {
+                "family": "",
+                "score": 0.9147,
+                "fontSize": 44
+              },
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.8878,
+                "fontSize": 44
+              },
+              {
+                "family": "Arial Narrow",
+                "score": 0.8674,
+                "fontSize": 54
+              },
+              {
+                "family": "Impact",
+                "score": 0.8097,
+                "fontSize": 50
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.7835,
+                "fontSize": 47
+              },
+              {
+                "family": "Menlo",
+                "score": 0.6723,
+                "fontSize": 44
+              },
+              {
+                "family": "Georgia",
+                "score": 0.6421,
+                "fontSize": 44
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.6407,
+                "fontSize": 44
+              }
+            ]
+          },
+          {
+            "id": "caption-left",
+            "role": "caption",
+            "text": "Pillowcase",
+            "previous": null,
+            "fontFamily": null,
+            "confidence": 0.0137,
+            "patched": false,
+            "tried": [
+              {
+                "family": "Impact",
+                "score": 0.6529,
+                "fontSize": 32
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.6392,
+                "fontSize": 32
+              },
+              {
+                "family": "",
+                "score": 0.5498,
+                "fontSize": 25
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.5193,
+                "fontSize": 36
+              },
+              {
+                "family": "Menlo",
+                "score": 0.5088,
+                "fontSize": 25
+              },
+              {
+                "family": "Georgia",
+                "score": 0.5074,
+                "fontSize": 25
+              },
+              {
+                "family": "Arial Narrow",
+                "score": 0.4932,
+                "fontSize": 36
+              },
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.4314,
+                "fontSize": 25
+              }
+            ]
+          },
+          {
+            "id": "subhead-right",
+            "role": "subhead",
+            "text": "Satin",
+            "previous": null,
+            "fontFamily": null,
+            "confidence": 0.0278,
+            "patched": false,
+            "tried": [
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.9486,
+                "fontSize": 44
+              },
+              {
+                "family": "Arial Narrow",
+                "score": 0.9208,
+                "fontSize": 54
+              },
+              {
+                "family": "",
+                "score": 0.9199,
+                "fontSize": 44
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.8344,
+                "fontSize": 48
+              },
+              {
+                "family": "Impact",
+                "score": 0.766,
+                "fontSize": 51
+              },
+              {
+                "family": "Georgia",
+                "score": 0.6715,
+                "fontSize": 45
+              },
+              {
+                "family": "Bradley Hand",
+                "score": 0.6153,
+                "fontSize": 45
+              },
+              {
+                "family": "Menlo",
+                "score": 0.4323,
+                "fontSize": 48
+              }
+            ]
+          },
+          {
+            "id": "caption-right",
+            "role": "caption",
+            "text": "Pillowcase",
+            "previous": null,
+            "fontFamily": "Bradley Hand",
+            "confidence": 0.0321,
+            "patched": true,
+            "tried": [
+              {
+                "family": "Bradley Hand",
+                "score": 0.4622,
+                "fontSize": 27
+              },
+              {
+                "family": "Impact",
+                "score": 0.4301,
+                "fontSize": 25
+              },
+              {
+                "family": "",
+                "score": 0.4034,
+                "fontSize": 27
+              },
+              {
+                "family": "Arial Narrow",
+                "score": 0.3777,
+                "fontSize": 27
+              },
+              {
+                "family": "Times New Roman",
+                "score": 0.3703,
+                "fontSize": 27
+              },
+              {
+                "family": "Arial Rounded MT Bold",
+                "score": 0.3665,
+                "fontSize": 27
+              },
+              {
+                "family": "Georgia",
+                "score": 0.3443,
+                "fontSize": 25
+              },
+              {
+                "family": "Menlo",
+                "score": 0.3112,
+                "fontSize": 24
+              }
+            ]
+          }
+        ]
+      },
+      "readSource": "scene-file",
+      "occlusionPlan": [],
+      "sceneTruthCorrections": [
+        "top-check fontSize: 56 → 40 (1 ink line, block 29px)",
+        "top-check box: y66 h60 → y73 h37 (tight ink rows + 4px pad)",
+        "top-cross fontSize: 56 → 40 (1 ink line, block 29px)",
+        "top-cross box: y66 h60 → y73 h37 (tight ink rows + 4px pad)",
+        "eyebrow-left fontSize: 32 → 38 (1 ink line, block 27px)",
+        "eyebrow-left box: y142 h42 → y147 h35 (tight ink rows + 4px pad)",
+        "eyebrow-right fontSize: 32 → 36 (1 ink line, block 26px)",
+        "eyebrow-right box: y142 h42 → y147 h34 (tight ink rows + 4px pad)",
+        "headline-silk fontSize: 110 → 99 (1 ink line, block 71px)",
+        "headline-silk box: y190 h125 → y205 h93 (tight ink rows + 11px pad)",
+        "headline-satin fontSize: 110 → 99 (1 ink line, block 71px)",
+        "headline-satin box: y190 h125 → y204 h93 (tight ink rows + 11px pad)",
+        "subhead-left fontSize: 56 → 49 (1 ink line, block 35px)",
+        "subhead-left box: y1048 h62 → y1055 h45 (tight ink rows + 5px pad)",
+        "caption-left fontSize: 36 → 26 (1 ink line, block 19px)",
+        "caption-left box: y1118 h44 → y1114 h27 (tight ink rows + 4px pad)",
+        "subhead-right fontSize: 56 → 50 (1 ink line, block 36px)",
+        "subhead-right box: y1048 h62 → y1056 h46 (tight ink rows + 5px pad)",
+        "caption-right fontSize: 36 → 24 (1 ink line, block 17px)",
+        "caption-right box: y1118 h44 → y1114 h25 (tight ink rows + 4px pad)",
+        "list-left-1 box: y1182 h56 → y1190 h40 (tight ink rows + 5px pad)",
+        "list-left-2 fontSize: 44 → 40 (1 ink line, block 29px)",
+        "list-left-2 box: y1288 h56 → y1299 h37 (tight ink rows + 4px pad)",
+        "list-left-3 fontSize: 44 → 34 (2 ink lines, block 82px)",
+        "list-left-3 box: y1392 h116 → y1397 h106 (tight ink rows + 12px pad)",
+        "list-right-1 box: y1182 h56 → y1190 h40 (tight ink rows + 5px pad)",
+        "list-right-2 box: y1262 h116 → y1273 h96 (tight ink rows + 11px pad)",
+        "list-right-3 box: y1392 h116 → y1405 h96 (tight ink rows + 11px pad)",
+        "top-cross: center-x snapped x795 → x775 (card 'right-panel' center)",
+        "eyebrow-right: center-x snapped x735 → x728 (card 'right-panel' center)",
+        "vs-pill: center-x snapped x488 → x489 (canvas center)",
+        "headline-satin: center-x snapped x672 → x673 (card 'right-panel' center)",
+        "list-right-2: center-x snapped x590 → x610 (card 'right-panel' center)",
+        "cta-button: center-x snapped x255 → x254 (canvas center)"
+      ],
+      "archetype": "us-vs-them",
+      "layerCountExtracted": 20,
+      "parsePath": "loose",
+      "background": "#FFFFFF",
+      "cutoutCandidates": 1,
+      "layersApplied": 20,
+      "leavesInResult": 21,
+      "verify": {
+        "ready": false
+      },
+      "pixelError": null,
+      "textPileOverlaps": 0,
+      "pixelScoreRaw": 97.9,
+      "pixelScore": 97.9,
+      "refine": {
+        "ran": false,
+        "reason": "score ≥ 97"
+      },
+      "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/026/side-by-side.png",
       "attempts": 1
     }
   ]

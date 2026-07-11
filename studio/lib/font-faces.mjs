@@ -22,12 +22,72 @@
 // the resulting CSS string in memory — callers (designstore.mjs renderDesignHtml, and any future
 // headless-Chrome export path) just call fontFaceCss() and splice it into a <style> block.
 
+// Additionally (S8, COPY-ENGINE-V2 §3.6) this module is the single reader of the committed
+// Google-Fonts-pack manifest (lib/fonts-manifest.json, written by scripts/fetch-fonts.mjs) and
+// can emit file:// @font-face CSS for the pack TTFs in .state/fonts-pack — used by the
+// lib/font-match.mjs headless-Chrome probe so candidates render in the REAL font files.
+
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FONTS_DIR = join(STUDIO, 'src', 'assets', 'fonts');
+
+/** Where scripts/fetch-fonts.mjs puts the pack TTFs (gitignored). */
+export const FONTS_PACK_DIR = join(STUDIO, '.state', 'fonts-pack');
+const MANIFEST_PATH = join(STUDIO, 'lib', 'fonts-manifest.json');
+
+let _manifestCache = null; // { entries, hash } — manifest is committed, stable per process
+
+/**
+ * Load lib/fonts-manifest.json. Returns { entries, hash, packDir }:
+ *   entries: [{ family, category, cls, weights:[...], files:{ "400": "Rel/Path.ttf" }, source, figma }]
+ *   hash:    md5 of the raw manifest text (cache-busting key for anything derived from it)
+ * Never throws — a missing/corrupt manifest yields { entries: [], hash: 'none' } so callers
+ * degrade to the legacy system-font candidate list.
+ */
+export function loadFontsManifest() {
+  if (_manifestCache) return _manifestCache;
+  try {
+    const raw = readFileSync(MANIFEST_PATH, 'utf8');
+    const entries = JSON.parse(raw);
+    const hash = createHash('md5').update(raw).digest('hex').slice(0, 12);
+    _manifestCache = { entries: Array.isArray(entries) ? entries : [], hash, packDir: FONTS_PACK_DIR };
+  } catch {
+    _manifestCache = { entries: [], hash: 'none', packDir: FONTS_PACK_DIR };
+  }
+  return _manifestCache;
+}
+
+/**
+ * @font-face CSS for pack families, with file:// URLs into .state/fonts-pack (NOT base64 —
+ * probe pages are throwaway local HTML; file URLs keep them small and fast to write).
+ * `needs` = [{ family, weights?: number[] }]; weights defaults to all the family has.
+ * Families without files (system entries) are silently skipped — they resolve by name.
+ */
+export function packFontFaceCss(needs) {
+  const { entries } = loadFontsManifest();
+  const byFamily = new Map(entries.map((e) => [e.family, e]));
+  const rules = [];
+  for (const need of needs || []) {
+    const e = byFamily.get(need.family);
+    if (!e || !e.files) continue;
+    const weights = (need.weights && need.weights.length ? need.weights : e.weights) || [];
+    for (const w of weights) {
+      const rel = e.files[String(w)];
+      if (!rel) continue;
+      const abs = join(FONTS_PACK_DIR, rel);
+      if (!existsSync(abs)) continue;
+      rules.push(
+        `@font-face{font-family:'${e.family}';font-style:normal;font-weight:${w};` +
+        `src:url('file://${abs.replace(/'/g, '%27')}') format('truetype');}`,
+      );
+    }
+  }
+  return rules.join('\n');
+}
 
 /** Bundled Inter static-weight woff2 files (all currently the same variable-font binary — the
  *  exact file Google Fonts itself serves per weight — but named per weight so the @font-face

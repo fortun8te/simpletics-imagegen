@@ -1,0 +1,334 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "meta-mr8dcd24-e",
+        "text": "Post",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1,
+        "sizeDeltaPct": 5
+      },
+      {
+        "id": "meta-mr8dcd24-h",
+        "text": "UPFRONT",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2.2,
+        "sizeDeltaPct": 4.7
+      },
+      {
+        "id": "meta-mr8dcd24-j",
+        "text": "@UpfrontFood",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1.4,
+        "sizeDeltaPct": 5.6
+      },
+      {
+        "id": "body-mr8dcd24-l",
+        "text": "LAATSTE SITE WIDE SALE VAN 2026 ⌛\n\nDe Vakantiegeldsale komt ",
+        "renderSim": 0.96,
+        "sourceSim": 0.9,
+        "stringOk": true,
+        "posDeltaPx": 25.7,
+        "sizeDeltaPct": 11.4
+      },
+      {
+        "id": "meta-mr8dcd24-m",
+        "text": "05:00 PM · 12-05-2026 · 121K weergaven",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 4.2,
+        "sizeDeltaPct": 28.9
+      },
+      {
+        "id": "meta-mr8dcd24-p",
+        "text": "257",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 8.1,
+        "sizeDeltaPct": 6.7
+      },
+      {
+        "id": "meta-mr8dcd24-r",
+        "text": "66",
+        "renderSim": 1,
+        "sourceSim": 0.5,
+        "stringOk": true,
+        "posDeltaPx": 30.1,
+        "sizeDeltaPct": 36.4
+      },
+      {
+        "id": "meta-mr8dcd24-t",
+        "text": "21K",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 14,
+        "sizeDeltaPct": 11.8
+      },
+      {
+        "id": "meta-mr8dcd24-v",
+        "text": "89",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 3.2,
+        "sizeDeltaPct": 5.6
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Post",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Volgend",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "@UpfrontFood",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "LAATSTE SITE WIDE SALE VAN 2026 &",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "De Vakantiegeldsale komt eraan, waarbij je 20%",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "korting krijgt op het volledige assortiment.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Daarbovenop krijgen de eerste 500 bestellingen hun",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "geld terug tot €100.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Schrijf je nu in en mis geen enkele update. We zien je",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "woensdag 20 mei om 20:00 uur.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "05:00 PM • 12-05-2026 • 121K weergaven",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "257",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "17 66",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "21K",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "89",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.94,
+    "textRenderAcc": 1,
+    "meanPosDelta": 10,
+    "pileOverlaps": 0,
+    "score": 96.1
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8dcd24-x",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 1.65,
+        "samples": 2185
+      },
+      {
+        "id": "icon-mr8dcd24-d",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 35,
+          "y": 48,
+          "w": 50,
+          "h": 45
+        },
+        "area": 2250,
+        "meanDeltaE": 3.04,
+        "samples": 2250
+      },
+      {
+        "id": "icon-mr8dcd24-f",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 972,
+          "y": 58,
+          "w": 60,
+          "h": 22
+        },
+        "area": 1320,
+        "meanDeltaE": 2.77,
+        "samples": 1320
+      },
+      {
+        "id": "avatar-mr8dcd24-g",
+        "name": "Avatar (cut out)",
+        "type": "image",
+        "box": {
+          "x": 23,
+          "y": 130,
+          "w": 124,
+          "h": 124
+        },
+        "area": 15376,
+        "meanDeltaE": 18.42,
+        "samples": 3844
+      },
+      {
+        "id": "icon-mr8dcd24-i",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 344,
+          "y": 152,
+          "w": 40,
+          "h": 40
+        },
+        "area": 1600,
+        "meanDeltaE": 1.16,
+        "samples": 280
+      },
+      {
+        "id": "cta-mr8dcd24-k",
+        "name": "cta",
+        "type": "button",
+        "box": {
+          "x": 833,
+          "y": 136,
+          "w": 202,
+          "h": 62
+        },
+        "area": 12524,
+        "meanDeltaE": 5.5,
+        "samples": 1619
+      },
+      {
+        "id": "icon-mr8dcd24-o",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 33,
+          "y": 1012,
+          "w": 48,
+          "h": 48
+        },
+        "area": 2304,
+        "meanDeltaE": 1.8,
+        "samples": 2304
+      },
+      {
+        "id": "icon-mr8dcd24-s",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 516,
+          "y": 1012,
+          "w": 50,
+          "h": 46
+        },
+        "area": 2300,
+        "meanDeltaE": 2.03,
+        "samples": 2300
+      },
+      {
+        "id": "icon-mr8dcd24-u",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 778,
+          "y": 1008,
+          "w": 44,
+          "h": 52
+        },
+        "area": 2288,
+        "meanDeltaE": 1.23,
+        "samples": 2288
+      },
+      {
+        "id": "icon-mr8dcd24-w",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 996,
+          "y": 1006,
+          "w": 48,
+          "h": 54
+        },
+        "area": 2592,
+        "meanDeltaE": 3.64,
+        "samples": 2592
+      }
+    ],
+    "meanDeltaE": 4.12,
+    "score": 95.2
+  },
+  "legacyPixel": 94.4,
+  "composite": 95.5
+}

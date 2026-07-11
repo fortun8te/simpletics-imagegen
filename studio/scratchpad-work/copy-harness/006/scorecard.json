@@ -1,0 +1,261 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"PROTEIN OATS POUCH\" (best source sim 0.34, word coverage 33%)"
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr6njxnk-22",
+        "text": "PROTEIN OATS POUCH",
+        "renderSim": 0.34,
+        "sourceSim": 0.34,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "headline-mr6njxnk-23",
+        "text": "SNEL TREK\nNA JE ONTBIJT?\nJE MIST VEZELS",
+        "renderSim": 0.65,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 449.7,
+        "sizeDeltaPct": 18.8
+      },
+      {
+        "id": "caption-mr6njxnk-24",
+        "text": "Ze vertragen je vertering\nen houden je uren vol.",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 11.4,
+        "sizeDeltaPct": 0.5
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [
+      {
+        "render": "•verz. vetten",
+        "source": "vetten"
+      }
+    ],
+    "sourceLines": [
+      {
+        "text": "SNEL TREK",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "NA JE ONTBIJT?",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "JE MIST VEZELS",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "EIWIT OATS",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "APPEL KANEEL SMAAK",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1kg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "(7%), ljnzaad, chiazaad, kokosmelpoeder, ruwe netsuiker, roz",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "voedingswaarden",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "per 100g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "per 75g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1272kJ",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "403kcal",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "302kcal",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "vetten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "12g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "8.8g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "5.3g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "4,0g",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "koolhydraten",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "34g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "suikers",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "10g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.46g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.35g",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Ze vertragen je vertering",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "en houden je uren vol.",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.85,
+    "textRenderAcc": 0.33,
+    "meanPosDelta": 230.6,
+    "pileOverlaps": 2,
+    "score": 56.2
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6njxnk-2a",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 7.33,
+        "samples": 3502
+      },
+      {
+        "id": "rect-mr6njxnk-25",
+        "name": "Cut-out · oat protein bag",
+        "type": "image",
+        "box": {
+          "x": 243,
+          "y": 835,
+          "w": 594,
+          "h": 998
+        },
+        "area": 592812,
+        "meanDeltaE": 2.76,
+        "samples": 3488
+      },
+      {
+        "id": "logo-mr6njxnk-27",
+        "name": "Logo · Brand logo",
+        "type": "image",
+        "box": {
+          "x": 5,
+          "y": 2,
+          "w": 40,
+          "h": 30
+        },
+        "area": 1200,
+        "meanDeltaE": 11.35,
+        "samples": 127
+      },
+      {
+        "id": "logo-mr6njxnk-29",
+        "name": "Logo · circular logo mark",
+        "type": "image",
+        "box": {
+          "x": 491,
+          "y": 221,
+          "w": 97,
+          "h": 100
+        },
+        "area": 9700,
+        "meanDeltaE": 22.8,
+        "samples": 2450
+      }
+    ],
+    "meanDeltaE": 11.06,
+    "score": 84.1
+  },
+  "legacyPixel": 91.1,
+  "composite": 62.6
+}

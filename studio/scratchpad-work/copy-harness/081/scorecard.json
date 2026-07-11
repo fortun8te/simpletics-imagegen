@@ -1,0 +1,200 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8arb64-2i",
+        "text": "WARNING",
+        "renderSim": 0.31,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr8arb64-2j",
+        "text": "(ACTUALLY CONTAINS) 5G CREATINE MONOHYDRATE.",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 4.1,
+        "sizeDeltaPct": 6.3
+      },
+      {
+        "id": "caption-mr8arb64-2n",
+        "text": "TRACE CREATINE",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2.2,
+        "sizeDeltaPct": 7.1
+      },
+      {
+        "id": "caption-mr8arb64-2p",
+        "text": "5G CREAPURE®",
+        "renderSim": 0.5,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 405.3,
+        "sizeDeltaPct": 71.4
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "WARNING",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "(ACTUALLY CONTAINS) 5G CREATINE MONOHYDRATE.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "neutonie",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "CREATINE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "SACHETS",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "NATURAL",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "SWEETENER",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "FLAVOUR",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "PERFORMANCE*",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ZERO SUGAR",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "7.5g e",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "TRACE CREATINE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "III Creapure",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "5G CREAPURE®",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "239015",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.87,
+    "textRenderAcc": 0.5,
+    "meanPosDelta": 137.2,
+    "pileOverlaps": 0,
+    "score": 64.6
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8arb64-2q",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 0.33,
+        "samples": 3661
+      },
+      {
+        "id": "product-mr8arb64-2l",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 100,
+          "y": 468,
+          "w": 360,
+          "h": 345
+        },
+        "area": 124200,
+        "meanDeltaE": 1.52,
+        "samples": 3480
+      },
+      {
+        "id": "product-mr8arb64-2m",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 712,
+          "y": 275,
+          "w": 140,
+          "h": 540
+        },
+        "area": 75600,
+        "meanDeltaE": 1.41,
+        "samples": 4108
+      },
+      {
+        "id": "logo-mr8arb64-2o",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 588,
+          "y": 888,
+          "w": 125,
+          "h": 68
+        },
+        "area": 8500,
+        "meanDeltaE": 2.1,
+        "samples": 5509
+      }
+    ],
+    "meanDeltaE": 1.34,
+    "score": 98.7
+  },
+  "legacyPixel": 97.4,
+  "composite": 81.4
+}

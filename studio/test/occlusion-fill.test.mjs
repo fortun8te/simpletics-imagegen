@@ -1,5 +1,9 @@
 // test/occlusion-fill.test.mjs — occlusion fill: baked overlays inside reference crops get
 // deterministically inpainted so the re-added editable overlay isn't doubled.
+// Pinned to the PATCH engine: these tests validate the deterministic strip-blend path and its
+// guards; when .state/models/migan.onnx is present the default engine is migan, whose whole
+// point is to fill what patch skips (see test/inpaint.test.mjs for the migan path).
+process.env.INPAINT_ENGINE = 'patch';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync } from 'node:fs';

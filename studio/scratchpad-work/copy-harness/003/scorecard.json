@@ -1,0 +1,213 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "wrapMismatch",
+      "detail": "1 layer(s) wrap past their source line count incl. subhead: \"Waar je voorheen stopte, begin\" 1→2"
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6mmbpb-0",
+        "text": "UPFRONT CREATINE",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 10.3,
+        "sizeDeltaPct": 30.3
+      },
+      {
+        "id": "subhead-mr6mmbpb-3",
+        "text": "Waar je voorheen stopte, begin je nu.",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 29.8,
+        "sizeDeltaPct": 3.1
+      },
+      {
+        "id": "price-mr6mmbpb-4",
+        "text": "€8",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2.8,
+        "sizeDeltaPct": 0
+      },
+      {
+        "id": "caption-mr6mmbpb-5",
+        "text": "Sophie",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 7.1,
+        "sizeDeltaPct": 23.5
+      },
+      {
+        "id": "caption-mr6mmbpb-7",
+        "text": "★★★★★",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "subhead-mr6mmbpb-3",
+        "text": "Waar je voorheen stopte, begin je nu.",
+        "role": "subhead",
+        "sourceLines": 1,
+        "renderLines": 2
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "UPFRONT CREATINE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Waar je voorheen stopte, begin je nu.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "CREATINE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ingredienten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "creatine monohydraat",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "actieve ingredienten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "per 5g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ca. 2 scoops",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "treatine monohydraat",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "5000mg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "€8",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Sophie",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Met het dagelijkse gebruik merk ik een",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "forse verbetering van mijn",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "krachtprestaties en spieropbouw.",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 0.88,
+    "textRenderAcc": 0.8,
+    "meanPosDelta": 12.5,
+    "pileOverlaps": 0,
+    "score": 86
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6mmbpb-8",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 6.56,
+        "samples": 3456
+      },
+      {
+        "id": "rect-mr6mmbpb-2",
+        "name": "Cut-out · creatine jar",
+        "type": "image",
+        "box": {
+          "x": 324,
+          "y": 576,
+          "w": 432,
+          "h": 672
+        },
+        "area": 290304,
+        "meanDeltaE": 0.31,
+        "samples": 2786
+      },
+      {
+        "id": "badge-mr6mmbpb-6",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 259,
+          "y": 1248,
+          "w": 454,
+          "h": 192
+        },
+        "area": 87168,
+        "meanDeltaE": 13.17,
+        "samples": 2354
+      }
+    ],
+    "meanDeltaE": 6.68,
+    "score": 84.9
+  },
+  "legacyPixel": 92.7,
+  "composite": 83
+}

@@ -1,0 +1,341 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"ingrediënten\nglucose, zoutvervanger, appelsap,\nkokoswaterpoe\" (best source sim 0.26, word coverage 12%)"
+    },
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"SACHETS\" (best source sim 0.33, word coverage 0%)"
+    },
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"voedingswaarden per 100g per 5.8g\nenergie 1259 kJ 73 kJ\n295 \" (best source sim 0.24, word coverage 12%)"
+    },
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"mineraalsamenstelling RI%* per 5.8g\nchloride 33% 263mg\nmagne\" (best source sim 0.25, word coverage 13%)"
+    },
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"SUPPLEMENT SACHETS\" (best source sim 0.41, word coverage 0%)"
+    },
+    {
+      "rule": "textPile",
+      "detail": "34 overlapping text pairs (≥40% mutual): \"CREATINE JAR\"×\"TWEE SUPPLEMENTEN DI\", \"CREATINE JAR\"×\"Creatine helpt je bi\", \"ELECTROLYTES BOX\"×\"TWEE SUPPLEMENTEN DI\", \"ELECTROLYTES BOX\"×\"Creatine helpt je bi\", \"TWEE SUPPLEMENTEN DI\"×\"Creatine helpt je bi\", \"TWEE SUPPLEMENTEN DI\"×\"UPFRONT CREATINE\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr6nilfe-10",
+        "text": "CREATINE JAR",
+        "renderSim": 0.55,
+        "sourceSim": 0.73,
+        "stringOk": false,
+        "posDeltaPx": 1085.1,
+        "sizeDeltaPct": 5.5
+      },
+      {
+        "id": "caption-mr6nilfe-11",
+        "text": "ELECTROLYTES BOX",
+        "renderSim": 0.4,
+        "sourceSim": 0.8,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "headline-mr6nilfe-12",
+        "text": "TWEE SUPPLEMENTEN DIE ELKAAR AANVULLEN NU TIJDELIJK VOOR €10",
+        "renderSim": 0.44,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr6nilfe-13",
+        "text": "Creatine helpt je bij explosieve krachtinspanningen. Electro",
+        "renderSim": 0.25,
+        "sourceSim": 0.98,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "badge-mr6nilfe-14",
+        "text": "UPFRONT CREATINE",
+        "renderSim": 0.4,
+        "sourceSim": 0.58,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nilfe-15",
+        "text": "ingrediënten\ncreatine monohydrate\n\nactieve ingrediënten\ncrea",
+        "renderSim": 0.32,
+        "sourceSim": 0.77,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "badge-mr6nilfe-16",
+        "text": "per 5g\nc. 2 scoops\n5000mg",
+        "renderSim": 0.26,
+        "sourceSim": 0.63,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "badge-mr6nilfe-17",
+        "text": "UPFRONT ELECTROLYTES",
+        "renderSim": 0.42,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "badge-mr6nilfe-18",
+        "text": "MANGO SMAAK 10st",
+        "renderSim": 0.43,
+        "sourceSim": 0.93,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nilfe-19",
+        "text": "ingrediënten\nglucose, zoutvervanger, appelsap,\nkokoswaterpoe",
+        "renderSim": 0.24,
+        "sourceSim": 0.26,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nilfe-1b",
+        "text": "SACHETS",
+        "renderSim": 0.43,
+        "sourceSim": 0.33,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nilfe-1c",
+        "text": "voedingswaarden per 100g per 5.8g\nenergie 1259 kJ 73 kJ\n295 ",
+        "renderSim": 0.23,
+        "sourceSim": 0.24,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nilfe-1d",
+        "text": "mineraalsamenstelling RI%* per 5.8g\nchloride 33% 263mg\nmagne",
+        "renderSim": 0.29,
+        "sourceSim": 0.25,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nilfe-1l",
+        "text": "SUPPLEMENT SACHETS",
+        "renderSim": 1,
+        "sourceSim": 0.41,
+        "stringOk": true,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "TWEE SUPPLEMENTEN",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "DIE ELKAAR AANVULLEN",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "NU TIJDELIJK VOOR €10.-",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Creatine helpt je bij explosieve krachtinspanningen.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Electrolytes reguleren je hydratie. Zo haal je meer",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "uit elke training.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ELECTROLYTES",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "MANGO SMAAK",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "1Ost",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "CREATINE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ingredienten",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "creatine monohydraat",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "actieve ingrediënten",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "per 5g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ca. 2 scoops",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "creatine monohvdraat",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "5000mg",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "per 5.8g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Bestel op Upfront.nl",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.96,
+    "textRenderAcc": 0.07,
+    "meanPosDelta": 1085.1,
+    "pileOverlaps": 34,
+    "score": 50.3
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6nilfe-1m",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 9.33,
+        "samples": 3159
+      },
+      {
+        "id": "product-mr6nilfe-1g",
+        "name": "Product · electrolytes box",
+        "type": "shape",
+        "box": {
+          "x": 6,
+          "y": 8,
+          "w": 40,
+          "h": 30
+        },
+        "area": 1200,
+        "meanDeltaE": 7.67,
+        "samples": 120
+      },
+      {
+        "id": "product-mr6nilfe-1i",
+        "name": "Product · supplement sachets",
+        "type": "shape",
+        "box": {
+          "x": 162,
+          "y": 1613,
+          "w": 756,
+          "h": 192
+        },
+        "area": 145152,
+        "meanDeltaE": 13.52,
+        "samples": 630
+      }
+    ],
+    "meanDeltaE": 10.17,
+    "score": 76
+  },
+  "legacyPixel": 88.6,
+  "composite": 50.7
+}

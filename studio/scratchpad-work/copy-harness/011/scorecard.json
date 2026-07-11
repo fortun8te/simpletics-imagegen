@@ -1,0 +1,201 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "subhead-mr6nlqov-2u",
+        "text": "< Notes",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 13.2,
+        "sizeDeltaPct": 36
+      },
+      {
+        "id": "subhead-mr6nlqov-2v",
+        "text": "Done",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 38.9,
+        "sizeDeltaPct": 3.2
+      },
+      {
+        "id": "headline-mr6nlqov-2w",
+        "text": "Things Men Can Do to Support Their Reproductive Health",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 49.6,
+        "sizeDeltaPct": 12.1
+      },
+      {
+        "id": "caption-mr6nlqov-2z",
+        "text": "• Strength train regularly\n• Prioritize sleep\n• Prioritize n",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 102,
+        "sizeDeltaPct": 16.5
+      },
+      {
+        "id": "caption-mr6nlqov-30",
+        "text": "*This statement has not been evaluated by the\nFood and Drug ",
+        "renderSim": 1,
+        "sourceSim": 0.56,
+        "stringOk": true,
+        "posDeltaPx": 160.3,
+        "sizeDeltaPct": 26.5
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "< Notes",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Done",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Things Men Can Do to Support",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Their Reproductive Health",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "• Strength train regularly",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "• Prioritize sleep",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "• Prioritize nutrition by taking Grüns.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Packed with zinc, selenium, vitamin C +",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "E support male reproductive health*",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "• Limit alcohol",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "*This statement has not been evaluated by the",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "not intended to diagnose, treat, cure, or",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Food and Drug Administration. This product is",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "grüns",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Greens Gummies",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Superfoods",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "SINGLE SER",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "prevent any disease.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Dietary Supplement",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 0.95,
+    "textRenderAcc": 1,
+    "meanPosDelta": 72.8,
+    "pileOverlaps": 0,
+    "score": 93.2
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6nlqow-31",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0.33,
+        "samples": 2388
+      },
+      {
+        "id": "rect-mr6nlqov-2y",
+        "name": "Cut-out · green gummies",
+        "type": "image",
+        "box": {
+          "x": 454,
+          "y": 998,
+          "w": 594,
+          "h": 883
+        },
+        "area": 524502,
+        "meanDeltaE": 0.42,
+        "samples": 2704
+      }
+    ],
+    "meanDeltaE": 0.38,
+    "score": 99.1
+  },
+  "legacyPixel": 95.3,
+  "composite": 95.4
+}

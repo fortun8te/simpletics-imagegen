@@ -4,15 +4,15 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 940595,
-    "assemble": 251,
-    "total": 999520
+    "extract": 6186,
+    "assemble": 336,
+    "total": 53351
   },
   "fontMatch": {
     "ok": true,
     "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/002.json",
     "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-002.png",
-    "patched": 1,
+    "patched": 0,
     "layers": [
       {
         "id": "headline",
@@ -69,10 +69,10 @@
         "id": "subhead",
         "role": "subhead",
         "text": "KRACHTSPORT BUNDEL",
-        "previous": null,
+        "previous": "Arial Rounded MT Bold",
         "fontFamily": "Arial Rounded MT Bold",
         "confidence": 0.1502,
-        "patched": true,
+        "patched": false,
         "tried": [
           {
             "family": "Arial Rounded MT Bold",
@@ -183,6 +183,9 @@
     "cta-caption fontSize: 36 → 43 (1 ink line, block 31px)",
     "cta-caption box: y832 h48 → y830 h41 (tight ink rows + 5px pad)"
   ],
+  "typoTruthCorrections": [
+    "arrow \"price-arrow\": stroke 42→8px, length 68→57px (measured cross-section)"
+  ],
   "archetype": "offer-hero",
   "layerCountExtracted": 11,
   "parsePath": "loose",
@@ -204,11 +207,11 @@
     "rounds": 2,
     "renders": 8,
     "capped": false,
-    "ms": 45362,
+    "ms": 37610,
     "applied": [
       {
         "round": 1,
-        "layerId": "subhead-mr8ccne4-3",
+        "layerId": "subhead-mr8d8nph-3",
         "layerName": "subhead",
         "kind": "font",
         "detail": "fontSize ×0.92",

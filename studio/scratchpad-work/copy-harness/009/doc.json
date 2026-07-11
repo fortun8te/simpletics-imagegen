@@ -1,13 +1,13 @@
 {
-  "id": "harness_009_a5becd05",
-  "name": "copy-harness harness_009_a5becd05",
+  "id": "harness_009_54759b1c",
+  "name": "copy-harness harness_009_54759b1c",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr8aoelu-1c",
+      "id": "base-mr8dcd24-x",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "divider-mr8aoelt-r",
+      "id": "divider-mr8dcd24-c",
       "type": "shape",
       "role": "divider",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "icon-mr8aoelt-s",
+      "id": "icon-mr8dcd24-d",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -54,7 +54,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr8aoelt-t",
+      "id": "meta-mr8dcd24-e",
       "type": "text",
       "role": "meta",
       "text": "Post",
@@ -76,7 +76,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8aoelt-u",
+      "id": "icon-mr8dcd24-f",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -93,7 +93,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "avatar-mr8aoelt-v",
+      "id": "avatar-mr8dcd24-g",
       "type": "image",
       "role": "avatar",
       "box": {
@@ -115,7 +115,7 @@
       "name": "Avatar (cut out)"
     },
     {
-      "id": "meta-mr8aoelt-w",
+      "id": "meta-mr8dcd24-h",
       "type": "text",
       "role": "meta",
       "text": "UPFRONT",
@@ -137,7 +137,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8aoelt-x",
+      "id": "icon-mr8dcd24-i",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -154,7 +154,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr8aoelt-y",
+      "id": "meta-mr8dcd24-j",
       "type": "text",
       "role": "meta",
       "text": "@UpfrontFood",
@@ -176,7 +176,7 @@
       "sizeLocked": true
     },
     {
-      "id": "cta-mr8aoelt-z",
+      "id": "cta-mr8dcd24-k",
       "type": "button",
       "role": "cta",
       "text": "Volgend",
@@ -200,18 +200,18 @@
       "sizeLocked": true
     },
     {
-      "id": "body-mr8aoelt-10",
+      "id": "body-mr8dcd24-l",
       "type": "text",
       "role": "body",
       "text": "LAATSTE SITE WIDE SALE VAN 2026 ⌛\n\nDe Vakantiegeldsale komt eraan, waarbij je 20% korting krijgt op het volledige assortiment.\n\nDaarbovenop krijgen de eerste 500 bestellingen hun geld terug tot €100.\n\nSchrijf je nu in en mis geen enkele update. We zien je woensdag 20 mei om 20:00 uur. 👀",
       "box": {
         "x": 45,
-        "y": 318,
+        "y": 301,
         "w": 990,
         "h": 465
       },
       "style": {
-        "fontSize": 44,
+        "fontSize": 40,
         "fontWeight": 400,
         "color": "#E7E9EA",
         "align": "left",
@@ -222,7 +222,7 @@
       "sizeLocked": true
     },
     {
-      "id": "meta-mr8aoelt-11",
+      "id": "meta-mr8dcd24-m",
       "type": "text",
       "role": "meta",
       "text": "05:00 PM · 12-05-2026 · 121K weergaven",
@@ -244,7 +244,7 @@
       "sizeLocked": true
     },
     {
-      "id": "divider-mr8aoelt-12",
+      "id": "divider-mr8dcd24-n",
       "type": "shape",
       "role": "divider",
       "box": {
@@ -258,7 +258,7 @@
       }
     },
     {
-      "id": "icon-mr8aoelt-13",
+      "id": "icon-mr8dcd24-o",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -275,7 +275,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr8aoelt-14",
+      "id": "meta-mr8dcd24-p",
       "type": "text",
       "role": "meta",
       "text": "257",
@@ -291,13 +291,14 @@
         "color": "#71767B",
         "align": "left",
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "italic": true
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8aoelt-15",
+      "id": "icon-mr8dcd24-q",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -314,7 +315,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr8aoelt-16",
+      "id": "meta-mr8dcd24-r",
       "type": "text",
       "role": "meta",
       "text": "66",
@@ -336,7 +337,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8aoelt-17",
+      "id": "icon-mr8dcd24-s",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -353,7 +354,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr8aoelt-18",
+      "id": "meta-mr8dcd24-t",
       "type": "text",
       "role": "meta",
       "text": "21K",
@@ -375,7 +376,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8aoelt-19",
+      "id": "icon-mr8dcd24-u",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -392,7 +393,7 @@
       "name": "Logo (vectorized)"
     },
     {
-      "id": "meta-mr8aoelt-1a",
+      "id": "meta-mr8dcd24-v",
       "type": "text",
       "role": "meta",
       "text": "89",
@@ -414,7 +415,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8aoelu-1b",
+      "id": "icon-mr8dcd24-w",
       "type": "shape",
       "role": "logo",
       "box": {
@@ -431,6 +432,6 @@
       "name": "Logo (vectorized)"
     }
   ],
-  "skeletonId": "skel_mr8aoeltzkus",
-  "updatedAt": 1783286397561
+  "skeletonId": "skel_mr8dcd2486q0",
+  "updatedAt": 1783290874561
 }

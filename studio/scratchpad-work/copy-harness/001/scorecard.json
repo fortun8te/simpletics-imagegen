@@ -1,0 +1,190 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"Ingrediënten: wei-eiwit-isolaat (melk) (60%), zwarte-bessenp\" (best source sim 0.21, word coverage 6%)"
+    },
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"voedingswaarden per 100g per 25g energie 1380 kJ 345 kcal 86\" (best source sim 0.25, word coverage 20%)"
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6nh6cw-1",
+        "text": "WAT ECHT IS WINT",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 76.1,
+        "sizeDeltaPct": 42.2
+      },
+      {
+        "id": "headline-mr6nh6cw-3",
+        "text": "UPFRONT",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 73.5,
+        "sizeDeltaPct": 48.5
+      },
+      {
+        "id": "subhead-mr6nh6cw-6",
+        "text": "CLEAR WHEY LIMONADE",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 70.6,
+        "sizeDeltaPct": 37.1
+      },
+      {
+        "id": "caption-mr6nh6cw-7",
+        "text": "ZWARTE BES SMAAK 700g",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 157.2,
+        "sizeDeltaPct": 32.8
+      },
+      {
+        "id": "caption-mr6nh6cw-8",
+        "text": "Ingrediënten: wei-eiwit-isolaat (melk) (60%), zwarte-bessenp",
+        "renderSim": 1,
+        "sourceSim": 0.21,
+        "stringOk": true,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nh6cw-9",
+        "text": "voedingswaarden per 100g per 25g energie 1380 kJ 345 kcal 86",
+        "renderSim": 1,
+        "sourceSim": 0.25,
+        "stringOk": true,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "logo-mr6nh6cw-a",
+        "text": "UPFRONT",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 73.5,
+        "sizeDeltaPct": 48.5
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "caption-mr6nh6cw-7",
+        "text": "ZWARTE BES SMAAK 700g",
+        "role": "caption",
+        "sourceLines": 2,
+        "renderLines": 1
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "WAT ECHT IS WINT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "632,- → €29,-",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "CLEAR WHEY LIMONADE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ZWARTE BES SMAAK",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "700g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.86,
+    "textRenderAcc": 1,
+    "meanPosDelta": 90.2,
+    "pileOverlaps": 0,
+    "score": 87.7
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6nh6cw-b",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1917
+        },
+        "area": 2070360,
+        "meanDeltaE": 5.34,
+        "samples": 2134
+      },
+      {
+        "id": "price-mr6nh6cw-2",
+        "name": "price",
+        "type": "badge",
+        "box": {
+          "x": 302,
+          "y": 307,
+          "w": 475,
+          "h": 86
+        },
+        "area": 40850,
+        "meanDeltaE": 15.7,
+        "samples": 3816
+      },
+      {
+        "id": "card-mr6nh6cw-5",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 86,
+          "y": 441,
+          "w": 907,
+          "h": 1189
+        },
+        "area": 1078423,
+        "meanDeltaE": 5.2,
+        "samples": 1341
+      }
+    ],
+    "meanDeltaE": 8.75,
+    "score": 86.4
+  },
+  "legacyPixel": 90.6,
+  "composite": 87.9
+}

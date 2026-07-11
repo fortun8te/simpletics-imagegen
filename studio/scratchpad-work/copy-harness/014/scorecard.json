@@ -1,0 +1,236 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8dpfv1-1l",
+        "text": "NUTRITIONAL\nSUPPORT DURING\nPERIMENOPAUSE",
+        "renderSim": 0.81,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 0.9,
+        "sizeDeltaPct": 9.3
+      },
+      {
+        "id": "caption-mr8dpfv1-1m",
+        "text": "Vitamin D3\nand K2 support\nbone health*",
+        "renderSim": 0.43,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr8dpfv1-1o",
+        "text": "B vitamins support\ncognitive health,\nmood and energy*",
+        "renderSim": 0.32,
+        "sourceSim": 0.41,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr8dpfv1-1r",
+        "text": "Fiber supports\ngut health*",
+        "renderSim": 0.79,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 1.9,
+        "sizeDeltaPct": 4.8
+      },
+      {
+        "id": "caption-mr8dpfv1-1t",
+        "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
+        "renderSim": 0.29,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "legal-mr8dpfv1-1u",
+        "text": "These statements have not been evaluated by the Food and Dru",
+        "renderSim": 0.74,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 4.6,
+        "sizeDeltaPct": 63.5
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "NUTRITIONAL",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "SUPPORT DURING",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "PERIMENOPAUSE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Vitamin D3",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "and K2 support",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "bone health*",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Fiber supports",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "gut health*",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Vitamins E",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "& B9 help support hot",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "flashes and night sweats*",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "These statements have not been evaluated by the Food and Dru",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "This product is not intended to diagnose, treat, cure, or pr",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0,
+    "meanPosDelta": 2.5,
+    "pileOverlaps": 0,
+    "score": 64.9
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr8dpfv1",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 2.26,
+        "samples": 3000
+      },
+      {
+        "id": "decor-mr8dpfv1-1k",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 1250,
+          "w": 1080,
+          "h": 670
+        },
+        "area": 723600,
+        "meanDeltaE": 5.49,
+        "samples": 3810
+      },
+      {
+        "id": "decor-mr8dpfv1-1n",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 212,
+          "y": 684,
+          "w": 81,
+          "h": 10
+        },
+        "area": 810,
+        "meanDeltaE": 12.05,
+        "samples": 810
+      },
+      {
+        "id": "decor-mr8dpfv1-1p",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 715,
+          "y": 766,
+          "w": 106,
+          "h": 8
+        },
+        "area": 848,
+        "meanDeltaE": 14.89,
+        "samples": 848
+      },
+      {
+        "id": "decor-mr8dpfv1-1q",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 190,
+          "y": 1083,
+          "w": 115,
+          "h": 9
+        },
+        "area": 1035,
+        "meanDeltaE": 15.28,
+        "samples": 1035
+      },
+      {
+        "id": "decor-mr8dpfv1-1s",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 852,
+          "y": 1133,
+          "w": 6,
+          "h": 74
+        },
+        "area": 444,
+        "meanDeltaE": 12.88,
+        "samples": 444
+      }
+    ],
+    "meanDeltaE": 10.48,
+    "score": 92.2
+  },
+  "legacyPixel": 97.2,
+  "composite": 79.6
+}

@@ -4,9 +4,9 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 2408,
-    "assemble": 10109,
-    "total": 69881
+    "extract": 2961,
+    "assemble": 11842,
+    "total": 74032
   },
   "fontMatch": {
     "ok": true,
@@ -180,20 +180,20 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 91.7,
-  "pixelScore": 91.7,
+  "pixelScoreRaw": 91.8,
+  "pixelScore": 91.8,
   "refine": {
     "ran": true,
     "scoreBefore": 91.4,
-    "scoreAfter": 91.7,
+    "scoreAfter": 91.8,
     "rounds": 2,
-    "renders": 9,
+    "renders": 10,
     "capped": "time",
-    "ms": 47535,
+    "ms": 49969,
     "applied": [
       {
         "round": 1,
-        "layerId": "headline-mr8d3g5q-1",
+        "layerId": "headline-mr8dpqli-1w",
         "layerName": "headline",
         "kind": "font",
         "detail": "fontSize ×1.08",
@@ -204,13 +204,35 @@
       },
       {
         "round": 1,
-        "layerId": "headline-mr8d3g5p-0",
+        "layerId": "headline-mr8dpqli-1v",
         "layerName": "headline",
         "kind": "nudge",
         "detail": "nudge dx=0 dy=-17",
         "localMae": {
           "before": 0.243,
           "after": 0.221
+        }
+      },
+      {
+        "round": 2,
+        "layerId": "headline-mr8dpqli-1w",
+        "layerName": "headline",
+        "kind": "font",
+        "detail": "fontSize ×1.08",
+        "localMae": {
+          "before": 0.109,
+          "after": 0.106
+        }
+      },
+      {
+        "round": 2,
+        "layerId": "headline-mr8dpqli-1v",
+        "layerName": "headline",
+        "kind": "nudge",
+        "detail": "nudge dx=-17 dy=0",
+        "localMae": {
+          "before": 0.215,
+          "after": 0.207
         }
       }
     ],

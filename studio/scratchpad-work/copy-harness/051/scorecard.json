@@ -1,0 +1,206 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "ghostText",
+      "detail": "\"Just one hair product\" ×2 in render (word-window sims 1.00/1.00, offset 57px)"
+    },
+    {
+      "rule": "ghostText",
+      "detail": "\"(Just one hair product ore)\" ×2 in render (word-window sims 1.00/0.86, offset 42px)"
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr6moes6-10",
+        "text": "Getting lots of questions about Wavy, so here's my personal ",
+        "renderSim": 0.88,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1,
+        "sizeDeltaPct": 6.2
+      },
+      {
+        "id": "caption-mr6moes6-11",
+        "text": "It's a game changer for curls, here's why 🌀:",
+        "renderSim": 0.86,
+        "sourceSim": 0.97,
+        "stringOk": true,
+        "posDeltaPx": 2.6,
+        "sizeDeltaPct": 13
+      },
+      {
+        "id": "caption-mr6moes6-12",
+        "text": "No more frizz and crazy hair",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 22.1,
+        "sizeDeltaPct": 5.3
+      },
+      {
+        "id": "caption-mr6moes6-13",
+        "text": "Just one hair product (Instead of 5 I used before)",
+        "renderSim": 0.83,
+        "sourceSim": 0.97,
+        "stringOk": false,
+        "posDeltaPx": 61.1,
+        "sizeDeltaPct": 1.1
+      },
+      {
+        "id": "caption-mr6moes6-14",
+        "text": "All day definition - Curls last all day",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 91.9,
+        "sizeDeltaPct": 26.5
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "caption-mr6moes6-13",
+        "text": "Just one hair product (Instead of 5 I used before)",
+        "role": "caption",
+        "sourceLines": 2,
+        "renderLines": 4
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Getting lots of questions",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "about Wavy, so here's",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "my personal take:",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "It's a game changer for curls,",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "here's why G:",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "No more frizz and",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "crazy hair",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Just one hair product",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "(Instead of 5 l used before)",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "All day definition - Curls last",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "all day",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.8,
+    "meanPosDelta": 35.7,
+    "pileOverlaps": 0,
+    "score": 90.1
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr6moes6",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 0.77,
+        "samples": 2838
+      },
+      {
+        "id": "rect-mr6moes6-w",
+        "name": "Cut-out · green toiletry bag",
+        "type": "image",
+        "box": {
+          "x": 108,
+          "y": 22,
+          "w": 594,
+          "h": 302
+        },
+        "area": 179388,
+        "meanDeltaE": 0.74,
+        "samples": 2895
+      },
+      {
+        "id": "rect-mr6moes6-x",
+        "name": "Cut-out · wavy hair creme",
+        "type": "image",
+        "box": {
+          "x": 670,
+          "y": 97,
+          "w": 238,
+          "h": 637
+        },
+        "area": 151606,
+        "meanDeltaE": 1.72,
+        "samples": 3836
+      },
+      {
+        "id": "rect-mr6moes6-z",
+        "name": "Cut-out · hand receiving creme",
+        "type": "image",
+        "box": {
+          "x": 508,
+          "y": 443,
+          "w": 572,
+          "h": 637
+        },
+        "area": 364364,
+        "meanDeltaE": 1.17,
+        "samples": 3448
+      }
+    ],
+    "meanDeltaE": 1.1,
+    "score": 97.7
+  },
+  "legacyPixel": 95.3,
+  "composite": 89.4
+}

@@ -18,8 +18,10 @@
 //   node scripts/copy-harness.mjs                 # run all 8 target ads
 //   node scripts/copy-harness.mjs --only 009,050   # subset
 //   node scripts/copy-harness.mjs --batch 8 --files a.png,b.webp  # PHASE 3 generalization batches
+//   node scripts/copy-harness.mjs --scorecard-only [009 050 …]     # S12 re-score of EXISTING
+//       render.png/doc.json per corpus dir (no pipeline) — see scripts/scorecard.mjs
 
-import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, cpSync, rmSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, cpSync, rmSync, readdirSync } from 'node:fs';
 import { join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -34,6 +36,7 @@ import { runCopyReference } from '../lib/design-agent.mjs';
 import { renderDesignHtml, makeImageResolver } from '../lib/designstore.mjs';
 import { renderCompPng } from '../lib/self-vision.mjs';
 import { pixelDiff } from './pixel-diff.mjs';
+import { scoreCopy } from './scorecard.mjs';
 
 const STUDIO = join(dirname(fileURLToPath(import.meta.url)), '..');
 const REPO = join(STUDIO, '..');
@@ -388,14 +391,85 @@ async function runOne(filename) {
   const sbsOk = buildSideBySide(refPng, finalRenderPath, sbsPath);
   result.sideBySide = sbsOk ? sbsPath : null;
 
+  // ── S12 SCORECARD (scripts/scorecard.mjs) — the score that can't lie ─────────────────────────
+  // OCR-based text alignment + region ΔE + hard-fail rules (ghost text, placeholder labels,
+  // text piles, missing strings). ADDITIVE: pixelScore and every legacy field stay untouched;
+  // scorecard.json lands next to result.json and result.scorecard carries the gate summary.
+  try {
+    const sc = await scoreCopy({ sourcePath: refPng, renderPath: finalRenderPath, doc: assembled.doc, legacyPixel: result.pixelScoreRaw });
+    writeFileSync(join(outDir, 'scorecard.json'), JSON.stringify(sc, null, 2));
+    result.scorecard = { ok: sc.ok, composite: sc.composite, hardFails: sc.hardFails.map((f) => f.rule) };
+  } catch (e) {
+    result.scorecard = { ok: null, error: String(e?.message || e) };
+  }
+
   result.ok = true;
   result.ms.total = Date.now() - t0;
   writeFileSync(join(outDir, 'result.json'), JSON.stringify(result, null, 2));
   return result;
 }
 
+/** Resolve the ORIGINAL source image for a corpus case: result.json's filename in the
+ *  inspo dir, else any `<id>_*` file there, else the registered harness ref PNG. */
+function resolveCaseSource(id, caseDir) {
+  try {
+    const r = JSON.parse(readFileSync(join(caseDir, 'result.json'), 'utf8'));
+    if (r.filename && existsSync(join(INSPO, r.filename))) return join(INSPO, r.filename);
+  } catch { /* fall through */ }
+  try {
+    const hit = readdirSync(INSPO).find((f) => f.startsWith(`${id}_`) && /\.(png|webp|jpe?g)$/i.test(f));
+    if (hit) return join(INSPO, hit);
+  } catch { /* fall through */ }
+  const ref = join(REFS_DIR, `harness-${id}.png`);
+  return existsSync(ref) ? ref : null;
+}
+
+/** --scorecard-only [id …]: re-score EXISTING render.png + doc.json per corpus dir with
+ *  scripts/scorecard.mjs — NO pipeline, no extraction, no re-render. This is the cheap
+ *  calibration loop for scorecard rule/weight tweaks. Writes scorecard.json per case and
+ *  prints the table (legacy pixelScore from result.json vs new composite + hard fails). */
+async function scorecardOnly(ids) {
+  const all = readdirSync(OUT_ROOT).filter((d) => /^\d+$/.test(d)).sort();
+  const targets = ids.length ? all.filter((d) => ids.includes(d)) : all;
+  const rows = [];
+  console.log(`\n=== scorecard-only — ${targets.length} case(s) ===\n`);
+  console.log('  id   legacy   composite  ok     hardFails');
+  for (const id of targets) {
+    const dir = join(OUT_ROOT, id);
+    const renderPath = join(dir, 'render.png');
+    const docPath = join(dir, 'doc.json');
+    if (!existsSync(renderPath) || !existsSync(docPath)) continue;
+    const sourcePath = resolveCaseSource(id, dir);
+    let legacy = null;
+    try { legacy = JSON.parse(readFileSync(join(dir, 'result.json'), 'utf8')).pixelScore ?? null; } catch { /* no result.json */ }
+    if (!sourcePath) {
+      console.log(`  ${id}   ${String(legacy ?? '—').padEnd(8)} —          —      (source image not found)`);
+      continue;
+    }
+    try {
+      const doc = JSON.parse(readFileSync(docPath, 'utf8'));
+      const sc = await scoreCopy({ sourcePath, renderPath, doc });
+      writeFileSync(join(dir, 'scorecard.json'), JSON.stringify(sc, null, 2));
+      rows.push({ id, legacy, composite: sc.composite, ok: sc.ok, hardFails: sc.hardFails });
+      const fails = sc.hardFails.map((f) => f.rule).join('+') || '-';
+      console.log(`  ${id}   ${String(legacy ?? '—').padEnd(8)} ${String(sc.composite ?? '—').padEnd(10)} ${sc.ok ? 'ok   ' : 'FAIL '} ${fails}`);
+    } catch (e) {
+      console.log(`  ${id}   ${String(legacy ?? '—').padEnd(8)} —          ERR    ${String(e?.message || e).slice(0, 80)}`);
+    }
+  }
+  const failed = rows.filter((r) => !r.ok);
+  console.log(`\n  ${rows.length} scored · ${failed.length} hard-failed (${failed.map((r) => r.id).join(', ') || 'none'})\n`);
+}
+
 async function main() {
   const args = process.argv.slice(2);
+  const scIdx = args.indexOf('--scorecard-only');
+  if (scIdx >= 0) {
+    const ids = args.slice(scIdx + 1).filter((a) => !a.startsWith('--'))
+      .flatMap((s) => s.split(',')).map((s) => s.trim()).filter(Boolean);
+    await scorecardOnly(ids);
+    return;
+  }
   const onlyIdx = args.indexOf('--only');
   const only = onlyIdx >= 0 ? new Set(String(args[onlyIdx + 1] || '').split(',').map((s) => s.trim())) : null;
   const filesIdx = args.indexOf('--files');
@@ -465,7 +539,11 @@ async function main() {
     if (!best.ok) {
       console.log(`FAIL (${best.error})`);
     } else {
-      console.log(`score=${best.pixelScore}  layers=${best.layersApplied}/${best.layerCountExtracted}  arch=${best.archetype}  bg=${best.background}  cutouts=${best.cutoutCandidates}  ${(best.ms.total / 1000).toFixed(1)}s${attempts > 1 ? `  (best of ${attempts})` : ''}`);
+      const sc = best.scorecard;
+      const scStr = sc && sc.composite != null
+        ? `${sc.composite}${sc.hardFails?.length ? ` HARDFAIL:${sc.hardFails.join('+')}` : ''}`
+        : 'n/a';
+      console.log(`score=${best.pixelScore}  sc=${scStr}  layers=${best.layersApplied}/${best.layerCountExtracted}  arch=${best.archetype}  bg=${best.background}  cutouts=${best.cutoutCandidates}  ${(best.ms.total / 1000).toFixed(1)}s${attempts > 1 ? `  (best of ${attempts})` : ''}`);
     }
   }
 

@@ -1,13 +1,13 @@
 {
-  "id": "harness_026_df3d844e",
-  "name": "copy-harness harness_026_df3d844e",
+  "id": "harness_026_003b3d0a",
+  "name": "copy-harness harness_026_003b3d0a",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr8aqlzv-21",
+      "id": "base-mr8d914s-w",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "card-mr8aqlzv-1h",
+      "id": "card-mr8d914s-c",
       "type": "shape",
       "role": "card",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "icon-mr8aqlzv-1i",
+      "id": "icon-mr8d914s-d",
       "type": "text",
       "role": "icon",
       "text": "✓",
@@ -59,7 +59,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8aqlzv-1j",
+      "id": "icon-mr8d914s-e",
       "type": "text",
       "role": "icon",
       "text": "✗",
@@ -81,7 +81,7 @@
       "sizeLocked": true
     },
     {
-      "id": "eyebrow-mr8aqlzv-1k",
+      "id": "eyebrow-mr8d914s-f",
       "type": "text",
       "role": "eyebrow",
       "text": "DORE & ROSE",
@@ -103,7 +103,7 @@
       "sizeLocked": true
     },
     {
-      "id": "eyebrow-mr8aqlzv-1l",
+      "id": "eyebrow-mr8d914s-g",
       "type": "text",
       "role": "eyebrow",
       "text": "OTHERS'",
@@ -125,7 +125,7 @@
       "sizeLocked": true
     },
     {
-      "id": "headline-mr8aqlzv-1m",
+      "id": "headline-mr8d914s-h",
       "type": "text",
       "role": "headline",
       "text": "Silk",
@@ -142,13 +142,14 @@
         "align": "center",
         "lineHeight": 1,
         "uppercase": false,
-        "italic": true
+        "italic": true,
+        "fontFamily": "Arial Narrow"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "badge-mr8aqlzv-1n",
+      "id": "badge-mr8d914s-i",
       "type": "badge",
       "role": "badge",
       "text": "VS",
@@ -172,7 +173,7 @@
       "sizeLocked": true
     },
     {
-      "id": "headline-mr8aqlzv-1o",
+      "id": "headline-mr8d914s-j",
       "type": "text",
       "role": "headline",
       "text": "Satin",
@@ -195,7 +196,7 @@
       "sizeLocked": true
     },
     {
-      "id": "product-mr8aqlzv-1p",
+      "id": "product-mr8d914s-k",
       "type": "image",
       "role": "product",
       "box": {
@@ -217,7 +218,7 @@
       "name": "Cut-out"
     },
     {
-      "id": "subhead-mr8aqlzv-1q",
+      "id": "subhead-mr8d914s-l",
       "type": "text",
       "role": "subhead",
       "text": "Premium Silk",
@@ -239,7 +240,7 @@
       "sizeLocked": true
     },
     {
-      "id": "caption-mr8aqlzv-1r",
+      "id": "caption-mr8d914s-m",
       "type": "text",
       "role": "caption",
       "text": "Pillowcase",
@@ -261,7 +262,7 @@
       "sizeLocked": true
     },
     {
-      "id": "subhead-mr8aqlzv-1s",
+      "id": "subhead-mr8d914s-n",
       "type": "text",
       "role": "subhead",
       "text": "Satin",
@@ -283,7 +284,7 @@
       "sizeLocked": true
     },
     {
-      "id": "caption-mr8aqlzv-1t",
+      "id": "caption-mr8d914s-o",
       "type": "text",
       "role": "caption",
       "text": "Pillowcase",
@@ -299,13 +300,14 @@
         "color": "#8B8B8B",
         "align": "right",
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Bradley Hand"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "benefit-mr8aqlzv-1u",
+      "id": "benefit-mr8d914s-p",
       "type": "text",
       "role": "benefit",
       "text": "✓ Premium silk",
@@ -327,7 +329,7 @@
       "sizeLocked": true
     },
     {
-      "id": "benefit-mr8aqlzv-1v",
+      "id": "benefit-mr8d914s-q",
       "type": "text",
       "role": "benefit",
       "text": "✓ Antibacterial",
@@ -349,7 +351,7 @@
       "sizeLocked": true
     },
     {
-      "id": "benefit-mr8aqlzv-1w",
+      "id": "benefit-mr8d914s-r",
       "type": "text",
       "role": "benefit",
       "text": "✓ Protects skin & hair",
@@ -371,7 +373,7 @@
       "sizeLocked": true
     },
     {
-      "id": "drawback-mr8aqlzv-1x",
+      "id": "drawback-mr8d914s-s",
       "type": "text",
       "role": "drawback",
       "text": "Synthetic fabrics ✗",
@@ -393,7 +395,7 @@
       "sizeLocked": true
     },
     {
-      "id": "drawback-mr8aqlzv-1y",
+      "id": "drawback-mr8d914s-t",
       "type": "text",
       "role": "drawback",
       "text": "Bacterial breeding ground ✗",
@@ -415,7 +417,7 @@
       "sizeLocked": true
     },
     {
-      "id": "drawback-mr8aqlzv-1z",
+      "id": "drawback-mr8d914s-u",
       "type": "text",
       "role": "drawback",
       "text": "Causes friction with skin & hair ✗",
@@ -437,7 +439,7 @@
       "sizeLocked": true
     },
     {
-      "id": "cta-mr8aqlzv-20",
+      "id": "cta-mr8d914s-v",
       "type": "button",
       "role": "cta",
       "text": "100 Nights Risk Free Trial",
@@ -461,6 +463,6 @@
       "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr8aqlzvsvqe",
-  "updatedAt": 1783286500317
+  "skeletonId": "skel_mr8d914rtrno",
+  "updatedAt": 1783290718974
 }

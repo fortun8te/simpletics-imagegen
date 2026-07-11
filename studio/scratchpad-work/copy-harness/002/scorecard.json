@@ -1,0 +1,382 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8d8nph-2",
+        "text": "ALLE ESSENTIALS",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 8.6,
+        "sizeDeltaPct": 22.3
+      },
+      {
+        "id": "subhead-mr8d8nph-3",
+        "text": "KRACHTSPORT BUNDEL",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2.1,
+        "sizeDeltaPct": 5.6
+      },
+      {
+        "id": "price-mr8d8nph-4",
+        "text": "€63",
+        "renderSim": 0.5,
+        "sourceSim": 0.5,
+        "stringOk": false,
+        "posDeltaPx": 10,
+        "sizeDeltaPct": 2.6
+      },
+      {
+        "id": "price-mr8d8nph-7",
+        "text": "€49",
+        "renderSim": 0.5,
+        "sourceSim": 0.5,
+        "stringOk": false,
+        "posDeltaPx": 10,
+        "sizeDeltaPct": 2.6
+      },
+      {
+        "id": "caption-mr8d8nph-9",
+        "text": "KOOP NU VIA UPFRONT.NL",
+        "renderSim": 0.42,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "ALLE ESSENTIALS",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "KRACHTSPORT BUNDEL",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "€63 → €49",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "KOOP NU VIA UPFRONT.NL",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "PRE PRO 3.0",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "CITRUS SMAAK",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "WHEY MILKSHAKE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "VANILLESMAAK",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1kg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ingrediënten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "wei-eiwit concentraat (melk)(97%), natuuriijk bourbon vanill",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "verdikkingsmiddel: xanthaangom, emulgator: zonnebloemlecithi",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "zoetstof: sucralose",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "voedingswaarden",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "per 100g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "per 30g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1673 kJ",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "502 kJ",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "396 kcal",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "119 kcal",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "vetten",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "6.Bg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "2.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "-verz. vetten",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "3.9g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1.2g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "5.6g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1.7g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "CREATINE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "4.0g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "1.2g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "vezels",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.7g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.2g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "74g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "22g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.37g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.11g",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "creatre monahydraat",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ca. 2 scoops",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "5000mg",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.93,
+    "textRenderAcc": 0.4,
+    "meanPosDelta": 7.7,
+    "pileOverlaps": 0,
+    "score": 75.2
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8d8npi-b",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 9.92,
+        "samples": 3425
+      },
+      {
+        "id": "card-mr8d8nph-0",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 95,
+          "y": 90,
+          "w": 890,
+          "h": 1570
+        },
+        "area": 1397300,
+        "meanDeltaE": 2.25,
+        "samples": 3067
+      },
+      {
+        "id": "logo-mr8d8nph-1",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 482,
+          "y": 118,
+          "w": 116,
+          "h": 116
+        },
+        "area": 13456,
+        "meanDeltaE": 11.14,
+        "samples": 3364
+      },
+      {
+        "id": "decor-mr8d8nph-5",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 322,
+          "y": 566,
+          "w": 165,
+          "h": 7
+        },
+        "area": 1155,
+        "meanDeltaE": 96.28,
+        "samples": 56
+      },
+      {
+        "id": "decor-mr8d8nph-8",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 580,
+          "y": 610,
+          "w": 160,
+          "h": 7
+        },
+        "area": 1120,
+        "meanDeltaE": 96.3,
+        "samples": 812
+      },
+      {
+        "id": "product-mr8d8nph-a",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 55,
+          "y": 905,
+          "w": 975,
+          "h": 760
+        },
+        "area": 741000,
+        "meanDeltaE": 1.34,
+        "samples": 3231
+      }
+    ],
+    "meanDeltaE": 36.21,
+    "score": 85.2
+  },
+  "legacyPixel": 93.6,
+  "composite": 81.9
+}

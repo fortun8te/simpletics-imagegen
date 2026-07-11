@@ -1,0 +1,252 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "ghostText",
+      "detail": "\"preelotics\" ×2 in render (word-window sims 1.00/0.80, offset 38px)"
+    },
+    {
+      "rule": "ghostText",
+      "detail": "\"prebiotics\" ×2 in render (word-window sims 1.00/0.80, offset 38px)"
+    },
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"GREEN GUMMY BEARS\" (best source sim 0.33, word coverage 0%)"
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6nph45-4q",
+        "text": "How I get ALL my nutrients on Ozempic:",
+        "renderSim": 0.73,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 5.3,
+        "sizeDeltaPct": 10.9
+      },
+      {
+        "id": "subhead-mr6nph45-4t",
+        "text": "6g fiber",
+        "renderSim": 0.27,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr6nph45-4u",
+        "text": "21+ vitamins & minerals",
+        "renderSim": 0.62,
+        "sourceSim": 0.63,
+        "stringOk": false,
+        "posDeltaPx": 125.5,
+        "sizeDeltaPct": 35.2
+      },
+      {
+        "id": "subhead-mr6nph45-4v",
+        "text": "60+ whole food ingredients",
+        "renderSim": 0.52,
+        "sourceSim": 0.72,
+        "stringOk": false,
+        "posDeltaPx": 248.1,
+        "sizeDeltaPct": 58.6
+      },
+      {
+        "id": "subhead-mr6nph45-4w",
+        "text": "Gut health prebiotics",
+        "renderSim": 0.57,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 153.7,
+        "sizeDeltaPct": 51.9
+      },
+      {
+        "id": "caption-mr6nph45-4x",
+        "text": "·",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nph45-4y",
+        "text": "·",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nph45-4z",
+        "text": "·",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nph45-50",
+        "text": "·",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nph45-51",
+        "text": "GREEN GUMMY BEARS",
+        "renderSim": 1,
+        "sourceSim": 0.33,
+        "stringOk": true,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "logo-mr6nph45-55",
+        "text": "grüns",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 72.2,
+        "sizeDeltaPct": 45.7
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "How I get ALL my",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "nutrients on Ozempic:",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "21+ vitamins",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "60+ whole food",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "& minerals",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ingredients",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "6g fiber",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Gut health",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "prebiotics",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Get up to",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "45%",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Off",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "grüns",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.85,
+    "textRenderAcc": 0.18,
+    "meanPosDelta": 121,
+    "pileOverlaps": 2,
+    "score": 53.8
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr6nph45",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 1.88,
+        "samples": 1815
+      },
+      {
+        "id": "rect-mr6nph45-4s",
+        "name": "Cut-out · grüns pouch bag",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 562,
+          "w": 1080,
+          "h": 518
+        },
+        "area": 559440,
+        "meanDeltaE": 3.46,
+        "samples": 1809
+      },
+      {
+        "id": "price-mr6nph45-52",
+        "name": "price",
+        "type": "badge",
+        "box": {
+          "x": 756,
+          "y": 572,
+          "w": 302,
+          "h": 238
+        },
+        "area": 71876,
+        "meanDeltaE": 17.79,
+        "samples": 2856
+      }
+    ],
+    "meanDeltaE": 7.71,
+    "score": 92.5
+  },
+  "legacyPixel": 88,
+  "composite": 66.3
+}

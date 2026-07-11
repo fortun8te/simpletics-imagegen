@@ -34,14 +34,25 @@
 // Renders are cached under .state/font-match/ keyed by everything that affects the probe
 // (text, family, size, weight, color, bg, box, canvas) so repeat runs are ~free.
 
+// PACK MATCHING (S8, COPY-ENGINE-V2 §3.6): matchFontAll() below extends the same silhouette
+// idea to the REAL font library — the ~60-family Google Fonts pack from scripts/fetch-fonts.mjs
+// (manifest lib/fonts-manifest.json) plus curated system fonts. Two-phase to stay bounded:
+// (1) one probe SHEET with one representative per visual class picks the top 2-3 classes,
+// (2) exhaustive scoring only within those classes' manifest families, then a weight/size
+// refinement of the leaders. All candidates of a phase render on ONE headless-Chrome page
+// (a vertical sheet of tiles) instead of one Chrome spawn per candidate — 3-4 spawns per crop
+// total, ≤ ~40 candidate tiles. Results cached by (crop hash, manifest hash, text, opts).
+
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { platform } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readPng, downsampleGray } from '../scripts/pixel-diff.mjs';
 import { renderCompPng } from './self-vision.mjs';
 import { sampleRegionStats } from './layout-extract.mjs';
+import { loadFontsManifest, packFontFaceCss } from './font-faces.mjs';
 
 const STATE = join(dirname(fileURLToPath(import.meta.url)), '..', '.state', 'font-match');
 
@@ -465,4 +476,582 @@ export async function matchFontsForScene(scenePath, referencePath, opts = {}) {
     }
   }
   return summary;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════════════════════
+// PACK MATCHING — matchFontAll / metricFallback (S8). See module header for the design.
+// ═══════════════════════════════════════════════════════════════════════════════════════════════
+
+/** One representative per visual class — phase-1 class filter renders ONLY these. */
+export const CLASS_REPS = {
+  grotesk: 'Inter',
+  geometric: 'Poppins',
+  humanist: 'Open Sans',
+  condensed: 'Oswald',
+  'heavy-display': 'Archivo Black',
+  'serif-display': 'Playfair Display',
+  'serif-body': 'Lora',
+  mono: 'JetBrains Mono',
+  script: 'Pacifico',
+};
+
+// ── headless Chrome (same pattern as lib/self-vision.mjs, but we screenshot RAW HTML sheets —
+//    renderCompPng only takes DesignDocs and spawns once per doc, too slow for 40 candidates) ──
+
+const SHEET_CHROME_CANDIDATES = [
+  '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+  '/Applications/Chromium.app/Contents/MacOS/Chromium',
+  '/Applications/Google Chrome Canary.app/Contents/MacOS/Google Chrome Canary',
+];
+
+let _sheetChrome; // undefined = unprobed, null = missing, string = binary path
+
+function findSheetChrome() {
+  if (_sheetChrome !== undefined) return _sheetChrome;
+  for (const p of SHEET_CHROME_CANDIDATES) {
+    if (existsSync(p)) { _sheetChrome = p; return p; }
+  }
+  if (platform() !== 'darwin') {
+    for (const cmd of ['google-chrome', 'google-chrome-stable', 'chromium', 'chromium-browser']) {
+      try {
+        const r = spawnSync('which', [cmd], { timeout: 5_000 });
+        const p = r.status === 0 ? String(r.stdout || '').trim() : '';
+        if (p) { _sheetChrome = p; return p; }
+      } catch { /* keep probing */ }
+    }
+  }
+  _sheetChrome = null;
+  return null;
+}
+
+/** Screenshot an HTML string at exactly (w,h) CSS px. Returns PNG path or null. Cached by
+ *  content hash — identical sheets (same candidates, same text) never re-render. */
+function screenshotHtml(html, w, h) {
+  const chrome = findSheetChrome();
+  if (!chrome) return null;
+  mkdirSync(STATE, { recursive: true });
+  const key = md5(`${w}x${h}:${html}`);
+  const pngPath = join(STATE, `sheet-${key}.png`);
+  if (existsSync(pngPath)) return pngPath;
+  const htmlPath = join(STATE, `sheet-${key}.html`);
+  try {
+    writeFileSync(htmlPath, html);
+    const r = spawnSync(chrome, [
+      '--headless', '--disable-gpu', '--no-sandbox', '--hide-scrollbars',
+      '--force-device-scale-factor=1', '--allow-file-access-from-files',
+      `--window-size=${Math.max(1, Math.round(w))},${Math.max(1, Math.round(h))}`,
+      `--screenshot=${pngPath}`,
+      `file://${htmlPath}`,
+    ], { timeout: 30_000 });
+    if (r.status !== 0 || !existsSync(pngPath)) return null;
+    return pngPath;
+  } catch {
+    return null;
+  }
+}
+
+// ── crop analysis helpers ─────────────────────────────────────────────────────────────────────
+
+/** Normalize polarity: return { crop, inverted } where the crop's ink is DARK on a LIGHT bg
+ *  (inverted=true when the reference was light-on-dark) — the crop-analysis helpers all assume
+ *  dark ink. `inverted` is remembered so PROBES render in the reference's ORIGINAL polarity:
+ *  white-on-dark text optically blooms (antialiasing spreads the bright side), and scoring a
+ *  black-on-white probe against an inverted light-on-dark target systematically prefers one
+ *  weight step too bold (corpus 042: clearly-regular body text matched @700). Rendering the
+ *  probe white-on-black too reproduces the bloom and cancels the bias. */
+function normalizeInkPolarity(crop) {
+  const bg = borderLum(crop);
+  const { gray } = crop;
+  let dark = 0, light = 0;
+  for (let i = 0; i < gray.length; i++) {
+    const d = gray[i] - bg;
+    if (d < -0.2) dark++;
+    else if (d > 0.2) light++;
+  }
+  if (light <= dark) return { crop, inverted: false };
+  // Invert in LINEAR light, not perceptual: white-on-dark strokes carry a bright antialias halo
+  // that a naive (1−g) inversion turns into dark "ink", fattening every stroke ~a weight step
+  // (corpus 042: regular body text matched @700). Linearize (γ2.2) → invert → re-encode keeps
+  // halo pixels light, so apparent stroke width survives the polarity flip honestly.
+  const inv = new Float32Array(gray.length);
+  for (let i = 0; i < gray.length; i++) {
+    inv[i] = (1 - gray[i] ** 2.2) ** (1 / 2.2);
+  }
+  return { crop: { width: crop.width, height: crop.height, gray: inv }, inverted: true };
+}
+
+// (Probes always render dark-on-light: Chrome's antialias blending is symmetric enough that a
+// light-on-dark probe is the exact inverse of the dark-on-light one, and zero-mean NCC is
+// negation-invariant — verified empirically: rendering probes in the reference's polarity
+// changed no score by even 1e-4. The reference-side bloom is handled in normalizeInkPolarity.)
+
+/** Ink bounding box of a (polarity-normalized) crop: pixels darker than bg−0.2. Null if blank. */
+function inkBBox(crop) {
+  const { width: w, height: h, gray } = crop;
+  const bg = borderLum(crop);
+  let x0 = w, y0 = h, x1 = -1, y1 = -1;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (gray[y * w + x] < bg - 0.2) {
+        if (x < x0) x0 = x; if (x > x1) x1 = x;
+        if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+    }
+  }
+  if (x1 < 0 || x1 - x0 < 3 || y1 - y0 < 3) return null;
+  return { x0, y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+}
+
+function subCrop(crop, x0, y0, w, h) {
+  const W = crop.width, H = crop.height;
+  x0 = Math.max(0, Math.min(W - 1, Math.round(x0)));
+  y0 = Math.max(0, Math.min(H - 1, Math.round(y0)));
+  w = Math.max(1, Math.min(W - x0, Math.round(w)));
+  h = Math.max(1, Math.min(H - y0, Math.round(h)));
+  const gray = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) gray.set(crop.gray.subarray((y0 + y) * W + x0, (y0 + y) * W + x0 + w), y * w);
+  return { width: w, height: h, gray };
+}
+
+/** Rough stroke-weight hint from the target: median horizontal ink run length / fontSize.
+ *  Only a phase-1 prior — phase 3 explores neighbor weights around whatever wins. */
+function estimateWeightHint(crop, fontPx) {
+  const { width: w, height: h, gray } = crop;
+  const bg = borderLum(crop);
+  const runs = [];
+  const step = Math.max(1, Math.floor(h / 24));
+  for (let y = 0; y < h; y += step) {
+    let run = 0;
+    for (let x = 0; x < w; x++) {
+      if (gray[y * w + x] < bg - 0.2) run++;
+      else if (run) { if (run < fontPx * 0.4) runs.push(run); run = 0; }
+    }
+    if (run && run < fontPx * 0.4) runs.push(run);
+  }
+  if (runs.length < 8) return 700; // too little ink to judge — ads skew bold
+  runs.sort((a, b) => a - b);
+  const stroke = runs[Math.floor(runs.length / 2)];
+  const r = stroke / Math.max(1, fontPx);
+  if (r < 0.085) return 400;
+  if (r < 0.135) return 700;
+  return 900;
+}
+
+/** Nearest available weight of a manifest entry to `want` (system entries use `weights`). */
+function nearestWeight(entry, want) {
+  const ws = (entry.weights && entry.weights.length ? entry.weights : [400]);
+  let best = ws[0];
+  for (const w of ws) if (Math.abs(w - want) < Math.abs(best - want)) best = w;
+  return best;
+}
+
+// ── probe sheets: many candidates → ONE Chrome render ────────────────────────────────────────
+
+const SHEET_PAD = 12;
+
+/**
+ * Render `tiles` (one per candidate) on a single page and score each against `target`
+ * (a polarity-normalized, ink-trimmed crop). Tile geometry mirrors the target: the text is laid
+ * out in a box of the target's ink dimensions (scaled by `S`), then the probe region is anchored
+ * at the tile's own ink top-left, HEIGHT-normalized: the probe window is the tile's own ink
+ * height × the target's aspect ratio, so an error in the estimated render size cancels out
+ * (both crops are resampled to the same grid by silhouetteScore) while the WIDTH signal that
+ * separates condensed from wide faces survives — a too-wide family overflows the aspect-matched
+ * window (glyphs cut off), a too-narrow one leaves dead space, and both lose score.
+ * (v1 cropped a fixed target-sized box instead; a 25% fontSize over-estimate — routine for
+ * single-line mixed-case crops where the ink band spans ascender→descender — cut off a third of
+ * every probe and made the TRUE family score 0.14 on its own sample.)
+ * Returns Map(tileId -> score|null).
+ */
+function scoreTilesAgainstTarget(tiles, target, ctx) {
+  const scores = new Map();
+  const slots = renderTileSlots(tiles, ctx);
+  for (const t of tiles) {
+    const got = slots.get(t.id);
+    if (!got) { scores.set(t.id, null); continue; }
+    const { slot, bb } = got;
+    // height-normalized, aspect-matched window anchored at the probe's own ink top-left
+    const winW = Math.max(4, Math.round(bb.h * (target.width / Math.max(1, target.height))));
+    const probe = subCrop(slot, bb.x0, bb.y0, winW, bb.h);
+    scores.set(t.id, silhouetteScore(target, probe, { cols: ctx.cols || 48 }));
+  }
+  return scores;
+}
+
+/** Render tiles onto paginated sheets (ONE Chrome spawn per ≤12k-px-tall page) and return
+ *  Map(tileId -> { slot, bb }) — the tile's crop and its ink bbox. Unrenderable/blank tiles
+ *  are absent from the map. */
+function renderTileSlots(tiles, ctx) {
+  const out = new Map();
+  if (!tiles.length) return out;
+  const { boxW, boxH, fsTile, lineHeight, nowrap } = ctx;
+  const slotH = boxH + SHEET_PAD * 2 + Math.ceil(fsTile * 0.7);
+  const sheetW = Math.min(2600, Math.max(200, Math.round(nowrap ? boxW * 2.2 + SHEET_PAD * 2 : boxW * 1.35 + SHEET_PAD * 2)));
+
+  const perSheet = Math.max(1, Math.floor(12_000 / slotH));
+  for (let page = 0; page * perSheet < tiles.length; page++) {
+    const batch = tiles.slice(page * perSheet, (page + 1) * perSheet);
+    const needs = [];
+    for (const t of batch) {
+      if (t.hasFiles) needs.push({ family: t.family, weights: [t.weight] });
+    }
+    const divs = batch.map((t, i) => {
+      const top = i * slotH + SHEET_PAD;
+      const widthCss = nowrap ? 'max-content' : `${Math.round(boxW * 1.02)}px`;
+      return `<div style="position:absolute;left:${SHEET_PAD}px;top:${top}px;width:${widthCss};` +
+        `font-family:'${String(t.family).replace(/'/g, '')}';font-weight:${t.weight};` +
+        `font-size:${t.fsTile || fsTile}px;line-height:${lineHeight};color:#000;` +
+        `${nowrap ? 'white-space:nowrap;' : ''}font-kerning:normal;` +
+        `-webkit-font-smoothing:antialiased;">${escapeHtmlText(ctx.text)}</div>`;
+    }).join('\n');
+    const html = `<!doctype html><meta charset="utf-8"><style>${packFontFaceCss(needs)}\n` +
+      `html,body{margin:0;padding:0;background:#fff}</style>\n<body>${divs}</body>`;
+    const png = screenshotHtml(html, sheetW, batch.length * slotH);
+    const sheet = png ? readPng(png) : null;
+    if (!sheet) continue;
+    for (let i = 0; i < batch.length; i++) {
+      const slot = subCrop(sheet, 0, i * slotH, sheetW, slotH);
+      const bb = inkBBox(slot);
+      if (bb) out.set(batch[i].id, { slot, bb });
+    }
+  }
+  return out;
+}
+
+function escapeHtmlText(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/**
+ * Render a text sample in one pack/system family to a standalone PNG (white bg, black text).
+ * Used by tests (synthesize a known-font crop) and debug side-by-sides. Returns path or null.
+ */
+export function renderFontSample(family, weight, text, { fontSizePx = 64, lineHeight = 1.2, maxWidth = 1400 } = {}) {
+  const needs = [{ family, weights: [weight] }];
+  const html = `<!doctype html><meta charset="utf-8"><style>${packFontFaceCss(needs)}\n` +
+    `html,body{margin:0;padding:0;background:#fff}</style>\n<body>` +
+    `<div style="position:absolute;left:16px;top:16px;width:max-content;max-width:${maxWidth}px;` +
+    `font-family:'${String(family).replace(/'/g, '')}';font-weight:${weight};font-size:${fontSizePx}px;` +
+    `line-height:${lineHeight};color:#000;-webkit-font-smoothing:antialiased;">${escapeHtmlText(text)}</div></body>`;
+  const estW = Math.min(maxWidth + 32, Math.round(String(text).length * fontSizePx * 0.75) + 48);
+  const estH = Math.round(fontSizePx * lineHeight * (1 + Math.ceil(String(text).length * fontSizePx * 0.6 / maxWidth))) + 48;
+  return screenshotHtml(html, Math.max(200, estW), Math.max(120, estH));
+}
+
+// ── matchFontAll ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Identify the font of a text crop against the WHOLE usable library (Google-Fonts pack manifest
+ * + curated system fonts). Two-phase bounded search; see module header.
+ *
+ * @param {string|object} cropPngOrOpts — crop PNG path, or an opts object carrying `crop`.
+ * @param {object} [opts] — {
+ *   text:       string  (REQUIRED — the crop's own text; the reader/OCR already has it)
+ *   topN:       number  (default 5)
+ *   weightHint: number  (skip the stroke-width estimate)
+ *   maxTiles:   number  (candidate-render budget, default 40)
+ *   debugDir:   string  (write per-phase probe sheets info JSON here)
+ * }
+ * @returns {Promise<{family:string,weight:number,italic:boolean,score:number,source:string}[]>}
+ *   top-N sorted desc — [] when the crop/text is unusable or Chrome is unavailable.
+ */
+export async function matchFontAll(cropPngOrOpts, opts = {}) {
+  const o = typeof cropPngOrOpts === 'string'
+    ? { ...opts, crop: cropPngOrOpts }
+    : { ...(cropPngOrOpts || {}), ...opts };
+  const cropPath = o.crop || o.cropPath || o.path;
+  const text = String(o.text || '').trim();
+  const topN = o.topN || 5;
+  if (!cropPath || !existsSync(cropPath) || !text) return [];
+
+  const { entries, hash: manifestHash } = loadFontsManifest();
+  const usable = entries.filter((e) =>
+    (e.files && Object.keys(e.files).length) || (e.source === 'system' && fontInstalled(e.family)));
+  if (!usable.length) return [];
+
+  // result cache — keyed by everything that affects the outcome
+  let cropHash = 'na';
+  try { cropHash = md5(readFileSync(cropPath).toString('base64')); } catch { /* keep na */ }
+  const cacheKey = md5(JSON.stringify({ v: 6, cropHash, manifestHash, text, topN, wh: o.weightHint || 0 }));
+  mkdirSync(STATE, { recursive: true });
+  const cacheFile = join(STATE, `all-${cacheKey}.json`);
+  if (existsSync(cacheFile)) {
+    try { return JSON.parse(readFileSync(cacheFile, 'utf8')); } catch { /* recompute */ }
+  }
+
+  // decode → normalize polarity → trim to ink
+  const dec = decodeImageAny(cropPath);
+  if (!dec) return [];
+  const { crop: norm, inverted } = normalizeInkPolarity(dec.png);
+  const bb = inkBBox(norm);
+  if (!bb) return [];
+  const target = subCrop(norm, bb.x0, bb.y0, bb.w, bb.h);
+
+  // measure font size / line pitch from ink bands (same 0.72em model as matchFont)
+  const bands = inkBands(target, borderLum(target));
+  const heights = bands.map(([a, b]) => b - a).sort((x, y) => x - y);
+  const thickness = heights.length ? heights[Math.floor(heights.length / 2)] : target.height;
+  // band thickness → em: 0.72 for caps-only (cap height); a single-line band with lowercase
+  // spans ascender→descender ≈ 0.98em (with descenders) / 0.76em (without) — the height-
+  // normalized probe window forgives the residual error, this just keeps renders close.
+  let emFactor = 0.72;
+  if (bands.length === 1 && /[a-z]/.test(text)) emFactor = /[gjpqy]/.test(text) ? 0.98 : 0.76;
+  const fontPx = Math.max(10, Math.min(500, Math.round(thickness / emFactor)));
+  let lineHeight = 1.2;
+  if (bands.length >= 2) {
+    const pitches = [];
+    for (let i = 1; i < bands.length; i++) pitches.push(bands[i][0] - bands[i - 1][0]);
+    pitches.sort((x, y) => x - y);
+    lineHeight = Math.round(Math.max(0.8, Math.min(1.8, pitches[Math.floor(pitches.length / 2)] / fontPx)) * 100) / 100;
+  }
+  const nowrap = bands.length <= 1;
+
+  // tile geometry: scale the target's ink box to a friendly render size
+  let S = target.width > 720 ? 720 / target.width : 1;
+  if (fontPx * S < 14) S = Math.min(4, 14 / fontPx);
+  const ctx = {
+    text,
+    boxW: Math.max(8, Math.round(target.width * S)),
+    boxH: Math.max(8, Math.round(target.height * S)),
+    fsTile: Math.max(6, Math.round(fontPx * S)),
+    lineHeight, nowrap, cols: o.cols || 48,
+  };
+
+  const byFamily = new Map(usable.map((e) => [e.family, e]));
+  const wHint = o.weightHint || estimateWeightHint(target, fontPx);
+  const memo = new Map(); // "family|weight|fs" -> score
+  let tilesSpent = 0;
+  const budget = o.maxTiles || 40;
+
+  const runPhase = (specs) => {
+    const fresh = specs.filter((s) => !memo.has(s.id));
+    tilesSpent += fresh.length;
+    const scored = scoreTilesAgainstTarget(fresh, target, ctx);
+    for (const [id, sc] of scored) memo.set(id, sc);
+    return specs.map((s) => ({ ...s, score: memo.get(s.id) ?? null }));
+  };
+  const spec = (entry, weight, fsTile = null) => ({
+    id: `${entry.family}|${weight}|${fsTile || ctx.fsTile}`,
+    family: entry.family, weight, fsTile,
+    hasFiles: !!(entry.files && Object.keys(entry.files).length),
+    source: entry.source || 'google-pack',
+  });
+
+  // ── phase 0 (multi-line only): SIZE CALIBRATION. Wrap boundaries are sharp: an fsTile a few
+  // percent too big makes every normal-width family wrap a word early while condensed families
+  // still fit — condensed then "wins" on wrap shape, not glyph shape (observed on corpus 042:
+  // regular-width body text → Barlow Condensed 800). Render the grotesk rep once, compare its
+  // measured line thickness to the target's, and correct fsTile before anyone is scored. ──
+  if (!nowrap) {
+    const calEntry = byFamily.get(CLASS_REPS.grotesk) || usable[0];
+    const calTile = spec(calEntry, nearestWeight(calEntry, wHint));
+    tilesSpent += 1;
+    const got = renderTileSlots([calTile], ctx).get(calTile.id);
+    if (got) {
+      const pBands = inkBands(got.slot, borderLum(got.slot));
+      const pHeights = pBands.map(([a, b]) => b - a).sort((x, y) => x - y);
+      const pThick = pHeights.length ? pHeights[Math.floor(pHeights.length / 2)] : 0;
+      const expected = thickness * S; // target band thickness in tile px
+      if (pThick > 2 && expected > 2) {
+        const ratio = expected / pThick;
+        if (ratio > 0.7 && ratio < 1.4 && Math.abs(ratio - 1) > 0.03) {
+          ctx.fsTile = Math.max(6, Math.round(ctx.fsTile * ratio));
+        }
+      }
+    }
+  }
+
+  // ── phase 1: class filter — one representative per class at the hinted weight ──
+  const classesPresent = [...new Set(usable.map((e) => e.cls).filter(Boolean))];
+  const phase1 = [];
+  for (const cls of classesPresent) {
+    const rep = byFamily.get(CLASS_REPS[cls]) || usable.find((e) => e.cls === cls);
+    if (rep) phase1.push(spec(rep, nearestWeight(rep, wHint)));
+  }
+  const p1 = runPhase(phase1).filter((r) => r.score != null);
+  if (!p1.length) return [];
+  p1.sort((a, b) => b.score - a.score);
+  const repByFamily = new Map(usable.map((e) => [e.family, e]));
+  const clsOf = (fam) => repByFamily.get(fam)?.cls;
+  const topClasses = p1.slice(0, 3).map((r) => clsOf(r.family)).filter(Boolean);
+
+  // ── phase 2: every family in the winning classes (budget-capped, best classes first) ──
+  const phase2 = [];
+  for (const cls of topClasses) {
+    for (const e of usable) {
+      if (e.cls !== cls) continue;
+      const s = spec(e, nearestWeight(e, wHint));
+      if (!memo.has(s.id)) phase2.push(s);
+      else phase2.push(s); // already scored in phase 1 — free
+    }
+    if (tilesSpent + phase2.filter((s) => !memo.has(s.id)).length > budget * 0.75) break;
+  }
+  const p2 = runPhase(phase2);
+
+  // best score so far per family
+  const best = new Map(); // family -> { score, weight }
+  for (const r of [...p1, ...p2]) {
+    if (r.score == null) continue;
+    const cur = best.get(r.family);
+    if (!cur || r.score > cur.score) best.set(r.family, { score: r.score, weight: r.weight });
+  }
+
+  // ── phase 3: refine leaders — neighbor weights, and ±6% size when multi-line (wrap edges) ──
+  const leaders = [...best.entries()].sort((a, b) => b[1].score - a[1].score).slice(0, 5);
+  const phase3 = [];
+  for (const [family, cur] of leaders) {
+    const e = byFamily.get(family);
+    if (!e) continue;
+    const ws = e.weights && e.weights.length ? e.weights : [400];
+    const idx = ws.indexOf(cur.weight);
+    for (const ni of [idx - 1, idx + 1]) {
+      if (ni >= 0 && ni < ws.length) phase3.push(spec(e, ws[ni]));
+    }
+  }
+  if (!nowrap) {
+    for (const [family, cur] of leaders.slice(0, 3)) {
+      const e = byFamily.get(family);
+      for (const k of [0.94, 1.06]) phase3.push(spec(e, cur.weight, Math.round(ctx.fsTile * k)));
+    }
+  }
+  const room = budget - tilesSpent;
+  const p3 = runPhase(phase3.slice(0, Math.max(0, room)));
+  for (const r of p3) {
+    if (r.score == null) continue;
+    const cur = best.get(r.family);
+    if (!cur || r.score > cur.score) best.set(r.family, { score: r.score, weight: r.weight });
+  }
+
+  const out = [...best.entries()]
+    .sort((a, b) => b[1].score - a[1].score)
+    .slice(0, topN)
+    .map(([family, v]) => ({
+      family,
+      weight: v.weight,
+      italic: false, // pack carries normal styles only; shear detection lives in typo-truth
+      score: Math.round(v.score * 10_000) / 10_000,
+      source: byFamily.get(family)?.source || 'google-pack',
+    }));
+
+  try { writeFileSync(cacheFile, `${JSON.stringify(out)}\n`); } catch { /* cache best-effort */ }
+  if (o.debugDir) {
+    try {
+      mkdirSync(o.debugDir, { recursive: true });
+      writeFileSync(join(o.debugDir, `match-${cacheKey}.json`), JSON.stringify({
+        cropPath, text, fontPx, lineHeight, nowrap, wHint, tilesSpent,
+        classes: p1.map((r) => ({ cls: clsOf(r.family), rep: r.family, score: r.score })),
+        result: out,
+      }, null, 2));
+    } catch { /* debug best-effort */ }
+  }
+  return out;
+}
+
+// ── metric substitution ───────────────────────────────────────────────────────────────────────
+
+const METRICS_PATH = join(dirname(fileURLToPath(import.meta.url)), '..', '.state', 'font-metrics.json');
+
+/** Measure {xh, adv} for a list of families via probe sheets: per family, row 1 renders "xxxxx"
+ *  at 100px (ink height = x-height), row 2 a pangram (ink width ≈ summed advances). Returns
+ *  Map(family -> {xh, adv}) — xh in em, adv = mean advance per char in em. */
+function measureMetricsSheet(fams /* [{family, weight, hasFiles}] */) {
+  const SZ = 100, ROW = 150, PANGRAM = 'the quick brown fox jumps over a lazy dog';
+  const out = new Map();
+  const perSheet = Math.max(1, Math.floor(12_000 / (ROW * 2)));
+  for (let page = 0; page * perSheet < fams.length; page++) {
+    const batch = fams.slice(page * perSheet, (page + 1) * perSheet);
+    const needs = batch.filter((f) => f.hasFiles).map((f) => ({ family: f.family, weights: [f.weight] }));
+    const divs = batch.map((f, i) => {
+      const base = `position:absolute;left:16px;white-space:nowrap;color:#000;` +
+        `font-family:'${String(f.family).replace(/'/g, '')}';font-weight:${f.weight};font-size:${SZ}px;line-height:1;`;
+      return `<div style="${base}top:${i * ROW * 2 + 20}px;">xxxxx</div>` +
+        `<div style="${base}top:${i * ROW * 2 + ROW + 20}px;">${PANGRAM}</div>`;
+    }).join('\n');
+    const html = `<!doctype html><meta charset="utf-8"><style>${packFontFaceCss(needs)}\n` +
+      `html,body{margin:0;padding:0;background:#fff}</style><body>${divs}</body>`;
+    const png = screenshotHtml(html, 4200, batch.length * ROW * 2 + 40);
+    const sheet = png ? readPng(png) : null;
+    for (let i = 0; i < batch.length; i++) {
+      if (!sheet) { out.set(batch[i].family, null); continue; }
+      const rowX = subCrop(sheet, 0, i * ROW * 2 + 20 - 10, sheet.width, ROW - 20);
+      const rowP = subCrop(sheet, 0, i * ROW * 2 + ROW + 20 - 10, sheet.width, ROW - 20);
+      const bx = inkBBox(rowX), bp = inkBBox(rowP);
+      out.set(batch[i].family, (bx && bp)
+        ? { xh: Math.round((bx.h / SZ) * 1000) / 1000, adv: Math.round((bp.w / PANGRAM.length / SZ) * 1000) / 1000 }
+        : null);
+    }
+  }
+  return out;
+}
+
+/** All manifest families' metrics, measured once and cached in .state/font-metrics.json
+ *  (keyed by manifest hash — a manifest change re-measures). */
+export function fontMetricsAll() {
+  const { entries, hash } = loadFontsManifest();
+  let cache = null;
+  try { cache = JSON.parse(readFileSync(METRICS_PATH, 'utf8')); } catch { /* remeasure */ }
+  if (cache && cache.manifestHash === hash && cache.metrics) return cache.metrics;
+  const fams = entries
+    .filter((e) => (e.files && Object.keys(e.files).length) || (e.source === 'system' && fontInstalled(e.family)))
+    .map((e) => ({ family: e.family, weight: nearestWeight(e, 400), hasFiles: !!(e.files && Object.keys(e.files).length) }));
+  const measured = measureMetricsSheet(fams);
+  const metrics = {};
+  for (const [fam, m] of measured) if (m) metrics[fam] = m;
+  try {
+    mkdirSync(dirname(METRICS_PATH), { recursive: true });
+    writeFileSync(METRICS_PATH, `${JSON.stringify({ manifestHash: hash, metrics }, null, 2)}\n`);
+  } catch { /* cache best-effort */ }
+  return metrics;
+}
+
+/**
+ * Metric substitution (S8): given a family we can't ship (not in the pack / low-confidence
+ * match), return the manifest family minimizing (x-height ratio, mean advance width) distance.
+ * The requested family is measured live via the probe when it's installed locally; otherwise
+ * we fall back to the class representative, and finally Inter.
+ *
+ * @returns {{ family:string, weight?:number, distance:number|null, via:string }}
+ */
+export function metricFallback(family, manifest = null) {
+  const loaded = loadFontsManifest();
+  const entries = Array.isArray(manifest) ? manifest : loaded.entries;
+  const metrics = fontMetricsAll();
+
+  let ref = metrics[family] || null;
+  let via = 'manifest-metrics';
+  if (!ref && fontInstalled(family)) {
+    const m = measureMetricsSheet([{ family, weight: 400, hasFiles: false }]).get(family);
+    if (m) { ref = m; via = 'live-probe'; }
+  }
+  if (!ref) {
+    return { family: 'Inter', distance: null, via: 'default (family unmeasurable)' };
+  }
+
+  // x-height + advance CANNOT tell a serif from a sans (Helvetica Neue's metric twin is
+  // Playfair Display) — when the requested family's visual class is known, only substitute
+  // within the same class GROUP; metrics then pick the best fit inside it.
+  const CLS_GROUP = {
+    grotesk: 'sans', geometric: 'sans', humanist: 'sans', condensed: 'sans', 'heavy-display': 'sans',
+    'serif-display': 'serif', 'serif-body': 'serif', mono: 'mono', script: 'script',
+  };
+  const refEntry = entries.find((e) => e.family === family);
+  const refGroup = refEntry ? CLS_GROUP[refEntry.cls] || null : null;
+
+  let best = null;
+  for (const e of entries) {
+    if (e.family === family) continue;
+    if (!(e.files && Object.keys(e.files).length)) continue; // substitute must be SHIPPABLE
+    if (refGroup && CLS_GROUP[e.cls] !== refGroup) continue;
+    const m = metrics[e.family];
+    if (!m) continue;
+    const d = Math.hypot((m.xh - ref.xh) / Math.max(0.2, ref.xh), (m.adv - ref.adv) / Math.max(0.2, ref.adv));
+    if (!best || d < best.d) best = { e, d };
+  }
+  if (!best) return { family: 'Inter', distance: null, via: 'default (no measurable candidates)' };
+  return {
+    family: best.e.family,
+    weight: nearestWeight(best.e, 400),
+    distance: Math.round(best.d * 1000) / 1000,
+    via,
+  };
 }

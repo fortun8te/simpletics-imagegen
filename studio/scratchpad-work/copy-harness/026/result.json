@@ -4,11 +4,326 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 1,
-    "assemble": 2,
-    "total": 10514
+    "extract": 1453068,
+    "assemble": 3,
+    "total": 1464003
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/026.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-026.png",
+    "patched": 2,
+    "layers": [
+      {
+        "id": "headline-silk",
+        "role": "headline",
+        "text": "Silk",
+        "previous": null,
+        "fontFamily": "Arial Narrow",
+        "confidence": 0.034,
+        "patched": true,
+        "tried": [
+          {
+            "family": "Arial Narrow",
+            "score": 0.8197,
+            "fontSize": 102
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.7857,
+            "fontSize": 85
+          },
+          {
+            "family": "",
+            "score": 0.7789,
+            "fontSize": 88
+          },
+          {
+            "family": "Impact",
+            "score": 0.7351,
+            "fontSize": 89
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.7195,
+            "fontSize": 89
+          },
+          {
+            "family": "Georgia",
+            "score": 0.5373,
+            "fontSize": 89
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.3807,
+            "fontSize": 89
+          },
+          {
+            "family": "Menlo",
+            "score": 0.2918,
+            "fontSize": 89
+          }
+        ]
+      },
+      {
+        "id": "headline-satin",
+        "role": "headline",
+        "text": "Satin",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0249,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Arial Narrow",
+            "score": 0.6769,
+            "fontSize": 102
+          },
+          {
+            "family": "Impact",
+            "score": 0.652,
+            "fontSize": 93
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.6389,
+            "fontSize": 85
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.5576,
+            "fontSize": 95
+          },
+          {
+            "family": "",
+            "score": 0.5505,
+            "fontSize": 95
+          },
+          {
+            "family": "Georgia",
+            "score": 0.4766,
+            "fontSize": 89
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.3711,
+            "fontSize": 89
+          },
+          {
+            "family": "Menlo",
+            "score": 0.2883,
+            "fontSize": 89
+          }
+        ]
+      },
+      {
+        "id": "subhead-left",
+        "role": "subhead",
+        "text": "Premium Silk",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0269,
+        "patched": false,
+        "tried": [
+          {
+            "family": "",
+            "score": 0.9147,
+            "fontSize": 44
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.8878,
+            "fontSize": 44
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.8674,
+            "fontSize": 54
+          },
+          {
+            "family": "Impact",
+            "score": 0.8097,
+            "fontSize": 50
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.7835,
+            "fontSize": 47
+          },
+          {
+            "family": "Menlo",
+            "score": 0.6723,
+            "fontSize": 44
+          },
+          {
+            "family": "Georgia",
+            "score": 0.6421,
+            "fontSize": 44
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.6407,
+            "fontSize": 44
+          }
+        ]
+      },
+      {
+        "id": "caption-left",
+        "role": "caption",
+        "text": "Pillowcase",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0137,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Impact",
+            "score": 0.6529,
+            "fontSize": 32
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.6392,
+            "fontSize": 32
+          },
+          {
+            "family": "",
+            "score": 0.5498,
+            "fontSize": 25
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.5193,
+            "fontSize": 36
+          },
+          {
+            "family": "Menlo",
+            "score": 0.5088,
+            "fontSize": 25
+          },
+          {
+            "family": "Georgia",
+            "score": 0.5074,
+            "fontSize": 25
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.4932,
+            "fontSize": 36
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.4314,
+            "fontSize": 25
+          }
+        ]
+      },
+      {
+        "id": "subhead-right",
+        "role": "subhead",
+        "text": "Satin",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0278,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.9486,
+            "fontSize": 44
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.9208,
+            "fontSize": 54
+          },
+          {
+            "family": "",
+            "score": 0.9199,
+            "fontSize": 44
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.8344,
+            "fontSize": 48
+          },
+          {
+            "family": "Impact",
+            "score": 0.766,
+            "fontSize": 51
+          },
+          {
+            "family": "Georgia",
+            "score": 0.6715,
+            "fontSize": 45
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.6153,
+            "fontSize": 45
+          },
+          {
+            "family": "Menlo",
+            "score": 0.4323,
+            "fontSize": 48
+          }
+        ]
+      },
+      {
+        "id": "caption-right",
+        "role": "caption",
+        "text": "Pillowcase",
+        "previous": null,
+        "fontFamily": "Bradley Hand",
+        "confidence": 0.0321,
+        "patched": true,
+        "tried": [
+          {
+            "family": "Bradley Hand",
+            "score": 0.4622,
+            "fontSize": 27
+          },
+          {
+            "family": "Impact",
+            "score": 0.4301,
+            "fontSize": 25
+          },
+          {
+            "family": "",
+            "score": 0.4034,
+            "fontSize": 27
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.3777,
+            "fontSize": 27
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.3703,
+            "fontSize": 27
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.3665,
+            "fontSize": 27
+          },
+          {
+            "family": "Georgia",
+            "score": 0.3443,
+            "fontSize": 25
+          },
+          {
+            "family": "Menlo",
+            "score": 0.3112,
+            "fontSize": 24
+          }
+        ]
+      }
+    ]
   },
   "readSource": "scene-file",
+  "occlusionPlan": [],
   "sceneTruthCorrections": [
     "top-check fontSize: 56 → 40 (1 ink line, block 29px)",
     "top-check box: y66 h60 → y73 h37 (tight ink rows + 4px pad)",
@@ -57,7 +372,11 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 97.8,
-  "pixelScore": 97.8,
+  "pixelScoreRaw": 97.9,
+  "pixelScore": 97.9,
+  "refine": {
+    "ran": false,
+    "reason": "score ≥ 97"
+  },
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/026/side-by-side.png"
 }

@@ -1,0 +1,246 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "meta-mr8e4u80-2b",
+        "text": "Hears®",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1062.7,
+        "sizeDeltaPct": 2.5
+      },
+      {
+        "id": "headline-mr8e4u80-2c",
+        "text": "WE APOLOGIZE...",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 12.9,
+        "sizeDeltaPct": 6.3
+      },
+      {
+        "id": "body-mr8e4u80-2d",
+        "text": "You know when you’re out.\nOut out.\nAnd halfway through the n",
+        "renderSim": 0.38,
+        "sourceSim": 0.31,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "• Hears®",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "WE APOLOGIZE...",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "You know when you're out.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Out out.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "And halfway through the night",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "you realise it's way too loud?",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Yeah. We made something for",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "that.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "They're called Hears.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Premium earplugs that keep the",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "music crisp and your hearing",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Hears",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "protected. No muffling. No",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Brass Blue",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ringing. Just sound the way it",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "should be.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "But here's the issue:",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "People are saying they \"sound",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "too good to be earplugs,\"",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "and now they're getting harder",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "to keep in stock.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Scan the CR code Ior essy-to-talow instructions",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "an how to wear and dlean your earplgs",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "If you're seeing this, you can",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "probably still grab a pair.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "But don't wait too long.",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.67,
+    "meanPosDelta": 537.8,
+    "pileOverlaps": 0,
+    "score": 73.3
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8e4u81-2f",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0.73,
+        "samples": 2694
+      },
+      {
+        "id": "logo-mr8e4u80-2a_p0",
+        "name": "Logo (vectorized) 1",
+        "type": "shape",
+        "box": {
+          "x": 75,
+          "y": 283,
+          "w": 55,
+          "h": 50
+        },
+        "area": 2750,
+        "meanDeltaE": 0.07,
+        "samples": 266
+      },
+      {
+        "id": "logo-mr8e4u80-2a_p1",
+        "name": "Logo (vectorized) 2",
+        "type": "shape",
+        "box": {
+          "x": 75,
+          "y": 283,
+          "w": 55,
+          "h": 50
+        },
+        "area": 2750,
+        "meanDeltaE": 0.07,
+        "samples": 266
+      },
+      {
+        "id": "product-mr8e4u80-2e",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 565,
+          "y": 560,
+          "w": 515,
+          "h": 975
+        },
+        "area": 502125,
+        "meanDeltaE": 1.79,
+        "samples": 3673
+      }
+    ],
+    "meanDeltaE": 0.67,
+    "score": 97.7
+  },
+  "legacyPixel": 96.5,
+  "composite": 85.3
+}

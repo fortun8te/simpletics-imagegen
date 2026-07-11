@@ -1,0 +1,374 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"CHOCOLATE PROTEIN BAR\" (best source sim 0.41, word coverage 0%)"
+    },
+    {
+      "rule": "textPile",
+      "detail": "12 overlapping text pairs (≥40% mutual): \"CHOCOLATE PROTEIN BA\"×\"CHOCO\nEIWITREEP\", \"CHOCO\nEIWITREEP\"×\"13 G EIWIT\nECHT VOED\", \"13 G EIWIT\nECHT VOED\"×\"ingrediënten\ndadels,\", \"13 G EIWIT\nECHT VOED\"×\"voedingswaarden / 10\", \"13 G EIWIT\nECHT VOED\"×\"30% KORTING\", \"13 G EIWIT\nECHT VOED\"×\"UPFRONT\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr6nj9nq-1o",
+        "text": "CHOCOLATE PROTEIN BAR",
+        "renderSim": 0.42,
+        "sourceSim": 0.41,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "headline-mr6nj9nr-1p",
+        "text": "CHOCO\nEIWITREEP",
+        "renderSim": 0.71,
+        "sourceSim": 0.93,
+        "stringOk": false,
+        "posDeltaPx": 387.7,
+        "sizeDeltaPct": 87.1
+      },
+      {
+        "id": "subhead-mr6nj9nr-1q",
+        "text": "13 G EIWIT\nECHT VOEDZAAM\nGEEN ZOETSTOFFEN",
+        "renderSim": 0.37,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6nj9nr-1s",
+        "text": "ingrediënten\ndadels, pinda's (27%), ei-wit\n(15%), melkchocol",
+        "renderSim": 0.55,
+        "sourceSim": 0.67,
+        "stringOk": false,
+        "posDeltaPx": 276,
+        "sizeDeltaPct": 22.9
+      },
+      {
+        "id": "caption-mr6nj9nr-1t",
+        "text": "voedingswaarden / 100g / 50g\nenergie 2017 kJ / 1009 kJ\n483 k",
+        "renderSim": 0.25,
+        "sourceSim": 0.24,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "price-mr6nj9nr-1u",
+        "text": "30% KORTING",
+        "renderSim": 0.36,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "headline-mr6nj9nr-1v",
+        "text": "UPFRONT",
+        "renderSim": 0.71,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 1362,
+        "sizeDeltaPct": 60.7
+      },
+      {
+        "id": "headline-mr6nj9nr-1w",
+        "text": "CHOCO",
+        "renderSim": 0.5,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 124.5,
+        "sizeDeltaPct": 55.4
+      },
+      {
+        "id": "headline-mr6nj9nr-1x",
+        "text": "EIWITREEP",
+        "renderSim": 1,
+        "sourceSim": 0.89,
+        "stringOk": true,
+        "posDeltaPx": 11.2,
+        "sizeDeltaPct": 27.5
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "CHOCO",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "EIWITRFEP",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "13 G EIWIT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ECHT VOEDZAAM",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "GEEN ZOETSTOFFEN",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRU",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "CHOCO EIWIT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "PINDAKAAS",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ingrediënten",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "dadels, pinda's (27%), ei-eiw",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "(15%), melkchocolade (cacac",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "melkeiwit, suiker, cacaomass",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "melkpoeder, melkvet, vanille",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "emulgator: zonnebloemlecithi",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "(15%), cacao nibs, zeezout",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "voedingswaarden",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "/ 100g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "50g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "2017 kJ",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "kJ",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "483 kcal",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "cal",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "27g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "13g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "-verz. vetten",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "9.3g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": ".7g",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "koolhydraten",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "- suikers",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "26g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "vezels",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "4.4g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "58988",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "eiwitten",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "25g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "zout",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "0.59g",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "30% KORTING",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.95,
+    "textRenderAcc": 0.11,
+    "meanPosDelta": 432.3,
+    "pileOverlaps": 12,
+    "score": 51.3
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6nj9nr-20",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 3.52,
+        "samples": 2918
+      },
+      {
+        "id": "caption-mr6nj9nr-1r",
+        "name": "caption",
+        "type": "badge",
+        "box": {
+          "x": 5,
+          "y": 118,
+          "w": 40,
+          "h": 36
+        },
+        "area": 1440,
+        "meanDeltaE": 3.05,
+        "samples": 144
+      },
+      {
+        "id": "rect-mr6nj9nr-1y",
+        "name": "Cut-out · UPFRONT protein bar",
+        "type": "image",
+        "box": {
+          "x": 410,
+          "y": 557,
+          "w": 410,
+          "h": 883
+        },
+        "area": 362030,
+        "meanDeltaE": 0.44,
+        "samples": 2919
+      },
+      {
+        "id": "product-mr6nj9nr-1z",
+        "name": "Product · chocolate protein bar",
+        "type": "shape",
+        "box": {
+          "x": 5,
+          "y": 6,
+          "w": 40,
+          "h": 30
+        },
+        "area": 1200,
+        "meanDeltaE": 0.88,
+        "samples": 120
+      }
+    ],
+    "meanDeltaE": 1.97,
+    "score": 92.3
+  },
+  "legacyPixel": 94.5,
+  "composite": 57.2
+}

@@ -1,0 +1,214 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "wrapMismatch",
+      "detail": "2 layer(s) wrap past their source line count incl. subhead: \"A brand just launched earplugs\" 2→3, \"Try the real thing.\" 1→2"
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr6nqach-57",
+        "text": "🤧",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "headline-mr6nqach-58",
+        "text": "WE GOT COPIED.",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 24.3,
+        "sizeDeltaPct": 25.8
+      },
+      {
+        "id": "subhead-mr6nqach-5a",
+        "text": "A brand just launched earplugs that look a lot like ours.\nSa",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 55.4,
+        "sizeDeltaPct": 0.2
+      },
+      {
+        "id": "caption-mr6nqach-5b",
+        "text": "We noticed. We're not going to pretend otherwise.",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 42.9,
+        "sizeDeltaPct": 21.1
+      },
+      {
+        "id": "caption-mr6nqach-5c",
+        "text": "The part of Hears that matters can't be copied in a\nfactory ",
+        "renderSim": 1,
+        "sourceSim": 0.93,
+        "stringOk": true,
+        "posDeltaPx": 97.8,
+        "sizeDeltaPct": 8.3
+      },
+      {
+        "id": "caption-mr6nqach-5d",
+        "text": "Festival season is here and someone just launched a\nknockoff",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 49.2,
+        "sizeDeltaPct": 7.7
+      },
+      {
+        "id": "subhead-mr6nqach-5e",
+        "text": "Try the real thing.",
+        "renderSim": 0.79,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 72.8,
+        "sizeDeltaPct": 32.9
+      },
+      {
+        "id": "caption-mr6nqach-5f",
+        "text": "Bob & Nick,\nHears",
+        "renderSim": 0.71,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 6,
+        "sizeDeltaPct": 4
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "subhead-mr6nqach-5a",
+        "text": "A brand just launched earplugs that look a lot like ours.\nSa",
+        "role": "subhead",
+        "sourceLines": 2,
+        "renderLines": 3
+      },
+      {
+        "id": "subhead-mr6nqach-5e",
+        "text": "Try the real thing.",
+        "role": "subhead",
+        "sourceLines": 1,
+        "renderLines": 2
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "WE GOT COPIED.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "A brand just launched earplugs that look a lot like ours.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Same shape. Similar colours. Lower price.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "We noticed. We're not going to pretend otherwise.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "The part of Hears that matters can't be copied in a",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "factory run. The membrane inside cuts volume without",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "cutting clarity. It took two years to engineer. Its",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "patented. It's the reason you wake up with clear ears",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "after a show instead of three days of ringing.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Festival season is here and someone just launched a",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "knockoff. So we're making it impossible to choose",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "wrong. Deals up to 35% off until Sunday.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Try the real thing.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Bob & Nick,",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Hears",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.63,
+    "meanPosDelta": 49.8,
+    "pileOverlaps": 1,
+    "score": 84
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6nqach-5g",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0.01,
+        "samples": 2665
+      }
+    ],
+    "meanDeltaE": 0.01,
+    "score": 100
+  },
+  "legacyPixel": 96.4,
+  "composite": 80.3
+}

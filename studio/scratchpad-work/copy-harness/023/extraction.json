@@ -1,0 +1,117 @@
+{
+  "ok": true,
+  "canvas": {
+    "w": 1080,
+    "h": 1920
+  },
+  "archetype": "type-stack-promo",
+  "background": "#FFFFFF",
+  "backgroundIsPhoto": false,
+  "theme": "light",
+  "layers": [
+    {
+      "id": "brand-logo",
+      "type": "shape",
+      "role": "logo",
+      "box": {
+        "x": 75,
+        "y": 283,
+        "w": 55,
+        "h": 50
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.069,
+          "y": 0.147,
+          "w": 0.051,
+          "h": 0.026
+        },
+        "shape": "logo"
+      }
+    },
+    {
+      "id": "brand-name",
+      "type": "text",
+      "role": "meta",
+      "text": "Hears®",
+      "box": {
+        "x": 150,
+        "y": 293,
+        "w": 190,
+        "h": 45
+      },
+      "style": {
+        "fontSize": 48,
+        "fontWeight": 700,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.1,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "role": "headline",
+      "text": "WE APOLOGIZE...",
+      "box": {
+        "x": 75,
+        "y": 398,
+        "w": 790,
+        "h": 89
+      },
+      "style": {
+        "fontSize": 96,
+        "fontWeight": 800,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.05,
+        "uppercase": true
+      }
+    },
+    {
+      "id": "body-copy",
+      "type": "text",
+      "role": "body",
+      "text": "You know when you’re out.\nOut out.\nAnd halfway through the night\nyou realise it’s way too loud?\nYeah. We made something for\nthat.\n\nThey’re called Hears.\nPremium earplugs that keep the\nmusic crisp and your hearing\nprotected. No muffling. No\nringing. Just sound the way it\nshould be.\n\nBut here’s the issue:\nPeople are saying they “sound\ntoo good to be earplugs,”\nand now they’re getting harder\nto keep in stock.\n\nIf you’re seeing this, you can\nprobably still grab a pair.\nBut don’t wait too long.",
+      "box": {
+        "x": 75,
+        "y": 555,
+        "w": 525,
+        "h": 1070
+      },
+      "style": {
+        "fontSize": 38,
+        "fontWeight": 400,
+        "color": "#111111",
+        "align": "left",
+        "lineHeight": 1.3,
+        "uppercase": false
+      }
+    },
+    {
+      "id": "product-photo",
+      "type": "shape",
+      "role": "product",
+      "box": {
+        "x": 565,
+        "y": 560,
+        "w": 515,
+        "h": 975
+      },
+      "style": {},
+      "cutoutCandidate": {
+        "region": {
+          "x": 0.523,
+          "y": 0.292,
+          "w": 0.477,
+          "h": 0.508
+        },
+        "shape": "rect"
+      }
+    }
+  ],
+  "measuredBoxes": true,
+  "_occlusionPlan": []
+}

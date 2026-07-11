@@ -1,0 +1,215 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"EARPLUG AND BOX\" (best source sim 0.33, word coverage 0%)"
+    },
+    {
+      "rule": "textPile",
+      "detail": "3 overlapping text pairs (≥40% mutual): \"EARPLUG AND BOX\"×\"World's Most Advance\", \"World's Most Advance\"×\"20dB\", \"World's Most Advance\"×\"Hears Earplugs\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr6mmzz9-a",
+        "text": "EARPLUG AND BOX",
+        "renderSim": 0.54,
+        "sourceSim": 0.33,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "headline-mr6mmzz9-b",
+        "text": "World's Most Advanced Earplugs",
+        "renderSim": 0.58,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 511.4,
+        "sizeDeltaPct": 60.3
+      },
+      {
+        "id": "headline-mr6mmzz9-c",
+        "text": "20dB",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 938.6,
+        "sizeDeltaPct": 4.6
+      },
+      {
+        "id": "caption-mr6mmzz9-e",
+        "text": "Hears Earplugs",
+        "renderSim": 0.72,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 1416.9,
+        "sizeDeltaPct": 3.8
+      },
+      {
+        "id": "subhead-mr6mmzz9-h",
+        "text": "Up to 200% reduction of fight or flight state",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 39.4,
+        "sizeDeltaPct": 7.3
+      },
+      {
+        "id": "subhead-mr6mmzz9-i",
+        "text": "20dB noise reduction",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 68,
+        "sizeDeltaPct": 0
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "subhead-mr6mmzz9-i",
+        "text": "20dB noise reduction",
+        "role": "subhead",
+        "sourceLines": 2,
+        "renderLines": 1
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "World's Most",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Advanced Earplugs",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Up to 200%",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "reduction of fight or flight state",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Hears",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Gold Waze",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "20dB",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "noise reduction",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "00 Hears",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "reddot winner 2024",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Hears Earplugs",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.91,
+    "textRenderAcc": 0.5,
+    "meanPosDelta": 594.9,
+    "pileOverlaps": 3,
+    "score": 63
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6mmzz9-m",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 7.6,
+        "samples": 3350
+      },
+      {
+        "id": "rect-mr6mmzz9-g",
+        "name": "Cut-out · product packaging box",
+        "type": "image",
+        "box": {
+          "x": 540,
+          "y": 634,
+          "w": 486,
+          "h": 845
+        },
+        "area": 410670,
+        "meanDeltaE": 1.64,
+        "samples": 4023
+      },
+      {
+        "id": "product-mr6mmzz9-k",
+        "name": "Product · Earplug and box",
+        "type": "shape",
+        "box": {
+          "x": 5,
+          "y": 6,
+          "w": 40,
+          "h": 30
+        },
+        "area": 1200,
+        "meanDeltaE": 47.6,
+        "samples": 120
+      },
+      {
+        "id": "logo-mr6mmzz9-l",
+        "name": "Logo · red dot award logo",
+        "type": "image",
+        "box": {
+          "x": 216,
+          "y": 1286,
+          "w": 130,
+          "h": 115
+        },
+        "area": 14950,
+        "meanDeltaE": 3.56,
+        "samples": 2730
+      }
+    ],
+    "meanDeltaE": 15.1,
+    "score": 83.5
+  },
+  "legacyPixel": 93.7,
+  "composite": 66.3
+}

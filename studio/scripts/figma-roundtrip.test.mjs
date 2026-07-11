@@ -34,6 +34,13 @@ const {
 } = await import('../src/components/design/figmaImport.ts');
 const { designToSvg } = await import('../src/components/design/designSvg.ts');
 const { decodeFigmaClipboardHtml, encodeFigmaClipboardHtml } = await import('../src/vendor/figma-kiwi/index.ts');
+const {
+  parseSvgPath,
+  pathToVectorNetwork,
+  encodeVectorNetworkBlob,
+  decodeVectorNetworkBlob,
+  vectorNetworkToSvgPath,
+} = await import('../src/components/design/figmaVector.ts');
 
 // ── fixture: v3 doc — root text + group(text autoH + gradient shape + nested group(badge)) + vignette
 
@@ -639,22 +646,40 @@ check('element instance exports with the element display name', () => {
   assert.ok(changeByName('CTA button bg'), 'bg rect named after element def');
 });
 
-// ── freeform paths + masking round: path fallback, mask trio, fonts, VECTOR import, SVG ──
+// ── freeform paths + masking round: real vectors, mask trio, fonts, VECTOR import, SVG ──
 
-check('path triangle: ROUNDED_RECTANGLE fallback + " (path)" suffix + pluginData d-string', () => {
-  // DOCUMENTED FALLBACK: a real VECTOR needs vectorData.vectorNetworkBlob (opaque non-kiwi
-  // binary) — the box pastes as a rect with the real fill; the d-string rides in pluginData.
-  const wire = changeByName('Triangle (path)');
-  assert.ok(wire, 'path shape on wire with suffixed name');
-  assert.equal(wire.type, 'ROUNDED_RECTANGLE');
+check('path triangle: REAL VECTOR node — vectorNetworkBlob + normalizedSize + pluginData belt-and-braces', () => {
+  // S13b: a clean d-string now pastes as a real VECTOR — vectorData.vectorNetworkBlob indexes
+  // message.blobs (verified byte layout, decoded below with OUR decoder), normalizedSize is the
+  // layer box, and the d-string still rides in pluginData for lossless import.
+  const wire = changeByName('Triangle');
+  assert.ok(wire, 'path shape on wire under its own name (real vector — no " (path)" substitution suffix)');
+  assert.equal(wire.type, 'VECTOR');
+  assert.equal(wire.strokeWeight, 0, 'no explicit stroke ⇒ strokeWeight 0');
+  assert.equal(typeof wire.vectorData?.vectorNetworkBlob, 'number', 'blob index on the wire');
+  assert.deepEqual(wire.vectorData.normalizedSize, { x: 160, y: 140 }, 'normalizedSize = layer box');
+  assert.equal(wire.vectorDataTag, 1, 'vectorData override tag applied');
+  const blob = decodeFigmaClipboardHtml(html).message.blobs[wire.vectorData.vectorNetworkBlob];
+  assert.ok(blob?.bytes?.length, 'network blob bytes present in message.blobs');
+  const net = decodeVectorNetworkBlob(blob.bytes);
+  assert.equal(net.vertices.length, 3, '3 vertices');
+  assert.equal(net.segments.length, 3, '3 segments (incl. the closing line)');
+  assert.deepEqual(net.vertices, [{ x: 80, y: 0 }, { x: 160, y: 140 }, { x: 0, y: 140 }],
+    'vertices scaled into the 160×140 box');
+  for (const s of net.segments) {
+    assert.deepEqual([s.tangentStart, s.tangentEnd], [{ x: 0, y: 0 }, { x: 0, y: 0 }], 'straight ⇒ zero tangents');
+  }
+  assert.equal(net.regions.length, 1, 'one fill region');
+  assert.equal(net.regions[0].windingRule, 'NONZERO');
+  assert.deepEqual(net.regions[0].loops, [[0, 1, 2]], 'loop = vertex cycle');
   const pd = (wire.pluginData || []).find((p) => p.pluginID === FIGMA_PATH_PLUGIN_ID && p.key === FIGMA_PATH_PLUGIN_KEY);
-  assert.ok(pd, 'pluginData path entry present');
+  assert.ok(pd, 'pluginData path entry still present (belt-and-braces)');
   assert.equal(pd.value, 'M 0.5 0 L 1 1 L 0 1 Z');
   const fill = (wire.fillPaints || [])[0];
-  assert.ok(fill && fill.type === 'SOLID', 'real fill on the fallback rect');
+  assert.ok(fill && fill.type === 'SOLID', 'real fill on the vector');
 });
 
-check('path triangle imports back as shapeKind path (suffix stripped)', () => {
+check('path triangle imports back as shapeKind path (lossless via pluginData)', () => {
   const t = findByName(nodes, 'Triangle');
   assert.ok(t, 'triangle back under its original name');
   assert.equal(t.type, 'shape');
@@ -965,6 +990,198 @@ await checkAsync('Figma VECTOR imports as locked placeholder + passthrough (stal
   assert.equal(v.figma?.vectorData?.vectorNetworkBlob, undefined,
     'per-message blob index must not enter the stash');
   assert.ok(v.figma?.vectorData?.normalizedSize, 'rest of vectorData survives');
+});
+
+// ── S13b figmaVector: SVG path → vector network → vectorNetworkBlob (encoder + decoder port) ─────
+
+check('figmaVector: 5-spike star → 10 vertices / 10 straight segments / 1 NONZERO loop + byte math', () => {
+  const pts = [];
+  for (let i = 0; i < 10; i++) {
+    const r = i % 2 === 0 ? 0.5 : 0.2;
+    const a = -Math.PI / 2 + (i * Math.PI) / 5;
+    pts.push([0.5 + r * Math.cos(a), 0.5 + r * Math.sin(a)]);
+  }
+  const d = `M ${pts.map((p) => p.map((v) => Math.round(v * 1e4) / 1e4).join(' ')).join(' L ')} Z`;
+  const net = pathToVectorNetwork(parseSvgPath(d), { width: 180, height: 180 });
+  assert.equal(net.vertices.length, 10, '10 deduped vertices');
+  assert.equal(net.segments.length, 10, '10 segments (incl. the Z-closing line)');
+  for (const s of net.segments) {
+    assert.deepEqual([s.tangentStart, s.tangentEnd], [{ x: 0, y: 0 }, { x: 0, y: 0 }], 'straight ⇒ zero tangents');
+  }
+  assert.equal(net.regions.length, 1);
+  assert.equal(net.regions[0].windingRule, 'NONZERO');
+  assert.deepEqual(net.regions[0].loops, [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]], 'loop = vertex index cycle');
+  // byte-length math: header 12 + 10×12 (vertices) + 10×28 (segments) + region 8 + loop 4 + 10×4.
+  const bytes = encodeVectorNetworkBlob(net);
+  assert.equal(bytes.length, 12 + 10 * 12 + 10 * 28 + 8 + 4 + 10 * 4, 'exact blob size');
+  // decode = structural inverse; float32 quantization is the ONLY permitted drift.
+  const back = decodeVectorNetworkBlob(bytes);
+  assert.deepEqual(back.regions, net.regions);
+  back.vertices.forEach((v, i) => {
+    assert.equal(v.x, Math.fround(net.vertices[i].x), `v${i}.x f32-exact`);
+    assert.equal(v.y, Math.fround(net.vertices[i].y), `v${i}.y f32-exact`);
+  });
+  back.segments.forEach((s, i) => {
+    assert.equal(s.start, net.segments[i].start, `s${i}.start`);
+    assert.equal(s.end, net.segments[i].end, `s${i}.end`);
+    assert.deepEqual([s.tangentStart, s.tangentEnd], [{ x: 0, y: 0 }, { x: 0, y: 0 }], `s${i} tangents`);
+  });
+});
+
+check('figmaVector: circle via two arcs → 4 on-circle vertices, 4 cubics with kappa tangents', () => {
+  const d = 'M 1 0.5 A 0.5 0.5 0 1 1 0 0.5 A 0.5 0.5 0 1 1 1 0.5 Z';
+  const net = pathToVectorNetwork(parseSvgPath(d), { width: 200, height: 200 });
+  assert.equal(net.vertices.length, 4, 'two 180° arcs → four ≤90° cubics → 4 deduped vertices');
+  assert.equal(net.segments.length, 4);
+  assert.equal(net.regions.length, 1, 'closed circle carries a fill region');
+  assert.equal(net.regions[0].loops.length, 1);
+  assert.equal(net.regions[0].loops[0].length, 4, 'loop cycles all 4 vertices');
+  for (const v of net.vertices) {
+    const dist = Math.hypot(v.x - 100, v.y - 100);
+    assert.ok(Math.abs(dist - 100) < 0.5, `vertex (${v.x},${v.y}) off the r=100 circle (d=${dist})`);
+  }
+  // 90°-arc cubic tangent length: α = 4/3·tan(δ/4) → ≈ 0.5523·r px for r = 100.
+  const kappa = (4 / 3) * Math.tan(Math.PI / 8) * 100;
+  for (const s of net.segments) {
+    const m1 = Math.hypot(s.tangentStart.x, s.tangentStart.y);
+    const m2 = Math.hypot(s.tangentEnd.x, s.tangentEnd.y);
+    assert.ok(Math.abs(m1 - kappa) < 1 && Math.abs(m2 - kappa) < 1, `tangents ${m1}/${m2} !≈ ${kappa}`);
+  }
+  // encode → decode structural roundtrip, f32-exact.
+  const back = decodeVectorNetworkBlob(encodeVectorNetworkBlob(net));
+  assert.deepEqual(back.regions, net.regions);
+  back.vertices.forEach((v, i) => {
+    assert.equal(v.x, Math.fround(net.vertices[i].x), `v${i}.x f32-exact`);
+    assert.equal(v.y, Math.fround(net.vertices[i].y), `v${i}.y f32-exact`);
+  });
+  back.segments.forEach((s, i) => {
+    assert.equal(s.start, net.segments[i].start);
+    assert.equal(s.end, net.segments[i].end);
+    assert.equal(s.tangentStart.x, Math.fround(net.segments[i].tangentStart.x), `s${i}.t1x f32-exact`);
+    assert.equal(s.tangentStart.y, Math.fround(net.segments[i].tangentStart.y), `s${i}.t1y f32-exact`);
+    assert.equal(s.tangentEnd.x, Math.fround(net.segments[i].tangentEnd.x), `s${i}.t2x f32-exact`);
+    assert.equal(s.tangentEnd.y, Math.fround(net.segments[i].tangentEnd.y), `s${i}.t2y f32-exact`);
+  });
+});
+
+check('figmaVector: donut (2 subpaths) → ONE NONZERO region with 2 loops, deepEqual decode', () => {
+  const d = 'M 0 0 L 1 0 L 1 1 L 0 1 Z M 0.25 0.25 L 0.75 0.25 L 0.75 0.75 L 0.25 0.75 Z';
+  const net = pathToVectorNetwork(parseSvgPath(d), { width: 100, height: 100 });
+  assert.equal(net.vertices.length, 8);
+  assert.equal(net.segments.length, 8);
+  assert.equal(net.regions.length, 1, 'one region spanning both closed subpaths');
+  assert.deepEqual(net.regions[0].loops, [[0, 1, 2, 3], [4, 5, 6, 7]], 'outer + hole loops');
+  const bytes = encodeVectorNetworkBlob(net);
+  assert.equal(bytes.length, 12 + 8 * 12 + 8 * 28 + 8 + (4 + 4 * 4) + (4 + 4 * 4), 'exact blob size');
+  // grid-aligned coords are f32-exact, so the decode is a full deepEqual inverse here.
+  assert.deepEqual(decodeVectorNetworkBlob(bytes), net);
+  // raw wire check: region flags bit0 = 1 (NONZERO), nLoops = 2 — the contract's exact layout.
+  const view = new DataView(bytes.buffer);
+  const regionOff = 12 + 8 * 12 + 8 * 28;
+  assert.equal(view.getUint32(regionOff, true) & 1, 1, 'flags bit0 = NONZERO');
+  assert.equal(view.getUint32(regionOff + 4, true), 2, 'nLoops = 2');
+  // reconstruction (import side): both subpaths come back, normalized 0..1.
+  assert.equal(vectorNetworkToSvgPath(net, { width: 100, height: 100 }),
+    'M 0 0 L 1 0 L 1 1 L 0 1 Z M 0.25 0.25 L 0.75 0.25 L 0.75 0.75 L 0.25 0.75 Z');
+});
+
+check('figmaVector: relative commands + H/V + quadratic→cubic normalize to absolute segments', () => {
+  const segs = parseSvgPath('m 0 0 h 1 v 1 q -0.5 0.2 -1 0 z');
+  assert.equal(segs.length, 4, 'h + v + q + implicit Z-closing line');
+  assert.equal(segs[0].line, true);
+  assert.deepEqual([segs[0].x2, segs[0].y2], [1, 0], 'h 1 → absolute (1,0)');
+  assert.deepEqual([segs[1].x2, segs[1].y2], [1, 1], 'v 1 → absolute (1,1)');
+  assert.equal(segs[2].line, false, 'quadratic converts to a cubic');
+  assert.deepEqual([segs[2].x2, segs[2].y2], [0, 1], 'q endpoint absolute (0,1)');
+  // exact ⅔-rule controls: c1 = p0 + ⅔(q−p0) with q = (0.5, 1.2).
+  assert.ok(Math.abs(segs[2].cx1 - (1 + (2 / 3) * (0.5 - 1))) < 1e-9, 'c1x exact');
+  assert.ok(Math.abs(segs[2].cy1 - (1 + (2 / 3) * (1.2 - 1))) < 1e-9, 'c1y exact');
+  assert.deepEqual([segs[3].x2, segs[3].y2, segs[3].line], [0, 0, true], 'z closes back to the start');
+  for (const s of segs) assert.equal(s.closed, true, 'all segments marked closed');
+});
+
+check('unparsable path keeps the ROUNDED_RECTANGLE fallback + pluginData (never a drop)', () => {
+  const badDoc = {
+    id: 'comp_bad_path', name: 'Bad Path', canvas: { w: 400, h: 400 },
+    layers: [{
+      id: 'bp', type: 'shape', name: 'Scribble',
+      box: { x: 20, y: 20, w: 100, h: 100 },
+      style: { shapeKind: 'path', path: 'this is not a path', background: '#ff0000' },
+    }],
+    createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const wire = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(badDoc, new Map())).message.nodeChanges;
+  const ph = wire.find((c) => c.name === 'Scribble (path)');
+  assert.ok(ph, 'fallback rect with the " (path)" suffix');
+  assert.equal(ph.type, 'ROUNDED_RECTANGLE');
+  assert.ok(!wire.some((c) => c.type === 'VECTOR'), 'no broken VECTOR emitted');
+  const pd = (ph.pluginData || []).find((p) => p.pluginID === FIGMA_PATH_PLUGIN_ID && p.key === FIGMA_PATH_PLUGIN_KEY);
+  assert.equal(pd?.value, 'this is not a path', 'd-string still stashed losslessly');
+});
+
+await checkAsync('foreign VECTOR with a decodable blob → approximate d-string, NOT a locked placeholder', async () => {
+  // A vector "Figma itself" might send: real network blob, no pluginData from us. Import must
+  // reconstruct the path (vertices + cubics → d) instead of the locked rectangle, and the stash
+  // must still drop the per-message blob index.
+  const net = pathToVectorNetwork(parseSvgPath('M 0 0 L 1 0 L 1 1 Z'), { width: 120, height: 60 });
+  const docGuid = { sessionID: 0, localID: 0 };
+  const pageGuid = { sessionID: 0, localID: 1 };
+  const message = {
+    type: 'NODE_CHANGES', sessionID: 0, ackID: 0, pasteID: 2, pasteFileKey: 'y'.repeat(22),
+    pasteIsPartiallyOutsideEnclosingFrame: false, pastePageId: pageGuid, isCut: false,
+    pasteEditorType: 'DESIGN', publishedAssetGuids: [],
+    nodeChanges: [
+      { guid: docGuid, phase: 'CREATED', type: 'DOCUMENT', name: 'Document', visible: true },
+      {
+        guid: pageGuid, phase: 'CREATED', parentIndex: { guid: docGuid, position: '!' },
+        type: 'CANVAS', name: 'Page 1', visible: true,
+      },
+      {
+        guid: { sessionID: 1, localID: 2 }, phase: 'CREATED',
+        parentIndex: { guid: pageGuid, position: '!' },
+        type: 'VECTOR', name: 'Foreign Vector', visible: true, opacity: 1,
+        size: { x: 120, y: 60 }, transform: { m00: 1, m01: 0, m02: 10, m10: 0, m11: 1, m12: 20 },
+        vectorData: { vectorNetworkBlob: 0, normalizedSize: { x: 120, y: 60 } },
+        fillPaints: [{ type: 'SOLID', color: { r: 0, g: 0.5, b: 1, a: 1 }, opacity: 1, visible: true, blendMode: 'NORMAL' }],
+      },
+    ],
+    blobs: [{ bytes: encodeVectorNetworkBlob(net) }],
+  };
+  const vHtml = encodeFigmaClipboardHtml({ fileKey: message.pasteFileKey, pasteID: 2, dataType: 'scene' }, message);
+  const vRes = await parseFigmaClipboard(vHtml);
+  assert.equal(vRes.ok, true, vRes.error);
+  const v = findByName(vRes.nodes, 'Foreign Vector');
+  assert.ok(v, 'vector imported');
+  assert.equal(v.type, 'shape');
+  assert.ok(!v.locked, 'decodable blob must NOT produce the locked placeholder');
+  assert.equal(v.style.shapeKind, 'path');
+  assert.equal(v.style.path, 'M 0 0 L 1 0 L 1 1 Z', 'approximate d-string reconstructed from the network');
+  // lone-root paste: import shifts the bbox to 0,0 (canvas = bounding box) — size is what matters.
+  assert.deepEqual(v.box, { x: 0, y: 0, w: 120, h: 60 });
+  // `type` is consumed like every shape import (the exporter re-derives VECTOR from shapeKind
+  // 'path'); the REST of vectorData survives in the stash, minus the per-message blob index.
+  assert.ok(v.figma?.vectorData?.normalizedSize, 'vectorData (sans blob) stashed for copy-back');
+  assert.equal(v.figma?.vectorData?.vectorNetworkBlob, undefined, 'blob index still never enters the stash');
+});
+
+await checkAsync('clipboard-level vector roundtrip: emit → import → re-emit keeps a live blob', async () => {
+  // Full copy-back loop for a path layer: export builds a VECTOR + blob, import restores the
+  // layer (pluginData), a SECOND export from the imported doc must build a FRESH blob — the
+  // stashed blob-less vectorData must not clobber it.
+  const first = await parseFigmaClipboard(html);
+  const tri = findByName(first.nodes, 'Triangle');
+  assert.ok(tri, 'triangle imported');
+  const reDoc = {
+    id: 'comp_re', name: 'Re-export', canvas: { w: 400, h: 400 },
+    layers: [tri], createdAt: 0, updatedAt: 0, schemaVersion: 3,
+  };
+  const reWire = decodeFigmaClipboardHtml(buildFigmaClipboardHtml(reDoc, new Map())).message;
+  const reVec = reWire.nodeChanges.find((c) => c.type === 'VECTOR');
+  assert.ok(reVec, 're-export emits a VECTOR again');
+  assert.equal(typeof reVec.vectorData?.vectorNetworkBlob, 'number', 'fresh blob index (stash must not win)');
+  const reNet = decodeVectorNetworkBlob(reWire.blobs[reVec.vectorData.vectorNetworkBlob].bytes);
+  assert.equal(reNet.vertices.length, 3, 'regenerated network intact');
+  assert.equal(reNet.regions.length, 1);
 });
 
 await checkAsync('designSvg: <path> geometry + <clipPath> masks (node-safe shapes-only doc)', async () => {

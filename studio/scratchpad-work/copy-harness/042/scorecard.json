@@ -1,0 +1,136 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "watermark-mr8aquc1-24",
+        "text": "X.com",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1.4,
+        "sizeDeltaPct": 27.2
+      },
+      {
+        "id": "body-mr8aquc1-25",
+        "text": "Saw how good my hair looked and had to take a picture. Been ",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 3.8,
+        "sizeDeltaPct": 3.3
+      },
+      {
+        "id": "meta-mr8aquc1-27",
+        "text": "14:27 - 07/10/2025 - 757 Views",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 0,
+        "sizeDeltaPct": 0
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": ".com",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Saw how good my hair looked and had to take a picture. Been",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "using the Wavy creme for a week now. Never going back!",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "14:27 -07/10/2025 - 757 Views",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 1,
+    "meanPosDelta": 1.7,
+    "pileOverlaps": 0,
+    "score": 99.9
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8aquc1-28",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 1.11,
+        "samples": 3720
+      },
+      {
+        "id": "avatar-mr8aquc1-22",
+        "name": "Avatar (cut out)",
+        "type": "image",
+        "box": {
+          "x": 62,
+          "y": 203,
+          "w": 98,
+          "h": 98
+        },
+        "area": 9604,
+        "meanDeltaE": 4.1,
+        "samples": 2401
+      },
+      {
+        "id": "decor-mr8aquc1-23",
+        "name": "decor",
+        "type": "shape",
+        "box": {
+          "x": 205,
+          "y": 215,
+          "w": 215,
+          "h": 80
+        },
+        "area": 17200,
+        "meanDeltaE": 11.69,
+        "samples": 2836
+      },
+      {
+        "id": "photo-mr8aquc1-26",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 55,
+          "y": 480,
+          "w": 970,
+          "h": 1160
+        },
+        "area": 1125200,
+        "meanDeltaE": 1.63,
+        "samples": 3990
+      }
+    ],
+    "meanDeltaE": 4.63,
+    "score": 96.6
+  },
+  "legacyPixel": 99.1,
+  "composite": 98.8
+}

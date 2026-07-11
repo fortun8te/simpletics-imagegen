@@ -1,0 +1,191 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8cw7ap-3",
+        "text": "Consistency",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 5.1,
+        "sizeDeltaPct": 25.7
+      },
+      {
+        "id": "subhead-mr8cw7ap-4",
+        "text": "Starts With The Right Inputs",
+        "renderSim": 0.69,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 34.3,
+        "sizeDeltaPct": 13.5
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Cadence",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Consistency",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Starts With The",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Right Inputs",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "CORE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "500",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "mg. Sodium",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Electrolyte",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Hydration",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Drink",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Melonberry",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "12 floz (355mL)",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Naturally Flavored",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Cadence",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.93,
+    "textRenderAcc": 0.5,
+    "meanPosDelta": 19.7,
+    "pileOverlaps": 0,
+    "score": 77.8
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8cw7aq-6",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 4.35,
+        "samples": 3684
+      },
+      {
+        "id": "decor-mr8cw7ap-0",
+        "name": "Radial blob (red-orange core)",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 4.35,
+        "samples": 3684
+      },
+      {
+        "id": "decor-mr8cw7ap-1",
+        "name": "Radial blob (yellow, right edge)",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 4.35,
+        "samples": 3684
+      },
+      {
+        "id": "product-mr8cw7ap-2",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 148,
+          "y": 462,
+          "w": 400,
+          "h": 1035
+        },
+        "area": 414000,
+        "meanDeltaE": 2.77,
+        "samples": 3497
+      },
+      {
+        "id": "logo-mr8cw7aq-5",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 722,
+          "y": 1430,
+          "w": 126,
+          "h": 44
+        },
+        "area": 5544,
+        "meanDeltaE": 0.03,
+        "samples": 1617
+      }
+    ],
+    "meanDeltaE": 3.17,
+    "score": 89.4
+  },
+  "legacyPixel": 97.6,
+  "composite": 85.2
+}

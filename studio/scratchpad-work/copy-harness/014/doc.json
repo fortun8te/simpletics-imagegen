@@ -1,13 +1,13 @@
 {
-  "id": "harness_014_0a04b620",
-  "name": "copy-harness harness_014_0a04b620",
+  "id": "harness_014_3387f78b",
+  "name": "copy-harness harness_014_3387f78b",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base_mr8cw2l1",
+      "id": "base_mr8dpfv1",
       "type": "image",
       "role": "base",
       "name": "Background (reference photo)",
@@ -23,7 +23,7 @@
       }
     },
     {
-      "id": "decor-mr8cw2l0-0",
+      "id": "decor-mr8dpfv1-1k",
       "type": "shape",
       "role": "decor",
       "box": {
@@ -37,7 +37,7 @@
       }
     },
     {
-      "id": "headline-mr8cw2l0-1",
+      "id": "headline-mr8dpfv1-1l",
       "type": "text",
       "role": "headline",
       "text": "NUTRITIONAL\nSUPPORT DURING\nPERIMENOPAUSE",
@@ -59,7 +59,7 @@
       "sizeLocked": true
     },
     {
-      "id": "caption-mr8cw2l0-2",
+      "id": "caption-mr8dpfv1-1m",
       "type": "text",
       "role": "caption",
       "text": "Vitamin D3\nand K2 support\nbone health*",
@@ -82,22 +82,23 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8cw2l0-3",
+      "id": "decor-mr8dpfv1-1n",
       "type": "shape",
       "role": "decor",
       "box": {
-        "x": 222,
-        "y": 652,
-        "w": 80,
-        "h": 72
+        "x": 212,
+        "y": 684,
+        "w": 81,
+        "h": 10
       },
       "style": {
         "shapeKind": "arrow",
-        "color": "#FFFFFF"
+        "color": "#FFFFFF",
+        "strokeWidthPx": 10
       }
     },
     {
-      "id": "caption-mr8cw2l0-4",
+      "id": "caption-mr8dpfv1-1o",
       "type": "text",
       "role": "caption",
       "text": "B vitamins support\ncognitive health,\nmood and energy*",
@@ -119,37 +120,39 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8cw2l0-5",
+      "id": "decor-mr8dpfv1-1p",
       "type": "shape",
       "role": "decor",
       "box": {
-        "x": 718,
-        "y": 742,
-        "w": 92,
-        "h": 68
+        "x": 715,
+        "y": 766,
+        "w": 106,
+        "h": 8
       },
       "style": {
         "shapeKind": "arrow",
-        "color": "#FFFFFF"
+        "color": "#FFFFFF",
+        "strokeWidthPx": 8
       }
     },
     {
-      "id": "decor-mr8cw2l0-6",
+      "id": "decor-mr8dpfv1-1q",
       "type": "shape",
       "role": "decor",
       "box": {
-        "x": 200,
-        "y": 1038,
-        "w": 100,
-        "h": 70
+        "x": 190,
+        "y": 1083,
+        "w": 115,
+        "h": 9
       },
       "style": {
         "shapeKind": "arrow",
-        "color": "#FFFFFF"
+        "color": "#FFFFFF",
+        "strokeWidthPx": 9
       }
     },
     {
-      "id": "caption-mr8cw2l0-7",
+      "id": "caption-mr8dpfv1-1r",
       "type": "text",
       "role": "caption",
       "text": "Fiber supports\ngut health*",
@@ -171,22 +174,23 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8cw2l0-8",
+      "id": "decor-mr8dpfv1-1s",
       "type": "shape",
       "role": "decor",
       "box": {
-        "x": 818,
-        "y": 1122,
-        "w": 60,
-        "h": 95
+        "x": 852,
+        "y": 1133,
+        "w": 6,
+        "h": 74
       },
       "style": {
         "shapeKind": "arrow",
-        "color": "#FFFFFF"
+        "color": "#FFFFFF",
+        "strokeWidthPx": 6
       }
     },
     {
-      "id": "caption-mr8cw2l0-9",
+      "id": "caption-mr8dpfv1-1t",
       "type": "text",
       "role": "caption",
       "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
@@ -209,7 +213,7 @@
       "sizeLocked": true
     },
     {
-      "id": "legal-mr8cw2l0-a",
+      "id": "legal-mr8dpfv1-1u",
       "type": "text",
       "role": "legal",
       "text": "These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.",
@@ -232,6 +236,6 @@
       "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr8cw2kzmb0k",
-  "updatedAt": 1783290114326
+  "skeletonId": "skel_mr8dpfuznofz",
+  "updatedAt": 1783291484558
 }

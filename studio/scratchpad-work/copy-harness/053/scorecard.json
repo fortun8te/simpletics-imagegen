@@ -1,0 +1,181 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr85rg09-3",
+        "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+        "renderSim": 0.92,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 35,
+        "sizeDeltaPct": 0.3
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Vor 8 Wochen - vor 4 Wochen - Heute",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "72,6kg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "68,2kg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "66,1kg",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Ganz Ehrlich: ich habe null damit",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "gerechnet",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Bvitafant, natural",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Energies",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "verdau",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Fettstoff",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "erfunk",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.91,
+    "textRenderAcc": 1,
+    "meanPosDelta": 35,
+    "pileOverlaps": 0,
+    "score": 93.5
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr85rg0b",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 1.61,
+        "samples": 3643
+      },
+      {
+        "id": "rect-mr85rg09-0",
+        "name": "Cut-out · green juice window",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 1.61,
+        "samples": 3643
+      },
+      {
+        "id": "scrim-mr85rg09-2",
+        "name": "scrim",
+        "type": "image",
+        "box": {
+          "x": 162,
+          "y": 768,
+          "w": 756,
+          "h": 384
+        },
+        "area": 290304,
+        "meanDeltaE": 10.92,
+        "samples": 1972
+      },
+      {
+        "id": "badge-mr85rg09-4",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 194,
+          "y": 883,
+          "w": 216,
+          "h": 77
+        },
+        "area": 16632,
+        "meanDeltaE": 42.64,
+        "samples": 2160
+      },
+      {
+        "id": "badge-mr85rg09-5",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 443,
+          "y": 883,
+          "w": 216,
+          "h": 77
+        },
+        "area": 16632,
+        "meanDeltaE": 46.63,
+        "samples": 2334
+      },
+      {
+        "id": "badge-mr85rg09-6",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 702,
+          "y": 883,
+          "w": 216,
+          "h": 77
+        },
+        "area": 16632,
+        "meanDeltaE": 71.18,
+        "samples": 2493
+      }
+    ],
+    "meanDeltaE": 29.1,
+    "score": 93.4
+  },
+  "legacyPixel": 98.8,
+  "composite": 94.5
+}

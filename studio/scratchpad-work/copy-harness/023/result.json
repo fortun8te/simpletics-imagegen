@@ -1,0 +1,167 @@
+{
+  "id": "023",
+  "filename": "023_attached_8358c4ead94c129f.webp",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 376242,
+    "assemble": 8738,
+    "total": 421696
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/023.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-023.png",
+    "patched": 0,
+    "layers": [
+      {
+        "id": "headline",
+        "role": "headline",
+        "text": "WE APOLOGIZE...",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.014,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.8614,
+            "fontSize": 87
+          },
+          {
+            "family": "",
+            "score": 0.8474,
+            "fontSize": 89
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.8379,
+            "fontSize": 107
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.6703,
+            "fontSize": 88
+          },
+          {
+            "family": "Impact",
+            "score": 0.4842,
+            "fontSize": 100
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.4718,
+            "fontSize": 88
+          },
+          {
+            "family": "Menlo",
+            "score": 0.35,
+            "fontSize": 88
+          },
+          {
+            "family": "Georgia",
+            "score": 0.3162,
+            "fontSize": 94
+          }
+        ]
+      },
+      {
+        "id": "body-copy",
+        "role": "body",
+        "text": "You know when you’re out.\nOut out.\nAnd halfway through the n",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0249,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Georgia",
+            "score": 0.4421,
+            "fontSize": 49
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.4172,
+            "fontSize": 49
+          },
+          {
+            "family": "Impact",
+            "score": 0.4061,
+            "fontSize": 49
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.3925,
+            "fontSize": 49
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.3912,
+            "fontSize": 49
+          },
+          {
+            "family": "",
+            "score": 0.3679,
+            "fontSize": 49
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.3371,
+            "fontSize": 49
+          },
+          {
+            "family": "Menlo",
+            "score": 0.3031,
+            "fontSize": 49
+          }
+        ]
+      }
+    ]
+  },
+  "readSource": "scene-file",
+  "occlusionPlan": [],
+  "sceneTruthCorrections": [
+    "brand-name box: y280 h55 → y293 h45 (tight ink rows + 5px pad)",
+    "headline fontSize: 88 → 96 (1 ink line, block 69px)",
+    "headline box: y395 h105 → y398 h89 (tight ink rows + 10px pad)"
+  ],
+  "typoTruthCorrections": [],
+  "archetype": "type-stack-promo",
+  "layerCountExtracted": 5,
+  "parsePath": "loose",
+  "background": "#FFFFFF",
+  "cutoutCandidates": 2,
+  "layersApplied": 5,
+  "leavesInResult": 7,
+  "verify": {
+    "ready": true
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 96.5,
+  "pixelScore": 96.5,
+  "refine": {
+    "ran": true,
+    "scoreBefore": 96.1,
+    "scoreAfter": 96.5,
+    "rounds": 2,
+    "renders": 8,
+    "capped": false,
+    "ms": 28819,
+    "applied": [
+      {
+        "round": 1,
+        "layerId": "body-mr8e4u80-2d",
+        "layerName": "body",
+        "kind": "font",
+        "detail": "fontSize ×0.92",
+        "localMae": {
+          "before": 0.098,
+          "after": 0.087
+        }
+      }
+    ],
+    "error": null
+  },
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/023/side-by-side.png"
+}

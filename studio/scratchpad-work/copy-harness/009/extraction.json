@@ -281,7 +281,8 @@
         "color": "#71767B",
         "align": "left",
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "italic": true
       }
     },
     {
@@ -429,5 +430,6 @@
       }
     }
   ],
-  "measuredBoxes": true
+  "measuredBoxes": true,
+  "_occlusionPlan": []
 }

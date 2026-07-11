@@ -1,0 +1,201 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "missingText",
+      "detail": "4/15 source lines missing (27%): \"money back\", \"Volume\", \"guarantee\", \"music and\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "meta-mr8dwkde-24",
+        "text": "Hears",
+        "renderSim": 0.6,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 971,
+        "sizeDeltaPct": 20.6
+      },
+      {
+        "id": "headline-mr8dwkde-25",
+        "text": "Your Nervous System\nWill Thank You.",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 6.5,
+        "sizeDeltaPct": 13
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Ø Hears",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Your Nervous System",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Will Thank You.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "100 days",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "20dB",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "money back",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Volume",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "guarantee",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "reduction",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Hear",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Fits all",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "music and",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "ears",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "conversations",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "clearly",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 0.73,
+    "textRenderAcc": 0.5,
+    "meanPosDelta": 488.8,
+    "pileOverlaps": 0,
+    "score": 54.2
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr8dwkdf",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 1.05,
+        "samples": 3577
+      },
+      {
+        "id": "badge-mr8dwkde-26",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 68,
+          "y": 792,
+          "w": 262,
+          "h": 262
+        },
+        "area": 68644,
+        "meanDeltaE": 7.52,
+        "samples": 3283
+      },
+      {
+        "id": "badge-mr8dwkde-27",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 732,
+          "y": 822,
+          "w": 226,
+          "h": 226
+        },
+        "area": 51076,
+        "meanDeltaE": 14.2,
+        "samples": 2559
+      },
+      {
+        "id": "badge-mr8dwkde-28",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 172,
+          "y": 1265,
+          "w": 140,
+          "h": 140
+        },
+        "area": 19600,
+        "meanDeltaE": 7.69,
+        "samples": 3668
+      },
+      {
+        "id": "badge-mr8dwkde-29",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 737,
+          "y": 1218,
+          "w": 272,
+          "h": 272
+        },
+        "area": 73984,
+        "meanDeltaE": 15.47,
+        "samples": 3453
+      }
+    ],
+    "meanDeltaE": 9.19,
+    "score": 94.8
+  },
+  "legacyPixel": 98.5,
+  "composite": 75.2
+}

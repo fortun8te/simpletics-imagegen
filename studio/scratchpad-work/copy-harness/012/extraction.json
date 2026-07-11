@@ -5,7 +5,22 @@
     "h": 1920
   },
   "archetype": "benefit-list",
-  "background": "#E9F3EB",
+  "background": {
+    "type": "linear",
+    "angle": 180,
+    "stops": [
+      {
+        "color": "#c7e2d5",
+        "pos": 0
+      },
+      {
+        "color": "#fbfdfd",
+        "pos": 1
+      }
+    ],
+    "from": "#c7e2d5",
+    "to": "#fbfdfd"
+  },
   "backgroundIsPhoto": false,
   "theme": "light",
   "layers": [
@@ -27,7 +42,8 @@
         "align": "left",
         "lineHeight": 1.05,
         "uppercase": false,
-        "italic": true
+        "italic": true,
+        "fontFamily": "Arial Rounded MT Bold"
       }
     },
     {
@@ -346,9 +362,11 @@
         "align": "center",
         "radius": 49,
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "starStyle": "rounded"
       }
     }
   ],
-  "measuredBoxes": true
+  "measuredBoxes": true,
+  "_occlusionPlan": []
 }

@@ -1,0 +1,28 @@
+{
+  "id": "harness_021_626be5fc",
+  "name": "copy-harness harness_021_626be5fc",
+  "canvas": {
+    "w": 1080,
+    "h": 1917
+  },
+  "layers": [
+    {
+      "id": "base_mr8dr94a",
+      "type": "image",
+      "role": "base",
+      "name": "Background (reference photo)",
+      "src": "/refasset?id=harness-021",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1080,
+        "h": 1917
+      },
+      "style": {
+        "fit": "cover"
+      }
+    }
+  ],
+  "skeletonId": "skel_mr8dr94api7m",
+  "updatedAt": 1783291569130
+}

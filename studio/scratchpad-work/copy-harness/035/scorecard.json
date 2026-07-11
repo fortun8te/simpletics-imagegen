@@ -1,0 +1,171 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "badge-mr6mnssw-p",
+        "text": "Ask me anything",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 211.6,
+        "sizeDeltaPct": 38.3
+      },
+      {
+        "id": "headline-mr6mnssw-q",
+        "text": "How long did it take to reduce your fine lines & wrinkles?",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 110,
+        "sizeDeltaPct": 12.8
+      },
+      {
+        "id": "caption-mr6mnssw-s",
+        "text": "It wasn't overnight, but it didn't take too long either. I j",
+        "renderSim": 0.87,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 44.5,
+        "sizeDeltaPct": 10.3
+      },
+      {
+        "id": "caption-mr6mnssw-t",
+        "text": "By week 4, my husband kept complimenting how younger and mor",
+        "renderSim": 0.96,
+        "sourceSim": 0.98,
+        "stringOk": true,
+        "posDeltaPx": 40.9,
+        "sizeDeltaPct": 16.4
+      },
+      {
+        "id": "caption-mr6mnssw-u",
+        "text": "I'm leaving the link if you're interested. Here's where you ",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 75.2,
+        "sizeDeltaPct": 14.5
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "caption-mr6mnssw-s",
+        "text": "It wasn't overnight, but it didn't take too long either. I j",
+        "role": "caption",
+        "sourceLines": 3,
+        "renderLines": 4
+      },
+      {
+        "id": "caption-mr6mnssw-t",
+        "text": "By week 4, my husband kept complimenting how younger and mor",
+        "role": "caption",
+        "sourceLines": 2,
+        "renderLines": 3
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Ask me anything",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "How long did it take to reduce",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "your fine lines & wrinkles?",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "It wasn't overnight, but it didn't take too long",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "either. I just used this once a week, and by week",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "2, my lines were smoother and skin tighter.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "By week 4, my husband kept complimenting",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "how younger and more radiant | looked.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "I'm leaving the link if you're interested. Here's",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "where you can get it",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 1,
+    "meanPosDelta": 96.4,
+    "pileOverlaps": 0,
+    "score": 94.5
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr6mnssx",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0.42,
+        "samples": 2565
+      },
+      {
+        "id": "rect-mr6mnssw-o",
+        "name": "Cut-out · woman with headband",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0.42,
+        "samples": 2565
+      }
+    ],
+    "meanDeltaE": 0.42,
+    "score": 99
+  },
+  "legacyPixel": 91.6,
+  "composite": 87.3
+}

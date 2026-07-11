@@ -4,15 +4,15 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 1614624,
-    "assemble": 6,
-    "total": 1631203
+    "extract": 10822,
+    "assemble": 3,
+    "total": 21891
   },
   "fontMatch": {
     "ok": true,
     "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/014.json",
     "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-014.png",
-    "patched": 2,
+    "patched": 0,
     "layers": [
       {
         "id": "headline",
@@ -69,10 +69,10 @@
         "id": "callout-1",
         "role": "caption",
         "text": "Vitamin D3\nand K2 support\nbone health*",
-        "previous": null,
+        "previous": "Menlo",
         "fontFamily": "Menlo",
         "confidence": 0.0483,
-        "patched": true,
+        "patched": false,
         "tried": [
           {
             "family": "Menlo",
@@ -222,10 +222,10 @@
         "id": "callout-4",
         "role": "caption",
         "text": "Vitamins E\n& B9 help support hot\nflashes and night sweats*",
-        "previous": null,
+        "previous": "Arial Narrow",
         "fontFamily": "Arial Narrow",
         "confidence": 0.0325,
-        "patched": true,
+        "patched": false,
         "tried": [
           {
             "family": "Arial Narrow",
@@ -350,6 +350,12 @@
     "disclaimer fontSize: 24 → 27 (2 ink lines, block 46px)",
     "disclaimer box: y1342 h66 → y1335 h60 (tight ink rows + 7px pad)",
     "disclaimer: center-x snapped x72 → x70 (canvas center)"
+  ],
+  "typoTruthCorrections": [
+    "arrow \"arrow-1\": stroke 72→10px, length 80→81px (measured cross-section)",
+    "arrow \"arrow-2\": stroke 68→8px, length 92→106px (measured cross-section)",
+    "arrow \"arrow-3\": stroke 70→9px, length 100→115px (measured cross-section)",
+    "arrow \"arrow-4\": stroke 60→6px, length 95→74px (measured cross-section)"
   ],
   "archetype": "annotated-photo",
   "layerCountExtracted": 11,

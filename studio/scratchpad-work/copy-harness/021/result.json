@@ -1,0 +1,41 @@
+{
+  "id": "021",
+  "filename": "021_attached_6c71fd37fa6c5be4.png",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 0,
+    "assemble": 1,
+    "total": 9773
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/021.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-021.png",
+    "patched": 0,
+    "layers": []
+  },
+  "readSource": "scene-file",
+  "occlusionPlan": [],
+  "sceneTruthCorrections": [],
+  "typoTruthCorrections": [],
+  "archetype": "annotated-photo",
+  "layerCountExtracted": 0,
+  "parsePath": "loose",
+  "background": "photo",
+  "cutoutCandidates": 0,
+  "layersApplied": 0,
+  "leavesInResult": 1,
+  "verify": {
+    "ready": false
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 99.4,
+  "pixelScore": 99.4,
+  "refine": {
+    "ran": false,
+    "reason": "score ≥ 97"
+  },
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/021/side-by-side.png"
+}

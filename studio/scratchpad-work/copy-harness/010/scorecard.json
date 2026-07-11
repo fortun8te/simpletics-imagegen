@@ -1,0 +1,172 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "meta-mr8dh23x-z",
+        "text": "UPFRONT",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 23.9,
+        "sizeDeltaPct": 17.1
+      },
+      {
+        "id": "meta-mr8dh23x-11",
+        "text": "@UpfrontFood",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1.4,
+        "sizeDeltaPct": 7.7
+      },
+      {
+        "id": "body-mr8dh23x-12",
+        "text": "WAT. EEN. JAAR. 🥹😮‍💨🤝\n\nVan een visie voor een betere voe",
+        "renderSim": 0.56,
+        "sourceSim": 0.6,
+        "stringOk": false,
+        "posDeltaPx": 107.8,
+        "sizeDeltaPct": 7
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "UPFRONT ®",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "@UpfrontFood",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "WAT. EEN. JAAR.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Van een visie voor een betere",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "voedingsindustrie naar meer dan 800.000",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "bestellingen in één jaar.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Stap voor stap zullen we met Upfront iedereen",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "van zijn of haar dagelijkse voeding en",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "supplementen voorzien.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Om 2026 goed af te trappen geven wij 20%",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "korting op het hele assortiment. Alleen deze",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "week.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Zo kun jij jouw jaar sterk starten, dus doe er je",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "voordeel mee.",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.67,
+    "meanPosDelta": 44.4,
+    "pileOverlaps": 0,
+    "score": 85.8
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8dh23x-13",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0.12,
+        "samples": 2719
+      },
+      {
+        "id": "avatar-mr8dh23x-y",
+        "name": "Avatar (cut out)",
+        "type": "image",
+        "box": {
+          "x": 118,
+          "y": 368,
+          "w": 130,
+          "h": 132
+        },
+        "area": 17160,
+        "meanDeltaE": 13.14,
+        "samples": 4290
+      },
+      {
+        "id": "icon-mr8dh23x-10",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 446,
+          "y": 398,
+          "w": 42,
+          "h": 42
+        },
+        "area": 1764,
+        "meanDeltaE": 0,
+        "samples": 391
+      }
+    ],
+    "meanDeltaE": 4.42,
+    "score": 99.4
+  },
+  "legacyPixel": 97,
+  "composite": 92.1
+}

@@ -84,6 +84,42 @@
         "/private/tmp/claude-501/-Users-michael-Downloads-NEUEGEN/4d7ba620-e1b1-4f96-8553-1f7be39a942f/scratchpad"
       ],
       "port": 5902
+    },
+    {
+      "name": "pdp-build",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5905",
+        "--directory",
+        "/private/tmp/claude-501/-Users-michael-Downloads-NEUEGEN/ac1caa97-c87d-467e-8610-49e1f2e82f2c/scratchpad/pdp-build"
+      ],
+      "port": 5905
+    },
+    {
+      "name": "pdp-improved",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5906",
+        "--directory",
+        "/Users/michael/Downloads/NanoX PDP Improved"
+      ],
+      "port": 5906
+    },
+    {
+      "name": "pdp-base",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "5907",
+        "--directory",
+        "/Users/michael/Downloads/NanoX PDP BASE"
+      ],
+      "port": 5907
     }
   ]
 }

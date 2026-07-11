@@ -1,0 +1,277 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "ghostText",
+      "detail": "\"SCHRIJF JE IN VOOR DE EARLY ACCESS\" ×2 in render (word-window sims 1.00/0.79, offset 61px)"
+    },
+    {
+      "rule": "ghostText",
+      "detail": "\"SCHRIJF JE IN VOOR DE EARLY\" ×2 in render (word-window sims 1.00/1.00, offset 61px)"
+    },
+    {
+      "rule": "missingText",
+      "detail": "6/26 source lines missing (23%): \"CHOCOLAOE SMANN\", \"TIJDENS EARLY\", \"*ALLEEN\", \"ACCESS OATS\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6nlbm7-2k",
+        "text": "EIWIT OATS",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 591.2,
+        "sizeDeltaPct": 82.9
+      },
+      {
+        "id": "price-mr6nlbm7-2l",
+        "text": "VAN €19 VOOR €11",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 4.4,
+        "sizeDeltaPct": 18.5
+      },
+      {
+        "id": "subhead-mr6nlbm7-2m",
+        "text": "UPFRONT 3 WEEKSE",
+        "renderSim": 1,
+        "sourceSim": 0.93,
+        "stringOk": true,
+        "posDeltaPx": 158.5,
+        "sizeDeltaPct": 56.9
+      },
+      {
+        "id": "caption-mr6nlbm7-2q",
+        "text": "30% OP HET ONTBIJTASSORTIMENT",
+        "renderSim": 0.62,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 105.4,
+        "sizeDeltaPct": 24
+      },
+      {
+        "id": "logo-mr6nlbm7-2r",
+        "text": "UPFRONT",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 0,
+        "sizeDeltaPct": 0
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "EIWIT OATS",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "VAN €19 VOOR €11",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT З WEEKSE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPERONT A WEEKSE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPF",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "KSE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "UPF",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "KSE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "EIWIT DATS",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "CHOCOLAOE SMANN",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "UPF",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "KSE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "KSE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "TIJDENS EARLY",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "*ALLEEN",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "KSE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ACCESS OATS",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "VOOR MAAR",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "€10",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "SE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "EKSE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "UPFRONT 3 WEEKS",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "SCHRIJF JE IN VOOR DE EARLY ACCESS",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "30% OP HET ONTBIJTASSORTIMENT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPFRONT",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.77,
+    "textRenderAcc": 0.8,
+    "meanPosDelta": 171.9,
+    "pileOverlaps": 0,
+    "score": 71.7
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr6nlbm8",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 4.87,
+        "samples": 2070
+      },
+      {
+        "id": "rect-mr6nlbm7-2o",
+        "name": "Cut-out · chocolate protein oats",
+        "type": "image",
+        "box": {
+          "x": 238,
+          "y": 538,
+          "w": 605,
+          "h": 730
+        },
+        "area": 441650,
+        "meanDeltaE": 7.99,
+        "samples": 2676
+      },
+      {
+        "id": "badge-mr6nlbm7-2p",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 54,
+          "y": 979,
+          "w": 378,
+          "h": 288
+        },
+        "area": 108864,
+        "meanDeltaE": 38.35,
+        "samples": 2749
+      },
+      {
+        "id": "cta-mr6nlbm7-2s",
+        "name": "cta",
+        "type": "button",
+        "box": {
+          "x": 54,
+          "y": 1440,
+          "w": 518,
+          "h": 109
+        },
+        "area": 56462,
+        "meanDeltaE": 63.25,
+        "samples": 2539
+      }
+    ],
+    "meanDeltaE": 28.62,
+    "score": 81.3
+  },
+  "legacyPixel": 98.5,
+  "composite": 79.9
+}

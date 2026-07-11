@@ -1,0 +1,312 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "missingText",
+      "detail": "3/11 source lines missing (27%): \"More Fiber Than\", \"2 cups of Broccoli\", \"O Sugar\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8dlqpt-14",
+        "text": "Poop More While\nOn a GLP-1",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 22.6,
+        "sizeDeltaPct": 11.1
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Poop More While",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "On a GLP-1",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "More Fiber Than",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "2 cups of Broccoli",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "20+ Vitamins & Minerals",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Organic Fruits & Veggies",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Prebiotics",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Adaptogens",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "O Sugar",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "55,000+",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "reviews",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 0.73,
+    "textRenderAcc": 1,
+    "meanPosDelta": 22.6,
+    "pileOverlaps": 0,
+    "score": 85.1
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8dlqpt-1j",
+        "name": "Base gradient",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 5.35,
+        "samples": 3476
+      },
+      {
+        "id": "benefit-mr8dlqpt-15",
+        "name": "benefit",
+        "type": "badge",
+        "box": {
+          "x": 62,
+          "y": 645,
+          "w": 560,
+          "h": 96
+        },
+        "area": 53760,
+        "meanDeltaE": 19.14,
+        "samples": 1795
+      },
+      {
+        "id": "icon-mr8dlqpt-16",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 76,
+          "y": 656,
+          "w": 74,
+          "h": 74
+        },
+        "area": 5476,
+        "meanDeltaE": 41.57,
+        "samples": 5476
+      },
+      {
+        "id": "benefit-mr8dlqpt-17",
+        "name": "benefit",
+        "type": "badge",
+        "box": {
+          "x": 62,
+          "y": 765,
+          "w": 560,
+          "h": 96
+        },
+        "area": 53760,
+        "meanDeltaE": 18.72,
+        "samples": 2460
+      },
+      {
+        "id": "icon-mr8dlqpt-18",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 76,
+          "y": 776,
+          "w": 74,
+          "h": 74
+        },
+        "area": 5476,
+        "meanDeltaE": 48.71,
+        "samples": 5476
+      },
+      {
+        "id": "benefit-mr8dlqpt-19",
+        "name": "benefit",
+        "type": "badge",
+        "box": {
+          "x": 62,
+          "y": 885,
+          "w": 560,
+          "h": 96
+        },
+        "area": 53760,
+        "meanDeltaE": 19.31,
+        "samples": 2370
+      },
+      {
+        "id": "icon-mr8dlqpt-1a",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 76,
+          "y": 896,
+          "w": 74,
+          "h": 74
+        },
+        "area": 5476,
+        "meanDeltaE": 46.43,
+        "samples": 5476
+      },
+      {
+        "id": "benefit-mr8dlqpt-1b",
+        "name": "benefit",
+        "type": "badge",
+        "box": {
+          "x": 62,
+          "y": 1003,
+          "w": 560,
+          "h": 96
+        },
+        "area": 53760,
+        "meanDeltaE": 15.22,
+        "samples": 2991
+      },
+      {
+        "id": "icon-mr8dlqpt-1c",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 76,
+          "y": 1014,
+          "w": 74,
+          "h": 74
+        },
+        "area": 5476,
+        "meanDeltaE": 43.39,
+        "samples": 5476
+      },
+      {
+        "id": "benefit-mr8dlqpt-1d",
+        "name": "benefit",
+        "type": "badge",
+        "box": {
+          "x": 62,
+          "y": 1121,
+          "w": 560,
+          "h": 96
+        },
+        "area": 53760,
+        "meanDeltaE": 14.97,
+        "samples": 2850
+      },
+      {
+        "id": "icon-mr8dlqpt-1e",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 76,
+          "y": 1132,
+          "w": 74,
+          "h": 74
+        },
+        "area": 5476,
+        "meanDeltaE": 44.88,
+        "samples": 5476
+      },
+      {
+        "id": "benefit-mr8dlqpt-1f",
+        "name": "benefit",
+        "type": "badge",
+        "box": {
+          "x": 62,
+          "y": 1239,
+          "w": 560,
+          "h": 96
+        },
+        "area": 53760,
+        "meanDeltaE": 14.83,
+        "samples": 3030
+      },
+      {
+        "id": "icon-mr8dlqpt-1g",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 76,
+          "y": 1250,
+          "w": 74,
+          "h": 74
+        },
+        "area": 5476,
+        "meanDeltaE": 47.82,
+        "samples": 5476
+      },
+      {
+        "id": "product-mr8dlqpt-1h",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 532,
+          "y": 598,
+          "w": 505,
+          "h": 750
+        },
+        "area": 378750,
+        "meanDeltaE": 3.12,
+        "samples": 3789
+      },
+      {
+        "id": "social-proof-mr8dlqpt-1i",
+        "name": "social-proof",
+        "type": "badge",
+        "box": {
+          "x": 204,
+          "y": 1492,
+          "w": 672,
+          "h": 98
+        },
+        "area": 65856,
+        "meanDeltaE": 23.83,
+        "samples": 3342
+      }
+    ],
+    "meanDeltaE": 27.15,
+    "score": 82
+  },
+  "legacyPixel": 97,
+  "composite": 86.6
+}

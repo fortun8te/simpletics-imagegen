@@ -1,0 +1,262 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6mq53v-1o",
+        "text": "Sleep like an athlete\n—not a zombie.",
+        "renderSim": 0.89,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 54.9,
+        "sizeDeltaPct": 16.7
+      },
+      {
+        "id": "caption-mr6mq53v-1r",
+        "text": "Cadence Recovery rebuilds your sleep so your hormones and pe",
+        "renderSim": 0.57,
+        "sourceSim": 0.54,
+        "stringOk": false,
+        "posDeltaPx": 195.7,
+        "sizeDeltaPct": 45.6
+      },
+      {
+        "id": "caption-mr6mq53v-1s",
+        "text": "Deep sleep optimization",
+        "renderSim": 0.62,
+        "sourceSim": 0.62,
+        "stringOk": false,
+        "posDeltaPx": 2.8,
+        "sizeDeltaPct": 0.8
+      },
+      {
+        "id": "caption-mr6mq53v-1t",
+        "text": "Natural testosterone support",
+        "renderSim": 0.73,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 8.4,
+        "sizeDeltaPct": 3.5
+      },
+      {
+        "id": "caption-mr6mq53v-1u",
+        "text": "Stress and cortisol regulation",
+        "renderSim": 0.73,
+        "sourceSim": 0.84,
+        "stringOk": false,
+        "posDeltaPx": 39,
+        "sizeDeltaPct": 8
+      },
+      {
+        "id": "caption-mr6mq53v-1v",
+        "text": "Wake clear, train stronger",
+        "renderSim": 0.79,
+        "sourceSim": 0.73,
+        "stringOk": false,
+        "posDeltaPx": 50,
+        "sizeDeltaPct": 8.1
+      },
+      {
+        "id": "logo-mr6mq53v-1w",
+        "text": "Cadence logo",
+        "renderSim": 1,
+        "sourceSim": 0.64,
+        "stringOk": true,
+        "posDeltaPx": 920.6,
+        "sizeDeltaPct": 87.5
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "headline-mr6mq53v-1o",
+        "text": "Sleep like an athlete\n—not a zombie.",
+        "role": "headline",
+        "sourceLines": 3,
+        "renderLines": 2
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Sleep like an athlete",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "—not a",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "zombie.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "rebuilds your sleep so",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "performance bounce",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Cadence Recovery",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "your hormones and",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Cadence",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "optimization",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Deep sleep",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "back",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Natural testosterone",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "support",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "RECOVER",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Stress and cortisol",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "SLEEP",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "regulation",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "+ Potassium",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Magnesium",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Wake clear, train",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "L-Glycine",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "stronger",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Cherry",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "5g.",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "0.18oz.",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "Cadence",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.29,
+    "meanPosDelta": 181.6,
+    "pileOverlaps": 0,
+    "score": 64.7
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6mq53v-1x",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0.06,
+        "samples": 2948
+      },
+      {
+        "id": "rect-mr6mq53v-1q",
+        "name": "Cut-out · recovery sleep tube",
+        "type": "image",
+        "box": {
+          "x": 432,
+          "y": 422,
+          "w": 216,
+          "h": 1152
+        },
+        "area": 248832,
+        "meanDeltaE": 0,
+        "samples": 2593
+      }
+    ],
+    "meanDeltaE": 0.03,
+    "score": 99.9
+  },
+  "legacyPixel": 97.3,
+  "composite": 81.8
+}

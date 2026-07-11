@@ -1,0 +1,252 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"ROSACEA CREAM JAR\" (best source sim 0.38, word coverage 33%)"
+    },
+    {
+      "rule": "missingText",
+      "detail": "7/19 source lines missing (37%): \"Instant Rosacea, Acne\", \"Magic Revive\", \"& Redness Stopper\", \"FROTK\""
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "subhead-mr6mos7w-15",
+        "text": "At Frøya, we believe nature holds the key to clear, healthy ",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 95,
+        "sizeDeltaPct": 21.4
+      },
+      {
+        "id": "subhead-mr6mos7w-17",
+        "text": "Don't wait — we’re saying goodbye to our Sale with 40% OFF s",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 87.8,
+        "sizeDeltaPct": 27.2
+      },
+      {
+        "id": "caption-mr6mos7w-18",
+        "text": "frøya | Arctic Skincare",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 71.3,
+        "sizeDeltaPct": 12.7
+      },
+      {
+        "id": "caption-mr6mos7w-1f",
+        "text": "ROSACEA CREAM JAR",
+        "renderSim": 0.8,
+        "sourceSim": 0.38,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "caption-mr6mos7w-1g",
+        "text": "GLOW DAY BALM JAR",
+        "renderSim": 0.79,
+        "sourceSim": 0.71,
+        "stringOk": false,
+        "posDeltaPx": 38.3,
+        "sizeDeltaPct": 2.6
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "WE'RE SAYING GOODBYE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "At Frøya, we believe nature holds the key",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "to clear, healthy skin. Say goodbye to",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "artificial ingredients and hello to the pure,",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "potent power of organic Arctic botanicals",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Don't wait - we're saying goodbye to",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "our Sale with 40% OFF soon. Experience",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "the Arctic difference before it's gone.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "frøya | Arctic Skincare",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Instant Rosacea, Acne",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Magic Revive",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Ultra Cleanse &",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "& Redness Stopper",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "& Glow Day Balm",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Revive Face Scrub",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "FROTK",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "PROTK",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "101 cz (30ml",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "MROYK",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.63,
+    "textRenderAcc": 0.6,
+    "meanPosDelta": 73.1,
+    "pileOverlaps": 0,
+    "score": 61.6
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6mos7w-1h",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 4.19,
+        "samples": 1973
+      },
+      {
+        "id": "logo-mr6mos7w-1a",
+        "name": "Logo · Frøya logo",
+        "type": "image",
+        "box": {
+          "x": 108,
+          "y": 670,
+          "w": 270,
+          "h": 194
+        },
+        "area": 52380,
+        "meanDeltaE": 2.68,
+        "samples": 2244
+      },
+      {
+        "id": "product-mr6mos7w-1b",
+        "name": "Product · rosacea cream jar",
+        "type": "shape",
+        "box": {
+          "x": 86,
+          "y": 918,
+          "w": 270,
+          "h": 140
+        },
+        "area": 37800,
+        "meanDeltaE": 25.73,
+        "samples": 2238
+      },
+      {
+        "id": "product-mr6mos7w-1c",
+        "name": "Product · glow day balm jar",
+        "type": "shape",
+        "box": {
+          "x": 410,
+          "y": 918,
+          "w": 270,
+          "h": 140
+        },
+        "area": 37800,
+        "meanDeltaE": 29.98,
+        "samples": 2234
+      },
+      {
+        "id": "avatar-mr6mos7w-1d",
+        "name": "Avatar · face scrub jar",
+        "type": "image",
+        "box": {
+          "x": 734,
+          "y": 918,
+          "w": 270,
+          "h": 140
+        },
+        "area": 37800,
+        "meanDeltaE": 5.09,
+        "samples": 3128
+      }
+    ],
+    "meanDeltaE": 13.53,
+    "score": 86.3
+  },
+  "legacyPixel": 90.1,
+  "composite": 74.7
+}

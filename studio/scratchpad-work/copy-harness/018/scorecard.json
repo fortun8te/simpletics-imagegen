@@ -1,0 +1,224 @@
+{
+  "ok": false,
+  "hardFails": [
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"WHITE EARPLUG\" (best source sim 0.54, word coverage 0%)"
+    },
+    {
+      "rule": "placeholderArtifact",
+      "detail": "invented text layer \"BLUE EARPLUG\" (best source sim 0.54, word coverage 0%)"
+    }
+  ],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6nqu8j-5h",
+        "text": "THE 10 SECOND",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 49.4,
+        "sizeDeltaPct": 18.2
+      },
+      {
+        "id": "caption-mr6nqu8j-5k",
+        "text": "WHITE EARPLUG",
+        "renderSim": 1,
+        "sourceSim": 0.54,
+        "stringOk": true,
+        "posDeltaPx": 372.6,
+        "sizeDeltaPct": 50.9
+      },
+      {
+        "id": "caption-mr6nqu8j-5l",
+        "text": "BLUE EARPLUG",
+        "renderSim": 1,
+        "sourceSim": 0.54,
+        "stringOk": true,
+        "posDeltaPx": 588.5,
+        "sizeDeltaPct": 47.4
+      },
+      {
+        "id": "headline-mr6nqu8j-5m",
+        "text": "PARTY",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 117.9,
+        "sizeDeltaPct": 9.2
+      },
+      {
+        "id": "headline-mr6nqu8j-5n",
+        "text": "UPGRADE",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 85.4,
+        "sizeDeltaPct": 24.9
+      },
+      {
+        "id": "caption-mr6nqu8j-5o",
+        "text": "Perfect Fit | 20dB Reduction | 5 Styles",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 130.9,
+        "sizeDeltaPct": 0
+      },
+      {
+        "id": "logo-mr6nqu8j-5s",
+        "text": "Hears Earplugs",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 44.3,
+        "sizeDeltaPct": 31.1
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "• Hears Earplugs",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "THE 10 SECOND",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "PARTY",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "UPGRADE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Perfect Fit | 20dB Reduction | 5 Styles",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Up To 30% Off",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "reddot winner 2024",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.86,
+    "textRenderAcc": 1,
+    "meanPosDelta": 198.4,
+    "pileOverlaps": 0,
+    "score": 78.6
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6nqu8j-5w",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1360
+        },
+        "area": 1468800,
+        "meanDeltaE": 12.95,
+        "samples": 3195
+      },
+      {
+        "id": "rect-mr6nqu8j-5j",
+        "name": "Cut-out · Black earplug",
+        "type": "image",
+        "box": {
+          "x": 702,
+          "y": 748,
+          "w": 378,
+          "h": 340
+        },
+        "area": 128520,
+        "meanDeltaE": 0.02,
+        "samples": 3429
+      },
+      {
+        "id": "product-mr6nqu8j-5q",
+        "name": "Product · White earplug",
+        "type": "shape",
+        "box": {
+          "x": 670,
+          "y": 272,
+          "w": 324,
+          "h": 340
+        },
+        "area": 110160,
+        "meanDeltaE": 27.47,
+        "samples": 3419
+      },
+      {
+        "id": "product-mr6nqu8j-5r",
+        "name": "Product · Blue earplug",
+        "type": "shape",
+        "box": {
+          "x": 22,
+          "y": 517,
+          "w": 324,
+          "h": 340
+        },
+        "area": 110160,
+        "meanDeltaE": 18.39,
+        "samples": 3445
+      },
+      {
+        "id": "cta-mr6nqu8j-5u",
+        "name": "cta",
+        "type": "button",
+        "box": {
+          "x": 324,
+          "y": 1224,
+          "w": 432,
+          "h": 71
+        },
+        "area": 30672,
+        "meanDeltaE": 79.4,
+        "samples": 3366
+      },
+      {
+        "id": "badge-mr6nqu8j-5v",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 432,
+          "y": 1319,
+          "w": 216,
+          "h": 63
+        },
+        "area": 8856,
+        "meanDeltaE": 22.9,
+        "samples": 8856
+      }
+    ],
+    "meanDeltaE": 26.86,
+    "score": 65.7
+  },
+  "legacyPixel": 85.8,
+  "composite": 76.2
+}

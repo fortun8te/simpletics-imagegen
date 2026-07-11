@@ -1,0 +1,136 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr86w5tl-1",
+        "text": "Anthony",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2.8,
+        "sizeDeltaPct": 1.7
+      },
+      {
+        "id": "caption-mr86w5tl-2",
+        "text": "@anthony23",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 4.5,
+        "sizeDeltaPct": 6.5
+      },
+      {
+        "id": "caption-mr86w5tl-3",
+        "text": "X.com",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 15,
+        "sizeDeltaPct": 0
+      },
+      {
+        "id": "headline-mr86w5tl-4",
+        "text": "Recently started using the wavy curl creme, has been a game ",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 8.5,
+        "sizeDeltaPct": 3.4
+      },
+      {
+        "id": "caption-mr86w5tl-5",
+        "text": "10:44 -04/10/2026 -647 Views",
+        "renderSim": 0.08,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "Anthony",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "X.com",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "@anthony23",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Recently started using the wavy curl creme, has been a game",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "changer for my curly hair..",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "10:44 -04/10/2026 -647 Views",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.8,
+    "meanPosDelta": 7.7,
+    "pileOverlaps": 1,
+    "score": 92.4
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr86w5tl-7",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 7.24,
+        "samples": 2863
+      },
+      {
+        "id": "product-mr86w5tl-6",
+        "name": "Media photo (cut out)",
+        "type": "image",
+        "box": {
+          "x": 1,
+          "y": 0,
+          "w": 1036,
+          "h": 928
+        },
+        "area": 961408,
+        "meanDeltaE": 7.38,
+        "samples": 2520
+      }
+    ],
+    "meanDeltaE": 7.31,
+    "score": 81.7
+  },
+  "legacyPixel": 95.6,
+  "composite": 86.8
+}

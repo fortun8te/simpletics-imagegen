@@ -1,0 +1,364 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "watermark-mr8arjd6-2s",
+        "text": "craft cadence",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 415.9,
+        "sizeDeltaPct": 12.9
+      },
+      {
+        "id": "headline-mr8arjd6-2t",
+        "text": "NOT ALL TPU TUBES ARE BUILT THE SAME!",
+        "renderSim": 0.62,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": 11.7,
+        "sizeDeltaPct": 24
+      },
+      {
+        "id": "decor-mr8arjd6-2y",
+        "text": "?",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr8arjd6-2z",
+        "text": "CRAFT CADENCE TPU TUBE",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2,
+        "sizeDeltaPct": 1
+      },
+      {
+        "id": "subhead-mr8arjd6-30",
+        "text": "TYPICAL TPU TUBE",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 2,
+        "sizeDeltaPct": 1
+      },
+      {
+        "id": "body-mr8arjd6-31",
+        "text": "✅ 50% thicker for better durability",
+        "renderSim": 0.62,
+        "sourceSim": 0.66,
+        "stringOk": false,
+        "posDeltaPx": 29.9,
+        "sizeDeltaPct": 1
+      },
+      {
+        "id": "body-mr8arjd6-32",
+        "text": "✅ Aluminium valve built to last",
+        "renderSim": 0.96,
+        "sourceSim": 0.96,
+        "stringOk": true,
+        "posDeltaPx": 31,
+        "sizeDeltaPct": 37.1
+      },
+      {
+        "id": "body-mr8arjd6-33",
+        "text": "✅ Compatible with electric mini pumps",
+        "renderSim": 0.97,
+        "sourceSim": 0.71,
+        "stringOk": true,
+        "posDeltaPx": 32.4,
+        "sizeDeltaPct": 13.2
+      },
+      {
+        "id": "body-mr8arjd6-34",
+        "text": "✅ Removable valve core for repairs & sealant use",
+        "renderSim": 0.72,
+        "sourceSim": 0.63,
+        "stringOk": false,
+        "posDeltaPx": 317.7,
+        "sizeDeltaPct": 12.7
+      },
+      {
+        "id": "body-mr8arjd6-35",
+        "text": "❌ Ultra-thin walls prone to punctures",
+        "renderSim": 0.73,
+        "sourceSim": 0.73,
+        "stringOk": false,
+        "posDeltaPx": 53.7,
+        "sizeDeltaPct": 15.7
+      },
+      {
+        "id": "body-mr8arjd6-36",
+        "text": "❌ Weak resin valves that can melt",
+        "renderSim": 0.96,
+        "sourceSim": 0.96,
+        "stringOk": true,
+        "posDeltaPx": 33.4,
+        "sizeDeltaPct": 20.3
+      },
+      {
+        "id": "body-mr8arjd6-37",
+        "text": "❌ Not safe for use with e-pumps",
+        "renderSim": 0.96,
+        "sourceSim": 0.96,
+        "stringOk": true,
+        "posDeltaPx": 28.2,
+        "sizeDeltaPct": 45.3
+      },
+      {
+        "id": "body-mr8arjd6-38",
+        "text": "❌ Fixed core. Can't repair slow leaks!",
+        "renderSim": 0.97,
+        "sourceSim": 0.82,
+        "stringOk": true,
+        "posDeltaPx": 37.3,
+        "sizeDeltaPct": 7.4
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "watermark-mr8arjd6-2s",
+        "text": "craft cadence",
+        "role": "watermark",
+        "sourceLines": 2,
+        "renderLines": 1
+      },
+      {
+        "id": "body-mr8arjd6-36",
+        "text": "❌ Weak resin valves that can melt",
+        "role": "body",
+        "sourceLines": 2,
+        "renderLines": 1
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "NOT ALL TPU TUBES",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ARE BUILT THE SAME!",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "crafT",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "cadence",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "BUY 3,",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "GET1",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "FREE!",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "CRAFT CADENCE TPU TUBE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "TYPICAL TPU TUBE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "50% thicker for better",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "x Ultra-thin walls prone to",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "durability",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "punctures",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "V Aluminium valve built to last",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "X Weak resin valves that",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "can melt",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Compatible with electric",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "X Not safe for use with e-pumps",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "mini pumps",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Removable valve core for",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Fixed core. Can't repair slow",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "repairs & sealant use",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "leaks!",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": 0.62,
+    "meanPosDelta": 82.9,
+    "pileOverlaps": 0,
+    "score": 79.8
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8arjd6-39",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1080
+        },
+        "area": 1166400,
+        "meanDeltaE": 1.58,
+        "samples": 2825
+      },
+      {
+        "id": "card-mr8arjd6-2r",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 540,
+          "y": 0,
+          "w": 540,
+          "h": 1080
+        },
+        "area": 583200,
+        "meanDeltaE": 3.13,
+        "samples": 2822
+      },
+      {
+        "id": "logo-mr8arjd6-2u",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 113,
+          "y": 400,
+          "w": 173,
+          "h": 67
+        },
+        "area": 11591,
+        "meanDeltaE": 0.8,
+        "samples": 1220
+      },
+      {
+        "id": "product-mr8arjd6-2v",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 184,
+          "y": 227,
+          "w": 205,
+          "h": 448
+        },
+        "area": 91840,
+        "meanDeltaE": 1.06,
+        "samples": 3414
+      },
+      {
+        "id": "badge-mr8arjd6-2w",
+        "name": "badge",
+        "type": "badge",
+        "box": {
+          "x": 310,
+          "y": 451,
+          "w": 82,
+          "h": 82
+        },
+        "area": 6724,
+        "meanDeltaE": 11.49,
+        "samples": 3474
+      },
+      {
+        "id": "product-mr8arjd6-2x",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 734,
+          "y": 232,
+          "w": 162,
+          "h": 443
+        },
+        "area": 71766,
+        "meanDeltaE": 0.97,
+        "samples": 3511
+      }
+    ],
+    "meanDeltaE": 3.17,
+    "score": 94.9
+  },
+  "legacyPixel": 94.2,
+  "composite": 87.2
+}

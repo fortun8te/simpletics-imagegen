@@ -1,0 +1,138 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "caption-mr86l506-1",
+        "text": "X.com",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 11.5,
+        "sizeDeltaPct": 7.5
+      },
+      {
+        "id": "caption-mr86l506-2",
+        "text": "Been training hard and still waking up heavy.\nStarted using ",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 9.9,
+        "sizeDeltaPct": 2.1
+      },
+      {
+        "id": "caption-mr86l506-3",
+        "text": "14:07 · 26/09/2025 · 6.9K Views",
+        "renderSim": 0.12,
+        "sourceSim": 1,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "X.com",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Been training hard and still waking up heavy.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Started using Cadence Sleep Hydration and finally feel",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "like I'm actually recovering",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "MEADON",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Sampa",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "Cadence-",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "RECOVER",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Cherry",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "14:07 - 26/09/2025 - 6.9K Views",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.8,
+    "textRenderAcc": 0.67,
+    "meanPosDelta": 10.7,
+    "pileOverlaps": 1,
+    "score": 77.7
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr86l506-7",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 9.63,
+        "samples": 3244
+      },
+      {
+        "id": "product-mr86l506-6",
+        "name": "Media photo (cut out)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 2,
+          "w": 1037,
+          "h": 1534
+        },
+        "area": 1590758,
+        "meanDeltaE": 8.71,
+        "samples": 3098
+      }
+    ],
+    "meanDeltaE": 9.17,
+    "score": 76.9
+  },
+  "legacyPixel": 94.6,
+  "composite": 77.8
+}

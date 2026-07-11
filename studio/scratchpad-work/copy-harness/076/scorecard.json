@@ -1,0 +1,505 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr8ao5gn-0",
+        "text": "What they say about us...",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 4.5,
+        "sizeDeltaPct": 11.8
+      },
+      {
+        "id": "rating-mr8ao5gn-3",
+        "text": "★★★★★",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr8ao5gn-4",
+        "text": "My go-to gels for marathon training and race day",
+        "renderSim": 0.93,
+        "sourceSim": 0.93,
+        "stringOk": true,
+        "posDeltaPx": 2.8,
+        "sizeDeltaPct": 4.7
+      },
+      {
+        "id": "body-mr8ao5gn-5",
+        "text": "These are the only gels I buy! I love that they have so few ",
+        "renderSim": 0.57,
+        "sourceSim": 0.58,
+        "stringOk": false,
+        "posDeltaPx": 14,
+        "sizeDeltaPct": 7.7
+      },
+      {
+        "id": "author-mr8ao5gn-6",
+        "text": "Kathryn",
+        "renderSim": 0.86,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 21.8,
+        "sizeDeltaPct": 17.7
+      },
+      {
+        "id": "rating-mr8ao5gn-9",
+        "text": "★★★★★",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr8ao5gn-a",
+        "text": "Love the original honey...",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 33,
+        "sizeDeltaPct": 30.8
+      },
+      {
+        "id": "body-mr8ao5gn-b",
+        "text": "Love the original honey pack! Great taste! Perfect amount! E",
+        "renderSim": 0.6,
+        "sourceSim": 0.55,
+        "stringOk": false,
+        "posDeltaPx": 18.4,
+        "sizeDeltaPct": 9.5
+      },
+      {
+        "id": "author-mr8ao5gn-c",
+        "text": "Tamara R, verified customer",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 1,
+        "sizeDeltaPct": 11.1
+      },
+      {
+        "id": "rating-mr8ao5gn-g",
+        "text": "★★★★★",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr8ao5gn-h",
+        "text": "Awesome",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 11.2,
+        "sizeDeltaPct": 37.5
+      },
+      {
+        "id": "body-mr8ao5gn-i",
+        "text": "Amazing gels. Great taste, easy to digest, no G.I. issues wh",
+        "renderSim": 0.99,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 6.3,
+        "sizeDeltaPct": 16.7
+      },
+      {
+        "id": "author-mr8ao5gn-j",
+        "text": "Jonathan C, verified customer",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 6,
+        "sizeDeltaPct": 0
+      },
+      {
+        "id": "rating-mr8ao5gn-m",
+        "text": "★★★★★",
+        "renderSim": 0,
+        "sourceSim": 0,
+        "stringOk": false,
+        "posDeltaPx": null,
+        "sizeDeltaPct": null
+      },
+      {
+        "id": "subhead-mr8ao5gn-n",
+        "text": "The consistencies of these...",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 16.1,
+        "sizeDeltaPct": 0
+      },
+      {
+        "id": "body-mr8ao5gn-o",
+        "text": "The consistencies of these honey gels are great and they sit",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 7.1,
+        "sizeDeltaPct": 12.5
+      },
+      {
+        "id": "author-mr8ao5gn-p",
+        "text": "Daniel C, verified customer",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 18.1,
+        "sizeDeltaPct": 16.7
+      }
+    ],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "What they say about us...",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ON JUN",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "ON",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "My go-to gels for marathon training",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "and race day",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Love the original honey....",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "These are the only gels I buy! | love that they",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "have so few ingredients, taste good and",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Love the original honey pack! Great taste!",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "provide effective energy. They're also a good",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Perfect amount! Easy to open while running or",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "size/shape for sneaking into small pockets.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "competing! Can't wait to try some of the",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Totally recommend!",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "others!",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Kathryn",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Tamara R, verified customer",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "ON",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "HORNE*",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ENERGY",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Awesome",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Amazing gels. Great taste, easy to digest, no",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "G.I. issues whatsoever. I use them for my runs",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "and also for hockey! Makes a big difference for",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "my energy levels. 10/10 would recommend.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Jonathan C, verified customer",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "The consistencies of these...",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "The consistencies of these honey gels are",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "great and they sit really well in the stomach.",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Daniel C, verified customer",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "100% NATURAL GEL",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "HONEY",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "SHOT",
+        "covered": false,
+        "how": null
+      }
+    ],
+    "textRecall": 0.85,
+    "textRenderAcc": 0.65,
+    "meanPosDelta": 12.3,
+    "pileOverlaps": 0,
+    "score": 79.2
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr8ao5go-q",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1350
+        },
+        "area": 1458000,
+        "meanDeltaE": 9.52,
+        "samples": 3101
+      },
+      {
+        "id": "card-mr8ao5gn-1",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 30,
+          "y": 195,
+          "w": 493,
+          "h": 353
+        },
+        "area": 174029,
+        "meanDeltaE": 2.14,
+        "samples": 1747
+      },
+      {
+        "id": "badge-mr8ao5gn-2",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 455,
+          "y": 170,
+          "w": 92,
+          "h": 92
+        },
+        "area": 8464,
+        "meanDeltaE": 17.22,
+        "samples": 5674
+      },
+      {
+        "id": "card-mr8ao5gn-7",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 552,
+          "y": 240,
+          "w": 498,
+          "h": 305
+        },
+        "area": 151890,
+        "meanDeltaE": 1.59,
+        "samples": 2609
+      },
+      {
+        "id": "badge-mr8ao5gn-8",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 985,
+          "y": 218,
+          "w": 88,
+          "h": 88
+        },
+        "area": 7744,
+        "meanDeltaE": 22.25,
+        "samples": 5772
+      },
+      {
+        "id": "product-mr8ao5gn-d",
+        "name": "Cut-out",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 455,
+          "w": 505,
+          "h": 895
+        },
+        "area": 451975,
+        "meanDeltaE": 22.86,
+        "samples": 3264
+      },
+      {
+        "id": "card-mr8ao5gn-e",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 482,
+          "y": 600,
+          "w": 520,
+          "h": 318
+        },
+        "area": 165360,
+        "meanDeltaE": 3.02,
+        "samples": 2705
+      },
+      {
+        "id": "badge-mr8ao5gn-f",
+        "name": "Logo (vectorized)",
+        "type": "shape",
+        "box": {
+          "x": 935,
+          "y": 578,
+          "w": 86,
+          "h": 86
+        },
+        "area": 7396,
+        "meanDeltaE": 23.57,
+        "samples": 7060
+      },
+      {
+        "id": "card-mr8ao5gn-k",
+        "name": "card",
+        "type": "shape",
+        "box": {
+          "x": 460,
+          "y": 960,
+          "w": 575,
+          "h": 270
+        },
+        "area": 155250,
+        "meanDeltaE": 2.37,
+        "samples": 2900
+      },
+      {
+        "id": "badge-mr8ao5gn-l_p0",
+        "name": "Logo (vectorized) 1",
+        "type": "shape",
+        "box": {
+          "x": 963,
+          "y": 935,
+          "w": 85,
+          "h": 85
+        },
+        "area": 7225,
+        "meanDeltaE": 26.8,
+        "samples": 7225
+      },
+      {
+        "id": "badge-mr8ao5gn-l_p1",
+        "name": "Logo (vectorized) 2",
+        "type": "shape",
+        "box": {
+          "x": 963,
+          "y": 935,
+          "w": 85,
+          "h": 85
+        },
+        "area": 7225,
+        "meanDeltaE": 26.8,
+        "samples": 7225
+      }
+    ],
+    "meanDeltaE": 14.38,
+    "score": 74.4
+  },
+  "legacyPixel": 92.7,
+  "composite": 80.5
+}

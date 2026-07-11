@@ -1,0 +1,191 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [
+      {
+        "id": "headline-mr6mpq34-1k",
+        "text": "We spent all our money on product development",
+        "renderSim": 0.84,
+        "sourceSim": 0.58,
+        "stringOk": false,
+        "posDeltaPx": 45.6,
+        "sizeDeltaPct": 23.9
+      },
+      {
+        "id": "subhead-mr6mpq34-1l",
+        "text": "(so we couldn't pay our designers)",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 103.9,
+        "sizeDeltaPct": 56.8
+      },
+      {
+        "id": "cta-mr6mpq34-1m",
+        "text": "Please buy our Creatine",
+        "renderSim": 1,
+        "sourceSim": 1,
+        "stringOk": true,
+        "posDeltaPx": 265.2,
+        "sizeDeltaPct": 73
+      }
+    ],
+    "wrapMismatches": [
+      {
+        "id": "cta-mr6mpq34-1m",
+        "text": "Please buy our Creatine",
+        "role": "cta",
+        "sourceLines": 1,
+        "renderLines": 2
+      }
+    ],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "We spent all",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "our money",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "eutonic",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "icutonie",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "nettonic",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "neutonic",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "on product",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "CREATINE",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "NATURAL SWEETENER",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "SACHETS",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "development",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "SUPPORTS FERFORMANCE\"",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "COLOUR & FLAVOUR",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "ZERO SUOARIT",
+        "covered": false,
+        "how": null
+      },
+      {
+        "text": "PINEAPPLE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "FUEL YOUR PERFORMANCE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "(so we couldnt",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "pay our designers)",
+        "covered": true,
+        "how": "doc-layer"
+      },
+      {
+        "text": "Please buy our Creatine",
+        "covered": true,
+        "how": "doc-layer"
+      }
+    ],
+    "textRecall": 0.95,
+    "textRenderAcc": 0.67,
+    "meanPosDelta": 138.2,
+    "pileOverlaps": 0,
+    "score": 77.9
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base-mr6mpq35-1n",
+        "name": "Base color",
+        "type": "shape",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1920
+        },
+        "area": 2073600,
+        "meanDeltaE": 0,
+        "samples": 2530
+      },
+      {
+        "id": "rect-mr6mpq34-1j",
+        "name": "Cut-out · creatine sachet box",
+        "type": "image",
+        "box": {
+          "x": 594,
+          "y": 326,
+          "w": 432,
+          "h": 538
+        },
+        "area": 232416,
+        "meanDeltaE": 0,
+        "samples": 3144
+      }
+    ],
+    "meanDeltaE": 0,
+    "score": 100
+  },
+  "legacyPixel": 95.8,
+  "composite": 84.1
+}

@@ -43,6 +43,7 @@ import {
 } from '../../vendor/figma-kiwi';
 import { designToSvg } from './designSvg';
 import { ELEMENTS } from './elements';
+import { encodeVectorNetworkBlob, parseSvgPath, pathToVectorNetwork } from './figmaVector';
 import { arrowGeometry } from './fills';
 
 // ── effects/structure round: model fields that may not be in sceneGraph.ts yet ───────────────────
@@ -519,12 +520,11 @@ function lineNode(
  * shapeKind 'polyline' (style.points, flat [x,y,…] normalized 0..1 in the box) → a FRAME group
  * of LINE nodes, one per segment.
  *
- * FALLBACK (documented): a real Figma VECTOR would need vectorData.vectorNetworkBlob, an opaque
- * NON-kiwi binary blob format the vendored schema only references by index — building it means
- * reverse-engineering the blob layout, out of scope here. Instead we emit per-segment LINE nodes
- * whose names carry the passthrough hint 'polyline·N'; figmaImport detects that hint and
- * reassembles the polyline (points + stroke) losslessly. Pasting into Figma gives an editable
- * group of lines. shapeKind 'path' has its own fallback — see the path branch in emitSceneNode.
+ * FALLBACK (documented): we emit per-segment LINE nodes whose names carry the passthrough hint
+ * 'polyline·N'; figmaImport detects that hint and reassembles the polyline (points + stroke)
+ * losslessly. Pasting into Figma gives an editable group of lines. (shapeKind 'path' outgrew
+ * this: it now encodes a REAL vectorNetworkBlob — see the path branch in emitSceneNode and
+ * figmaVector.ts — polylines could follow suit in a later round.)
  */
 function emitPolyline(
   ctx: EmitCtx, parent: FigGUID, parentOrigin: { x: number; y: number },
@@ -916,17 +916,70 @@ function emitSceneNode(
     const g = resolveGradient(s);
     const paint = g ? gradientPaint(g) : solidPaint(s.background);
     if (kind === 'path' && typeof s.path === 'string' && s.path) {
-      // FALLBACK (documented): a real Figma VECTOR needs vectorData.vectorNetworkBlob — a uint
-      // index into message.blobs pointing at Figma's OPAQUE vector-network binary, a format the
-      // kiwi schema does not describe (schema-verified: VectorData = { vectorNetworkBlob: uint,
-      // normalizedSize, styleOverrideTable }). Building that blob means reverse-engineering an
-      // undocumented binary layout — timeboxed out. Instead: the layer's box pastes as a
+      // REAL Figma VECTOR (S13b): the normalized d-string parses into absolute cubics → vector
+      // network → vectorNetworkBlob (little-endian binary, layout verified against fig2sketch's
+      // decoder — see figmaVector.ts). Schema-verified wiring: VectorData = { vectorNetworkBlob:
+      // uint (index into message.blobs — the SAME array the image bytes ride in), normalizedSize:
+      // Vector, styleOverrideTable: NodeChange[] }, attached as NodeChange.vectorData (+ its
+      // vectorDataTag override marker, same discipline as the TEXT *Tag fields). The d-string
+      // STILL rides in pluginData belt-and-braces: import reassembles shapeKind 'path' from it
+      // losslessly (tryPath in figmaImport), and payloads from before the blob encoder existed
+      // keep working. Unparsable paths keep the documented rect fallback below — never a drop.
+      const pathPluginData = [{ pluginID: FIGMA_PATH_PLUGIN_ID, key: FIGMA_PATH_PLUGIN_KEY, value: s.path }];
+      const w = Math.max(1, l.box.w);
+      const h = Math.max(1, l.box.h);
+      try {
+        const network = pathToVectorNetwork(parseSvgPath(s.path), { width: w, height: h });
+        if (!network.segments.length) throw new Error('no drawable segments');
+        const blobIndex = ctx.blobs.length;
+        ctx.blobs.push({ bytes: encodeVectorNetworkBlob(network) });
+        const vectorData = {
+          vectorNetworkBlob: blobIndex,
+          normalizedSize: { x: w, y: h },
+          styleOverrideTable: [],
+        };
+        const effects = layerEffects(l);
+        const blend = blendOf(s);
+        const node: FigNodeChange = {
+          ...baseNode(ctx.guid(), parent, nextIndex(ctx, parent)),
+          type: 'VECTOR',
+          name,
+          size: { x: w, y: h },
+          transform: boxTransform(l.box, nodeRotation(l), parentOrigin),
+          opacity: s.opacity ?? 1,
+          fillPaints: glassifyPaints([paint], s),
+          // No explicit stroke ⇒ strokeWeight 0: baseNode's default 1 would hairline-outline
+          // every pasted blob/squiggle that our renderers draw fill-only.
+          strokeWeight: 0,
+          vectorData,
+          vectorDataTag: 1,
+          handleMirroring: 'NONE',
+          proportionsConstrained: false,
+          pluginData: pathPluginData,
+          ...(effects ? { effects } : {}),
+          ...(blend ? { blendMode: blend } : {}),
+        };
+        if (s.stroke) {
+          node.strokePaints = [solidPaint(s.stroke.color)];
+          node.strokeWeight = s.stroke.width;
+          node.strokeAlign = 'CENTER';
+        }
+        const merged = mergeFigmaPassthrough(node, l.figma);
+        // A stashed vectorData lost its blob index on import (sanitize strips per-message
+        // indices), so OUR freshly-built vectorData — whose blob lives in THIS message — wins.
+        merged.vectorData = vectorData;
+        ctx.nodes.push(merged);
+        return;
+      } catch (err) {
+        console.warn(`figmaClipboard: path→vector failed for "${name}", using rect fallback`, err);
+      }
+      // FALLBACK (documented, unparsable paths only): the layer's box pastes as a
       // ROUNDED_RECTANGLE with the real fill, the name gets the ' (path)' suffix so the
       // substitution is visible in Figma's layers panel, and the d-string rides losslessly in
       // pluginData (schema-native PluginData {pluginID,key,value}) — Figma preserves pluginData,
       // and figmaImport reassembles shapeKind 'path' from it (tryPath).
       const node = rectNode(ctx, parent, parentOrigin, l, `${name} (path)`, [paint]);
-      node.pluginData = [{ pluginID: FIGMA_PATH_PLUGIN_ID, key: FIGMA_PATH_PLUGIN_KEY, value: s.path }];
+      node.pluginData = pathPluginData;
       ctx.nodes.push(mergeFigmaPassthrough(node, l.figma));
       return;
     }

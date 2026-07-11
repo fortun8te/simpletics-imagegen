@@ -108,9 +108,11 @@
         "color": "#0F1419",
         "align": "left",
         "lineHeight": 1.35,
-        "uppercase": false
+        "uppercase": false,
+        "fontFamily": "Menlo"
       }
     }
   ],
-  "measuredBoxes": true
+  "measuredBoxes": true,
+  "_occlusionPlan": []
 }

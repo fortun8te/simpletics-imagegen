@@ -1,13 +1,13 @@
 {
-  "id": "harness_020_d0545bd0",
-  "name": "copy-harness harness_020_d0545bd0",
+  "id": "harness_020_ab6f9e2a",
+  "name": "copy-harness harness_020_ab6f9e2a",
   "canvas": {
     "w": 1080,
     "h": 1080
   },
   "layers": [
     {
-      "id": "base-mr8d3g5q-7",
+      "id": "base-mr8dpqli-22",
       "type": "shape",
       "role": "base",
       "name": "Base color",
@@ -23,12 +23,12 @@
       }
     },
     {
-      "id": "headline-mr8d3g5p-0",
+      "id": "headline-mr8dpqli-1v",
       "type": "text",
       "role": "headline",
       "text": "BLACK",
       "box": {
-        "x": 190,
+        "x": 173,
         "y": 35,
         "w": 700,
         "h": 165
@@ -45,7 +45,7 @@
       "sizeLocked": true
     },
     {
-      "id": "headline-mr8d3g5q-1",
+      "id": "headline-mr8dpqli-1w",
       "type": "text",
       "role": "headline",
       "text": "FRIDAY",
@@ -56,7 +56,7 @@
         "h": 150
       },
       "style": {
-        "fontSize": 173,
+        "fontSize": 187,
         "fontWeight": 900,
         "color": "#2B3BEB",
         "align": "center",
@@ -68,7 +68,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8d3g5q-2",
+      "id": "decor-mr8dpqli-1x",
       "type": "text",
       "role": "decor",
       "text": "BLACK",
@@ -95,7 +95,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8d3g5q-3",
+      "id": "decor-mr8dpqli-1y",
       "type": "text",
       "role": "decor",
       "text": "FRIDAY",
@@ -122,7 +122,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8d3g5q-4",
+      "id": "decor-mr8dpqli-1z",
       "type": "text",
       "role": "decor",
       "text": "BLACK",
@@ -149,7 +149,7 @@
       "sizeLocked": true
     },
     {
-      "id": "decor-mr8d3g5q-5",
+      "id": "decor-mr8dpqli-20",
       "type": "text",
       "role": "decor",
       "text": "FRIDAY",
@@ -176,7 +176,7 @@
       "sizeLocked": true
     },
     {
-      "id": "product-mr8d3g5q-6",
+      "id": "product-mr8dpqli-21",
       "type": "image",
       "role": "product",
       "box": {
@@ -186,10 +186,10 @@
         "h": 750
       },
       "style": {},
-      "src": "/refasset?id=harness-020mac5351a0",
+      "src": "/refasset?id=harness-020m9ec1b57a",
       "name": "Cut-out"
     }
   ],
-  "skeletonId": "skel_mr8d3g5pfnka",
-  "updatedAt": 1783290468617
+  "skeletonId": "skel_mr8dpqlih5a9",
+  "updatedAt": 1783291510311
 }

@@ -2826,6 +2826,72 @@ export async function runDesignAgent(doc, instruction, onStep = () => {}, opts =
   }
 }
 
+// ── COPY-REFERENCE quality stack helpers (Phase 0, COPY-ENGINE-V2 §6) ─────────────────────────────
+
+// Cached probe: can this machine render a doc to PNG at all (headless Chrome or qlmanage)?
+// font-match and the refine loop both spend renders — on a server without either backend they
+// must skip CLEANLY instead of failing per-layer/per-round. One tiny render answers it for the
+// process lifetime.
+let _renderAvailable;
+function renderAvailable() {
+  if (_renderAvailable !== undefined) return _renderAvailable;
+  try {
+    const p = renderCompPng({ id: 'render-probe', canvas: { w: 64, h: 64 }, layers: [] }, { size: 64 });
+    _renderAvailable = !!(p && existsSync(p));
+  } catch { _renderAvailable = false; }
+  return _renderAvailable;
+}
+
+/**
+ * PLACEHOLDER BAN (COPY-ENGINE-V2 §3.4): extraction's labeled product placeholders — a tinted
+ * silhouette shape plus a synthesized "<id>-lb" text twin naming the region ("WHITE EARPLUG") —
+ * may never ship as text-labeled stand-ins for image regions. Delete the label layers and
+ * convert each placeholder shape into a rect `cutoutCandidate` of its own source region, so the
+ * existing AUTO-CUTOUT path materializes REAL reference pixels (crop → matte upgrade chain).
+ * Blurred redactions (privacy blurs reproduced deliberately) are exempt. Mutates ext in place.
+ */
+function banLabeledPlaceholders(ext) {
+  const out = { converted: 0, labelsDropped: 0 };
+  if (!ext || !Array.isArray(ext.layers)) return out;
+  const cw = Number(ext.canvas?.w) || 1080;
+  const ch = Number(ext.canvas?.h) || 1080;
+  // 1. drop the synthesized label twins ("<baseId>-lb", name 'Product label') and remember
+  //    which base shapes they labeled
+  const labeledBase = new Set();
+  const prune = (list) => {
+    for (let i = list.length - 1; i >= 0; i--) {
+      const n = list[i];
+      if (!n) continue;
+      if (n.type === 'group' && Array.isArray(n.children)) { prune(n.children); continue; }
+      if (n.type === 'text' && /-lb$/.test(String(n.id || '')) && String(n.name || '') === 'Product label') {
+        labeledBase.add(String(n.id).slice(0, -3));
+        list.splice(i, 1);
+        out.labelsDropped++;
+      }
+    }
+  };
+  prune(ext.layers);
+  // 2. placeholder shapes (labeled, or extraction's 'Product · …' silhouettes) → rect cutouts
+  const clamp01 = (v) => Math.max(0, Math.min(1, v));
+  walkNodes(ext.layers, (n) => {
+    if (!n || n.type !== 'shape' || n.cutoutCandidate || n.src || String(n.text || '').trim()) return;
+    if (!n.box || !(n.box.w > 0) || !(n.box.h > 0)) return;
+    if (n.style && n.style.blur) return; // privacy redaction stays a redaction
+    const placeholderish = labeledBase.has(String(n.id || '')) || /^Product · /.test(String(n.name || ''));
+    if (!placeholderish) return;
+    // unit sniff (same rule as scene-truth/occlusion-fill): extents ≤ 2 → box already fractions
+    const isFrac = Math.max(n.box.x + n.box.w, n.box.y + n.box.h) <= 2;
+    n.cutoutCandidate = {
+      region: isFrac
+        ? { x: clamp01(n.box.x), y: clamp01(n.box.y), w: clamp01(n.box.w), h: clamp01(n.box.h) }
+        : { x: clamp01(n.box.x / cw), y: clamp01(n.box.y / ch), w: clamp01(n.box.w / cw), h: clamp01(n.box.h / ch) },
+      shape: 'rect',
+    };
+    out.converted++;
+  });
+  return out;
+}
+
 // ── COPY-REFERENCE agent run ──────────────────────────────────────────────────────────────────────
 // The reference-copy flow, unified onto the SAME harness event vocabulary as the edit agent. It:
 //   1. runs extractLayout (which itself fans out its deterministic palette/background workers,
@@ -2877,6 +2943,116 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
     const verify = verifyDesign(work, { kit, skeletonId: work.skeletonId });
     return { doc: work, source: 'copy-reference', applied: 0, usage, lint: lintDesign(work, kit), totals: { turns: 0, parts: 1, inTok: 0, outTok: 0 }, layoutScore: layoutScore(work, kit), verify, error: err };
   }
+
+  // ── QUALITY STACK (Phase 0, COPY-ENGINE-V2 §6): the deterministic passes that used to run only
+  // in scripts/copy-harness.mjs now run on the PRODUCT path, so product and harness share one
+  // behavior. Order: scene-truth → typo-truth → placeholder ban → font-match → occlusion plan.
+  // Every pass is best-effort (try/catch, logged to the job dir) — a pass may only ever improve
+  // the result vs skipping it, never fail the run. Artifacts land in .state/copy-jobs/<id>/.
+  let job = null;
+  try {
+    const { openJob } = await import('./copy-jobs.mjs');
+    job = openJob(reference.path);
+  } catch { /* job artifacts are an upgrade, never a gate */ }
+  const stageLog = [];
+  const jwrite = (name, obj) => { if (job) try { job.writeJson(name, obj); } catch { /* best-effort */ } };
+  const logStage = (stage, info) => { stageLog.push({ stage, at: Date.now(), ...info }); jwrite('stages.json', stageLog); };
+  jwrite('extraction.json', ext); // the RAW read — primary diagnostic for missing-text/geometry bugs
+  if (job) emit('thinking', `job artifacts → .state/copy-jobs/${job.id}`);
+
+  // Registered reference PNG (.state/refs/<ref>.png) — typo-truth, font-match and pixel-diff all
+  // want a PNG; reference.path may be webp/jpg. scene-truth decodes the original fine.
+  const refPngPath = reference.ref ? join(STATE_DIR, 'refs', `${reference.ref}.png`) : null;
+  const refPng = (refPngPath && existsSync(refPngPath)) ? refPngPath
+    : (String(reference.path || '').toLowerCase().endsWith('.png') && existsSync(reference.path) ? reference.path : null);
+
+  // 1. PIXEL-TRUTH (lib/scene-truth.mjs): re-measure page background, fills, text colors, font
+  //    sizes, alignment from the reference pixels — the reader narrates, the pixels decide.
+  try {
+    const { applySceneTruth } = await import('./scene-truth.mjs');
+    const truth = applySceneTruth(ext, reference.path);
+    ext = truth.ext;
+    logStage('scene-truth', { ok: true, corrections: truth.corrections.length });
+    if (truth.corrections.length) emit('op', `pixel-truth: ${truth.corrections.length} measured correction${truth.corrections.length === 1 ? '' : 's'} applied`, { deterministic: true });
+  } catch (e) { logStage('scene-truth', { ok: false, error: String(e?.message || e) }); }
+
+  // 2. TYPO/BACKGROUND TRUTH v2 (lib/typo-truth.mjs): measured weight/italic/subtle-gradient/
+  //    stroke/star truth.
+  try {
+    const { applyTypoTruth } = await import('./typo-truth.mjs');
+    const tt = applyTypoTruth(ext, refPng || reference.path);
+    ext = tt.ext;
+    logStage('typo-truth', { ok: true, corrections: tt.corrections.length });
+  } catch (e) { logStage('typo-truth', { ok: false, error: String(e?.message || e) }); }
+
+  // 3. PLACEHOLDER BAN — see banLabeledPlaceholders. Runs before font-match (no probes wasted on
+  //    synthetic labels) and before planOcclusions (labels aren't real occluders — they don't
+  //    exist in the reference pixels).
+  try {
+    const ban = banLabeledPlaceholders(ext);
+    logStage('placeholder-ban', { ok: true, ...ban });
+    if (ban.converted || ban.labelsDropped) emit('op', `placeholder ban: ${ban.converted} labeled stand-in${ban.converted === 1 ? '' : 's'} → rect crops of the reference (${ban.labelsDropped} label layer${ban.labelsDropped === 1 ? '' : 's'} dropped)`, { deterministic: true });
+  } catch (e) { logStage('placeholder-ban', { ok: false, error: String(e?.message || e) }); }
+
+  // 4. FONT MATCH: one probe sheet per text crop, across the actual pack. The old matcher spawned
+  // Chrome candidate-by-candidate, then stopped after 120 seconds; text later in an ad was simply
+  // never matched. Logo/wordmark layers are deliberately excluded — they must remain source art.
+  try {
+    if (renderAvailable() && job && refPng && !opts.signal?.aborted && ext.canvas?.w > 0 && ext.canvas?.h > 0) {
+      const tFm0 = Date.now();
+      const { matchFontAll } = await import('./font-match.mjs');
+      const sharp = (await import('sharp')).default;
+      const meta = await sharp(refPng).metadata();
+      const sx = (meta.width || ext.canvas.w) / ext.canvas.w;
+      const sy = (meta.height || ext.canvas.h) / ext.canvas.h;
+      const flat = [];
+      walkNodes(ext.layers, (l) => { if (l && l.type !== 'group') flat.push(l); });
+      const fm = { ok: true, referencePath: refPng, budgetMs: null, patched: 0, capped: false, layers: [] };
+      for (const layer of flat) {
+        const isTextish = (layer.type === 'text' || layer.type === 'badge') && String(layer.text || '').trim();
+        if (!isTextish || layer.role === 'logo') continue;
+        if (opts.signal?.aborted) break;
+        const previous = layer.style?.fontFamily ?? null;
+        const b = layer.box || {};
+        const left = Math.max(0, Math.round((Number(b.x) || 0) * sx));
+        const top = Math.max(0, Math.round((Number(b.y) || 0) * sy));
+        const width = Math.max(1, Math.min((meta.width || 1) - left, Math.round((Number(b.w) || 1) * sx)));
+        const height = Math.max(1, Math.min((meta.height || 1) - top, Math.round((Number(b.h) || 1) * sy)));
+        const cropPath = job.write(`font-crops/${String(layer.id || fm.layers.length).replace(/[^a-zA-Z0-9_-]/g, '_')}.png`,
+          await sharp(refPng).extract({ left, top, width, height }).png().toBuffer());
+        const tried = await matchFontAll(cropPath, { text: layer.text, weightHint: layer.style?.fontWeight, maxTiles: 32 });
+        const best = tried[0] || null;
+        const family = best?.family || null;
+        let patched = false;
+        if (family !== null && family !== previous) {
+          layer.style = layer.style || {};
+          layer.style.fontFamily = family;
+          patched = true;
+          fm.patched++;
+        }
+        fm.layers.push({ id: layer.id, role: layer.role, text: String(layer.text).slice(0, 60), previous, fontFamily: family, confidence: best?.score ?? null, patched, tried });
+      }
+      jwrite('fontmatch.json', fm);
+      if (fm.patched > 0) emit('op', `font-match: ${fm.patched} font pick${fm.patched === 1 ? '' : 's'} decided by silhouette evidence`, { deterministic: true });
+      logStage('font-match', { ok: true, patched: fm.patched, scanned: fm.layers.length, capped: false, ms: Date.now() - tFm0 });
+    } else {
+      logStage('font-match', { ok: true, skipped: opts.signal?.aborted ? 'aborted' : (!job || !refPng ? 'no reference job/png' : 'renderer unavailable') });
+    }
+  } catch (e) { logStage('font-match', { ok: false, error: String(e?.message || e) }); }
+
+  // 5. OCCLUSION-FILL PLAN (lib/occlusion-fill.mjs): overlays sitting on crop regions keep their
+  //    baked-in pixels → the rebuilt overlay renders doubled. Plan the occluded rects here (sets
+  //    ext._occlusionPlan + per-layer cutoutCandidate.occluders — the exact fields the fill
+  //    wiring below consumes).
+  try {
+    const { planOcclusions } = await import('./occlusion-fill.mjs');
+    const plan = ext._occlusionPlan = planOcclusions(ext);
+    jwrite('occlusion-plan.json', plan);
+    logStage('occlusion-plan', { ok: true, cutoutsWithOccluders: plan.length });
+  } catch (e) { logStage('occlusion-plan', { ok: false, error: String(e?.message || e) }); }
+
+  jwrite('extraction.truth.json', ext); // post-truth read — what assembly actually consumes
+  // ── end quality stack (assembly below is unchanged) ─────────────────────────────────────────
 
   // Lock the doc canvas to the reference's aspect (the extraction already computed it) so the
   // rebuilt comp copies the reference's real proportions.
@@ -3090,6 +3266,77 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
   // FINAL contrast repair (same as the edit path) so copied text stays legible on the new base.
   try { const ad = smartAdRepair(work, { kit }); if (ad.summaries.length) emit('op', ad.summary, { deterministic: true }); } catch { /* never fatal */ }
 
+  // ── REFINE LOOP (Phase 0): the same deterministic render→compare→correct step the harness
+  // runs — render the assembled doc, pixel-diff vs the reference PNG, and when the first score
+  // is < 97 let lib/refine-loop.mjs nudge the worst offenders (its own budget: ≤12 renders/45s).
+  // Needs a render backend AND a PNG reference — skips cleanly without either. A kept round only
+  // ever replaces the doc when the global score IMPROVED, so this can't make the result worse.
+  if (opts.refine !== false && refPng && !opts.signal?.aborted && renderAvailable()) {
+    const tRefine0 = Date.now();
+    try {
+      const { pixelDiff } = await import('../scripts/pixel-diff.mjs');
+      const { makeImageResolver } = await import('./designstore.mjs');
+      // same resolver the product render path uses — /refasset?id= resolves cutout crops
+      const resolveImage = makeImageResolver({ renders: join(STATE_DIR, 'renders'), repo: join(STATE_DIR, '..', '..'), ttImagePath: () => null });
+      const renderFn = (d) => renderCompPng(d, { resolveImage, size: 1000 });
+      const scoreFn = (p) => { const dd = pixelDiff(refPng, p, { grid: 64 }); return dd.ok ? dd.score : null; };
+      const firstRender = renderFn(work);
+      const firstScore = firstRender ? scoreFn(firstRender) : null;
+      if (firstRender && job) try { job.write('render.png', readFileSync(firstRender)); } catch { /* best-effort */ }
+      if (firstRender && firstScore != null && firstScore < 97) {
+        const { refineLoop } = await import('./refine-loop.mjs');
+        const refine = await refineLoop(work, refPng, {
+          maxRounds: 3,
+          renderFn,
+          scoreFn,
+          initialRenderPath: firstRender, // reuse the first render — no double-spend
+          initialScore: firstScore,
+          ...(job ? { keepRenderPath: join(job.dir, 'render.refined.png') } : {}),
+        });
+        logStage('refine', { ok: refine.ok !== false, scoreBefore: refine.scoreBefore, scoreAfter: refine.scoreAfter, rounds: refine.rounds, renders: refine.renders, capped: refine.capped || false, ms: Date.now() - tRefine0, error: refine.error });
+        if (refine.ok && refine.scoreAfter > firstScore && refine.keptDoc) {
+          work.layers = refine.keptDoc.layers; // keptDoc is a deep copy; adopt its layer tree
+          emit('op', `refine loop: pixel score ${refine.scoreBefore} → ${refine.scoreAfter} (${refine.rounds} round${refine.rounds === 1 ? '' : 's'}, ${refine.renders} renders)`, { deterministic: true });
+        }
+      } else {
+        logStage('refine', { ok: true, skipped: !firstRender ? 'render failed' : (firstScore == null ? 'no score' : 'score ≥ 97'), score: firstScore });
+      }
+    } catch (e) { logStage('refine', { ok: false, error: String(e?.message || e), ms: Date.now() - tRefine0 }); }
+  } else {
+    logStage('refine', { ok: true, skipped: opts.refine === false ? 'disabled' : (!refPng ? 'no reference png' : (opts.signal?.aborted ? 'aborted' : 'renderer unavailable')) });
+  }
+
+  // ── FINAL FIDELITY GATE ────────────────────────────────────────────────────────────────────
+  // The old path merely *reported* ghost text / invented labels in the harness and still handed
+  // the broken comp to the user. A photo-reference copy must never ship visibly worse than the
+  // original. If the rendered reconstruction fails the same OCR scorecard used by the harness,
+  // retain the exact reference as one honest base layer. That is deliberately conservative: it
+  // preserves every real element and avoids doubles while the editor can still be used to add or
+  // replace layers manually. A later successful extraction remains fully editable.
+  let fidelityGate = null;
+  if (refPng && reference.ref && ext.backgroundIsPhoto && !opts.signal?.aborted && renderAvailable()) {
+    try {
+      const { scoreCopy } = await import('../scripts/scorecard.mjs');
+      const { makeImageResolver } = await import('./designstore.mjs');
+      const resolveImage = makeImageResolver({ renders: join(STATE_DIR, 'renders'), repo: join(STATE_DIR, '..', '..'), ttImagePath: () => null });
+      const rendered = renderCompPng(work, { resolveImage, size: 1000 });
+      const sc = rendered ? await scoreCopy({ sourcePath: refPng, renderPath: rendered, doc: work, regions: false }) : null;
+      const fatal = new Set(['ghostText', 'placeholderArtifact', 'missingText']);
+      const failures = (sc?.hardFails || []).filter((f) => fatal.has(f.rule));
+      fidelityGate = { ok: !failures.length, composite: sc?.composite ?? null, failures: failures.map((f) => f.rule) };
+      if (failures.length) {
+        work.layers = [{
+          id: `base_${Date.now().toString(36)}`, type: 'image', role: 'base',
+          name: 'Reference retained (rebuild rejected)', src: `/refasset?id=${reference.ref}`,
+          box: { x: 0, y: 0, w: work.canvas.w, h: work.canvas.h }, style: { fit: 'cover' },
+        }];
+        emit('op', `rebuild rejected by fidelity check (${fidelityGate.failures.join(', ')}) — kept the exact reference instead of shipping a broken editable copy`, { deterministic: true });
+      }
+      logStage('fidelity-gate', fidelityGate);
+    } catch (e) { logStage('fidelity-gate', { ok: null, error: String(e?.message || e) }); }
+  }
+  jwrite('doc.json', work); // the final assembled DesignDoc — last job artifact
+
   work.updatedAt = Date.now();
   const afterScore = layoutScore(work, kit);
   const verify = verifyDesign(work, { kit, skeletonId: work.skeletonId });
@@ -3103,7 +3350,7 @@ export async function runCopyReference(doc, reference, emit, opts = {}) {
     extractionTotalCorrections: ext.selfCheck.totalCorrections ?? 0,
   } : null;
   emit('verify', `${verifySummary(verify)} · copied ${mc.candidate.added} layers · ${mc.findings.length ? mc.findings[0] : 'checker ok'} · layout ${afterScore}${extractionMetrics?.extractionScore != null ? ` · extraction fidelity ${extractionMetrics.extractionScore}` : ''}${extractionMetrics?.extractionIterations > 1 ? ` (${extractionMetrics.extractionIterations} iterations)` : ''}`, { model: 'copy-reference', layoutScore: afterScore, verify, extractionMetrics });
-  return { doc: work, source: 'copy-reference', applied: mc.candidate.added, usage, lint, totals: { turns: 0, parts: 1, inTok: usage.inTok, outTok: usage.outTok }, layoutScore: afterScore, verify, extractionMetrics };
+  return { doc: work, source: 'copy-reference', applied: mc.candidate.added, usage, lint, totals: { turns: 0, parts: 1, inTok: usage.inTok, outTok: usage.outTok }, layoutScore: afterScore, verify, extractionMetrics, fidelityGate };
 }
 
 // ── copy drafting ────────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,159 @@
+{
+  "id": "022",
+  "filename": "022_attached_d8fe372f10d5df0f.webp",
+  "ok": true,
+  "error": null,
+  "ms": {
+    "extract": 237281,
+    "assemble": 80,
+    "total": 247358
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/022.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-022.png",
+    "patched": 0,
+    "layers": [
+      {
+        "id": "headline",
+        "role": "headline",
+        "text": "Your Nervous System\nWill Thank You.",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.0151,
+        "patched": false,
+        "tried": [
+          {
+            "family": "",
+            "score": 0.6384,
+            "fontSize": 74
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.6233,
+            "fontSize": 73
+          },
+          {
+            "family": "Bradley Hand",
+            "score": 0.6044,
+            "fontSize": 74
+          },
+          {
+            "family": "Georgia",
+            "score": 0.5229,
+            "fontSize": 72
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.4315,
+            "fontSize": 72
+          },
+          {
+            "family": "Impact",
+            "score": 0.414,
+            "fontSize": 72
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.3617,
+            "fontSize": 72
+          },
+          {
+            "family": "Menlo",
+            "score": 0.3031,
+            "fontSize": 72
+          }
+        ]
+      }
+    ]
+  },
+  "readSource": "scene-file",
+  "occlusionPlan": [
+    {
+      "layerId": "__photoBase",
+      "name": "Background (reference photo)",
+      "shape": "photo-base",
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1
+      },
+      "rects": [
+        {
+          "x": 0.4675925925925926,
+          "y": 0.21458333333333332,
+          "w": 0.12499999999999994,
+          "h": 0.02291666666666667,
+          "overlayId": "brand-name",
+          "overlayRole": "meta"
+        },
+        {
+          "x": 0.12037037037037036,
+          "y": 0.2630208333333333,
+          "w": 0.7592592592592593,
+          "h": 0.0859375,
+          "overlayId": "headline",
+          "overlayRole": "headline"
+        },
+        {
+          "x": 0.06296296296296296,
+          "y": 0.4125,
+          "w": 0.24259259259259258,
+          "h": 0.13645833333333335,
+          "overlayId": "badge-guarantee",
+          "overlayRole": "badge"
+        },
+        {
+          "x": 0.6777777777777778,
+          "y": 0.428125,
+          "w": 0.20925925925925926,
+          "h": 0.1177083333333333,
+          "overlayId": "badge-volume",
+          "overlayRole": "badge"
+        },
+        {
+          "x": 0.15925925925925927,
+          "y": 0.6588541666666666,
+          "w": 0.1296296296296296,
+          "h": 0.07291666666666663,
+          "overlayId": "badge-fit",
+          "overlayRole": "badge"
+        },
+        {
+          "x": 0.6824074074074075,
+          "y": 0.634375,
+          "w": 0.2518518518518519,
+          "h": 0.14166666666666672,
+          "overlayId": "badge-clarity",
+          "overlayRole": "badge"
+        }
+      ]
+    }
+  ],
+  "sceneTruthCorrections": [
+    "brand-name fontSize: 40 → 61 (1 ink line, block 44px)",
+    "brand-name box: y412 h44 → y405 h58 (tight ink rows + 7px pad)",
+    "headline box: y505 h165 → y484 h183 (tight ink rows + 21px pad)"
+  ],
+  "typoTruthCorrections": [],
+  "archetype": "annotated-photo",
+  "layerCountExtracted": 7,
+  "parsePath": "loose",
+  "background": "photo",
+  "cutoutCandidates": 1,
+  "layersApplied": 7,
+  "leavesInResult": 11,
+  "verify": {
+    "ready": false
+  },
+  "pixelError": null,
+  "textPileOverlaps": 0,
+  "pixelScoreRaw": 98.5,
+  "pixelScore": 98.5,
+  "refine": {
+    "ran": false,
+    "reason": "score ≥ 97"
+  },
+  "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/022/side-by-side.png"
+}

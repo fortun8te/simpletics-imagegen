@@ -1,0 +1,66 @@
+{
+  "ok": true,
+  "hardFails": [],
+  "text": {
+    "ocrOk": {
+      "source": true,
+      "render": true
+    },
+    "ocrError": {
+      "source": null,
+      "render": null
+    },
+    "layers": [],
+    "wrapMismatches": [],
+    "logoGlyphSubs": [],
+    "sourceLines": [
+      {
+        "text": "FOR",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "FREE",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "BUY",
+        "covered": true,
+        "how": "render-baked"
+      },
+      {
+        "text": "TWO",
+        "covered": true,
+        "how": "render-baked"
+      }
+    ],
+    "textRecall": 1,
+    "textRenderAcc": null,
+    "meanPosDelta": null,
+    "pileOverlaps": 0,
+    "score": 100
+  },
+  "regions": {
+    "regions": [
+      {
+        "id": "base_mr8dr94a",
+        "name": "Background (reference photo)",
+        "type": "image",
+        "box": {
+          "x": 0,
+          "y": 0,
+          "w": 1080,
+          "h": 1917
+        },
+        "area": 2070360,
+        "meanDeltaE": 0.75,
+        "samples": 3747
+      }
+    ],
+    "meanDeltaE": 0.75,
+    "score": 98.1
+  },
+  "legacyPixel": 99.4,
+  "composite": 99.3
+}

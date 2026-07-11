@@ -4,11 +4,71 @@
   "ok": true,
   "error": null,
   "ms": {
-    "extract": 0,
-    "assemble": 136,
-    "total": 8451
+    "extract": 126267,
+    "assemble": 166,
+    "total": 165184
+  },
+  "fontMatch": {
+    "ok": true,
+    "scenePath": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/scene-reads/009.json",
+    "referencePath": "/Users/michael/Downloads/NEUEGEN/studio/.state/refs/harness-009.png",
+    "patched": 0,
+    "layers": [
+      {
+        "id": "post-body",
+        "role": "body",
+        "text": "LAATSTE SITE WIDE SALE VAN 2026 ⌛\n\nDe Vakantiegeldsale komt ",
+        "previous": null,
+        "fontFamily": null,
+        "confidence": 0.023,
+        "patched": false,
+        "tried": [
+          {
+            "family": "Bradley Hand",
+            "score": 0.3421,
+            "fontSize": 42
+          },
+          {
+            "family": "Menlo",
+            "score": 0.3191,
+            "fontSize": 37
+          },
+          {
+            "family": "Impact",
+            "score": 0.275,
+            "fontSize": 43
+          },
+          {
+            "family": "Arial Narrow",
+            "score": 0.2738,
+            "fontSize": 38
+          },
+          {
+            "family": "",
+            "score": 0.2666,
+            "fontSize": 43
+          },
+          {
+            "family": "Georgia",
+            "score": 0.2536,
+            "fontSize": 43
+          },
+          {
+            "family": "Arial Rounded MT Bold",
+            "score": 0.2509,
+            "fontSize": 38
+          },
+          {
+            "family": "Times New Roman",
+            "score": 0.2191,
+            "fontSize": 43
+          }
+        ]
+      }
+    ]
   },
   "readSource": "scene-file",
+  "occlusionPlan": [],
   "sceneTruthCorrections": [
     "timestamp color: #71767B → #a3a4a5 (glyph sample, contrast 0.50)",
     "topbar-title fontSize: 38 → 49 (1 ink line, block 35px)",
@@ -29,6 +89,9 @@
     "count-bookmark box: y1015 h44 → y1016 h35 (tight ink rows + 4px pad)",
     "post-body: center-x snapped x47 → x45 (canvas center)"
   ],
+  "typoTruthCorrections": [
+    "text \"257\": italic detected (shear -0.46, projection gain 1.13)"
+  ],
   "archetype": "x-post",
   "layerCountExtracted": 21,
   "parsePath": "loose",
@@ -41,7 +104,41 @@
   },
   "pixelError": null,
   "textPileOverlaps": 0,
-  "pixelScoreRaw": 93.6,
-  "pixelScore": 93.6,
+  "pixelScoreRaw": 94.4,
+  "pixelScore": 94.4,
+  "refine": {
+    "ran": true,
+    "scoreBefore": 93.6,
+    "scoreAfter": 94.4,
+    "rounds": 3,
+    "renders": 8,
+    "capped": false,
+    "ms": 29658,
+    "applied": [
+      {
+        "round": 1,
+        "layerId": "body-mr8dcd24-l",
+        "layerName": "body",
+        "kind": "nudge",
+        "detail": "nudge dx=0 dy=-17",
+        "localMae": {
+          "before": 0.117,
+          "after": 0.112
+        }
+      },
+      {
+        "round": 2,
+        "layerId": "body-mr8dcd24-l",
+        "layerName": "body",
+        "kind": "font",
+        "detail": "fontSize ×0.92",
+        "localMae": {
+          "before": 0.115,
+          "after": 0.105
+        }
+      }
+    ],
+    "error": null
+  },
   "sideBySide": "/Users/michael/Downloads/NEUEGEN/studio/scratchpad-work/copy-harness/009/side-by-side.png"
 }

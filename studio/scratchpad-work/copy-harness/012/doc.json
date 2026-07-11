@@ -1,16 +1,16 @@
 {
-  "id": "harness_012_52dea7f2",
-  "name": "copy-harness harness_012_52dea7f2",
+  "id": "harness_012_1362f46a",
+  "name": "copy-harness harness_012_1362f46a",
   "canvas": {
     "w": 1080,
     "h": 1920
   },
   "layers": [
     {
-      "id": "base-mr8apkb4-x",
+      "id": "base-mr8dlqpt-1j",
       "type": "shape",
       "role": "base",
-      "name": "Base color",
+      "name": "Base gradient",
       "box": {
         "x": 0,
         "y": 0,
@@ -18,12 +18,25 @@
         "h": 1920
       },
       "style": {
-        "shapeKind": "rect",
-        "background": "#E9F3EB"
+        "background": "#c7e2d5",
+        "gradient": {
+          "type": "linear",
+          "angle": 180,
+          "stops": [
+            {
+              "color": "#c7e2d5",
+              "pos": 0
+            },
+            {
+              "color": "#fbfdfd",
+              "pos": 1
+            }
+          ]
+        }
       }
     },
     {
-      "id": "headline-mr8apkb4-i",
+      "id": "headline-mr8dlqpt-14",
       "type": "text",
       "role": "headline",
       "text": "Poop More While\nOn a GLP-1",
@@ -34,19 +47,20 @@
         "h": 206
       },
       "style": {
-        "fontSize": 74,
+        "fontSize": 86,
         "fontWeight": 800,
         "color": "#153A20",
         "align": "left",
         "lineHeight": 1.05,
         "uppercase": false,
-        "italic": true
+        "italic": true,
+        "fontFamily": "Arial Rounded MT Bold"
       },
       "autoH": false,
       "sizeLocked": true
     },
     {
-      "id": "benefit-mr8apkb4-j",
+      "id": "benefit-mr8dlqpt-15",
       "type": "badge",
       "role": "benefit",
       "text": "More Fiber Than\n2 cups of Broccoli",
@@ -70,7 +84,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8apkb4-k",
+      "id": "icon-mr8dlqpt-16",
       "type": "image",
       "role": "icon",
       "box": {
@@ -79,20 +93,12 @@
         "w": 74,
         "h": 74
       },
-      "style": {
-        "crop": {
-          "x": 0.07,
-          "y": 0.342,
-          "w": 0.069,
-          "h": 0.039
-        },
-        "radius": 9
-      },
-      "src": "/refasset?id=harness-012",
+      "style": {},
+      "src": "/refasset?id=harness-012m57a46afd",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr8apkb4-l",
+      "id": "benefit-mr8dlqpt-17",
       "type": "badge",
       "role": "benefit",
       "text": "20+ Vitamins & Minerals",
@@ -116,7 +122,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8apkb4-m",
+      "id": "icon-mr8dlqpt-18",
       "type": "image",
       "role": "icon",
       "box": {
@@ -125,20 +131,12 @@
         "w": 74,
         "h": 74
       },
-      "style": {
-        "crop": {
-          "x": 0.07,
-          "y": 0.404,
-          "w": 0.069,
-          "h": 0.039
-        },
-        "radius": 9
-      },
-      "src": "/refasset?id=harness-012",
+      "style": {},
+      "src": "/refasset?id=harness-012m9b65f6cb",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr8apkb4-n",
+      "id": "benefit-mr8dlqpt-19",
       "type": "badge",
       "role": "benefit",
       "text": "Organic Fruits & Veggies",
@@ -162,7 +160,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8apkb4-o",
+      "id": "icon-mr8dlqpt-1a",
       "type": "image",
       "role": "icon",
       "box": {
@@ -172,11 +170,11 @@
         "h": 74
       },
       "style": {},
-      "src": "/refasset?id=harness-012m194a92be",
+      "src": "/refasset?id=harness-012mce780d27",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr8apkb4-p",
+      "id": "benefit-mr8dlqpt-1b",
       "type": "badge",
       "role": "benefit",
       "text": "Prebiotics",
@@ -200,7 +198,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8apkb4-q",
+      "id": "icon-mr8dlqpt-1c",
       "type": "image",
       "role": "icon",
       "box": {
@@ -209,20 +207,12 @@
         "w": 74,
         "h": 74
       },
-      "style": {
-        "crop": {
-          "x": 0.07,
-          "y": 0.528,
-          "w": 0.069,
-          "h": 0.039
-        },
-        "radius": 9
-      },
-      "src": "/refasset?id=harness-012",
+      "style": {},
+      "src": "/refasset?id=harness-012mbe81c373",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr8apkb4-r",
+      "id": "benefit-mr8dlqpt-1d",
       "type": "badge",
       "role": "benefit",
       "text": "Adaptogens",
@@ -246,7 +236,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8apkb4-s",
+      "id": "icon-mr8dlqpt-1e",
       "type": "image",
       "role": "icon",
       "box": {
@@ -255,20 +245,12 @@
         "w": 74,
         "h": 74
       },
-      "style": {
-        "crop": {
-          "x": 0.07,
-          "y": 0.59,
-          "w": 0.069,
-          "h": 0.039
-        },
-        "radius": 9
-      },
-      "src": "/refasset?id=harness-012",
+      "style": {},
+      "src": "/refasset?id=harness-012mbfd58e2f",
       "name": "Cut-out"
     },
     {
-      "id": "benefit-mr8apkb4-t",
+      "id": "benefit-mr8dlqpt-1f",
       "type": "badge",
       "role": "benefit",
       "text": "0 Sugar",
@@ -292,7 +274,7 @@
       "sizeLocked": true
     },
     {
-      "id": "icon-mr8apkb4-u",
+      "id": "icon-mr8dlqpt-1g",
       "type": "image",
       "role": "icon",
       "box": {
@@ -302,11 +284,11 @@
         "h": 74
       },
       "style": {},
-      "src": "/refasset?id=harness-012mf695658e",
+      "src": "/refasset?id=harness-012mb0973f27",
       "name": "Cut-out"
     },
     {
-      "id": "product-mr8apkb4-v",
+      "id": "product-mr8dlqpt-1h",
       "type": "image",
       "role": "product",
       "box": {
@@ -316,11 +298,11 @@
         "h": 750
       },
       "style": {},
-      "src": "/refasset?id=harness-012me5741da5",
+      "src": "/refasset?id=harness-012m6d39f162",
       "name": "Cut-out"
     },
     {
-      "id": "social-proof-mr8apkb4-w",
+      "id": "social-proof-mr8dlqpt-1i",
       "type": "badge",
       "role": "social-proof",
       "text": "55,000+ ★★★★★ reviews",
@@ -338,12 +320,13 @@
         "align": "center",
         "radius": 49,
         "lineHeight": 1.1,
-        "uppercase": false
+        "uppercase": false,
+        "starStyle": "rounded"
       },
       "autoH": false,
       "sizeLocked": true
     }
   ],
-  "skeletonId": "skel_mr8apkb4qwew",
-  "updatedAt": 1783286466116
+  "skeletonId": "skel_mr8dlqpskcfi",
+  "updatedAt": 1783291416862
 }
